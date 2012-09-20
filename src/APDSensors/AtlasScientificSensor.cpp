@@ -313,6 +313,14 @@ float AtlasScientificSensor::as_sensor_read()
   return sensorval;
 }
 
+
+void AtlasScientificSensor::diagnostics() {
+}
+
+void AtlasScientificSensor::calibrate() {
+}
+
+
 size_t AtlasScientificSensor::print(const char *psz) {
 	if (this->is_soft_serial()) {
 		this->openChannel();
