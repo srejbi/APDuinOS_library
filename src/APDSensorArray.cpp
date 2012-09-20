@@ -161,6 +161,10 @@ void APDSensorArray::new_sensor_parser(void *pSA, int iline, char *psz) {
     SerPrintP("VIBRATION");
     newsensor = new VibrationSensor(&sdc);
     break;
+  case ATLASSCIENTIFIC_SENSOR:
+      SerPrintP("ATLASSCIENTIFIC");
+      newsensor = new AtlasScientificSensor(&sdc, reusablesensor);
+      break;
   default:
     SerPrintP("E310");			// E310 - unknown sensor type
   }
@@ -202,6 +206,7 @@ APDSensor *APDSensorArray::findReusableSensor(SDCONF *sdc) {
   case ONEWIRE_SENSOR:
   case DHT_SENSOR:
   case BMP085_SENSOR:
+  case ATLASSCIENTIFIC_SENSOR:
     preusable = this->firstSensorByPin(sdc->sensor_pin, sdc->sensor_type);
     if (preusable) {
         SerPrintP("REUSING @");
