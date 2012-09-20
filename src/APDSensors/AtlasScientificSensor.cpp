@@ -69,6 +69,7 @@ AtlasScientificSensor::AtlasScientificSensor(SDCONF *sdc, void *assensor)
           this->bPrimary = true;
           this->sensor->asenc = (ASENC*)malloc(sizeof(ASENC));
           if (this->sensor->asenc != NULL) {
+        	  memset(this->sensor->asenc,0,sizeof(ASENC));
         	 // get ptr to HW serial or allocate a new SW serial object, according to extra config
         	 if (edscand == 0) {	// hardware serial (0 SW serial parameters scanned)
         	 //#ifdef DEBUG
@@ -98,16 +99,16 @@ AtlasScientificSensor::AtlasScientificSensor(SDCONF *sdc, void *assensor)
         	 		  if (this->selectSWSerial()) {
         	 			 ((SoftwareSerial*)(((ASSENS*)(this->sensor))->asenc->serialport))->begin(ATLAS_BAUD_RATE);
         	 		  } else {
-        	 			  SerPrintP("E");		// ERROR selecting sw serial
+        	 			  SerPrintP("E2");		// ERROR selecting sw serial
         	 		  }
         	 	  } else {
-        	 		  SerPrintP("E");			// ERROR configuration error, at least 3 parameters (YN,S0,S1) should be provided for softserial
+        	 		  SerPrintP("E1");			// ERROR configuration error, at least 3 parameters (YN,S0,S1) should be provided for softserial
         	 	  }
         	   }
         	 	// todo bail out on previous errors otherwise state will look like ready even if error(s) occurred
           	this->sensor->asenc->state = STATE_READY;
           } else {
-          	SerPrintP("E");			// ERROR - out of ram
+          	SerPrintP("E0");			// ERROR - out of ram
           }
       }
 
@@ -224,6 +225,7 @@ bool AtlasScientificSensor::selectHWSerial()
 bool AtlasScientificSensor::selectSWSerial()
 {
 	bool bRetCode = false;
+	SerPrintP("Selecting SW Serial...\n");
 	if (this->sensor != NULL && ((ASSENS*)(this->sensor))->asenc->serialport == NULL) {
 		// allocate a new SoftwareSerial
 		SoftwareSerial *pser = new SoftwareSerial(this->config.sensor_pin, this->config.sensor_secondary_pin );
@@ -234,6 +236,7 @@ bool AtlasScientificSensor::selectSWSerial()
 			if (this->sensor->asenc->E > 0) {		// if E pin specified (not pulled to GND fixed)
 				pinMode(this->sensor->asenc->E, OUTPUT);						// E is OUTPUT (LOW to enable, HIGH to disable)
 			}
+			SerPrintP("SW Serial selected.\n");
 			bRetCode = true;
 		} // else?
 	} else {
@@ -274,7 +277,7 @@ float AtlasScientificSensor::as_sensor_read()
 
   		 // and "come back" in 1100 ms for results
   		 this->pmetro->interval(1100);							// reschedule checking this sensor in 1100 ms (will go to the STATE_WRITE branch)
-  		 //SerPrintP("COMMANDSENT:");Serial.print(millis() - this->_lm);
+  		 SerPrintP("ATLAS COMMANDSENT:");Serial.print(millis() - this->_lm);
   		 this->_lm = millis();
   	 } else {												// the serial port is occupied (by another instance using the shared serial port)
   		 //SerPrintP(".");
@@ -298,8 +301,8 @@ float AtlasScientificSensor::as_sensor_read()
 		 Serial.print(this->fvalue);
 	 }
 
-  	 //SerPrintP("AS "); Serial.print(this->config.label); SerPrintP(" FETCH PIN "); Serial.print(this->config.sensor_pin,DEC); SerPrintP("...");
-  	 //Serial.print(millis() - this->_lm);
+  	 SerPrintP("AS "); Serial.print(this->config.label); SerPrintP(" FETCH PIN "); Serial.print(this->config.sensor_pin,DEC); SerPrintP("...");
+  	 Serial.print(millis() - this->_lm);
   	 this->_lm = millis();
 
       // set ready states
