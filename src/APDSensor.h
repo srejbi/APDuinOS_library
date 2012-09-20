@@ -55,7 +55,7 @@
 #define SENSE_PRESSURE  6
 #define SENSE_ALTITUDE  7
 #define SENSE_PH        32
-#define SENSE_ORM       33
+#define SENSE_ORP       33
 #define SENSE_EC		34
 #define SENSE_DO		35
 

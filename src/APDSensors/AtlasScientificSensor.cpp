@@ -315,9 +315,31 @@ float AtlasScientificSensor::as_sensor_read()
 
 
 void AtlasScientificSensor::diagnostics() {
+	int i = 0;
+	switch (this->config.sensor_class) {
+	case SENSE_PH:
+		this->print("I\r");					// instruct for version number
+		while (!this->available() && i<200) {		// wait for incoming bytes for max ~2secs
+			delay(10);
+			i++;
+		}
+		while (this->available()) {			// if there are bytes
+			char c = (char)this->read();		// read
+			Serial.print(c);					// and display on serial
+		}
+		break;
+	case SENSE_DO:
+	case SENSE_EC:
+	case SENSE_ORP:
+		SerPrintP("Not Implemented.\n");
+		break;
+	default:
+		SerPrintP("E");			// ERROR: unknown class
+	}
 }
 
 void AtlasScientificSensor::calibrate() {
+	SerPrintP("Not Implemented.\n");
 }
 
 
