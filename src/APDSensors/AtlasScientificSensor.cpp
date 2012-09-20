@@ -269,8 +269,8 @@ float AtlasScientificSensor::as_sensor_read()
   		 this->_state = STATE_WRITE;							// set this class state as write
 
   		 // instruct reading sensor
-  		 this->print("r");				// AtlasScientific read command (valid for all classes /pH,EC,DO,ORP/)
-  		 this->print("\r");				// command confirmed by carriage return
+  		 this->print("r\r");				// AtlasScientific read command (valid for all classes /pH,EC,DO,ORP/)
+  		 //this->print('\r');				// command confirmed by carriage return
 
   		 // and "come back" in 1100 ms for results
   		 this->pmetro->interval(1100);							// reschedule checking this sensor in 1100 ms (will go to the STATE_WRITE branch)
@@ -285,6 +285,18 @@ float AtlasScientificSensor::as_sensor_read()
 	 int databytes = 0;		// bytes to read
 	 char sz_rx[64];
 	 databytes = this->fetch(sz_rx);
+	 Serial.print(databytes); SerPrintP(" bytes received.\n");
+	 Serial.print(sz_rx);
+
+	 float sensorval = 0;
+	 if (sscanf(sz_rx, "%f", &sensorval) == 0) {
+		 SerPrintP("Something is not right.");
+		 Serial.print(sz_rx);
+	 } else {
+		 this->fvalue = sensorval;
+		 SerPrintP("Storing value: ");
+		 Serial.print(this->fvalue);
+	 }
 
   	 //SerPrintP("AS "); Serial.print(this->config.label); SerPrintP(" FETCH PIN "); Serial.print(this->config.sensor_pin,DEC); SerPrintP("...");
   	 //Serial.print(millis() - this->_lm);
@@ -325,12 +337,18 @@ size_t AtlasScientificSensor::print(const char pc) {
 
 size_t AtlasScientificSensor::fetch(char *psz_rx) {
 	int bytes_avail = this->available();
+	int i = 0;
 	//char *pc = psz_rx;			// char pointer
 	if (bytes_avail > 0) {		// AtlasScientific example was looking for 3+ bytes, why? (\r?)
-      for (int i = 0; i < bytes_avail ; i++) {
-    	  psz_rx[i] = this->read();			// this will be slow (each time checks if SW/HW) TODO consider using 2 separate iterations
+      for (i = 0; i < bytes_avail ; i++) {
+    	  psz_rx[i] = (char)this->read();			// this will be slow (each time checks if SW/HW) TODO consider using 2 separate iterations
+    	  if (psz_rx[i] == '\r') {					// if end of command (CR)
+    		  psz_rx[i] = 0;							// replace \r with \0
+    		  break;									// get outta here
+    	  }
       }
 	}
+	return (size_t)(sizeof(char)*i);
 }
 
 // returns number of available bytes on HW/SW serial, -1 on error
