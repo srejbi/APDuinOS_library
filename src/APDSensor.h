@@ -41,6 +41,7 @@
 #define SONAR_SENSOR   5
 #define BMP085_SENSOR   6
 #define VIBRATION_SENSOR 7
+#define ATLASSCIENTIFIC_SENSOR 8
 #define VIRTUAL_SENSOR 128
 
 
@@ -54,7 +55,9 @@
 #define SENSE_PRESSURE  6
 #define SENSE_ALTITUDE  7
 #define SENSE_PH        32
-#define SENSE_ORM       33
+#define SENSE_ORP       33
+#define SENSE_EC		34
+#define SENSE_DO		35
 
 // Sensor Definition Configuration ("record") - the following definition should come from file
 struct SDCONF {
@@ -62,15 +65,15 @@ struct SDCONF {
   int sensor_type;
   int sensor_class;
   int sensor_subtype;
-  int sensor_pin;
-  int sensor_secondary_pin;                     // special sensors operate with multiple pins, we support 2 pins
+  int sensor_pin;				   // sensor pin is the primary pin for *reading* (so if sensor needs 2 pins, this is RX/READ)
+  int sensor_secondary_pin;        // special sensors operate with multiple pins (eg. RX/TX), we support 2 pins - this is TX/WRITE/TRIGGER
   int sensor_freq;
   int sensor_log;
   char extra_data[24];
 };
 
 
-// sensor states; not really in use yet...
+// sensor states; not really in use yet (1-wire & Atlas uses it)... #todo widespread the use of state
 #define STATE_READY         0x00             // 0000
 #define STATE_BUSY          0x01             // 0001
 #define STATE_WAIT          0x02             // 0010
@@ -83,6 +86,8 @@ struct SDCONF {
 // and keep an execution plan up to date to always deal with the next sensor on time
 // the sensor is responsible for carrying out it's operation according to it's state in say 10-20 ms max
 // and bail out so the next sensor can be polled
+
+// note: things like networking could interfere with these metros. #todo consider setting up interrupt for critical timers
 
 
 class APDSensor

@@ -38,6 +38,7 @@
 #include "APDSensors/SonarSensor.h"
 #include "APDSensors/BMPSensor.h"
 #include "APDSensors/VibrationSensor.h"
+#include "APDSensors/AtlasScientificSensor.h"
 
 class APDSensorArray
 {
