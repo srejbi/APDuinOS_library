@@ -57,9 +57,12 @@ VibrationSensor::VibrationSensor(SDCONF *sdc)
 
 VibrationSensor::~VibrationSensor()
 {
-  if (this->history != NULL) free(this->history);
-  if (this->sensor != NULL) free(this->sensor);
-  if (this->pmetro != NULL) delete(this->pmetro);
+  free(this->history);
+  this->history = NULL;
+  free(this->sensor);
+  this->sensor = NULL;
+  delete(this->pmetro);
+  this->pmetro = NULL;
 }
 
 boolean VibrationSensor::perform_check()

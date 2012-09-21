@@ -123,27 +123,34 @@ AtlasScientificSensor::AtlasScientificSensor(SDCONF *sdc, void *assensor)
 
 AtlasScientificSensor::~AtlasScientificSensor() {
   // TODO Auto-generated destructor stub
+  // TODO send stop command to sensor
   if (this->sensor != NULL) {
-      if (this->sensor->asenc != NULL && this->bPrimary) {
-      	if (this->sensor->asenc->serialport != NULL) {
-      	    if (this->is_soft_serial()) {
-      	    	SoftwareSerial *sp = (SoftwareSerial *)(this->sensor->asenc->serialport);
-      	    	sp->end();
-      	    	delete(sp);
-      	    } else {
-      	    	HardwareSerial *sp = (HardwareSerial *)(this->sensor->asenc->serialport);
-      	    	sp->end();
-      	    	// HW serial was NOT created just addressed, not freeing mem
-      	    }
-      	    this->sensor->asenc->serialport = NULL;			// reset serialport to NULL
+      if (this->sensor->asenc != NULL) {
+      	if (this->bPrimary) {
+					if (this->sensor->asenc->serialport != NULL) {
+							if (this->is_soft_serial()) {
+								SoftwareSerial *sp = (SoftwareSerial *)(this->sensor->asenc->serialport);
+								//sp->end();			// SoftwareSerial destructor will end
+								delete(sp);
+								SerPrintP("swserdeleted.");
+							} else {
+								HardwareSerial *sp = (HardwareSerial *)(this->sensor->asenc->serialport);
+								sp->end();
+								// HW serial was NOT created just addressed, not freeing mem
+							}
+							this->sensor->asenc->serialport = NULL;			// reset serialport to NULL
+					}
+					free(this->sensor->asenc);										// free Atlas Scientific Sensor encapsulation struct
+					SerPrintP("encobjfreed.");
       	}
-      	free(this->sensor->asenc);
-      	this->sensor->asenc = NULL;
+      	this->sensor->asenc = NULL;										// reset encapsulation struct ptr to NULL
       }
       free(this->sensor);
+      SerPrintP("sensorfreed.");
       this->sensor = NULL;
   }
   delete(this->pmetro);
+  SerPrintP("metrodeleted.");
   this->pmetro = NULL;
 }
 

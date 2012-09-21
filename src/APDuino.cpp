@@ -573,7 +573,7 @@ boolean APDuino::disableRuleProcessing() {
 boolean APDuino::reconfigure() {
 	boolean retcode = false;
 
-  SerPrintP("\nRECONFIGURE!\n");
+  SerPrintP("\nRECONREQ...\n");
   delay(100);
 
   // put APDWeb in maintenance mode to PREVENT ACCESS TO sensors, controls, rules
@@ -607,7 +607,6 @@ boolean APDuino::reconfigure() {
   	SerPrintP("Reallocated Arrays!\n"); delay(10);
   	Serial.print( freeMemory(), DEC); SerPrintP(" RAM free.\n");
   	delay(10);
-
 
 
 			SerPrintP("\ninit sensors\n"); delay(10);

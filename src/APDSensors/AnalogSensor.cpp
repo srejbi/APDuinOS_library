@@ -36,13 +36,10 @@ AnalogSensor::AnalogSensor(SDCONF *sdc)
 
 AnalogSensor::~AnalogSensor()
 {
-	SerPrintP("del sens"); delay(10);
   free(this->sensor);
   this->sensor = NULL;
-  SerPrintP("del metro"); delay(10);
   delete(this->pmetro);
   this->pmetro = NULL;
-  SerPrintP("ok\n");
 }
 
 boolean AnalogSensor::perform_check()

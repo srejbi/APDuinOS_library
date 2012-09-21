@@ -36,9 +36,10 @@ DigitalSensor::DigitalSensor(SDCONF *sdc)
 
 DigitalSensor::~DigitalSensor()
 {
-  // TODO Auto-generated destructor stub
-  if (this->sensor != NULL) free(this->sensor);
-  if (this->pmetro != NULL) delete(this->pmetro);
+	free(this->sensor);
+	this->sensor = NULL;
+	delete(this->pmetro);
+	this->pmetro = NULL;
 }
 
 boolean DigitalSensor::perform_check()
