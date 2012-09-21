@@ -1,0 +1,366 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<?fileVersion 4.0.0?>
+
+<cproject storage_type_id="org.eclipse.cdt.core.XmlProjectDescriptionStorage">
+	<storageModule moduleId="org.eclipse.cdt.core.settings">
+		<cconfiguration id="it.baeyens.avreclipse.configuration.lib.debug.647964416">
+			<storageModule buildSystemId="org.eclipse.cdt.managedbuilder.core.configurationDataProvider" id="it.baeyens.avreclipse.configuration.lib.debug.647964416" moduleId="org.eclipse.cdt.core.settings" name="Debug">
+				<externalSettings/>
+				<extensions>
+					<extension id="org.eclipse.cdt.core.ELF" point="org.eclipse.cdt.core.BinaryParser"/>
+					<extension id="org.eclipse.cdt.core.MakeErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+					<extension id="org.eclipse.cdt.core.GCCErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+					<extension id="org.eclipse.cdt.core.GASErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+				</extensions>
+			</storageModule>
+			<storageModule moduleId="cdtBuildSystem" version="4.0.0">
+				<configuration artifactExtension="a" artifactName="${ProjName}" buildArtefactType="it.baeyens.avreclipse.buildArtefactType.staticLib" buildProperties="org.eclipse.cdt.build.core.buildType=org.eclipse.cdt.build.core.buildType.debug,org.eclipse.cdt.build.core.buildArtefactType=it.baeyens.avreclipse.buildArtefactType.staticLib" cleanCommand="rm -f" description="" errorParsers="org.eclipse.cdt.core.MakeErrorParser;org.eclipse.cdt.core.GCCErrorParser;org.eclipse.cdt.core.GASErrorParser" id="it.baeyens.avreclipse.configuration.lib.debug.647964416" name="Debug" parent="it.baeyens.avreclipse.configuration.lib.debug" postannouncebuildStep="" postbuildStep="avr-ar d libAPDuinOS.a twi.o Wire.o Sd2Card.o SdBaseFile.o SdFat.o SdFatUtil.o SdFile.o SdStream.o SdVolume.o istream.o ostream.o SPI.o RTClib.o RCSwitch.o OneWire.o Metro.o MemoryFree.o socket.o w5100.o Dhcp.o Dns.o Ethernet.o EthernetClient.o EthernetServer.o EthernetUdp.o DHT.o Adafruit_BMP085.o ; avr-objdump -h -S libAPDuinOS.a &gt;libAPDuinOS.lss " preannouncebuildStep="" prebuildStep="">
+					<folderInfo id="it.baeyens.avreclipse.configuration.lib.debug.647964416." name="/" resourcePath="">
+						<toolChain errorParsers="" id="it.baeyens.avreclipse.toolchain.winavr.lib.debug.1313276138" name="AVR-GCC Toolchain" superClass="it.baeyens.avreclipse.toolchain.winavr.lib.debug">
+							<option id="it.baeyens.avreclipse.toolchain.options.toolchain.objdump.lib.debug.1120948047" name="Generate Extended Listing (Source + generated Assembler)" superClass="it.baeyens.avreclipse.toolchain.options.toolchain.objdump.lib.debug"/>
+							<option id="it.baeyens.avreclipse.toolchain.options.toolchain.size.lib.debug.683064520" name="Print Size" superClass="it.baeyens.avreclipse.toolchain.options.toolchain.size.lib.debug"/>
+							<targetPlatform binaryParser="org.eclipse.cdt.core.ELF" id="it.baeyens.avreclipse.targetplatform.winavr.lib.debug.1188366241" name="AVR Cross-Target" superClass="it.baeyens.avreclipse.targetplatform.winavr.lib.debug"/>
+							<builder buildPath="${workspace_loc:/libAPD/Debug}" errorParsers="org.eclipse.cdt.core.MakeErrorParser" id="it.baeyens.avreclipse.target.builder.winavr.lib.debug.364505975" keepEnvironmentInBuildfile="false" managedBuildOn="true" name="AVR GNU Make Builder" superClass="it.baeyens.avreclipse.target.builder.winavr.lib.debug"/>
+							<tool command="avr-gcc" commandLinePattern="${COMMAND} ${FLAGS} ${OUTPUT_FLAG} ${OUTPUT_PREFIX}${OUTPUT} ${INPUTS}" errorParsers="org.eclipse.cdt.core.GASErrorParser" id="it.baeyens.avreclipse.tool.assembler.winavr.lib.debug.576519559" name="AVR Assembler" superClass="it.baeyens.avreclipse.tool.assembler.winavr.lib.debug">
+								<option id="it.baeyens.avreclipse.assembler.option.debug.level.1694225032" name="Generate Debugging Info" superClass="it.baeyens.avreclipse.assembler.option.debug.level"/>
+								<inputType id="it.baeyens.avreclipse.tool.assembler.input.720254351" superClass="it.baeyens.avreclipse.tool.assembler.input"/>
+							</tool>
+							<tool command="avr-gcc" commandLinePattern="${COMMAND} ${FLAGS} ${OUTPUT_FLAG} ${OUTPUT_PREFIX}${OUTPUT} ${INPUTS}" errorParsers="org.eclipse.cdt.core.GCCErrorParser" id="it.baeyens.avreclipse.tool.compiler.winavr.lib.debug.220565255" name="AVR Compiler" superClass="it.baeyens.avreclipse.tool.compiler.winavr.lib.debug">
+								<option id="it.baeyens.avreclipse.compiler.option.debug.level.2019823795" name="Generate Debugging Info" superClass="it.baeyens.avreclipse.compiler.option.debug.level"/>
+								<option id="it.baeyens.avreclipse.compiler.option.optimize.11462735" name="Optimization Level" superClass="it.baeyens.avreclipse.compiler.option.optimize" value="it.baeyens.avreclipse.compiler.optimize.size" valueType="enumerated"/>
+								<option id="it.baeyens.avreclipse.compiler.option.incpath.1591289261" name="Include Paths (-I)" superClass="it.baeyens.avreclipse.compiler.option.incpath" valueType="includePath">
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/libraries/SdFat}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/libraries/SoftwareSerial}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ARDUINOBOARDNAME}/arduino}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/Arduino_Mega_2560_or_Mega_ADK/arduino}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/Arduino_Mega_2560_or_Mega_ADK/mega}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ARDUINOBOARDNAME}/${ARDUINOBOARDVARIANT}}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/libraries/Wire}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/libraries/Ethernet}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/libraries/Ethernet/utility}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/libraries/MemoryFree}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/libraries/Metro}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/libraries/OneWire}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/libraries/RCSwitch}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/libraries/RTClib}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/libraries/SPI}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/libraries/Wire/utility}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src}&quot;"/>
+								</option>
+								<option id="it.baeyens.avreclipse.compiler.option.def.885347369" name="Define Syms (-D)" superClass="it.baeyens.avreclipse.compiler.option.def" valueType="definedSymbols">
+									<listOptionValue builtIn="false" value="ARDUINO=101"/>
+									<listOptionValue builtIn="false" value="__AVR_ATmega2560__"/>
+									<listOptionValue builtIn="false" value="__IN_ECLIPSE__=1"/>
+								</option>
+								<option id="it.baeyens.avreclipse.compiler.option.optimize.packstruct.1445021891" name="Pack structs (-fpack-struct)" superClass="it.baeyens.avreclipse.compiler.option.optimize.packstruct" value="false" valueType="boolean"/>
+								<option id="it.baeyens.avreclipse.compiler.option.optimize.shortenums.279201703" name="Short enums (-fshort-enums)" superClass="it.baeyens.avreclipse.compiler.option.optimize.shortenums" value="false" valueType="boolean"/>
+								<option id="it.baeyens.avreclipse.compiler.option.optimize.other.1280421405" name="Other Optimization Flags" superClass="it.baeyens.avreclipse.compiler.option.optimize.other" value="-ffunction-sections -fdata-sections" valueType="string"/>
+								<option id="it.baeyens.avreclipse.compiler.option.language.uchar.1360650441" name="char is unsigned (-funsigned-char)" superClass="it.baeyens.avreclipse.compiler.option.language.uchar" value="false" valueType="boolean"/>
+								<option id="it.baeyens.avreclipse.compiler.option.language.ubitfields.448008083" name="bitfields are unsigned (-funsigned-bitfields)" superClass="it.baeyens.avreclipse.compiler.option.language.ubitfields" value="false" valueType="boolean"/>
+								<inputType id="it.baeyens.avreclipse.compiler.winavr.input.433180282" name="C Source Files" superClass="it.baeyens.avreclipse.compiler.winavr.input"/>
+							</tool>
+							<tool command="avr-g++" commandLinePattern="${COMMAND} ${FLAGS} ${OUTPUT_FLAG} ${OUTPUT_PREFIX}${OUTPUT} ${INPUTS}" errorParsers="org.eclipse.cdt.core.GCCErrorParser" id="it.baeyens.avreclipse.tool.cppcompiler.lib.debug.573772107" name="AVR C++ Compiler" superClass="it.baeyens.avreclipse.tool.cppcompiler.lib.debug">
+								<option id="it.baeyens.avreclipse.cppcompiler.option.debug.level.638510603" name="Generate Debugging Info" superClass="it.baeyens.avreclipse.cppcompiler.option.debug.level"/>
+								<option id="it.baeyens.avreclipse.cppcompiler.option.optimize.1473916382" name="Optimization Level" superClass="it.baeyens.avreclipse.cppcompiler.option.optimize"/>
+								<option id="it.baeyens.avreclipse.cppcompiler.option.incpath.1268624934" name="Include Paths (-I)" superClass="it.baeyens.avreclipse.cppcompiler.option.incpath" valueType="includePath">
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/libraries/SdFat}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ARDUINOBOARDNAME}/arduino}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/Arduino_Mega_2560_or_Mega_ADK/arduino}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/Arduino_Mega_2560_or_Mega_ADK/mega}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ARDUINOBOARDNAME}/${ARDUINOBOARDVARIANT}}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/libraries/Adafruit_BMP085}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/libraries/DHT}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/libraries/Ethernet}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/libraries/Ethernet/utility}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/libraries/MemoryFree}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/libraries/Metro}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/libraries/OneWire}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/libraries/RCSwitch}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/libraries/RTClib}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/libraries/SPI}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/libraries/Wire}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/libraries/Wire/utility}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src}&quot;"/>
+								</option>
+								<option id="it.baeyens.avreclipse.cppcompiler.option.def.252891163" name="Define Syms (-D)" superClass="it.baeyens.avreclipse.cppcompiler.option.def" valueType="definedSymbols">
+									<listOptionValue builtIn="false" value="ARDUINO=101"/>
+									<listOptionValue builtIn="false" value="__AVR_ATmega2560__"/>
+									<listOptionValue builtIn="false" value="__IN_ECLIPSE__=1"/>
+								</option>
+								<option id="it.baeyens.avreclipse.cppcompiler.option.optimize.other.131404132" name="Other Optimization Flags" superClass="it.baeyens.avreclipse.cppcompiler.option.optimize.other" value="-ffunction-sections -fdata-sections" valueType="string"/>
+								<option id="it.baeyens.avreclipse.cppcompiler.option.optimize.packstruct.1263129850" name="Pack structs (-fpack-struct)" superClass="it.baeyens.avreclipse.cppcompiler.option.optimize.packstruct" value="false" valueType="boolean"/>
+								<option id="it.baeyens.avreclipse.cppcompiler.option.optimize.shortenums.1869495852" name="Short enums (-fshort-enums)" superClass="it.baeyens.avreclipse.cppcompiler.option.optimize.shortenums" value="false" valueType="boolean"/>
+								<option id="it.baeyens.avreclipse.cppcompiler.option.language.uchar.1434838221" name="char is unsigned (-funsigned-char)" superClass="it.baeyens.avreclipse.cppcompiler.option.language.uchar" value="false" valueType="boolean"/>
+								<option id="it.baeyens.avreclipse.cppcompiler.option.language.ubitfields.319298597" name="bitfields are unsigned (-funsigned-bitfields)" superClass="it.baeyens.avreclipse.cppcompiler.option.language.ubitfields" value="false" valueType="boolean"/>
+								<inputType id="it.baeyens.avreclipse.cppcompiler.input.97067225" superClass="it.baeyens.avreclipse.cppcompiler.input"/>
+							</tool>
+							<tool id="it.baeyens.avreclipse.tool.linker.winavr.base.287853769" name="AVR C Linker" superClass="it.baeyens.avreclipse.tool.linker.winavr.base"/>
+							<tool id="it.baeyens.avreclipse.tool.cpplinker.base.541496469" name="AVR C++ Linker" superClass="it.baeyens.avreclipse.tool.cpplinker.base"/>
+							<tool command="avr-ar" commandLinePattern="${COMMAND} ${FLAGS} ${OUTPUT_FLAG} ${OUTPUT_PREFIX}${OUTPUT} ${INPUTS}" errorParsers="" id="it.baeyens.avreclipse.tool.archiver.winavr.lib.debug.184807870" name="AVR Archiver" superClass="it.baeyens.avreclipse.tool.archiver.winavr.lib.debug"/>
+							<tool command="-avr-objdump" commandLinePattern="${COMMAND} ${FLAGS} ${INPUTS} &gt;${OUTPUT}" errorParsers="" id="it.baeyens.avreclipse.tool.objdump.winavr.lib.debug.376562070" name="AVR Create Extended Listing" superClass="it.baeyens.avreclipse.tool.objdump.winavr.lib.debug"/>
+							<tool command="-avr-size" commandLinePattern="${COMMAND} ${FLAGS} ${INPUTS}" errorParsers="" id="it.baeyens.avreclipse.tool.size.winavr.lib.debug.611205339" name="Print Size" superClass="it.baeyens.avreclipse.tool.size.winavr.lib.debug"/>
+						</toolChain>
+					</folderInfo>
+					<sourceEntries>
+						<entry excluding="src" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src"/>
+					</sourceEntries>
+				</configuration>
+			</storageModule>
+			<storageModule moduleId="org.eclipse.cdt.core.externalSettings"/>
+		</cconfiguration>
+		<cconfiguration id="it.baeyens.avreclipse.configuration.lib.release.1303774304">
+			<storageModule buildSystemId="org.eclipse.cdt.managedbuilder.core.configurationDataProvider" id="it.baeyens.avreclipse.configuration.lib.release.1303774304" moduleId="org.eclipse.cdt.core.settings" name="Release">
+				<externalSettings/>
+				<extensions>
+					<extension id="org.eclipse.cdt.core.ELF" point="org.eclipse.cdt.core.BinaryParser"/>
+					<extension id="org.eclipse.cdt.core.MakeErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+					<extension id="org.eclipse.cdt.core.GCCErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+					<extension id="org.eclipse.cdt.core.GASErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+				</extensions>
+			</storageModule>
+			<storageModule moduleId="cdtBuildSystem" version="4.0.0">
+				<configuration artifactExtension="a" artifactName="${ProjName}" buildArtefactType="it.baeyens.avreclipse.buildArtefactType.staticLib" buildProperties="org.eclipse.cdt.build.core.buildType=org.eclipse.cdt.build.core.buildType.release,org.eclipse.cdt.build.core.buildArtefactType=it.baeyens.avreclipse.buildArtefactType.staticLib" cleanCommand="rm -rf" description="" errorParsers="org.eclipse.cdt.core.MakeErrorParser;org.eclipse.cdt.core.GCCErrorParser;org.eclipse.cdt.core.GASErrorParser" id="it.baeyens.avreclipse.configuration.lib.release.1303774304" name="Release" parent="it.baeyens.avreclipse.configuration.lib.release" postannouncebuildStep="" postbuildStep="avr-ar d libAPDuinOS.a twi.o Wire.o Sd2Card.o SdBaseFile.o SdFat.o SdFatUtil.o SdFile.o SdStream.o SdVolume.o istream.o ostream.o SPI.o RTClib.o RCSwitch.o OneWire.o Metro.o MemoryFree.o socket.o w5100.o Dhcp.o Dns.o Ethernet.o EthernetClient.o EthernetServer.o EthernetUdp.o DHT.o Adafruit_BMP085.o ; avr-objdump -h -S libAPDuinOS.a &gt;libAPDuinOS.lss " preannouncebuildStep="" prebuildStep="">
+					<folderInfo id="it.baeyens.avreclipse.configuration.lib.release.1303774304." name="/" resourcePath="">
+						<toolChain errorParsers="" id="it.baeyens.avreclipse.toolchain.winavr.lib.release.1468591065" name="AVR-GCC Toolchain" superClass="it.baeyens.avreclipse.toolchain.winavr.lib.release">
+							<option id="it.baeyens.avreclipse.toolchain.options.toolchain.objdump.lib.release.894945725" name="Generate Extended Listing (Source + generated Assembler)" superClass="it.baeyens.avreclipse.toolchain.options.toolchain.objdump.lib.release"/>
+							<option id="it.baeyens.avreclipse.toolchain.options.toolchain.size.lib.release.160190131" name="Print Size" superClass="it.baeyens.avreclipse.toolchain.options.toolchain.size.lib.release"/>
+							<targetPlatform id="it.baeyens.avreclipse.targetplatform.winavr.lib.release.1521333071" name="AVR Cross-Target" superClass="it.baeyens.avreclipse.targetplatform.winavr.lib.release"/>
+							<builder buildPath="${workspace_loc:/libAPD/Release}" errorParsers="org.eclipse.cdt.core.MakeErrorParser" id="it.baeyens.avreclipse.target.builder.winavr.lib.release.959767755" keepEnvironmentInBuildfile="false" managedBuildOn="true" name="AVR GNU Make Builder" superClass="it.baeyens.avreclipse.target.builder.winavr.lib.release"/>
+							<tool errorParsers="org.eclipse.cdt.core.GASErrorParser" id="it.baeyens.avreclipse.tool.assembler.winavr.lib.release.1606868872" name="AVR Assembler" superClass="it.baeyens.avreclipse.tool.assembler.winavr.lib.release">
+								<option id="it.baeyens.avreclipse.assembler.option.debug.level.1677840301" name="Generate Debugging Info" superClass="it.baeyens.avreclipse.assembler.option.debug.level" value="it.baeyens.avreclipse.assembler.option.debug.level.g2" valueType="enumerated"/>
+								<inputType id="it.baeyens.avreclipse.tool.assembler.input.1599764627" superClass="it.baeyens.avreclipse.tool.assembler.input"/>
+							</tool>
+							<tool errorParsers="org.eclipse.cdt.core.GCCErrorParser" id="it.baeyens.avreclipse.tool.compiler.winavr.lib.release.1764810192" name="AVR Compiler" superClass="it.baeyens.avreclipse.tool.compiler.winavr.lib.release">
+								<option id="it.baeyens.avreclipse.compiler.option.debug.level.73822737" name="Generate Debugging Info" superClass="it.baeyens.avreclipse.compiler.option.debug.level" value="it.baeyens.avreclipse.compiler.option.debug.level.g2" valueType="enumerated"/>
+								<option id="it.baeyens.avreclipse.compiler.option.optimize.764043740" name="Optimization Level" superClass="it.baeyens.avreclipse.compiler.option.optimize" value="it.baeyens.avreclipse.compiler.optimize.size" valueType="enumerated"/>
+								<option id="it.baeyens.avreclipse.compiler.option.incpath.426990448" name="Include Paths (-I)" superClass="it.baeyens.avreclipse.compiler.option.incpath" valueType="includePath">
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/libraries/SdFat}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/libraries/SoftwareSerial}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ARDUINOBOARDNAME}/arduino}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/Arduino_Mega_2560_or_Mega_ADK/arduino}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/Arduino_Mega_2560_or_Mega_ADK/mega}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ARDUINOBOARDNAME}/${ARDUINOBOARDVARIANT}}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/libraries/Wire}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/libraries/Ethernet}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/libraries/Ethernet/utility}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/libraries/MemoryFree}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/libraries/Metro}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/libraries/OneWire}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/libraries/RCSwitch}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/libraries/RTClib}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/libraries/SPI}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/libraries/Wire/utility}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src}&quot;"/>
+								</option>
+								<option id="it.baeyens.avreclipse.compiler.option.def.929272015" name="Define Syms (-D)" superClass="it.baeyens.avreclipse.compiler.option.def" valueType="definedSymbols">
+									<listOptionValue builtIn="false" value="ARDUINO=101"/>
+									<listOptionValue builtIn="false" value="__AVR_ATmega2560__"/>
+									<listOptionValue builtIn="false" value="__IN_ECLIPSE__=1"/>
+								</option>
+								<option id="it.baeyens.avreclipse.compiler.option.optimize.packstruct.1498053812" name="Pack structs (-fpack-struct)" superClass="it.baeyens.avreclipse.compiler.option.optimize.packstruct" value="false" valueType="boolean"/>
+								<option id="it.baeyens.avreclipse.compiler.option.optimize.shortenums.1922923147" name="Short enums (-fshort-enums)" superClass="it.baeyens.avreclipse.compiler.option.optimize.shortenums" value="false" valueType="boolean"/>
+								<option id="it.baeyens.avreclipse.compiler.option.optimize.other.1916424133" name="Other Optimization Flags" superClass="it.baeyens.avreclipse.compiler.option.optimize.other" value="-ffunction-sections -fdata-sections" valueType="string"/>
+								<option id="it.baeyens.avreclipse.compiler.option.language.uchar.980045026" name="char is unsigned (-funsigned-char)" superClass="it.baeyens.avreclipse.compiler.option.language.uchar" value="false" valueType="boolean"/>
+								<option id="it.baeyens.avreclipse.compiler.option.language.ubitfields.2108800913" name="bitfields are unsigned (-funsigned-bitfields)" superClass="it.baeyens.avreclipse.compiler.option.language.ubitfields" value="false" valueType="boolean"/>
+								<inputType id="it.baeyens.avreclipse.compiler.winavr.input.1038471203" name="C Source Files" superClass="it.baeyens.avreclipse.compiler.winavr.input"/>
+							</tool>
+							<tool errorParsers="org.eclipse.cdt.core.GCCErrorParser" id="it.baeyens.avreclipse.tool.cppcompiler.lib.release.1924307614" name="AVR C++ Compiler" superClass="it.baeyens.avreclipse.tool.cppcompiler.lib.release">
+								<option id="it.baeyens.avreclipse.cppcompiler.option.debug.level.1845088426" name="Generate Debugging Info" superClass="it.baeyens.avreclipse.cppcompiler.option.debug.level" value="it.baeyens.avreclipse.cppcompiler.option.debug.level.g2" valueType="enumerated"/>
+								<option id="it.baeyens.avreclipse.cppcompiler.option.optimize.887215648" name="Optimization Level" superClass="it.baeyens.avreclipse.cppcompiler.option.optimize" value="it.baeyens.avreclipse.cppcompiler.optimize.none" valueType="enumerated"/>
+								<option id="it.baeyens.avreclipse.cppcompiler.option.incpath.1205489473" name="Include Paths (-I)" superClass="it.baeyens.avreclipse.cppcompiler.option.incpath" valueType="includePath">
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/libraries/SdFat}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ARDUINOBOARDNAME}/arduino}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/Arduino_Mega_2560_or_Mega_ADK/arduino}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/Arduino_Mega_2560_or_Mega_ADK/mega}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ARDUINOBOARDNAME}/${ARDUINOBOARDVARIANT}}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/libraries/Adafruit_BMP085}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/libraries/DHT}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/libraries/Ethernet}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/libraries/Ethernet/utility}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/libraries/MemoryFree}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/libraries/Metro}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/libraries/OneWire}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/libraries/RCSwitch}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/libraries/RTClib}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/libraries/SPI}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/libraries/Wire}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/libraries/Wire/utility}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src}&quot;"/>
+								</option>
+								<option id="it.baeyens.avreclipse.cppcompiler.option.def.1734880268" name="Define Syms (-D)" superClass="it.baeyens.avreclipse.cppcompiler.option.def" valueType="definedSymbols">
+									<listOptionValue builtIn="false" value="ARDUINO=101"/>
+									<listOptionValue builtIn="false" value="__AVR_ATmega2560__"/>
+									<listOptionValue builtIn="false" value="__IN_ECLIPSE__=1"/>
+								</option>
+								<option id="it.baeyens.avreclipse.cppcompiler.option.optimize.other.895150792" name="Other Optimization Flags" superClass="it.baeyens.avreclipse.cppcompiler.option.optimize.other" value="-ffunction-sections -fdata-sections" valueType="string"/>
+								<option id="it.baeyens.avreclipse.cppcompiler.option.optimize.packstruct.1140005263" name="Pack structs (-fpack-struct)" superClass="it.baeyens.avreclipse.cppcompiler.option.optimize.packstruct" value="false" valueType="boolean"/>
+								<option id="it.baeyens.avreclipse.cppcompiler.option.optimize.shortenums.125680093" name="Short enums (-fshort-enums)" superClass="it.baeyens.avreclipse.cppcompiler.option.optimize.shortenums" value="false" valueType="boolean"/>
+								<option id="it.baeyens.avreclipse.cppcompiler.option.language.uchar.1568161584" name="char is unsigned (-funsigned-char)" superClass="it.baeyens.avreclipse.cppcompiler.option.language.uchar" value="false" valueType="boolean"/>
+								<option id="it.baeyens.avreclipse.cppcompiler.option.language.ubitfields.1611606625" name="bitfields are unsigned (-funsigned-bitfields)" superClass="it.baeyens.avreclipse.cppcompiler.option.language.ubitfields" value="false" valueType="boolean"/>
+								<inputType id="it.baeyens.avreclipse.cppcompiler.input.1252061621" superClass="it.baeyens.avreclipse.cppcompiler.input"/>
+							</tool>
+							<tool id="it.baeyens.avreclipse.tool.linker.winavr.base.768690804" name="AVR C Linker" superClass="it.baeyens.avreclipse.tool.linker.winavr.base"/>
+							<tool id="it.baeyens.avreclipse.tool.cpplinker.base.1085139918" name="AVR C++ Linker" superClass="it.baeyens.avreclipse.tool.cpplinker.base"/>
+							<tool errorParsers="" id="it.baeyens.avreclipse.tool.archiver.winavr.lib.release.8897908" name="AVR Archiver" superClass="it.baeyens.avreclipse.tool.archiver.winavr.lib.release"/>
+							<tool errorParsers="" id="it.baeyens.avreclipse.tool.objdump.winavr.lib.release.57425992" name="AVR Create Extended Listing" superClass="it.baeyens.avreclipse.tool.objdump.winavr.lib.release"/>
+							<tool errorParsers="" id="it.baeyens.avreclipse.tool.size.winavr.lib.release.130468328" name="Print Size" superClass="it.baeyens.avreclipse.tool.size.winavr.lib.release"/>
+						</toolChain>
+					</folderInfo>
+					<sourceEntries>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src"/>
+						<entry excluding="src" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+					</sourceEntries>
+				</configuration>
+			</storageModule>
+			<storageModule moduleId="org.eclipse.cdt.core.externalSettings"/>
+		</cconfiguration>
+		<cconfiguration id="it.baeyens.avreclipse.configuration.lib.debug.647964416.492457480">
+			<storageModule buildSystemId="org.eclipse.cdt.managedbuilder.core.configurationDataProvider" id="it.baeyens.avreclipse.configuration.lib.debug.647964416.492457480" moduleId="org.eclipse.cdt.core.settings" name="atmega2560_16000000">
+				<externalSettings/>
+				<extensions>
+					<extension id="org.eclipse.cdt.core.ELF" point="org.eclipse.cdt.core.BinaryParser"/>
+					<extension id="org.eclipse.cdt.core.MakeErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+					<extension id="org.eclipse.cdt.core.GCCErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+					<extension id="org.eclipse.cdt.core.GASErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+				</extensions>
+			</storageModule>
+			<storageModule moduleId="cdtBuildSystem" version="4.0.0">
+				<configuration artifactExtension="a" artifactName="${ProjName}" buildArtefactType="it.baeyens.avreclipse.buildArtefactType.staticLib" buildProperties="org.eclipse.cdt.build.core.buildType=org.eclipse.cdt.build.core.buildType.debug,org.eclipse.cdt.build.core.buildArtefactType=it.baeyens.avreclipse.buildArtefactType.staticLib" cleanCommand="rm -f" description="Arduino Mega 2560" errorParsers="org.eclipse.cdt.core.MakeErrorParser;org.eclipse.cdt.core.GCCErrorParser;org.eclipse.cdt.core.GASErrorParser" id="it.baeyens.avreclipse.configuration.lib.debug.647964416.492457480" name="atmega2560_16000000" parent="it.baeyens.avreclipse.configuration.lib.debug" postannouncebuildStep="" postbuildStep="avr-ar d libAPDuinOS.a twi.o Wire.o Sd2Card.o SdBaseFile.o SdFat.o SdFatUtil.o SdFile.o SdStream.o SdVolume.o istream.o ostream.o SPI.o RTClib.o RCSwitch.o OneWire.o Metro.o MemoryFree.o socket.o w5100.o Dhcp.o Dns.o Ethernet.o EthernetClient.o EthernetServer.o EthernetUdp.o DHT.o Adafruit_BMP085.o ; avr-objdump -h -S libAPDuinOS.a &gt;libAPDuinOS.lss " preannouncebuildStep="" prebuildStep="">
+					<folderInfo id="it.baeyens.avreclipse.configuration.lib.debug.647964416.492457480." name="/" resourcePath="">
+						<toolChain errorParsers="" id="it.baeyens.avreclipse.toolchain.winavr.lib.debug.336623145" name="AVR-GCC Toolchain" superClass="it.baeyens.avreclipse.toolchain.winavr.lib.debug">
+							<option id="it.baeyens.avreclipse.toolchain.options.toolchain.objdump.lib.debug.1930695912" name="Generate Extended Listing (Source + generated Assembler)" superClass="it.baeyens.avreclipse.toolchain.options.toolchain.objdump.lib.debug"/>
+							<option id="it.baeyens.avreclipse.toolchain.options.toolchain.size.lib.debug.1836639421" name="Print Size" superClass="it.baeyens.avreclipse.toolchain.options.toolchain.size.lib.debug"/>
+							<targetPlatform binaryParser="org.eclipse.cdt.core.ELF" id="it.baeyens.avreclipse.targetplatform.winavr.lib.debug.1344848988" name="AVR Cross-Target" superClass="it.baeyens.avreclipse.targetplatform.winavr.lib.debug"/>
+							<builder buildPath="${workspace_loc:/libAPD/Debug}" errorParsers="org.eclipse.cdt.core.MakeErrorParser" id="it.baeyens.avreclipse.target.builder.winavr.lib.debug.1083348871" keepEnvironmentInBuildfile="false" managedBuildOn="true" name="AVR GNU Make Builder" superClass="it.baeyens.avreclipse.target.builder.winavr.lib.debug"/>
+							<tool command="avr-gcc" commandLinePattern="${COMMAND} ${FLAGS} ${OUTPUT_FLAG} ${OUTPUT_PREFIX}${OUTPUT} ${INPUTS}" errorParsers="org.eclipse.cdt.core.GASErrorParser" id="it.baeyens.avreclipse.tool.assembler.winavr.lib.debug.649612536" name="AVR Assembler" superClass="it.baeyens.avreclipse.tool.assembler.winavr.lib.debug">
+								<option id="it.baeyens.avreclipse.assembler.option.debug.level.1029632115" name="Generate Debugging Info" superClass="it.baeyens.avreclipse.assembler.option.debug.level"/>
+								<inputType id="it.baeyens.avreclipse.tool.assembler.input.619001297" superClass="it.baeyens.avreclipse.tool.assembler.input"/>
+							</tool>
+							<tool command="avr-gcc" commandLinePattern="${COMMAND} ${FLAGS} ${OUTPUT_FLAG} ${OUTPUT_PREFIX}${OUTPUT} ${INPUTS}" errorParsers="org.eclipse.cdt.core.GCCErrorParser" id="it.baeyens.avreclipse.tool.compiler.winavr.lib.debug.1045713416" name="AVR Compiler" superClass="it.baeyens.avreclipse.tool.compiler.winavr.lib.debug">
+								<option id="it.baeyens.avreclipse.compiler.option.debug.level.1566794179" name="Generate Debugging Info" superClass="it.baeyens.avreclipse.compiler.option.debug.level"/>
+								<option id="it.baeyens.avreclipse.compiler.option.optimize.1512054623" name="Optimization Level" superClass="it.baeyens.avreclipse.compiler.option.optimize" value="it.baeyens.avreclipse.compiler.optimize.size" valueType="enumerated"/>
+								<option id="it.baeyens.avreclipse.compiler.option.incpath.291528777" name="Include Paths (-I)" superClass="it.baeyens.avreclipse.compiler.option.incpath" valueType="includePath">
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/libraries/SdFat}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/libraries/SoftwareSerial}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ARDUINOBOARDNAME}/arduino}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/Arduino_Mega_2560_or_Mega_ADK/arduino}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/Arduino_Mega_2560_or_Mega_ADK/mega}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ARDUINOBOARDNAME}/${ARDUINOBOARDVARIANT}}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/libraries/Wire}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/libraries/Ethernet}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/libraries/Ethernet/utility}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/libraries/MemoryFree}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/libraries/Metro}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/libraries/OneWire}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/libraries/RCSwitch}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/libraries/RTClib}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/libraries/SPI}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/libraries/Wire/utility}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src}&quot;"/>
+								</option>
+								<option id="it.baeyens.avreclipse.compiler.option.def.1559935131" name="Define Syms (-D)" superClass="it.baeyens.avreclipse.compiler.option.def" valueType="definedSymbols">
+									<listOptionValue builtIn="false" value="ARDUINO=100"/>
+									<listOptionValue builtIn="false" value="__AVR_ATmega2560__"/>
+									<listOptionValue builtIn="false" value="__IN_ECLIPSE__=1"/>
+								</option>
+								<option id="it.baeyens.avreclipse.compiler.option.optimize.packstruct.749195020" name="Pack structs (-fpack-struct)" superClass="it.baeyens.avreclipse.compiler.option.optimize.packstruct" value="false" valueType="boolean"/>
+								<option id="it.baeyens.avreclipse.compiler.option.optimize.shortenums.2097553709" name="Short enums (-fshort-enums)" superClass="it.baeyens.avreclipse.compiler.option.optimize.shortenums" value="false" valueType="boolean"/>
+								<option id="it.baeyens.avreclipse.compiler.option.optimize.other.634619112" name="Other Optimization Flags" superClass="it.baeyens.avreclipse.compiler.option.optimize.other" value="-ffunction-sections -fdata-sections" valueType="string"/>
+								<option id="it.baeyens.avreclipse.compiler.option.language.uchar.314923872" name="char is unsigned (-funsigned-char)" superClass="it.baeyens.avreclipse.compiler.option.language.uchar" value="false" valueType="boolean"/>
+								<option id="it.baeyens.avreclipse.compiler.option.language.ubitfields.919464930" name="bitfields are unsigned (-funsigned-bitfields)" superClass="it.baeyens.avreclipse.compiler.option.language.ubitfields" value="false" valueType="boolean"/>
+								<inputType id="it.baeyens.avreclipse.compiler.winavr.input.439716149" name="C Source Files" superClass="it.baeyens.avreclipse.compiler.winavr.input"/>
+							</tool>
+							<tool command="avr-g++" commandLinePattern="${COMMAND} ${FLAGS} ${OUTPUT_FLAG} ${OUTPUT_PREFIX}${OUTPUT} ${INPUTS}" errorParsers="org.eclipse.cdt.core.GCCErrorParser" id="it.baeyens.avreclipse.tool.cppcompiler.lib.debug.1403343851" name="AVR C++ Compiler" superClass="it.baeyens.avreclipse.tool.cppcompiler.lib.debug">
+								<option id="it.baeyens.avreclipse.cppcompiler.option.debug.level.1405635" name="Generate Debugging Info" superClass="it.baeyens.avreclipse.cppcompiler.option.debug.level"/>
+								<option id="it.baeyens.avreclipse.cppcompiler.option.optimize.869760724" name="Optimization Level" superClass="it.baeyens.avreclipse.cppcompiler.option.optimize" value="it.baeyens.avreclipse.cppcompiler.optimize.size" valueType="enumerated"/>
+								<option id="it.baeyens.avreclipse.cppcompiler.option.incpath.2096498004" name="Include Paths (-I)" superClass="it.baeyens.avreclipse.cppcompiler.option.incpath" valueType="includePath">
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/libraries/SdFat}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/libraries/SoftwareSerial}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ARDUINOBOARDNAME}/arduino}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/Arduino_Mega_2560_or_Mega_ADK/arduino}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/Arduino_Mega_2560_or_Mega_ADK/mega}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ARDUINOBOARDNAME}/${ARDUINOBOARDVARIANT}}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/libraries/Adafruit_BMP085}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/libraries/DHT}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/libraries/Ethernet}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/libraries/Ethernet/utility}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/libraries/MemoryFree}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/libraries/Metro}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/libraries/OneWire}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/libraries/RCSwitch}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/libraries/RTClib}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/libraries/SPI}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/libraries/Wire}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/libraries/Wire/utility}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src}&quot;"/>
+								</option>
+								<option id="it.baeyens.avreclipse.cppcompiler.option.def.392748544" name="Define Syms (-D)" superClass="it.baeyens.avreclipse.cppcompiler.option.def" valueType="definedSymbols">
+									<listOptionValue builtIn="false" value="ARDUINO=100"/>
+									<listOptionValue builtIn="false" value="__AVR_ATmega2560__"/>
+									<listOptionValue builtIn="false" value="__IN_ECLIPSE__=1"/>
+								</option>
+								<option id="it.baeyens.avreclipse.cppcompiler.option.optimize.other.569121408" name="Other Optimization Flags" superClass="it.baeyens.avreclipse.cppcompiler.option.optimize.other" value="-ffunction-sections -fdata-sections" valueType="string"/>
+								<option id="it.baeyens.avreclipse.cppcompiler.option.optimize.shortenums.196986928" name="Short enums (-fshort-enums)" superClass="it.baeyens.avreclipse.cppcompiler.option.optimize.shortenums" value="false" valueType="boolean"/>
+								<option id="it.baeyens.avreclipse.cppcompiler.option.optimize.packstruct.1700867770" name="Pack structs (-fpack-struct)" superClass="it.baeyens.avreclipse.cppcompiler.option.optimize.packstruct" value="false" valueType="boolean"/>
+								<option id="it.baeyens.avreclipse.cppcompiler.option.language.uchar.1619439549" name="char is unsigned (-funsigned-char)" superClass="it.baeyens.avreclipse.cppcompiler.option.language.uchar" value="false" valueType="boolean"/>
+								<option id="it.baeyens.avreclipse.cppcompiler.option.language.ubitfields.301335921" name="bitfields are unsigned (-funsigned-bitfields)" superClass="it.baeyens.avreclipse.cppcompiler.option.language.ubitfields" value="false" valueType="boolean"/>
+								<inputType id="it.baeyens.avreclipse.cppcompiler.input.512072404" superClass="it.baeyens.avreclipse.cppcompiler.input"/>
+							</tool>
+							<tool id="it.baeyens.avreclipse.tool.linker.winavr.base.1806205614" name="AVR C Linker" superClass="it.baeyens.avreclipse.tool.linker.winavr.base"/>
+							<tool id="it.baeyens.avreclipse.tool.cpplinker.base.1090292562" name="AVR C++ Linker" superClass="it.baeyens.avreclipse.tool.cpplinker.base"/>
+							<tool command="avr-ar" commandLinePattern="${COMMAND} ${FLAGS} ${OUTPUT_FLAG} ${OUTPUT_PREFIX}${OUTPUT} ${INPUTS}" errorParsers="" id="it.baeyens.avreclipse.tool.archiver.winavr.lib.debug.1915337480" name="AVR Archiver" superClass="it.baeyens.avreclipse.tool.archiver.winavr.lib.debug"/>
+							<tool command="-avr-objdump" commandLinePattern="${COMMAND} ${FLAGS} ${INPUTS} &gt;${OUTPUT}" errorParsers="" id="it.baeyens.avreclipse.tool.objdump.winavr.lib.debug.1151390278" name="AVR Create Extended Listing" superClass="it.baeyens.avreclipse.tool.objdump.winavr.lib.debug"/>
+							<tool command="-avr-size" commandLinePattern="${COMMAND} ${FLAGS} ${INPUTS}" errorParsers="" id="it.baeyens.avreclipse.tool.size.winavr.lib.debug.1388834224" name="Print Size" superClass="it.baeyens.avreclipse.tool.size.winavr.lib.debug"/>
+						</toolChain>
+					</folderInfo>
+					<sourceEntries>
+						<entry excluding="src" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src"/>
+					</sourceEntries>
+				</configuration>
+			</storageModule>
+			<storageModule moduleId="org.eclipse.cdt.core.externalSettings"/>
+		</cconfiguration>
+	</storageModule>
+	<storageModule moduleId="cdtBuildSystem" version="4.0.0">
+		<project id="libAPD.it.baeyens.avreclipse.project.winavr.staticlib.437438844" name="AVR Cross Target Static Library" projectType="it.baeyens.avreclipse.project.winavr.staticlib"/>
+	</storageModule>
+	<storageModule moduleId="refreshScope" versionNumber="1">
+		<resource resourceType="PROJECT" workspacePath="/APDuinOS"/>
+	</storageModule>
+	<storageModule moduleId="org.eclipse.cdt.make.core.buildtargets">
+		<buildTargets/>
+	</storageModule>
+	<storageModule moduleId="scannerConfiguration">
+		<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
+		<scannerConfigBuildInfo instanceId="it.baeyens.avreclipse.configuration.lib.debug.647964416.492457480;it.baeyens.avreclipse.configuration.lib.debug.647964416.492457480.">
+			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId="it.baeyens.avreclipse.core.AVRGCCManagedMakePerProjectProfileC"/>
+		</scannerConfigBuildInfo>
+		<scannerConfigBuildInfo instanceId="it.baeyens.avreclipse.configuration.lib.debug.647964416;it.baeyens.avreclipse.configuration.lib.debug.647964416.;it.baeyens.avreclipse.tool.compiler.winavr.lib.debug.220565255;it.baeyens.avreclipse.compiler.winavr.input.433180282">
+			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId="it.baeyens.avreclipse.core.AVRGCCManagedMakePerProjectProfileC"/>
+		</scannerConfigBuildInfo>
+		<scannerConfigBuildInfo instanceId="it.baeyens.avreclipse.configuration.lib.release.1303774304;it.baeyens.avreclipse.configuration.lib.release.1303774304.;it.baeyens.avreclipse.tool.compiler.winavr.lib.release.1764810192;it.baeyens.avreclipse.compiler.winavr.input.1038471203">
+			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId="it.baeyens.avreclipse.core.AVRGCCManagedMakePerProjectProfileC"/>
+		</scannerConfigBuildInfo>
+		<scannerConfigBuildInfo instanceId="it.baeyens.avreclipse.configuration.lib.debug.647964416.492457480;it.baeyens.avreclipse.configuration.lib.debug.647964416.492457480.;it.baeyens.avreclipse.tool.compiler.winavr.lib.debug.1045713416;it.baeyens.avreclipse.compiler.winavr.input.439716149">
+			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId="it.baeyens.avreclipse.core.AVRGCCManagedMakePerProjectProfileC"/>
+		</scannerConfigBuildInfo>
+		<scannerConfigBuildInfo instanceId="it.baeyens.avreclipse.configuration.lib.debug.647964416.492457480;it.baeyens.avreclipse.configuration.lib.debug.647964416.492457480.;it.baeyens.avreclipse.tool.cppcompiler.lib.debug.1403343851;it.baeyens.avreclipse.cppcompiler.input.512072404">
+			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId="it.baeyens.avreclipse.core.AVRGCCManagedMakePerProjectProfileCPP"/>
+		</scannerConfigBuildInfo>
+		<scannerConfigBuildInfo instanceId="it.baeyens.avreclipse.configuration.lib.release.1303774304;it.baeyens.avreclipse.configuration.lib.release.1303774304.;it.baeyens.avreclipse.tool.cppcompiler.lib.release.1924307614;it.baeyens.avreclipse.cppcompiler.input.1252061621">
+			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId="it.baeyens.avreclipse.core.AVRGCCManagedMakePerProjectProfileCPP"/>
+		</scannerConfigBuildInfo>
+		<scannerConfigBuildInfo instanceId="it.baeyens.avreclipse.configuration.lib.debug.647964416;it.baeyens.avreclipse.configuration.lib.debug.647964416.">
+			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId="it.baeyens.avreclipse.core.AVRGCCManagedMakePerProjectProfileC"/>
+		</scannerConfigBuildInfo>
+		<scannerConfigBuildInfo instanceId="it.baeyens.avreclipse.configuration.lib.release.1303774304;it.baeyens.avreclipse.configuration.lib.release.1303774304.">
+			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId="it.baeyens.avreclipse.core.AVRGCCManagedMakePerProjectProfileC"/>
+		</scannerConfigBuildInfo>
+		<scannerConfigBuildInfo instanceId="it.baeyens.avreclipse.configuration.lib.debug.647964416;it.baeyens.avreclipse.configuration.lib.debug.647964416.;it.baeyens.avreclipse.tool.cppcompiler.lib.debug.573772107;it.baeyens.avreclipse.cppcompiler.input.97067225">
+			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId="it.baeyens.avreclipse.core.AVRGCCManagedMakePerProjectProfileCPP"/>
+		</scannerConfigBuildInfo>
+	</storageModule>
+	<storageModule moduleId="org.eclipse.cdt.internal.ui.text.commentOwnerProjectMappings"/>
+</cproject>
