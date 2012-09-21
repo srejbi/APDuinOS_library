@@ -593,14 +593,14 @@ boolean APDuino::reconfigure() {
 		SerPrintP("Deleted Rule Array.\n");	Serial.print( freeMemory(), DEC); SerPrintP(" RAM free.\n");	delay(100);
 		delete(this->pca);
 		SerPrintP("Deleted Control Array.\n");	Serial.print( freeMemory(), DEC); SerPrintP(" RAM free.\n");	delay(100);
-		//delete(this->psa);
-		//SerPrintP("Deleted Sensor Array.\n");	Serial.print( freeMemory(), DEC); SerPrintP(" RAM free.\n");	delay(100);
+		delete(this->psa);
+		SerPrintP("Deleted Sensor Array.\n");	Serial.print( freeMemory(), DEC); SerPrintP(" RAM free.\n");	delay(100);
 
   	SerPrintP("Deleted Arrays!\n");
   	Serial.print( freeMemory(), DEC); SerPrintP(" RAM free.\n");
   	delay(100);
 
-		//psa = new APDSensorArray();
+		psa = new APDSensorArray();
 		pca = new APDControlArray(&pcustfuncs);
 		pra = new APDRuleArray(psa,pca,&(this->bfIdle));
 
@@ -610,10 +610,10 @@ boolean APDuino::reconfigure() {
 
 
 
-//			SerPrintP("\ninit sensors\n"); delay(10);
+			SerPrintP("\ninit sensors\n"); delay(10);
 
 			//this->setupSensors();
-//			this->psa->loadSensors(this->pAPDStorage);
+			this->psa->loadSensors(this->pAPDStorage);
 			//SerPrintP("APD Sensors - ok.\n");
 			//GLCD.Puts(".");
 
