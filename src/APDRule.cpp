@@ -139,8 +139,11 @@ APDRule::APDRule(RDCONF *rdc, APDSensorArray *pSA, APDControlArray *pCA) {
         case RF_METRO:
           SerPrintP("METRO Rule");
           this->prulefunc = (&apd_rule_metro);
-          this->pmetro = new Metro(this->config.rf_value);      // the correct metro value is the sensor's test val
-if  (this->pmetro)  {            SerPrintP("Rule Metro allocated"); }else {SerPrintP("Failed to allocate rule metro."); }
+          if (this->pmetro = new Metro(this->config.rf_value)) {      // the correct metro value is the sensor's test val
+          	SerPrintP("Rule Metro allocated");
+          } else {
+          	SerPrintP("Failed to allocate rule metro.");
+          }
           break;
         case RF_RTC_PASSED:
           SerPrintP("RTC Rule");
@@ -200,6 +203,8 @@ APDRule::APDRule(char *psz_rdc) {
 APDRule::~APDRule()
 {
   // TODO Auto-generated destructor stub
+	if (this->pmetro) delete(this->pmetro);		// delete metro if any
+	initBlank();
 }
 
 void APDRule::initBlank() {

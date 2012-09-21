@@ -74,7 +74,7 @@ private:
     unsigned long _lm;
     size_t print(const char *psz);
     size_t print(const char pc);
-    size_t fetch(char *psz_rx);
+    int fetch(char *psz_rx);
     int read();
     int available();
 };

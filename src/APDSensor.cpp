@@ -58,7 +58,7 @@ APDSensor::APDSensor(SDCONF *sdc) {
 APDSensor::~APDSensor()
 {
   // TODO Auto-generated destructor stub
-  if (this->pmetro) free(this->pmetro);
+  if (this->pmetro) delete(this->pmetro);
   if (this->sensor) free(this->sensor);
 }
 

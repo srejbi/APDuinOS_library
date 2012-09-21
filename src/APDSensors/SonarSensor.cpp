@@ -45,8 +45,10 @@ SonarSensor::SonarSensor(SDCONF *sdc)
 
 SonarSensor::~SonarSensor()
 {
-  if (this->sensor != NULL) free(this->sensor);
-  if (this->pmetro != NULL) free(this->pmetro);
+  free(this->sensor);
+  this->sensor = NULL;
+  delete(this->pmetro);
+  this->pmetro = NULL;
 }
 
 boolean SonarSensor::perform_check()

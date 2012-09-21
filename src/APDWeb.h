@@ -58,6 +58,17 @@ const char WEBLOG_URI[]="/devices/lastlog";      // see apduino online specs.
 #define MAX_WEBCLIENT_BUSY_LOOPS			  10000
 #define MAX_NET_FAILURES                3
 
+// operation states
+#define OPSTATE_BLANK			0
+#define OPSTATE_CONFIGURED		1
+#define OPSTATE_STARTED			2
+#define OPSTATE_PAUSED			4
+#define OPSTATE_ERROR       128
+
+// dispatched requests
+#define DREQ_NOOP					0
+#define DREQ_RECONF				1
+
 struct NETCONF {
   byte mac[6];            //TODO generate random mac, more than 1 APDuino can have collisions
   byte ip[4];                          // ip address
@@ -79,6 +90,9 @@ public:
   void startWebServer(APDSensor **pSensors, int iSensorCount, APDControl **pControls, int iControlCount, APDStorage *pAPDStorage);
   void loop();
 
+  bool pause_service();
+  bool continue_service();
+
   // static configuration parsers (callbacks, sort of)
   static void new_apduinoconf_parser(void *pAPDWeb, int iline, char *psz);
   static void new_cosmconf_parser(void *pAPDWeb, int iline, char *psz);
@@ -90,6 +104,8 @@ public:
 private:
   // private data members
   NETCONF net;
+  int operational_state;					// mask with OPSTATES
+  int dispatched_requests;				// pass requests to APDuino (APDuino should read and process this regularly)
 
   EthernetServer *pwwwserver;
   EthernetClient *pwwwclient;
@@ -193,6 +209,8 @@ private:
   void web_startpage(EthernetClient *pClient, char *title,int refresh);
   void web_endpage(EthernetClient *pClient);
   void web_status(EthernetClient *pClient);
+  void web_maintenance(EthernetClient *pClient);
+  void web_notfound(EthernetClient *pClient);
   void ListFiles(EthernetClient client, const char *szPath, uint8_t flags);
   void processProvisioningRequest(EthernetClient *pclient);
   void claim_device_link(EthernetClient *pClient);

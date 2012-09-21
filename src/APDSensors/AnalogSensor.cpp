@@ -36,8 +36,10 @@ AnalogSensor::AnalogSensor(SDCONF *sdc)
 
 AnalogSensor::~AnalogSensor()
 {
-  if (this->sensor != NULL) free(this->sensor);
-  if (this->pmetro != NULL) free(this->pmetro);
+  free(this->sensor);
+  this->sensor = NULL;
+  delete(this->pmetro);
+  this->pmetro = NULL;
 }
 
 boolean AnalogSensor::perform_check()

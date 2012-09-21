@@ -128,6 +128,9 @@ void APDWeb::initBlank(APDTime *pTime)
 	bRestart = false;
 	iBusyCounter = 0;
 	wcb_millis = 0;
+
+	operational_state = 0;
+	dispatched_requests = 0;
 }
 
 boolean APDWeb::start() {
@@ -157,12 +160,14 @@ boolean APDWeb::start() {
 
 		Ethernet.begin(net.mac, net.ip, net.pridns, net.gateway, net.subnet);
 		bEthConfigured = true;
+		operational_state = OPSTATE_CONFIGURED | OPSTATE_STARTED;
 		this->bDHCP = false;
 		// todo read on howto check state
 	} else {                              // go for DHCP
 		SerPrintP("Trying DHCP...");
 		if (Ethernet.begin(net.mac) == 0) {
 			SerPrintP("Error.");
+			operational_state = OPSTATE_BLANK | OPSTATE_ERROR;
 			return false;
 		}
 		// we should have a lease now
@@ -190,6 +195,7 @@ boolean APDWeb::start() {
 	    SerDumpIP(net.pridns);
 
 		bEthConfigured = true;
+		operational_state = OPSTATE_CONFIGURED | OPSTATE_STARTED;
 	}
 
 	iFailureCount = 0;
@@ -214,9 +220,11 @@ boolean APDWeb::restart() {
 		}
 		SerPrintP("RESTARTING NET\n");
 		bEthConfigured = false;
+		operational_state = OPSTATE_BLANK;
 		if (this->start()) {
 			this->self_register();
 		} else {
+			operational_state |= OPSTATE_ERROR;
 			this->failure();
 		}
 	} else {
@@ -536,8 +544,9 @@ void APDWeb::web_startpage(EthernetClient *pClient, char *title,int refresh=0) {
 		WCPrintP(pClient,"</div>");		// closing header
 
 		WCPrintP(pClient,"<div id=\"sidebar\"><ul>");							// sidebar
-		WCPrintP(pClient,"<li><a href=\"/\">Status</a></li>");
+		if (!(operational_state & OPSTATE_PAUSED)) { WCPrintP(pClient,"<li><a href=\"/\">Status</a></li>"); }
 		WCPrintP(pClient,"<li><a href=\"/sd/\">Files</a></li>");
+		if (!(operational_state & OPSTATE_PAUSED)) { WCPrintP(pClient,"<li><a href=\"/reconfigure\">Reload Config</a></li>");  }
 		WCPrintP(pClient,"<li><a href=\"/claimdevice\">Claim Device</a></li>");
 		WCPrintP(pClient,"</ul></div>");												  // closing sidebar
 
@@ -649,6 +658,17 @@ void APDWeb::web_status(EthernetClient *pClient) {
 	}
 }
 
+void APDWeb::web_maintenance(EthernetClient *pClient) {
+	WCPrintP(pClient, "HTTP/1.1 503 (Service unavailable)\n");
+	WCPrintP(pClient, "Content-Type: text/html\n\n");
+	WCPrintP(pClient, "<h2>The requested APDuinOS web service is temporarily unavailable due to maintenance. Please try again later.</h2>\n");
+}
+
+void APDWeb::web_notfound(EthernetClient *pClient) {
+	WCPrintP(pClient, "HTTP/1.1 404 Not Found\n");
+	WCPrintP(pClient, "Content-Type: text/html\n\n");
+	WCPrintP(pClient, "<h2>File Not Found!</h2>\n");
+}
 
 void APDWeb::claim_device_link(EthernetClient *pClient) {
 	if (*pClient) {
@@ -817,9 +837,7 @@ void APDWeb::loop_server()
 						SerPrintP("file server\n");
 //#endif
 						if (! file.open(this->pAPDStorage->p_root, filename, O_READ)) {
-							WCPrintP(&client, "HTTP/1.1 404 Not Found\n");
-							WCPrintP(&client, "Content-Type: text/html\n\n");
-							WCPrintP(&client, "<h2>File Not Found!</h2>\n");
+							web_notfound(&client);
 							break;
 						}
 #ifdef DEBUG
@@ -849,17 +867,27 @@ void APDWeb::loop_server()
 						file.close();
 					} else if (strstr_P(clientline, PSTR("GET /status")) != 0 ||		// /status
 							strstr_P(clientline, PSTR("GET / ")) != 0) {				// also for www root
-#ifdef DEBUG
-						SerPrintP("Sending HTTP Resp...");
-#endif
-						// send a standard http response header
+						if (!(this->operational_state & OPSTATE_PAUSED)) {
+	#ifdef DEBUG
+							SerPrintP("Sending HTTP Resp...");
+	#endif
+							// send a standard http response header
+							web_header(&client);
+							web_startpage(&client,"status",20);
+							web_status(&client);
+							web_endpage(&client);
+	#ifdef DEBUG
+							SerPrintP("HTTP Resp Sent.");
+	#endif
+						} else {
+							web_maintenance(&client);
+						}
+					} else if (strstr_P(clientline,PSTR("GET /reconfigure")) != 0) {
 						web_header(&client);
-						web_startpage(&client,"status",20);
-						web_status(&client);
+						web_startpage(&client,"reconfigure",20);
+						WCPrintP(&client,"Reconfiguration request acknowledged.");
 						web_endpage(&client);
-#ifdef DEBUG
-						SerPrintP("HTTP Resp Sent.");
-#endif
+						this->dispatched_requests = DREQ_RECONF;		// APDuino should read it
 					} else if (strstr_P(clientline,PSTR("GET /claimdevice")) != 0) {
 						web_header(&client);
 						web_startpage(&client,"claimdevice",20);
@@ -870,15 +898,17 @@ void APDWeb::loop_server()
 						SerPrintP("Web initiated reset.\n");
 						Reset_AVR();*/
 					} else if (strstr_P(clientline, PSTR("POST /provisioning")) != 0) {
-						this->processProvisioningRequest(&client);
-					}else {
+						if (!(this->operational_state & OPSTATE_PAUSED)) {
+							this->processProvisioningRequest(&client);
+						} else {
+							web_maintenance(&client);
+						}
+					} else {
 #ifdef DEBUG
 						SerPrintP("404\n");
 #endif
 						// everything else is a 404
-						WCPrintP(&client, "HTTP/1.1 404 Not Found\n");
-						WCPrintP(&client, "Content-Type: text/html\n\n");
-						WCPrintP(&client, "<h2>File Not Found!</h2>\n");
+						web_notfound(&client);
 					}
 					break;
 				}
@@ -1271,21 +1301,25 @@ void APDWeb::loop() {
 		//SerPrintP("WCLOOP\n");
 		loop_webclient();
 		if (!pwwwclient->connected()) {           // if no web client is active
-			iBusyCounter = 0;
-			if (this->iSensorCount>0 || this->iControlCount>0) {	// TODO fix this quick hack to see properly if there is anything to log
-				if (this->pmetro != NULL && this->pmetro->check()) {
-					SerPrintP("\nWEBLOG\n");
-					this->web_logging();
-					this->pmetro->reset();
-				} else if ( this->phmetro != NULL && this->phmetro->check()) {
-					SerPrintP("\nCOSMLOG\n");
-					this->pachube_logging();
-					this->phmetro->reset();
-				} else if ( this->tsmetro != NULL && this->tsmetro->check()) {
-					SerPrintP("\nTHINGSPEAK LOG\n");
-					this->thingspeak_logging();
-					this->tsmetro->reset();
+			if ((this->operational_state & OPSTATE_STARTED) && !(this->operational_state & OPSTATE_PAUSED)) {
+				iBusyCounter = 0;
+				if (this->iSensorCount>0 || this->iControlCount>0) {	// TODO fix this quick hack to see properly if there is anything to log
+					if (this->pmetro != NULL && this->pmetro->check()) {
+						SerPrintP("\nWEBLOG\n");
+						this->web_logging();
+						this->pmetro->reset();
+					} else if ( this->phmetro != NULL && this->phmetro->check()) {
+						SerPrintP("\nCOSMLOG\n");
+						this->pachube_logging();
+						this->phmetro->reset();
+					} else if ( this->tsmetro != NULL && this->tsmetro->check()) {
+						SerPrintP("\nTHINGSPEAK LOG\n");
+						this->thingspeak_logging();
+						this->tsmetro->reset();
+					}
 				}
+			} else {
+				// SerPrintP("Paused.");
 			}
 		} else {
 			//SerPrintP("WC busy...\n");
@@ -1306,6 +1340,29 @@ void APDWeb::loop() {
 
 }
 
+bool APDWeb::pause_service() {
+	// TODO wait/kill any connected clients
+	bool retcode = false;
+
+	if ((this->operational_state & OPSTATE_CONFIGURED) &&
+			(this->operational_state & OPSTATE_STARTED) &&
+			!(this->operational_state & OPSTATE_PAUSED)){
+		this->operational_state |= OPSTATE_PAUSED;
+		retcode = true;
+	}
+	return retcode;
+}
+
+bool APDWeb::continue_service() {
+	bool retcode = false;
+	if ((this->operational_state & OPSTATE_CONFIGURED) &&
+			(this->operational_state & OPSTATE_PAUSED) &&
+			(this->operational_state & OPSTATE_STARTED)) {
+		this->operational_state &= (~OPSTATE_PAUSED);
+		retcode = true;
+	}
+	return retcode;
+}
 
 
 // TODO: add size control, avoid writing to random places

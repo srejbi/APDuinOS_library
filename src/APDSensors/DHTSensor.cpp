@@ -56,18 +56,22 @@ DHTSensor::DHTSensor(SDCONF *sdc, void *dhtsensor)
 
 DHTSensor::~DHTSensor()
 {
-  // TODO Auto-generated destructor stub
   if (this->sensor != NULL) {
-      if (this->sensor->dht != NULL && this->bPrimary )
-        free(this->sensor->dht);
+      if (this->sensor->dht != NULL) {
+      	if (this->bPrimary ) {
+      		delete(this->sensor->dht);
+      	}
+      	this->sensor->dht = NULL;
+      }
       free(this->sensor);
+      this->sensor = NULL;
   }
-  if (this->pmetro != NULL) free(this->pmetro);
+  delete(this->pmetro);
+  this->pmetro = NULL;
 }
 
 boolean DHTSensor::perform_check()
 {
-  //delay(1000); // TODO instead of this, set +1000 to the frequency in constructor
   float value = 0;
   switch (this->config.sensor_class) {
     case SENSE_TEMP:

@@ -51,11 +51,11 @@ APDRuleArray::~APDRuleArray()
   if (this->pAPDRules != NULL) {
       for (int i=0; i<this->iRuleCount; i++) {
           if (this->pAPDRules[i] != NULL) {
-              free(this->pAPDRules[i]);
+              delete(this->pAPDRules[i]);		// each rule was new
               this->pAPDRules[i] = NULL;
           }
       }
-      free(this->pAPDRules);
+      free(this->pAPDRules);								// pAPDRules was malloc
       this->pAPDRules = NULL;
       this->iRuleCount=0;
   }

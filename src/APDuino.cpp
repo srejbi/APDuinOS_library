@@ -392,6 +392,18 @@ void APDuino::loop_core() {
 //  sercom();           // loop serial control
   if (pAPDWeb != NULL) {
     pAPDWeb->loop();          // loop www services
+    if (pAPDWeb->dispatched_requests) {					// process dispatched request buffer
+    	int request = pAPDWeb->dispatched_requests;			// copy the request from the buffer
+    	pAPDWeb->dispatched_requests = DREQ_NOOP;				// reset the buffer to avoid reexec (by any mistake later)
+
+    	switch (request) {												// execute the request
+    	case DREQ_RECONF:														// reload configuration
+    		this->reconfigure();
+    		break;
+    	default:
+    		SerPrintP("W");														// WARNING unknown request, ignoring
+    	}
+    }
   }
   delay(1);
 }
@@ -556,6 +568,101 @@ boolean APDuino::enableRuleProcessing() {
 boolean APDuino::disableRuleProcessing() {
   bProcessRules = false;
   return bProcessRules;
+}
+
+boolean APDuino::reconfigure() {
+	boolean retcode = false;
+
+  SerPrintP("\nRECONREQ...\n");
+  delay(100);
+
+  // put APDWeb in maintenance mode to PREVENT ACCESS TO sensors, controls, rules
+  if (this->pAPDWeb->pause_service()) {
+  	boolean bProcRulesOld = bProcessRules;			// store old rule processing state
+    bProcessRules = false;
+    unsigned long ulRam = freeMemory();
+
+  	SerPrintP("Reconfiguring Arrays!\n");
+  	delay(10);
+  	Serial.print( ulRam, DEC); SerPrintP(" RAM free.\n");
+  	delay(100);
+
+		this->iNextSensor = -1;				// invalidate next sensor index
+
+		delete(this->pra);
+		SerPrintP("Deleted Rule Array.\n");	Serial.print( freeMemory(), DEC); SerPrintP(" RAM free.\n");	delay(100);
+		delete(this->pca);
+		SerPrintP("Deleted Control Array.\n");	Serial.print( freeMemory(), DEC); SerPrintP(" RAM free.\n");	delay(100);
+		delete(this->psa);
+		SerPrintP("Deleted Sensor Array.\n");	Serial.print( freeMemory(), DEC); SerPrintP(" RAM free.\n");	delay(100);
+
+  	SerPrintP("Deleted Arrays!\n");
+  	Serial.print( freeMemory(), DEC); SerPrintP(" RAM free.\n");
+  	delay(100);
+
+		psa = new APDSensorArray();
+		pca = new APDControlArray(&pcustfuncs);
+		pra = new APDRuleArray(psa,pca,&(this->bfIdle));
+
+  	SerPrintP("Reallocated Arrays!\n"); delay(10);
+  	Serial.print( freeMemory(), DEC); SerPrintP(" RAM free.\n");
+  	delay(10);
+
+
+			SerPrintP("\ninit sensors\n"); delay(10);
+
+			//this->setupSensors();
+			this->psa->loadSensors(this->pAPDStorage);
+			//SerPrintP("APD Sensors - ok.\n");
+			//GLCD.Puts(".");
+
+			//setup_apd_controls();
+			SerPrintP("\ninit controls\n"); delay(10);
+
+			//this->setupControls();
+			this->pca->loadControls(this->pAPDStorage);
+			//SerPrintP("APD Controls - ok.\n");
+			//GLCD.Puts(".");
+
+			//setup_apd_rules();
+			SerPrintP("init rules\n"); delay(10);
+
+			//this->setupRules();
+			this->pra->loadRules(this->pAPDStorage);
+			//SerPrintP("APD Rules - ok.\n");
+
+			// Update pointers in APDWeb
+			this->pAPDWeb->pAPDControls = this->pca->pAPDControls;
+			this->pAPDWeb->iControlCount = this->pca->iControlCount;
+			this->pAPDWeb->pAPDSensors = this->psa->pAPDSensors;
+			this->pAPDWeb->iSensorCount = this->psa->iSensorCount;
+
+
+	  	SerPrintP("Reconfigured Arrays!\n");
+	  	Serial.print( freeMemory(), DEC); SerPrintP(" RAM free.\n");
+	  	delay(10);
+
+	  	if (ulRam == freeMemory()) {
+	  		SerPrintP("No memory leak detected.\n");
+	  	} else {
+	  		SerPrintP("\nMEMORY LEAK DETECTED!\n");
+	  	}
+
+			// enable "real-time" rule evaluation
+			this->psa->enableRuleEvaluation(&(APDRuleArray::evaluateSensorRules),(void *)this->pra);
+
+			// FIXME check if we are initialized, set it in bConfigured
+			// TODO revise what is obligatory. for now, 1 sensor or control is enough to be considered as configured
+			this->bAPDuinoConfigured =  this->pAPDStorage->ready() && (this->psa->iSensorCount > 0  || this->pca->iControlCount > 0); // && this->pra->iRuleCount > 0;
+
+			this->bFirstLoopDone = false;									// we have not yet looped with the new config (no sensor values)
+			bProcessRules = bProcRulesOld;								// restore old rule processing state
+			retcode = this->pAPDWeb->continue_service();	// return if web server continues processing
+  } else {
+  	SerPrintP("E");					// ERROR could not pause web service
+  }
+
+  return retcode;
 }
 
 void APDuino::new_ethconf_parser(void *pAPD, int iline, char *psz) {
