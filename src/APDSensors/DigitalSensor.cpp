@@ -38,7 +38,7 @@ DigitalSensor::~DigitalSensor()
 {
   // TODO Auto-generated destructor stub
   if (this->sensor != NULL) free(this->sensor);
-  if (this->pmetro != NULL) free(this->pmetro);
+  if (this->pmetro != NULL) delete(this->pmetro);
 }
 
 boolean DigitalSensor::perform_check()

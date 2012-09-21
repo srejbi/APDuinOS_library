@@ -133,14 +133,18 @@ AtlasScientificSensor::~AtlasScientificSensor() {
       	    } else {
       	    	HardwareSerial *sp = (HardwareSerial *)(this->sensor->asenc->serialport);
       	    	sp->end();
-      	    	delete(sp);
+      	    	// HW serial was NOT created just addressed, not freeing mem
       	    }
+      	    this->sensor->asenc->serialport = NULL;			// reset serialport to NULL
       	}
       	free(this->sensor->asenc);
+      	this->sensor->asenc = NULL;
       }
       free(this->sensor);
+      this->sensor = NULL;
   }
-  if (this->pmetro != NULL) delete(this->pmetro);
+  delete(this->pmetro);
+  this->pmetro = NULL;
 }
 
 // returns true if using software serial

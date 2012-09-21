@@ -200,6 +200,8 @@ APDRule::APDRule(char *psz_rdc) {
 APDRule::~APDRule()
 {
   // TODO Auto-generated destructor stub
+	if (this->pmetro) delete(this->pmetro);		// delete metro if any
+	initBlank();
 }
 
 void APDRule::initBlank() {

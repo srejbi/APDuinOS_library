@@ -85,12 +85,12 @@ OneWireSensor::~OneWireSensor()
   if (this->sensor != NULL) {
       if (this->sensor->owenc != NULL && this->bPrimary) {
       	if (this->sensor->owenc->ow != NULL)
-      		free(this->sensor->owenc->ow);
+      		delete(this->sensor->owenc->ow);
       	free(this->sensor->owenc);
       }
       free(this->sensor);
   }
-  if (this->pmetro != NULL) free(this->pmetro);
+  if (this->pmetro != NULL) delete(this->pmetro);
 }
 
 

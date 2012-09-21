@@ -59,10 +59,10 @@ DHTSensor::~DHTSensor()
   // TODO Auto-generated destructor stub
   if (this->sensor != NULL) {
       if (this->sensor->dht != NULL && this->bPrimary )
-        free(this->sensor->dht);
+        delete(this->sensor->dht);
       free(this->sensor);
   }
-  if (this->pmetro != NULL) free(this->pmetro);
+  if (this->pmetro != NULL) delete(this->pmetro);
 }
 
 boolean DHTSensor::perform_check()

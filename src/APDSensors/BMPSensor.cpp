@@ -55,10 +55,10 @@ BMPSensor::~BMPSensor()
 {
   // TODO Auto-generated destructor stub
   if (this->sensor != NULL) {
-        if (this->sensor->pbmp != NULL && this->bPrimary) free(this->sensor->pbmp);
+        if (this->sensor->pbmp != NULL && this->bPrimary) delete(this->sensor->pbmp);
         free(this->sensor);
     }
-    if (this->pmetro != NULL) free(this->pmetro);
+    if (this->pmetro != NULL) delete(this->pmetro);
 }
 
 boolean BMPSensor::perform_check()

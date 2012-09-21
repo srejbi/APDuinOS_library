@@ -59,7 +59,7 @@ VibrationSensor::~VibrationSensor()
 {
   if (this->history != NULL) free(this->history);
   if (this->sensor != NULL) free(this->sensor);
-  if (this->pmetro != NULL) free(this->pmetro);
+  if (this->pmetro != NULL) delete(this->pmetro);
 }
 
 boolean VibrationSensor::perform_check()

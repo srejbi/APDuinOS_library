@@ -43,7 +43,9 @@ APDSensorArray::~APDSensorArray()
   if (this->pAPDSensors != NULL) {
       for (int i=0; i<this->iSensorCount; i++) {
           if (this->pAPDSensors[i] != NULL) {
-              delete(this->pAPDSensors[i]);				// each APDSensor was new by 'new_sensor_parser'
+          	SerPrintP("del sens pos "); Serial.print(i); delay(50);
+              delete((this->pAPDSensors[i]));				// each APDSensor was new by 'new_sensor_parser'
+              SerPrintP("-done.\n"); delay(20);
               this->pAPDSensors[i] = NULL;
           }
       }

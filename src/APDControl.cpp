@@ -111,7 +111,7 @@ APDControl::~APDControl() {
 			if (this->primary){			// if primary owner of shared class
 				RCSwitch *pswitch = (RCSwitch*)this->psharedclass;
 				pswitch->disableTransmit();
-			  free(((RCSwitch*)this->psharedclass));
+			  delete(((RCSwitch*)this->psharedclass));
 			} else {
 				this->psharedclass = NULL;
 			}

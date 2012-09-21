@@ -576,25 +576,27 @@ boolean APDuino::reconfigure() {
   bProcessRules = false;
 
   SerPrintP("\nRECONFIGURE!\n");
-  delay(10);
+  delay(100);
 
   // put APDWeb in maintenance mode to PREVENT ACCESS TO sensors, controls, rules
   if (this->pAPDWeb->pause_service()) {
   	SerPrintP("Reconfiguring Arrays!\n");
   	delay(10);
   	Serial.print( freeMemory(), DEC); SerPrintP(" RAM free.\n");
-  	delay(10);
+  	delay(100);
+
+		this->iNextSensor = -1;				// invalidate next sensor index
 
 		delete(this->pra);
-		SerPrintP("Deleted Rule Array.\n");	Serial.print( freeMemory(), DEC); SerPrintP(" RAM free.\n");	delay(10);
+		SerPrintP("Deleted Rule Array.\n");	Serial.print( freeMemory(), DEC); SerPrintP(" RAM free.\n");	delay(100);
 		delete(this->pca);
-		SerPrintP("Deleted Control Array.\n");	Serial.print( freeMemory(), DEC); SerPrintP(" RAM free.\n");	delay(10);
+		SerPrintP("Deleted Control Array.\n");	Serial.print( freeMemory(), DEC); SerPrintP(" RAM free.\n");	delay(100);
 		delete(this->psa);
-		SerPrintP("Deleted Sensor Array.\n");	Serial.print( freeMemory(), DEC); SerPrintP(" RAM free.\n");	delay(10);
+		SerPrintP("Deleted Sensor Array.\n");	Serial.print( freeMemory(), DEC); SerPrintP(" RAM free.\n");	delay(100);
 
   	SerPrintP("Deleted Arrays!\n");
   	Serial.print( freeMemory(), DEC); SerPrintP(" RAM free.\n");
-  	delay(10);
+  	delay(100);
 
 		psa = new APDSensorArray();
 		pca = new APDControlArray(&pcustfuncs);
