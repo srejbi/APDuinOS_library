@@ -1343,10 +1343,12 @@ void APDWeb::loop() {
 bool APDWeb::pause_service() {
 	// TODO wait/kill any connected clients
 	bool retcode = false;
+	SerPrintP("\nopstate:");Serial.println(this->operational_state);
 	if ((this->operational_state & OPSTATE_CONFIGURED) &&
 			(this->operational_state & OPSTATE_STARTED) &&
 			!(this->operational_state & OPSTATE_PAUSED)){
 		this->operational_state |= OPSTATE_PAUSED;
+		SerPrintP("\nnewopstate:");Serial.println(this->operational_state);
 		retcode = true;
 	}
 	return retcode;
@@ -1354,10 +1356,12 @@ bool APDWeb::pause_service() {
 
 bool APDWeb::continue_service() {
 	bool retcode = false;
+	SerPrintP("\nopstate:");Serial.println(this->operational_state);
 	if ((this->operational_state & OPSTATE_CONFIGURED) &&
 			(this->operational_state & OPSTATE_PAUSED) &&
 			(this->operational_state & OPSTATE_STARTED)) {
 		this->operational_state &= !(int)(OPSTATE_PAUSED);
+		SerPrintP("\nnewopstate:");Serial.println(this->operational_state);
 		retcode = true;
 	}
 	return retcode;

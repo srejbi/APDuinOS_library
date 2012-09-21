@@ -297,7 +297,7 @@ float AtlasScientificSensor::as_sensor_read()
 
 	 float sensorval = 0;
 	 if (sscanf(sz_rx, "%f", &sensorval) == 0) {
-		 SerPrintP("Something is not right.");
+		 SerPrintP("AS: Unexpected data:");
 		 Serial.print(sz_rx);
 	 } else {
 		 this->fvalue = sensorval;
@@ -372,7 +372,7 @@ size_t AtlasScientificSensor::print(const char pc) {
 	}
 }
 
-size_t AtlasScientificSensor::fetch(char *psz_rx) {
+int AtlasScientificSensor::fetch(char *psz_rx) {
 	int bytes_avail = this->available();
 	int i = 0;
 	//char *pc = psz_rx;			// char pointer
@@ -385,7 +385,7 @@ size_t AtlasScientificSensor::fetch(char *psz_rx) {
     	  }
       }
 	}
-	return (size_t)(sizeof(char)*i);
+	return i;
 }
 
 // returns number of available bytes on HW/SW serial, -1 on error

@@ -589,17 +589,17 @@ boolean APDuino::reconfigure() {
 
 		delete(this->pra);
 		SerPrintP("Deleted Rule Array.\n");	Serial.print( freeMemory(), DEC); SerPrintP(" RAM free.\n");	delay(100);
-		delete(this->pca);
-		SerPrintP("Deleted Control Array.\n");	Serial.print( freeMemory(), DEC); SerPrintP(" RAM free.\n");	delay(100);
-		delete(this->psa);
-		SerPrintP("Deleted Sensor Array.\n");	Serial.print( freeMemory(), DEC); SerPrintP(" RAM free.\n");	delay(100);
+		//delete(this->pca);
+		//SerPrintP("Deleted Control Array.\n");	Serial.print( freeMemory(), DEC); SerPrintP(" RAM free.\n");	delay(100);
+		//delete(this->psa);
+		//SerPrintP("Deleted Sensor Array.\n");	Serial.print( freeMemory(), DEC); SerPrintP(" RAM free.\n");	delay(100);
 
   	SerPrintP("Deleted Arrays!\n");
   	Serial.print( freeMemory(), DEC); SerPrintP(" RAM free.\n");
   	delay(100);
 
-		psa = new APDSensorArray();
-		pca = new APDControlArray(&pcustfuncs);
+		//psa = new APDSensorArray();
+		//pca = new APDControlArray(&pcustfuncs);
 		pra = new APDRuleArray(psa,pca,&(this->bfIdle));
 
   	SerPrintP("Reallocated Arrays!\n"); delay(10);
@@ -608,18 +608,18 @@ boolean APDuino::reconfigure() {
 
 
 
-			SerPrintP("\ninit sensors\n"); delay(10);
+//			SerPrintP("\ninit sensors\n"); delay(10);
 
 			//this->setupSensors();
-			this->psa->loadSensors(this->pAPDStorage);
+//			this->psa->loadSensors(this->pAPDStorage);
 			//SerPrintP("APD Sensors - ok.\n");
 			//GLCD.Puts(".");
 
 			//setup_apd_controls();
-			SerPrintP("\ninit controls\n"); delay(10);
+//			SerPrintP("\ninit controls\n"); delay(10);
 
 			//this->setupControls();
-			this->pca->loadControls(this->pAPDStorage);
+//			this->pca->loadControls(this->pAPDStorage);
 			//SerPrintP("APD Controls - ok.\n");
 			//GLCD.Puts(".");
 
@@ -651,6 +651,8 @@ boolean APDuino::reconfigure() {
 			this->bFirstLoopDone = false;									// we have not yet looped with the new config (no sensor values)
 			bProcessRules = bProcRulesOld;								// restore old rule processing state
 			retcode = this->pAPDWeb->continue_service();	// return if web server continues processing
+  } else {
+  	SerPrintP("APDWeb pause fail...\n");
   }
 
   return retcode;
