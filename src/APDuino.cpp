@@ -586,8 +586,11 @@ boolean APDuino::reconfigure() {
   	delay(10);
 
 		delete(this->pra);
+		SerPrintP("Deleted Rule Array.\n");	Serial.print( freeMemory(), DEC); SerPrintP(" RAM free.\n");	delay(10);
 		delete(this->pca);
+		SerPrintP("Deleted Control Array.\n");	Serial.print( freeMemory(), DEC); SerPrintP(" RAM free.\n");	delay(10);
 		delete(this->psa);
+		SerPrintP("Deleted Sensor Array.\n");	Serial.print( freeMemory(), DEC); SerPrintP(" RAM free.\n");	delay(10);
 
   	SerPrintP("Deleted Arrays!\n");
   	Serial.print( freeMemory(), DEC); SerPrintP(" RAM free.\n");
@@ -597,37 +600,39 @@ boolean APDuino::reconfigure() {
 		pca = new APDControlArray(&pcustfuncs);
 		pra = new APDRuleArray(psa,pca,&(this->bfIdle));
 
-  	SerPrintP("Reallocated Arrays!\n");
+  	SerPrintP("Reallocated Arrays!\n"); delay(10);
   	Serial.print( freeMemory(), DEC); SerPrintP(" RAM free.\n");
   	delay(10);
 
 
-	#ifdef DEBUG
-			SerPrintP("\ninit sensors\n");
-		#endif
+
+			SerPrintP("\ninit sensors\n"); delay(10);
+
 			//this->setupSensors();
 			this->psa->loadSensors(this->pAPDStorage);
 			//SerPrintP("APD Sensors - ok.\n");
 			//GLCD.Puts(".");
-		#ifdef DEBUG
+
 			//setup_apd_controls();
-			SerPrintP("\ninit controls\n");
-		#endif
+			SerPrintP("\ninit controls\n"); delay(10);
+
 			//this->setupControls();
 			this->pca->loadControls(this->pAPDStorage);
 			//SerPrintP("APD Controls - ok.\n");
 			//GLCD.Puts(".");
-		#ifdef DEBUG
+
 			//setup_apd_rules();
-			SerPrintP("init rules\n");
-		#endif
+			SerPrintP("init rules\n"); delay(10);
+
 			//this->setupRules();
 			this->pra->loadRules(this->pAPDStorage);
 			//SerPrintP("APD Rules - ok.\n");
 
 			// Update pointers in APDWeb
 			this->pAPDWeb->pAPDControls = this->pca->pAPDControls;
+			this->pAPDWeb->iControlCount = this->pca->iControlCount;
 			this->pAPDWeb->pAPDSensors = this->psa->pAPDSensors;
+			this->pAPDWeb->iSensorCount = this->psa->iSensorCount;
 
 
 	  	SerPrintP("Reconfigured Arrays!\n");
@@ -641,6 +646,7 @@ boolean APDuino::reconfigure() {
 			// TODO revise what is obligatory. for now, 1 sensor or control is enough to be considered as configured
 			this->bAPDuinoConfigured =  this->pAPDStorage->ready() && (this->psa->iSensorCount > 0  || this->pca->iControlCount > 0); // && this->pra->iRuleCount > 0;
 
+			this->bFirstLoopDone = false;									// we have not yet looped with the new config (no sensor values)
 			bProcessRules = bProcRulesOld;								// restore old rule processing state
 			retcode = this->pAPDWeb->continue_service();	// return if web server continues processing
   }

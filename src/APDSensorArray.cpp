@@ -43,11 +43,11 @@ APDSensorArray::~APDSensorArray()
   if (this->pAPDSensors != NULL) {
       for (int i=0; i<this->iSensorCount; i++) {
           if (this->pAPDSensors[i] != NULL) {
-              free(this->pAPDSensors[i]);
+              delete(this->pAPDSensors[i]);				// each APDSensor was new by 'new_sensor_parser'
               this->pAPDSensors[i] = NULL;
           }
       }
-      free(this->pAPDSensors);
+      free(this->pAPDSensors);										// APDSensor pointers array was malloc
       this->pAPDSensors = NULL;
       this->iSensorCount=0;
   }

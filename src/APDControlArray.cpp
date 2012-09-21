@@ -44,6 +44,17 @@ APDControlArray::APDControlArray(void *pcustomfunctions)
 APDControlArray::~APDControlArray()
 {
   // TODO Auto-generated destructor stub
+  if (this->pAPDControls != NULL) {
+      for (int i=0; i<this->iControlCount; i++) {
+          if (this->pAPDControls[i] != NULL) {
+              delete(this->pAPDControls[i]);		// each Control was new by 'new_control_parser'
+              this->pAPDControls[i] = NULL;
+          }
+      }
+      free(this->pAPDControls);								// pAPDControls was malloc'd
+      this->pAPDControls = NULL;
+      this->iControlCount=0;
+  }
 }
 
 void APDControlArray::new_control_parser(void *pCA, int iline, char *psz) {
