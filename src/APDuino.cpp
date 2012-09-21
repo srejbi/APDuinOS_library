@@ -572,25 +572,27 @@ boolean APDuino::disableRuleProcessing() {
 
 boolean APDuino::reconfigure() {
 	boolean retcode = false;
-	boolean bProcRulesOld = bProcessRules;			// store old rule processing state
-  bProcessRules = false;
 
   SerPrintP("\nRECONFIGURE!\n");
   delay(100);
 
   // put APDWeb in maintenance mode to PREVENT ACCESS TO sensors, controls, rules
   if (this->pAPDWeb->pause_service()) {
+  	boolean bProcRulesOld = bProcessRules;			// store old rule processing state
+    bProcessRules = false;
+    unsigned long ulRam = freeMemory();
+
   	SerPrintP("Reconfiguring Arrays!\n");
   	delay(10);
-  	Serial.print( freeMemory(), DEC); SerPrintP(" RAM free.\n");
+  	Serial.print( ulRam, DEC); SerPrintP(" RAM free.\n");
   	delay(100);
 
 		this->iNextSensor = -1;				// invalidate next sensor index
 
 		delete(this->pra);
 		SerPrintP("Deleted Rule Array.\n");	Serial.print( freeMemory(), DEC); SerPrintP(" RAM free.\n");	delay(100);
-		//delete(this->pca);
-		//SerPrintP("Deleted Control Array.\n");	Serial.print( freeMemory(), DEC); SerPrintP(" RAM free.\n");	delay(100);
+		delete(this->pca);
+		SerPrintP("Deleted Control Array.\n");	Serial.print( freeMemory(), DEC); SerPrintP(" RAM free.\n");	delay(100);
 		//delete(this->psa);
 		//SerPrintP("Deleted Sensor Array.\n");	Serial.print( freeMemory(), DEC); SerPrintP(" RAM free.\n");	delay(100);
 
@@ -599,7 +601,7 @@ boolean APDuino::reconfigure() {
   	delay(100);
 
 		//psa = new APDSensorArray();
-		//pca = new APDControlArray(&pcustfuncs);
+		pca = new APDControlArray(&pcustfuncs);
 		pra = new APDRuleArray(psa,pca,&(this->bfIdle));
 
   	SerPrintP("Reallocated Arrays!\n"); delay(10);
@@ -616,10 +618,10 @@ boolean APDuino::reconfigure() {
 			//GLCD.Puts(".");
 
 			//setup_apd_controls();
-//			SerPrintP("\ninit controls\n"); delay(10);
+			SerPrintP("\ninit controls\n"); delay(10);
 
 			//this->setupControls();
-//			this->pca->loadControls(this->pAPDStorage);
+			this->pca->loadControls(this->pAPDStorage);
 			//SerPrintP("APD Controls - ok.\n");
 			//GLCD.Puts(".");
 
@@ -641,6 +643,12 @@ boolean APDuino::reconfigure() {
 	  	Serial.print( freeMemory(), DEC); SerPrintP(" RAM free.\n");
 	  	delay(10);
 
+	  	if (ulRam == freeMemory()) {
+	  		SerPrintP("No memory leak detected.\n");
+	  	} else {
+	  		SerPrintP("\nMEMORY LEAK DETECTED!\n");
+	  	}
+
 			// enable "real-time" rule evaluation
 			this->psa->enableRuleEvaluation(&(APDRuleArray::evaluateSensorRules),(void *)this->pra);
 
@@ -652,7 +660,7 @@ boolean APDuino::reconfigure() {
 			bProcessRules = bProcRulesOld;								// restore old rule processing state
 			retcode = this->pAPDWeb->continue_service();	// return if web server continues processing
   } else {
-  	SerPrintP("APDWeb pause fail...\n");
+  	SerPrintP("E");					// ERROR could not pause web service
   }
 
   return retcode;
