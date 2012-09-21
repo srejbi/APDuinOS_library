@@ -393,14 +393,16 @@ void APDuino::loop_core() {
   if (pAPDWeb != NULL) {
     pAPDWeb->loop();          // loop www services
     if (pAPDWeb->dispatched_requests) {					// process dispatched request buffer
-    	switch (pAPDWeb->dispatched_requests) {
-    	case DREQ_RECONF:
+    	int request = pAPDWeb->dispatched_requests;			// copy the request from the buffer
+    	pAPDWeb->dispatched_requests = DREQ_NOOP;				// reset the buffer to avoid reexec (by any mistake later)
+
+    	switch (request) {												// execute the request
+    	case DREQ_RECONF:														// reload configuration
     		this->reconfigure();
     		break;
     	default:
-    		SerPrintP("W");				// WARNING unknown request, ignoring
+    		SerPrintP("W");														// WARNING unknown request, ignoring
     	}
-    	pAPDWeb->dispatched_requests = DREQ_NOOP;
     }
   }
   delay(1);
@@ -570,14 +572,18 @@ boolean APDuino::disableRuleProcessing() {
 
 boolean APDuino::reconfigure() {
 	boolean retcode = false;
+	boolean bProcRulesOld = bProcessRules;			// store old rule processing state
   bProcessRules = false;
 
   SerPrintP("\nRECONFIGURE!\n");
+  delay(10);
 
   // put APDWeb in maintenance mode to PREVENT ACCESS TO sensors, controls, rules
   if (this->pAPDWeb->pause_service()) {
   	SerPrintP("Reconfiguring Arrays!\n");
+  	delay(10);
   	Serial.print( freeMemory(), DEC); SerPrintP(" RAM free.\n");
+  	delay(10);
 
 		delete(this->pra);
 		delete(this->pca);
@@ -585,6 +591,7 @@ boolean APDuino::reconfigure() {
 
   	SerPrintP("Deleted Arrays!\n");
   	Serial.print( freeMemory(), DEC); SerPrintP(" RAM free.\n");
+  	delay(10);
 
 		psa = new APDSensorArray();
 		pca = new APDControlArray(&pcustfuncs);
@@ -592,7 +599,7 @@ boolean APDuino::reconfigure() {
 
   	SerPrintP("Reallocated Arrays!\n");
   	Serial.print( freeMemory(), DEC); SerPrintP(" RAM free.\n");
-
+  	delay(10);
 
 
 	#ifdef DEBUG
@@ -625,6 +632,7 @@ boolean APDuino::reconfigure() {
 
 	  	SerPrintP("Reconfigured Arrays!\n");
 	  	Serial.print( freeMemory(), DEC); SerPrintP(" RAM free.\n");
+	  	delay(10);
 
 			// enable "real-time" rule evaluation
 			this->psa->enableRuleEvaluation(&(APDRuleArray::evaluateSensorRules),(void *)this->pra);
@@ -633,6 +641,7 @@ boolean APDuino::reconfigure() {
 			// TODO revise what is obligatory. for now, 1 sensor or control is enough to be considered as configured
 			this->bAPDuinoConfigured =  this->pAPDStorage->ready() && (this->psa->iSensorCount > 0  || this->pca->iControlCount > 0); // && this->pra->iRuleCount > 0;
 
+			bProcessRules = bProcRulesOld;								// restore old rule processing state
 			retcode = this->pAPDWeb->continue_service();	// return if web server continues processing
   }
 
