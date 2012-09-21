@@ -91,6 +91,8 @@ public:
 	boolean enableRuleProcessing();
 	boolean disableRuleProcessing();
 
+	boolean reconfigure();						// reset application (reload configs)
+
 	int iDebugLevel;
 	boolean bAPDuinoConfigured;
 
