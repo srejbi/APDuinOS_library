@@ -215,6 +215,10 @@ private:
   void processProvisioningRequest(EthernetClient *pclient);
   void claim_device_link(EthernetClient *pClient);
 
+
+  void json_header(EthernetClient *pClient);
+  void json_status(EthernetClient *pClient);
+
   friend class APDuino;
 };
 

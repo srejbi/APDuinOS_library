@@ -490,7 +490,6 @@ void APDWeb::startWebServer(APDSensor **pSensors, int iSensorCount, APDControl *
 void APDWeb::web_header(EthernetClient *pClient) {
 	WCPrintP(pClient,"HTTP/1.1 200 OK\n");
 	WCPrintP(pClient,"Content-Type: text/html\n\n");
-	//pClient->println();
 	delay(1);
 }
 
@@ -865,7 +864,8 @@ void APDWeb::loop_server()
 							web_endpage(&client);
 						}
 						file.close();
-					} else if (strstr_P(clientline, PSTR("GET /status")) != 0 ||		// /status
+					//} else if ((strstr_P(clientline, PSTR("GET /status")) != 0 && strlen(clientline) == 11) ||		// /status
+					} else if (strstr_P(clientline, PSTR("GET /status ")) != 0 ||		// /status
 							strstr_P(clientline, PSTR("GET / ")) != 0) {				// also for www root
 						if (!(this->operational_state & OPSTATE_PAUSED)) {
 	#ifdef DEBUG
@@ -888,6 +888,10 @@ void APDWeb::loop_server()
 						WCPrintP(&client,"Reconfiguration request acknowledged.");
 						web_endpage(&client);
 						this->dispatched_requests = DREQ_RECONF;		// APDuino should read it
+					}  else if (strstr_P(clientline, PSTR("GET /status.json")) != 0) {
+						// send a standard http response header
+						json_header(&client);
+						json_status(&client);
 					} else if (strstr_P(clientline,PSTR("GET /claimdevice")) != 0) {
 						web_header(&client);
 						web_startpage(&client,"claimdevice",20);
@@ -1840,3 +1844,80 @@ void APDWeb::dumpPachube() {
 }
 
 
+void APDWeb::json_header(EthernetClient *pClient) {
+	WCPrintP(pClient,"HTTP/1.1 200 OK\n");
+	WCPrintP(pClient,"Content-Type: application/json\n\n");
+	delay(1);
+}
+
+void APDWeb::json_status(EthernetClient *pClient) {
+	if (*pClient) {
+		char tbuf[20] ="";
+
+		WCPrintP(pClient,"[");
+
+		WCPrintP(pClient,"{ \"name\": \"sensors\", \"data\": [");
+
+		//WCPrintP(pClient,"<table>");
+
+
+		//    SerPrintP("Output sensors...");
+		for (int i = 0; i < iSensorCount; i++) {
+			if (i>0) {
+				WCPrintP(pClient,",\n");
+			}
+			WCPrintP(pClient,"{ \"Index\":\"");
+			pClient->print(i); WCPrintP(pClient,"\",\n");
+		    WCPrintP(pClient,"\"Name\":\"");
+			pClient->print((char *)pAPDSensors[i]->config.label);
+			WCPrintP(pClient,"\",\n\"Value\":\"");
+			pAPDSensors[i]->getValueS(tbuf);
+			pClient->print(tbuf);
+			WCPrintP(pClient,"\",\n\"Logged\":\"");
+			//WCPrintP(pClient, (pAPDSensors[i]->config.sensor_log ? "true" : "false"));
+			if (pAPDSensors[i]->config.sensor_log) {
+				//WCPrintP(pClient," id=\"chart-"); pClient->print((char *)pAPDSensors[i]->config.label); WCPrintP(pClient,"\"");
+				WCPrintP(pClient, "true");
+			} else {
+				WCPrintP(pClient, "false");
+			}
+			WCPrintP(pClient,"\"}");
+			delay(1);
+		}
+
+		WCPrintP(pClient,"] },\n");
+
+		WCPrintP(pClient,"{ \"name\": \"controls\", \"data\": [");
+
+		for (int i = 0; i < iControlCount; i++) {
+			if (i>0) {
+				WCPrintP(pClient,",\n");
+			}
+			WCPrintP(pClient,"{ \"Index\":\"");
+			pClient->print(i); WCPrintP(pClient,"\",\n");
+		    WCPrintP(pClient,"\"Name\":\"");
+			pClient->print((char *)pAPDControls[i]->config.label);
+			WCPrintP(pClient,"\",\n\"Value\":\"");
+			pAPDControls[i]->getValueS(tbuf);		// get control value
+			pClient->print(tbuf);
+			WCPrintP(pClient,"\",\n\"Logged\":\"");
+
+			if (pAPDControls[i]->config.control_log) {
+//				WCPrintP(pClient," id=\"chart-"); pClient->print((char *)pAPDControls[i]->config.label); WCPrintP(pClient,"\"");
+				WCPrintP(pClient, "true");
+			} else {
+				WCPrintP(pClient, "false");
+			}
+			WCPrintP(pClient,"\"}");
+			delay(1);
+		}
+
+		WCPrintP(pClient,"] }\n");
+
+		WCPrintP(pClient,"]");		// status div
+		// give the web browser time to receive the data
+		delay(1);
+	} else {
+		SerPrintP("W02");
+	}
+}
