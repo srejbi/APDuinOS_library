@@ -40,12 +40,12 @@
 #include "APDSensor.h"
 #include <OneWire.h>
 
-struct OWENC {
-	OneWire *ow;
-	byte state;
+struct OWENC {	// OneWire encapsulation
+	OneWire *ow;		// the shared object
+	byte state;			// state of the shared object (OneWire)
 };
 
-struct OWSENS {
+struct OWSENS {	// OneWire sensor struct
   byte address[8];
   OWENC *owenc;
   float value;
