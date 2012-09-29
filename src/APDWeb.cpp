@@ -622,7 +622,7 @@ void APDWeb::web_status(EthernetClient *pClient) {
 		//WCPrintP(pClient,"<table><tr><th>Control</th><th>Value</th><th>Log?</th><th></th></tr>");
 		WCPrintP(pClient,"<table>");
 
-		//    SerPrintP("Output sensors...");
+		//    SerPrintP("Output controls...");
 		for (int i = 0; i < iControlCount; i++) {
 #ifdef DEBUG
 			SerPrintP("Control "); Serial.print(i);
@@ -661,7 +661,7 @@ void APDWeb::web_status(EthernetClient *pClient) {
 void APDWeb::web_maintenance(EthernetClient *pClient) {
 	WCPrintP(pClient, "HTTP/1.1 503 (Service unavailable)\n");
 	WCPrintP(pClient, "Content-Type: text/html\n\n");
-	WCPrintP(pClient, "<h2>The requested APDuinOS web service is temporarily unavailable due to maintenance. Please try again later.</h2>\n");
+	WCPrintP(pClient, "<h2>The requested service is temporarily unavailable. Please try again later.</h2>\n");
 }
 
 void APDWeb::web_notfound(EthernetClient *pClient) {
