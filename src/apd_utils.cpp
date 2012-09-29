@@ -203,3 +203,6 @@ char *getPstr(void *Pstring) {
 }
 
 
+void soft_reset() {
+	asm volatile ("  jmp 0");
+}

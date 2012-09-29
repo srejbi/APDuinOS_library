@@ -51,6 +51,7 @@ double Fahrenheit(double celsius);
 */
 byte *hexbytes(char *hexcode,byte *destbytes, int destbytes_count);
 int read_hex_byte(char *szByte);
+void soft_reset();
 
 // reset macro from http://support.atmel.com/bin/customer.exe?=&action=viewKbEntry&id=21
 // TODO check why the code below causes debug to flash rapidly, device becomes unresponsive

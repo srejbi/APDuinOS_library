@@ -400,6 +400,9 @@ void APDuino::loop_core() {
     	case DREQ_RECONF:														// reload configuration
     		this->reconfigure();
     		break;
+    	case DREQ_RESET:
+    		soft_reset();														// soft-reset is an improper way to restart (does not reset hardware)
+    		break;
     	default:
     		SerPrintP("W");														// WARNING unknown request, ignoring
     	}

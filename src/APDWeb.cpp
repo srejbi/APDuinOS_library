@@ -546,6 +546,7 @@ void APDWeb::web_startpage(EthernetClient *pClient, char *title,int refresh=0) {
 		if (!(operational_state & OPSTATE_PAUSED)) { WCPrintP(pClient,"<li><a href=\"/\">Status</a></li>"); }
 		WCPrintP(pClient,"<li><a href=\"/sd/\">Files</a></li>");
 		if (!(operational_state & OPSTATE_PAUSED)) { WCPrintP(pClient,"<li><a href=\"/reconfigure\">Reload Config</a></li>");  }
+		if (!(operational_state & OPSTATE_PAUSED)) { WCPrintP(pClient,"<li><a href=\"/reset\">Soft Reset</a></li>");  }
 		WCPrintP(pClient,"<li><a href=\"/claimdevice\">Claim Device</a></li>");
 		WCPrintP(pClient,"</ul></div>");												  // closing sidebar
 
@@ -884,17 +885,23 @@ void APDWeb::loop_server()
 						}
 					} else if (strstr_P(clientline,PSTR("GET /reconfigure")) != 0) {
 						web_header(&client);
-						web_startpage(&client,"reconfigure",20);
+						web_startpage(&client,"reconfigure",0);
 						WCPrintP(&client,"Reconfiguration request acknowledged.");
 						web_endpage(&client);
 						this->dispatched_requests = DREQ_RECONF;		// APDuino should read it
+					} else if (strstr_P(clientline,PSTR("GET /reset")) != 0) {
+						web_header(&client);
+						web_startpage(&client,"reset",0);
+						WCPrintP(&client,"Reset request acknowledged.");
+						web_endpage(&client);
+						this->dispatched_requests = DREQ_RESET;		// APDuino should read it
 					}  else if (strstr_P(clientline, PSTR("GET /status.json")) != 0) {
 						// send a standard http response header
 						json_header(&client);
 						json_status(&client);
 					} else if (strstr_P(clientline,PSTR("GET /claimdevice")) != 0) {
 						web_header(&client);
-						web_startpage(&client,"claimdevice",20);
+						web_startpage(&client,"claimdevice",0);
 						claim_device_link(&client);
 						web_endpage(&client);
 						// TODO investigate/research why the Reset_AVR messes up the device
