@@ -845,8 +845,13 @@ void APDWeb::loop_server()
 #endif
 						if ( file.isFile() ) {
 							//SerPrintP("FILE");
-							WCPrintP(&client, "HTTP/1.1 200 OK\n");
-							WCPrintP(&client, "Content-Type: text/plain\n\n");
+							WCPrintP(&client, "HTTP/1.1 200 OK\nContent-Type: ");
+							if (strstr_P(clientline, PSTR(".htm")) != 0 || strstr_P(clientline, PSTR(".html")) != 0 ) {
+								WCPrintP(&client, "text/html");
+							} else {
+								WCPrintP(&client, "text/plain");
+							}
+							WCPrintP(&client, "\n\n");
 
 							int16_t c;
 							while ((c = file.read()) > -1) {
@@ -1924,6 +1929,7 @@ void APDWeb::json_status(EthernetClient *pClient) {
 		WCPrintP(pClient,"]");		// status div
 		// give the web browser time to receive the data
 		delay(1);
+		SerPrintP("JSONDONE.");
 	} else {
 		SerPrintP("W02");
 	}

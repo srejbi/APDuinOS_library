@@ -27,6 +27,6 @@
 #define APD_VERSION_H_
 
 #define APDUINO_VERSION    "0.59"
-#define APDUINO_BUILD      "2012092908"
+#define APDUINO_BUILD      "2012092910"
 
 #endif /* APD_VERSION_H_ */
