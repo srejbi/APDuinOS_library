@@ -635,6 +635,8 @@ boolean APDuino::reconfigure() {
 			//SerPrintP("APD Rules - ok.\n");
 
 			// Update pointers in APDWeb
+			this->pAPDWeb->pAPDRules = this->pra->pAPDRules;
+			this->pAPDWeb->iRuleCount = this->pra->iRuleCount;
 			this->pAPDWeb->pAPDControls = this->pca->pAPDControls;
 			this->pAPDWeb->iControlCount = this->pca->iControlCount;
 			this->pAPDWeb->pAPDSensors = this->psa->pAPDSensors;
@@ -753,7 +755,7 @@ boolean APDuino::startWebServer() {
   SerPrintP("WWWS...");
   if (pAPDWeb != NULL) {
       SerPrintP("starting ...");
-      pAPDWeb->startWebServer(this->psa->pAPDSensors,this->psa->iSensorCount,this->pca->pAPDControls,this->pca->iControlCount,pAPDStorage);
+      pAPDWeb->startWebServer(this->psa->pAPDSensors,this->psa->iSensorCount,this->pca->pAPDControls,this->pca->iControlCount,this->pra->pAPDRules,this->pra->iRuleCount,pAPDStorage);
       retcode = (pAPDWeb != NULL && pAPDWeb->pwwwserver != NULL && pAPDWeb->pwwwclient !=NULL);
   } else {
       SerPrintP("NONET\n");

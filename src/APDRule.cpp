@@ -288,8 +288,16 @@ void APDRule::evaluateRule() {
 }
 
 
+boolean APDRule::bState() {
+	return this->bState();
+}
 
-
+char *APDRule::getValueS(char *strdest) {
+  char *retstr = NULL;
+  sprintf(strdest,"%d",(int)this->bLastState);
+  retstr=strdest;
+  return retstr;
+}
 
 
 

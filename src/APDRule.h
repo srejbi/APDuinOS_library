@@ -100,6 +100,9 @@ public:
   virtual
   ~APDRule();
 
+  char *getValueS(char *strdest);
+  boolean bState();															// returns the last evaluation state
+
   //static APDRule *rule_parser(int iline, char *psz);
 
   RDCONF config;    // the APD Rule configuration
@@ -113,7 +116,6 @@ public:
   int cvalue;                                   // integer control value
   float *pcsensorvalue;                         // pointer to a sensor to take control value from
   Metro *pmetro;
-
 
   // get the desired action's function ptr
   void (*get_rule_action_ptr(int rule_action))(APDControl *,int);

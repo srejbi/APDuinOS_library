@@ -37,6 +37,7 @@
 #include <Metro.h>
 #include "APDSensor.h"
 #include "APDControl.h"
+#include "APDRule.h"
 #include "APDStorage.h"
 #include "APDSerial.h"
 #include "APDTime.h"
@@ -88,7 +89,7 @@ public:
   virtual
   ~APDWeb();
 
-  void startWebServer(APDSensor **pSensors, int iSensorCount, APDControl **pControls, int iControlCount, APDStorage *pAPDStorage);
+  void startWebServer(APDSensor **pSensors, int iSensorCount, APDControl **pControls, int iControlCount, APDRule **pRules, int iRuleCount, APDStorage *pAPDStorage);
   void loop();
 
   bool pause_service();
@@ -123,6 +124,8 @@ private:
   int iSensorCount;
   APDControl **pAPDControls;
   int iControlCount;
+  APDRule **pAPDRules;
+  int iRuleCount;
 
   boolean bDHCP;                          // if DHCP was used
 

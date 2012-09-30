@@ -112,8 +112,10 @@ void APDWeb::initBlank(APDTime *pTime)
 	bWebClient = false;
 	pAPDSensors = NULL;
 	pAPDControls = NULL;
+	pAPDRules = NULL;
 	iSensorCount = -1;
 	iControlCount = -1;
+	iRuleCount = -1;
 	pAPDStorage = NULL;
 	memset(szAPDUINO_API_KEY, 0, sizeof(szAPDUINO_API_KEY) );
 	memset(szCOSM_API_KEY, 0, sizeof(szCOSM_API_KEY) );
@@ -468,7 +470,7 @@ boolean APDWeb::setupThingSpeakLogging() {
 }
 
 
-void APDWeb::startWebServer(APDSensor **pSensors, int iSensorCount, APDControl **pControls, int iControlCount, APDStorage *pAPDStorage)
+void APDWeb::startWebServer(APDSensor **pSensors, int iSensorCount, APDControl **pControls, int iControlCount, APDRule **pRules, int iRuleCount, APDStorage *pAPDStorage)
 {
 	SerPrintP("WS");
 	if (pwwwserver == NULL) {
@@ -477,8 +479,10 @@ void APDWeb::startWebServer(APDSensor **pSensors, int iSensorCount, APDControl *
 		pwwwserver->begin();
 		this->pAPDSensors = pSensors;
 		this->pAPDControls = pControls;
+		this->pAPDRules = pRules;
 		this->iSensorCount = iSensorCount;
 		this->iControlCount = iControlCount;
+		this->iRuleCount = iRuleCount;
 		this->pAPDStorage = pAPDStorage;
 		this->setup_webclient();
 	} else {
@@ -586,7 +590,7 @@ void APDWeb::web_status(EthernetClient *pClient) {
 
 		WCPrintP(pClient,"<div class=\"sensors\"><h1>Sensors</h1>");
 		//WCPrintP(pClient,"<table><tr><th>Sensor</th><th>Value</th><th>Log?</th><th></th></tr>");
-		WCPrintP(pClient,"<table>");
+		WCPrintP(pClient,"<table id=\"sensors_table\">");
 
 
 		//    SerPrintP("Output sensors...");
@@ -617,10 +621,10 @@ void APDWeb::web_status(EthernetClient *pClient) {
 
 		WCPrintP(pClient,"</table>");
 		WCPrintP(pClient,"</div>");
-
+		// CONTROLS OUTPUT
 		WCPrintP(pClient,"<div class=\"controls\"><h1>Controls</h1>");
 		//WCPrintP(pClient,"<table><tr><th>Control</th><th>Value</th><th>Log?</th><th></th></tr>");
-		WCPrintP(pClient,"<table>");
+		WCPrintP(pClient,"<table id=\"controls_table\">");
 
 		//    SerPrintP("Output controls...");
 		for (int i = 0; i < iControlCount; i++) {
@@ -649,6 +653,39 @@ void APDWeb::web_status(EthernetClient *pClient) {
 
 		WCPrintP(pClient,"</table>");		// controls table
 		WCPrintP(pClient,"</div>\n");		// controls div
+
+		//    RULES OUTPUT
+		WCPrintP(pClient,"<div class=\"rules\"><h1>Rules</h1>");
+		//WCPrintP(pClient,"<table><tr><th>Control</th><th>Value</th><th>Log?</th><th></th></tr>");
+		WCPrintP(pClient,"<table id=\"rules_table\">");
+
+		for (int i = 0; i < iRuleCount; i++) {
+#ifdef DEBUG
+			SerPrintP("Rule "); Serial.print(i);
+#endif
+			WCPrintP(pClient,"<tr class=\"line\">");
+			WCPrintP(pClient,"<td class=\"rule_name\">");
+			pClient->print(i); WCPrintP(pClient," : ");
+			pClient->print((char *)pAPDRules[i]->config.label);
+			WCPrintP(pClient,"</td><td class=\"rule_value\">");
+			//WCPrintP(pClient," = ");
+			pAPDRules[i]->getValueS(tbuf);		// get control value
+			pClient->print(tbuf);
+			WCPrintP(pClient,"</td><td>");
+			//if (pAPDSensors[i]->config.sensor_log) WCPrintP(pClient,"Y");
+			pClient->println("<br/>");
+			WCPrintP(pClient,"</td><td");
+			//if (pAPDRules[i]->config.control_log) {
+			//	WCPrintP(pClient," id=\"chart-"); pClient->print((char *)pAPDControls[i]->config.label); WCPrintP(pClient,"\"");
+			//}
+			WCPrintP(pClient,">");
+			WCPrintP(pClient,"</td></tr>");
+			delay(1);
+		}
+
+		WCPrintP(pClient,"</table>");		// controls table
+		WCPrintP(pClient,"</div>\n");		// controls div
+
 
 		WCPrintP(pClient,"</div>\n");		// status div
 		// give the web browser time to receive the data
