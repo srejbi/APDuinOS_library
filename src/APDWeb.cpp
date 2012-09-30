@@ -1907,9 +1907,6 @@ void APDWeb::json_status(EthernetClient *pClient) {
 
 		WCPrintP(pClient,"{ \"name\": \"sensors\", \"data\": [");
 
-		//WCPrintP(pClient,"<table>");
-
-
 		//    SerPrintP("Output sensors...");
 		for (int i = 0; i < iSensorCount; i++) {
 			if (i>0) {
@@ -1930,11 +1927,11 @@ void APDWeb::json_status(EthernetClient *pClient) {
 			} else {
 				WCPrintP(pClient, "false");
 			}
-			WCPrintP(pClient,"\"}");
+			WCPrintP(pClient,"\"}");			// End Sensor
 			delay(1);
 		}
 
-		WCPrintP(pClient,"] },\n");
+		WCPrintP(pClient,"] },\n");  // End Sensors data Array, Sensors
 
 		WCPrintP(pClient,"{ \"name\": \"controls\", \"data\": [");
 
@@ -1957,13 +1954,41 @@ void APDWeb::json_status(EthernetClient *pClient) {
 			} else {
 				WCPrintP(pClient, "false");
 			}
-			WCPrintP(pClient,"\"}");
+			WCPrintP(pClient,"\"}");			// End Control
 			delay(1);
 		}
 
-		WCPrintP(pClient,"] }\n");
+		WCPrintP(pClient,"] },\n");		// End Controls data Array, Controls
 
-		WCPrintP(pClient,"]");		// status div
+		WCPrintP(pClient,"{ \"name\": \"rules\", \"data\": [");
+
+		for (int i = 0; i < iRuleCount; i++) {
+			if (i>0) {
+				WCPrintP(pClient,",\n");
+			}
+			WCPrintP(pClient,"{ \"Index\":\"");
+			pClient->print(i); WCPrintP(pClient,"\",\n");
+		    WCPrintP(pClient,"\"Name\":\"");
+			pClient->print((char *)pAPDRules[i]->config.label);
+			WCPrintP(pClient,"\",\n\"Value\":\"");
+			pAPDRules[i]->getValueS(tbuf);		// get control value
+			pClient->print(tbuf);
+			WCPrintP(pClient,"\",\n\"Logged\":\"");
+
+//			if (pAPDRules[i]->config.control_log) {
+////				WCPrintP(pClient," id=\"chart-"); pClient->print((char *)pAPDRules[i]->config.label); WCPrintP(pClient,"\"");
+//				WCPrintP(pClient, "true");
+//			} else {
+				WCPrintP(pClient, "false");
+//			}
+			WCPrintP(pClient,"\"}");	// End Rule
+			delay(1);
+		}
+
+		WCPrintP(pClient,"] }\n");	// End Rules data Array, Rules
+
+
+		WCPrintP(pClient,"]");		// End Main Array
 		// give the web browser time to receive the data
 		delay(1);
 		SerPrintP("JSONDONE.");
