@@ -25,7 +25,7 @@
 
 #include "APDWeb.h"
 
-#define WCPrintP(pc,s) this->myCPrintP(pc,(PSTR(s)));
+#define WCPrintP(pc,s) myCPrintP(pc,(PSTR(s)));
 
 APDWeb::APDWeb(APDTime *pTime)
 {
@@ -1899,94 +1899,59 @@ void APDWeb::json_header(EthernetClient *pClient) {
 	delay(1);
 }
 
+void APDWeb::json_array_item(EthernetClient *pClient, const int index, const char *name, const char *value, const char *logged ) {
+	if (index>0) {
+		WCPrintP(pClient,",\n");
+	}
+	WCPrintP(pClient,"{ \"Index\":\"");
+	pClient->print(index); WCPrintP(pClient,"\",\n");
+		WCPrintP(pClient,"\"Name\":\"");
+	pClient->print(name);
+	WCPrintP(pClient,"\",\n\"Value\":\"");
+	pClient->print(value);
+	WCPrintP(pClient,"\",\n\"Logged\":\"");
+	pClient->print(logged);
+	WCPrintP(pClient,"\"}");			// End Sensor
+	//delay(1);
+}
+
 void APDWeb::json_status(EthernetClient *pClient) {
 	if (*pClient) {
-		char tbuf[20] ="";
+		char tbuf[20] ="";					// temp buf for string fragments
 
-		WCPrintP(pClient,"[");
+		WCPrintP(pClient,"[");			// main array
+
+		WCPrintP(pClient,"{ \"name\": \"systems\", \"data\": [");
+		sprintf_P(tbuf,PSTR("%s.%s"),APDUINO_VERSION,APDUINO_BUILD);
+		json_array_item(pClient,0,"version",tbuf,"0");
+		strcpy_P(tbuf,PSTR("1970/01/01 00:00:00")); 			       // default string used for timestamp
+		if (this->pAPDTime != NULL) pAPDTime->nowS(tbuf);				// todo what if not ok
+		json_array_item(pClient,1,"timestamp",tbuf,"0");
+    if (this->pAPDTime != NULL) pAPDTime->getUpTimeS(tbuf);	// todo what if not ok
+    json_array_item(pClient,2,"uptime",tbuf,"0");
+		json_array_item(pClient,3,"wwwclient",dtostrf(uCCount,5,0,tbuf),"0");
+		json_array_item(pClient,4,"netfail",dtostrf(iFailureCount,5,0,tbuf),"0");
+		json_array_item(pClient,5,"netrestarts",dtostrf(iRestartCount,5,0,tbuf),"0");
+		json_array_item(pClient,6,"ramfree",dtostrf(freeMemory(),5,0,tbuf),"0");
+		WCPrintP(pClient,"] },\n");  // End System data Array, System
 
 		WCPrintP(pClient,"{ \"name\": \"sensors\", \"data\": [");
-
-		//    SerPrintP("Output sensors...");
 		for (int i = 0; i < iSensorCount; i++) {
-			if (i>0) {
-				WCPrintP(pClient,",\n");
-			}
-			WCPrintP(pClient,"{ \"Index\":\"");
-			pClient->print(i); WCPrintP(pClient,"\",\n");
-		    WCPrintP(pClient,"\"Name\":\"");
-			pClient->print((char *)pAPDSensors[i]->config.label);
-			WCPrintP(pClient,"\",\n\"Value\":\"");
-			pAPDSensors[i]->getValueS(tbuf);
-			pClient->print(tbuf);
-			WCPrintP(pClient,"\",\n\"Logged\":\"");
-			//WCPrintP(pClient, (pAPDSensors[i]->config.sensor_log ? "true" : "false"));
-			if (pAPDSensors[i]->config.sensor_log) {
-				//WCPrintP(pClient," id=\"chart-"); pClient->print((char *)pAPDSensors[i]->config.label); WCPrintP(pClient,"\"");
-				WCPrintP(pClient, "true");
-			} else {
-				WCPrintP(pClient, "false");
-			}
-			WCPrintP(pClient,"\"}");			// End Sensor
-			delay(1);
+			json_array_item(pClient,i,pAPDSensors[i]->config.label,pAPDSensors[i]->getValueS(tbuf),((pAPDSensors[i]->config.sensor_log) ? "1" : "0"));
 		}
-
 		WCPrintP(pClient,"] },\n");  // End Sensors data Array, Sensors
 
 		WCPrintP(pClient,"{ \"name\": \"controls\", \"data\": [");
-
 		for (int i = 0; i < iControlCount; i++) {
-			if (i>0) {
-				WCPrintP(pClient,",\n");
-			}
-			WCPrintP(pClient,"{ \"Index\":\"");
-			pClient->print(i); WCPrintP(pClient,"\",\n");
-		    WCPrintP(pClient,"\"Name\":\"");
-			pClient->print((char *)pAPDControls[i]->config.label);
-			WCPrintP(pClient,"\",\n\"Value\":\"");
-			pAPDControls[i]->getValueS(tbuf);		// get control value
-			pClient->print(tbuf);
-			WCPrintP(pClient,"\",\n\"Logged\":\"");
-
-			if (pAPDControls[i]->config.control_log) {
-//				WCPrintP(pClient," id=\"chart-"); pClient->print((char *)pAPDControls[i]->config.label); WCPrintP(pClient,"\"");
-				WCPrintP(pClient, "true");
-			} else {
-				WCPrintP(pClient, "false");
-			}
-			WCPrintP(pClient,"\"}");			// End Control
-			delay(1);
+			json_array_item(pClient,i,pAPDControls[i]->config.label,pAPDControls[i]->getValueS(tbuf),((pAPDControls[i]->config.control_log) ? "1" : "0"));
 		}
-
 		WCPrintP(pClient,"] },\n");		// End Controls data Array, Controls
 
 		WCPrintP(pClient,"{ \"name\": \"rules\", \"data\": [");
-
 		for (int i = 0; i < iRuleCount; i++) {
-			if (i>0) {
-				WCPrintP(pClient,",\n");
-			}
-			WCPrintP(pClient,"{ \"Index\":\"");
-			pClient->print(i); WCPrintP(pClient,"\",\n");
-		    WCPrintP(pClient,"\"Name\":\"");
-			pClient->print((char *)pAPDRules[i]->config.label);
-			WCPrintP(pClient,"\",\n\"Value\":\"");
-			pAPDRules[i]->getValueS(tbuf);		// get control value
-			pClient->print(tbuf);
-			WCPrintP(pClient,"\",\n\"Logged\":\"");
-
-//			if (pAPDRules[i]->config.control_log) {
-////				WCPrintP(pClient," id=\"chart-"); pClient->print((char *)pAPDRules[i]->config.label); WCPrintP(pClient,"\"");
-//				WCPrintP(pClient, "true");
-//			} else {
-				WCPrintP(pClient, "false");
-//			}
-			WCPrintP(pClient,"\"}");	// End Rule
-			delay(1);
+			json_array_item(pClient,i,pAPDRules[i]->config.label,pAPDRules[i]->getValueS(tbuf),"0");
 		}
-
 		WCPrintP(pClient,"] }\n");	// End Rules data Array, Rules
-
 
 		WCPrintP(pClient,"]");		// End Main Array
 		// give the web browser time to receive the data

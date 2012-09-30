@@ -202,25 +202,25 @@ private:
   void saveAPIkey(char *szAPIKey, char *szAPIFile);
 
   // helpers
-  void myCPrintP(EthernetClient *pClient, void *Pstring);
+  static void myCPrintP(EthernetClient *pClient, void *Pstring);
 
   // control & processing
   void loop_webclient();
   void loop_server();
 
   // www helpers
-  void web_header(EthernetClient *pClient);
+  static void web_header(EthernetClient *pClient);
   void web_startpage(EthernetClient *pClient, char *title,int refresh);
   void web_endpage(EthernetClient *pClient);
   void web_status(EthernetClient *pClient);
   void web_maintenance(EthernetClient *pClient);
-  void web_notfound(EthernetClient *pClient);
+  static void web_notfound(EthernetClient *pClient);
   void ListFiles(EthernetClient client, const char *szPath, uint8_t flags);
   void processProvisioningRequest(EthernetClient *pclient);
   void claim_device_link(EthernetClient *pClient);
 
-
-  void json_header(EthernetClient *pClient);
+  static void json_array_item(EthernetClient *pClient, const int index, const char *name, const char *value, const char *logged );
+  static void json_header(EthernetClient *pClient);
   void json_status(EthernetClient *pClient);
 
   friend class APDuino;
