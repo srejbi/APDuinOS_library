@@ -99,6 +99,17 @@
 #define APDUINO_ERROR_AKSAVEIOERR 0x0235 					//  API Key save IO Error
 #define APDUINO_ERROR_AKSAVESTORAGE 0x0236 					// API key save error - No storage
 #define APDUINO_ERROR_WWWFSNOSTORAGE 0x0237				// Error listing SD card, no storage
+#define APDUINO_ERROR_WWWCLIENTOCCUPIED 0x0238				// APDuino Online: web client taken by another process
+#define APDUINO_ERROR_WWWCANTCONNECTAO 0x0239				// APDuino Online: connection error
+#define APDUINO_ERROR_WWWCLIENTBUSY 0x023A				// APDuino Online: client busy
+#define APDUINO_ERROR_AONOWEBCLIENT 0x023A				// APDuino Online: no web client
+#define APDUINO_ERROR_AOLOGNOWEBCLIENT 0x023B				// APDuino Online: no web client for logger
+#define APDUINO_ERROR_CLOGNOWEBCLIENT 0x023C				// Cosm Logging: no web client for logger
+#define APDUINO_ERROR_CLOGCONNFAIL 0x023D				// Cosm Logging: connection failure
+#define APDUINO_ERROR_TSLOGCONNFAIL 0x023E				// ThingSpeak Logging: connection failure
+#define APDUINO_ERROR_PRINTCLIENTOUTOFMEM 0x023F				// APDWeb: out of RAM when printing progmem string
+#define APDUINO_ERROR_JSNOCLIENT 0x0240						// JSON Status: no web client pointer
+
 
 #define APDUINO_ERROR_UNKNOWNSENSORTYPE 0x0250		// Unknown sensor type
 #define APDUINO_ERROR_SAALLOCFAIL 0x0251		// Failed to allocate Sensor Array

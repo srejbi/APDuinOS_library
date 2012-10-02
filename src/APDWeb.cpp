@@ -1176,7 +1176,6 @@ void APDWeb::processProvisioningRequest(EthernetClient *pclient) {
 						SerPrintP("DATA:"); Serial.println(clientline);
 #endif
 					}
-
 				}
 
 			} else {	// invalid request or end of provisioning
@@ -1185,8 +1184,10 @@ void APDWeb::processProvisioningRequest(EthernetClient *pclient) {
 
 		} 	// while client has available bytes
 
-		WCPrintP(pclient, "<hr />\n");
-		WCPrintP(pclient, "Received "); pclient->print(bytesProv); WCPrintP(pclient, " bytes, provisioned "); pclient->print(bytesProv); WCPrintP(pclient," bytes into "); pclient->print(uProv); WCPrintP(pclient," files.\n");
+		WCPrintP(pclient, "<hr />\n"
+											"Received "); pclient->print(bytesProv);
+		WCPrintP(pclient, " bytes, provisioned "); pclient->print(bytesProv);
+		WCPrintP(pclient," bytes into "); pclient->print(uProv); WCPrintP(pclient," files.\n");
 		if (bytesProv != bytesProvSaved) {
 			WCPrintP(pclient, "<div class=\"error\">Corrupted provisioning!?</div>");
 		}
@@ -1236,9 +1237,11 @@ void APDWeb::registration_response(APDWeb *pAPDWeb){
 #endif
 				if (!bProcessingBody) {      // if fetching lines of the HTTP header
 					if (iStatusCode < 0) {          // if no status code yet
-						sscanf(www_respline,"Status: %d",&iStatusCode);    // scan for status
+						sscanf_P(www_respline,PSTR("Status: %d"),&iStatusCode);    // scan for status
 					} else {                       // if status already found
+#ifdef VERBOSE
 						SerPrintP("STATUS : "); Serial.println(iStatusCode);
+#endif
 						if (www_respline[0] == '\n') {    // if blank line (separating header and body)
 							bProcessingBody = true;            // now comes the body part
 						}
@@ -1257,11 +1260,12 @@ void APDWeb::registration_response(APDWeb *pAPDWeb){
 								// TODO save API key for host!
 								pAPDWeb->saveAPIkey(pAPDWeb->szAPDUINO_API_KEY, "APIKEY.CFG");
 							  bReReg = true;
-
-							  SerPrintP("Registered your device on APDuino Online.\nClaim your device at: http://");
+#ifdef VERBOSE
+							  SerPrintP("Registered device on APDuino Online.\nClaim your device at: http://");
 								Serial.print(pAPDWeb->apduino_server_name);
 								SerPrintP("/devices/claim_device?api_key=");
 								Serial.println(pAPDWeb->szAPDUINO_API_KEY);
+#endif
 							}
 #ifdef DEBUG
 							else {
@@ -1325,23 +1329,24 @@ boolean APDWeb::self_register() {
 
 				// here's the actual content of the PUT request:
 				pwwwclient->println(www_postdata);
+#ifdef VERBOSE
 				SerPrintP("Request sent.");
+#endif
 				if (pwwwcp ==NULL)
 					pwwwcp = (&registration_response);      // set reader 'callback'
-//#ifdef DEBUG
 				else {
-					SerPrintP("E23");
+					Serial.println(APDUINO_ERROR_WWWCLIENTOCCUPIED);
+					//SerPrintP("E23");
 				}
-//#endif
 			} else {
-#ifdef DEBUG
-				SerPrintP("E24");
-#endif
+				Serial.println();
+				//SerPrintP("E24");
 				pwwwclient->stop();
 			}
 		} else {
 			//#ifdef DEBUG
-			SerPrintP("E25");
+			Serial.println(APDUINO_ERROR_WWWCLIENTBUSY);
+			//SerPrintP("E25");
 			this->wc_busy();
 			//#endif
 		}
@@ -1351,7 +1356,8 @@ boolean APDWeb::self_register() {
 #endif
 	} else {
 		//#ifdef DEBUG
-		SerPrintP("E26");
+		Serial.println(APDUINO_ERROR_AONOWEBCLIENT);
+		//SerPrintP("E26");
 		this->failure();
 		//#endif
 	}
@@ -1380,15 +1386,21 @@ void APDWeb::loop() {
 				iBusyCounter = 0;
 				if (this->iSensorCount>0 || this->iControlCount>0) {	// TODO fix this quick hack to see properly if there is anything to log
 					if (this->pmetro != NULL && this->pmetro->check()) {
+#ifdef VERBOSE
 						SerPrintP("\nWEBLOG\n");
+#endif
 						this->web_logging();
 						this->pmetro->reset();
 					} else if ( this->phmetro != NULL && this->phmetro->check()) {
+#ifdef VERBOSE
 						SerPrintP("\nCOSMLOG\n");
+#endif
 						this->pachube_logging();
 						this->phmetro->reset();
 					} else if ( this->tsmetro != NULL && this->tsmetro->check()) {
+#ifdef VERBOSE
 						SerPrintP("\nTSLOG\n");
+#endif
 						this->thingspeak_logging();
 						this->tsmetro->reset();
 					}
@@ -1442,12 +1454,13 @@ bool APDWeb::continue_service() {
 
 // TODO: add size control, avoid writing to random places
 void APDWeb::get_lastlog_string(char *szLogBuf) {
-	char ts[] = "1970/01/01 00:00:00";        // string used for timestamp
+	char ts[20] = "";
+	strcpy_P(ts,PSTR("1970/01/01 00:00:00"));        // string used for timestamp
 	if (this->pAPDTime != NULL) this->pAPDTime->nowS(ts);                 // pull correct time
 	char *pcLog = szLogBuf;
 	char dataString[16]="";                // make a string for assembling the data to log:
 
-	strcpy(pcLog,"datarow=");
+	strcpy_P(pcLog,PSTR("datarow="));
 	pcLog+=8;
 	strcpy(pcLog,ts);
 	pcLog+=strlen(ts);
@@ -1535,8 +1548,9 @@ void APDWeb::web_logging() {
 			SerPrintP("WL: "); Serial.print(this->pstr_APDUINO_API_KEY); SerPrintP(" - "); Serial.print(www_logdata); SerPrintP(" ...");
 #endif
 			if( pwwwclient->connect(apduino_server_ip, apduino_server_port) ) {
-
+#ifdef VERBOSE
 				SerPrintP("connecting...");
+#endif
 				// send the HTTP PUT request:
 				WCPrintP(pwwwclient,"PUT "); pwwwclient->print(WEBLOG_URI); WCPrintP(pwwwclient," HTTP/1.1\n");
 				WCPrintP(pwwwclient,"Host: ");    pwwwclient->println(apduino_server_name);
@@ -1552,8 +1566,7 @@ void APDWeb::web_logging() {
 				pwwwclient->println(thisLength);
 
 				// last pieces of the HTTP PUT request:
-				WCPrintP(pwwwclient,"Connection: close\n");
-				pwwwclient->println();
+				WCPrintP(pwwwclient,"Connection: close\n\n");
 
 				// here's the actual content of the PUT request:
 				pwwwclient->println(www_logdata);
@@ -1567,7 +1580,8 @@ void APDWeb::web_logging() {
 			}
 		}
 	}	else {
-		SerPrintP("E27");
+		Serial.println(APDUINO_ERROR_AOLOGNOWEBCLIENT);
+		//SerPrintP("E27");
 		this->failure();
 	}
 
@@ -1608,23 +1622,23 @@ void APDWeb::pachube_logging() {
 				pwwwclient->println(thisLength);
 
 				// last pieces of the HTTP PUT request:
-				WCPrintP(pwwwclient,"Connection: close\n");
-				pwwwclient->println();
+				WCPrintP(pwwwclient,"Connection: close\n\n");
 
 				// here's the actual content of the PUT request:
 				pwwwclient->println(www_logdata);
+#ifdef VERBOSE
 				SerPrintP("OK.\n");
+#endif
 			} else {
-				//#ifdef DEBUG
-				SerPrintP("E29");
-				//#endif
-
+				Serial.println(APDUINO_ERROR_CLOGCONNFAIL);
+				//SerPrintP("E29");
 				pwwwclient->stop();          // stop client now
 				this->failure();
 			}
 		}
 	}	else {
-		SerPrintP("E28");
+		Serial.println(APDUINO_ERROR_CLOGNOWEBCLIENT);
+		//SerPrintP("E28");
 		this->failure();
 	}
 
@@ -1664,11 +1678,12 @@ void APDWeb::thingspeak_logging() {
 
 				// here's the actual content of the PUT request:
 				pwwwclient->println(www_logdata);
+#ifdef VERBOSE
 				SerPrintP("done.\n");
+#endif
 			} else {
-				//#ifdef DEBUG
-				SerPrintP("E291.\n");
-				//#endif
+				Serial.println(APDUINO_ERROR_TSLOGCONNFAIL);
+				//SerPrintP("E291.\n");
 				pwwwclient->stop();          // stop client now
 				this->failure();
 			}
@@ -1740,7 +1755,8 @@ void APDWeb::myCPrintP(EthernetClient *pClient, void *Pstring) {
 			pClient->print(psob);
 			free(psob);
 		} else {
-			SerPrintP("E201("); Serial.print(ilen,DEC); SerPrintP(")");
+			Serial.println(APDUINO_ERROR_PRINTCLIENTOUTOFMEM);
+			//SerPrintP("E201("); Serial.print(ilen,DEC); SerPrintP(")");
 		}
 	}
 }
@@ -1754,7 +1770,7 @@ void APDWeb::new_apduinoconf_parser(void *pAPDWeb, int iline, char *psz) {
 	Serial.print("ONLINE READ: "); Serial.print(psz);
 #endif
 	//        hostname  |IP4     |Port|feedid
-	sscanf( psz, "%s %2x%2x%2x%2x,%d,%lu",
+	sscanf_P( psz, PSTR("%s %2x%2x%2x%2x,%d,%lu"),
 			szhost,
 			&(pw->apduino_server_ip[0]),&(pw->apduino_server_ip[1]),&(pw->apduino_server_ip[2]),&(pw->apduino_server_ip[3]),
 			&(pw->apduino_server_port),
@@ -1773,7 +1789,7 @@ void APDWeb::new_cosmconf_parser(void *pAPDWeb, int iline, char *psz) {
 	char szhost[32];
 	//Serial.print("COSM READ: "); Serial.print(psz);
 	//        hostname  |IP4     |Port|feedid
-	sscanf( psz, "%s %2x%2x%2x%2x,%d,%lu,%lu",
+	sscanf_P( psz, PSTR("%s %2x%2x%2x%2x,%d,%lu,%lu"),
 			szhost,
 			&(pw->cosm_server_ip[0]),&(pw->cosm_server_ip[1]),&(pw->cosm_server_ip[2]),&(pw->cosm_server_ip[3]),
 			&(pw->cosm_server_port),
@@ -1796,7 +1812,7 @@ void APDWeb::new_thingspeakconf_parser(void *pAPDWeb, int iline, char *psz) {
 	Serial.print("THINGSPEAK READ: "); Serial.print(psz);
 #endif
 	//        hostname  |IP4     |Port|feedid
-	sscanf( psz, "%s %2x%2x%2x%2x,%d,%lu,%lu",
+	sscanf_P( psz, PSTR("%s %2x%2x%2x%2x,%d,%lu,%lu"),
 			szhost,
 			&(pw->thingspeak_server_ip[0]),&(pw->thingspeak_server_ip[1]),&(pw->thingspeak_server_ip[2]),&(pw->thingspeak_server_ip[3]),
 			&(pw->thingspeak_server_port),
@@ -1812,10 +1828,12 @@ void APDWeb::new_thingspeakconf_parser(void *pAPDWeb, int iline, char *psz) {
 
 
 void APDWeb::dumpPachube() {
-	if (pAPDStorage->p_sd->exists("PACHUBE.CFG")) {
-		pAPDStorage->p_sd->remove("PACHUBE.CFG");
+	char conffile[14]="";
+	strcpy_P(conffile,PSTR("PACHUBE.CFG"));
+	if (pAPDStorage->p_sd->exists(conffile)) {
+		pAPDStorage->p_sd->remove(conffile);
 	}
-	SdFile dataFile("PACHUBE.CFG", O_WRITE | O_CREAT );
+	SdFile dataFile(conffile, O_WRITE | O_CREAT );
 	if (dataFile.isOpen()) {
 		char line[BUFSIZ]="";
 		// TODO update with recent fields
@@ -1840,8 +1858,8 @@ void APDWeb::dumpPachube() {
 
 
 void APDWeb::json_header(EthernetClient *pClient) {
-	WCPrintP(pClient,"HTTP/1.1 200 OK\n");
-	WCPrintP(pClient,"Content-Type: application/json\n\n");
+	WCPrintP(pClient,"HTTP/1.1 200 OK\n"
+			"Content-Type: application/json\n\n");
 	delay(1);
 }
 
@@ -1902,8 +1920,11 @@ void APDWeb::json_status(EthernetClient *pClient) {
 		WCPrintP(pClient,"]");		// End Main Array
 		// give the web browser time to receive the data
 		delay(1);
+#ifdef VERBOSE
 		SerPrintP("JSONDONE.");
+#endif
 	} else {
-		SerPrintP("W02");
+		Serial.println(APDUINO_ERROR_JSNOCLIENT);
+		//SerPrintP("W02");
 	}
 }
