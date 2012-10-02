@@ -216,11 +216,11 @@ boolean APDWeb::restart() {
 	// if running in a multithreading environment, we should lock the APDWeb with a semaphore here...
 	if (bEthConfigured) {
 		if (pwwwclient) {
-			SerPrintP("STOPPING CLIENTS\n");
+			//SerPrintP("STOPPING CLIENTS\n");
 			pwwwclient->stop();
 			delay(1000);
 		}
-		SerPrintP("RESTARTING NET\n");
+		//SerPrintP("RESTARTING NET\n");
 		bEthConfigured = false;
 		operational_state = OPSTATE_BLANK;
 		if (this->start()) {
@@ -245,15 +245,19 @@ void APDWeb::failure() {
 }
 
 void APDWeb::wc_busy() {
-	//SerPrintP("WCB"); Serial.print(this->iBusyCounter); SerPrintP("++");
+#ifdef DEBUG
+	SerPrintP("WCB"); Serial.print(this->iBusyCounter); SerPrintP("++");
+#endif
 	unsigned long nowms = millis();
 	if (wcb_millis == 0 || iBusyCounter == 0) {
 		wcb_millis = nowms;
 	}
 
 	if (++this->iBusyCounter >= MAX_WEBCLIENT_BUSY_LOOPS  || (nowms - wcb_millis > WEBCLIENT_BUSY_TIMEOUT_MS)) {	// TODO replace 50 with a variable
+#ifdef DEBUG
 		SerPrintP("->WCB="); Serial.print(iBusyCounter);
 		SerPrintP(" busy ms:"); Serial.print(nowms - wcb_millis); SerPrintP("\n");
+#endif
 		this->failure();
 		this->iBusyCounter = 0;
 		this->wcb_millis = 0;
@@ -383,9 +387,11 @@ boolean APDWeb::startWebLogging(unsigned long uWWWLoggingFreq) {
 	this->pmetro->reset();
 	retcode = (this->pmetro != NULL);
 
+#ifdef DEBUG
 	SerPrintP("APDW: ONLINE LOG SINK: ");
 	Serial.print(apduino_server_name); SerPrintP("@");
 	SerDumpIP(apduino_server_ip);
+#endif
 
 	SerPrintP("\n\n");
 	return retcode;
@@ -698,7 +704,7 @@ void APDWeb::web_status(EthernetClient *pClient) {
 void APDWeb::web_maintenance(EthernetClient *pClient) {
 	WCPrintP(pClient, "HTTP/1.1 503 (Service unavailable)\n");
 	WCPrintP(pClient, "Content-Type: text/html\n\n");
-	WCPrintP(pClient, "<h2>The requested service is temporarily unavailable. Please try again later.</h2>\n");
+	WCPrintP(pClient, "<h2>Temporarily unavailable. Please try again later.</h2>\n");
 }
 
 void APDWeb::web_notfound(EthernetClient *pClient) {
@@ -722,6 +728,53 @@ void APDWeb::claim_device_link(EthernetClient *pClient) {
 	} else {
 		SerPrintP("W01");
 	}
+}
+
+bool APDWeb::ServeFile(EthernetClient client, const char *szPath) {
+	bool retcode = false;
+	// serve file
+	SdFile file;
+#ifdef DEBUG
+	SerPrintP("file server\n");
+#endif
+	if (file.open(this->pAPDStorage->p_root, szPath, O_READ)) {
+	#ifdef DEBUG
+		SerPrintP("Opened!");
+	#endif
+		retcode = true;
+		if ( file.isFile() ) {
+			//SerPrintP("FILE");
+			WCPrintP(&client, "HTTP/1.1 200 OK\nContent-Type: ");
+			if (strstr_P(szPath, PSTR(".htm")) != 0 || strstr_P(szPath, PSTR(".html")) != 0 ) {
+				WCPrintP(&client, "text/html");
+			} else {
+				WCPrintP(&client, "text/plain");
+			}
+			WCPrintP(&client, "\n\n");
+
+			int16_t c;
+			while ((c = file.read()) > -1) {
+				// uncomment the serial to debug (slow!)
+				//Serial.print((char)c);
+				client.print((char)c);
+			}
+		} else if (file.isDir()) {
+			//SerPrintP("DIR");
+			// send a standard http response header
+			web_header(&client);
+			// print all the files, use a helper to keep it clean
+			web_startpage(&client,"files");
+			//WCPrintP(&client, "<h2>Files:</h2>\n");
+			ListFiles(client, szPath, LS_DATE | LS_SIZE);		// list root
+			web_endpage(&client);
+
+		}
+		file.close();
+	} else {
+		//web_notfound(&client);
+		// let the caller handle 404
+	}
+	return retcode;
 }
 
 
@@ -812,7 +865,7 @@ void APDWeb::ListFiles(EthernetClient client, const char *szPath, uint8_t flags)
 		WCPrintP(&client,"</ul>\n</div>\n");
 	} else {
 		SerPrintP("W03");
-		WCPrintP(&client,"W03 - NO STORAGE!\n");
+		WCPrintP(&client,"W03\n");		//NO STORAGE ERROR
 	}
 	if (proot != this->pAPDStorage->p_root) {
 		free(proot);
@@ -868,48 +921,10 @@ void APDWeb::loop_server()
 #ifdef DEBUG
 						SerPrintP("REQ: "); Serial.println(filename);  // print the file we want
 #endif
-            // serve file
-						SdFile file;
-//#ifdef DEBUG
-						SerPrintP("file server\n");
-//#endif
-						if (! file.open(this->pAPDStorage->p_root, filename, O_READ)) {
-							web_notfound(&client);
-							break;
-						}
-#ifdef DEBUG
-						SerPrintP("Opened!");
-#endif
-						if ( file.isFile() ) {
-							//SerPrintP("FILE");
-							WCPrintP(&client, "HTTP/1.1 200 OK\nContent-Type: ");
-							if (strstr_P(clientline, PSTR(".htm")) != 0 || strstr_P(clientline, PSTR(".html")) != 0 ) {
-								WCPrintP(&client, "text/html");
-							} else {
-								WCPrintP(&client, "text/plain");
-							}
-							WCPrintP(&client, "\n\n");
-
-							int16_t c;
-							while ((c = file.read()) > -1) {
-								// uncomment the serial to debug (slow!)
-								//Serial.print((char)c);
-								client.print((char)c);
-							}
-						} else if (file.isDir()) {
-							//SerPrintP("DIR");
-							// send a standard http response header
-							web_header(&client);
-							// print all the files, use a helper to keep it clean
-							web_startpage(&client,"files");
-							//WCPrintP(&client, "<h2>Files:</h2>\n");
-							ListFiles(client, filename, LS_DATE | LS_SIZE);		// list root
-							web_endpage(&client);
-						}
-						file.close();
+            if (!ServeFile(client,filename)) web_notfound(&client);		// server file or 404 if serving returns false
 					//} else if ((strstr_P(clientline, PSTR("GET /status")) != 0 && strlen(clientline) == 11) ||		// /status
 					} else if (strstr_P(clientline, PSTR("GET /status ")) != 0 ||		// /status
-							strstr_P(clientline, PSTR("GET / ")) != 0) {				// also for www root
+							(strstr_P(clientline, PSTR("GET / ")) != 0 && !ServeFile(client,"/index.htm"))) {				// also for www root
 						if (!(this->operational_state & OPSTATE_PAUSED)) {
 	#ifdef DEBUG
 							SerPrintP("Sending HTTP Resp...");
@@ -928,13 +943,13 @@ void APDWeb::loop_server()
 					} else if (strstr_P(clientline,PSTR("GET /reconfigure")) != 0) {
 						web_header(&client);
 						web_startpage(&client,"reconfigure",0);
-						WCPrintP(&client,"Reconfiguration request acknowledged.");
+						WCPrintP(&client,"Request acknowledged.");
 						web_endpage(&client);
 						this->dispatched_requests = DREQ_RECONF;		// APDuino should read it
 					} else if (strstr_P(clientline,PSTR("GET /reset")) != 0) {
 						web_header(&client);
 						web_startpage(&client,"reset",0);
-						WCPrintP(&client,"Reset request acknowledged.");
+						WCPrintP(&client,"Request acknowledged.");
 						web_endpage(&client);
 						this->dispatched_requests = DREQ_RESET;		// APDuino should read it
 					}  else if (strstr_P(clientline, PSTR("GET /status.json")) != 0) {
@@ -961,7 +976,11 @@ void APDWeb::loop_server()
 						SerPrintP("404\n");
 #endif
 						// everything else is a 404
-						web_notfound(&client);
+						if (strstr_P(clientline, PSTR("GET / ")) == 0) {		// if not root url
+							web_notfound(&client);
+						} else {
+							// 'GET / ' served already
+						}
 					}
 					break;
 				}
@@ -1121,6 +1140,7 @@ void APDWeb::processProvisioningRequest(EthernetClient *pclient) {
 						if (index >= BUFSIZ-1) {
 							for (int i=0; i < BUFSIZ -1; i++) clientline[i] = clientline[i+1];
 							index = BUFSIZ -2;
+							delay(1);				// todo large files provision unreliably
 						}
 
 						// TEMPFILE SHOULD BE VALIDATED and RENAMED to DESTINATION
@@ -1366,7 +1386,7 @@ void APDWeb::loop() {
 						this->pachube_logging();
 						this->phmetro->reset();
 					} else if ( this->tsmetro != NULL && this->tsmetro->check()) {
-						SerPrintP("\nTHINGSPEAK LOG\n");
+						SerPrintP("\nTSLOG\n");
 						this->thingspeak_logging();
 						this->tsmetro->reset();
 					}
@@ -1379,7 +1399,7 @@ void APDWeb::loop() {
 			this->wc_busy();
 		}
 	} else {
-		SerPrintP("No webclient class?!\n");
+		//SerPrintP("No webclient class?!\n");		// ERROR CODE?
 		this->failure();
 	}
 	if (pwwwserver != NULL) {
@@ -1387,7 +1407,7 @@ void APDWeb::loop() {
 		loop_server();
 	}
 	if (bRestart) {
-		SerPrintP("restart requested\n");
+		//SerPrintP("RESTARTREQ\n");
 		this->restart();
 	}
 
@@ -1639,7 +1659,7 @@ void APDWeb::pachube_logging() {
 			SerPrintP("\n\nconn:"); Serial.print(cosm_server_name); Serial.println(feedUrl);
 
 			if( pwwwclient->connect(cosm_server_ip, cosm_server_port) ) {
-				SerPrintP("connected. sending...");
+	//			SerPrintP("connected. sending...");
 
 				// send the HTTP PUT request:
 				WCPrintP(pwwwclient,"PUT "); pwwwclient->print(feedUrl); WCPrintP(pwwwclient," HTTP/1.1\n");
@@ -1686,9 +1706,6 @@ void APDWeb::thingspeak_logging() {
 		if ( !pwwwclient->connected() ) {
 			char feedUrl[64] = "";
 			char www_logdata[512];
-#ifdef DEBUG
-			SerPrintP("ASSEMBLING TS LOG\n");
-#endif
 			get_thingspeaklog_string(www_logdata);
 
 			Serial.println(www_logdata);
@@ -1696,9 +1713,7 @@ void APDWeb::thingspeak_logging() {
 			SerPrintP("\n\nconn:"); Serial.print(thingspeak_server_name); //Serial.println(feedUrl);
 #endif
 			if( pwwwclient->connect(thingspeak_server_ip, thingspeak_server_port) ) {
-#ifdef DEBUG
-				SerPrintP("connected. sending...");
-#endif
+
 				// send the HTTP PUT request:
 				WCPrintP(pwwwclient,"POST /update HTTP/1.1\n");
 				WCPrintP(pwwwclient,"Host: ");    pwwwclient->println(thingspeak_server_name);

@@ -21913,137 +21913,137 @@ Sections:
 Idx Name          Size      VMA       LMA       File off  Algn
   0 .text         00000000  00000000  00000000  00000034  2**0
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-  1 .data         000001a0  00000000  00000000  00000034  2**0
+  1 .data         000001ab  00000000  00000000  00000034  2**0
                   CONTENTS, ALLOC, LOAD, DATA
-  2 .bss          00000000  00000000  00000000  000001d4  2**0
+  2 .bss          00000000  00000000  00000000  000001df  2**0
                   ALLOC
-  3 .stab         00005634  00000000  00000000  000001d4  2**2
+  3 .stab         00005760  00000000  00000000  000001e0  2**2
                   CONTENTS, RELOC, READONLY, DEBUGGING
-  4 .stabstr      000074b2  00000000  00000000  00005808  2**0
+  4 .stabstr      000079ba  00000000  00000000  00005940  2**0
                   CONTENTS, READONLY, DEBUGGING
-  5 .text._ZN6APDWeb13pause_serviceEv 00000022  00000000  00000000  0000ccba  2**0
+  5 .text._ZN6APDWeb13pause_serviceEv 00000022  00000000  00000000  0000d2fa  2**0
                   CONTENTS, ALLOC, LOAD, RELOC, READONLY, CODE
-  6 .text._ZN6APDWeb16continue_serviceEv 00000022  00000000  00000000  0000ccdc  2**0
+  6 .text._ZN6APDWeb16continue_serviceEv 00000022  00000000  00000000  0000d31c  2**0
                   CONTENTS, ALLOC, LOAD, RELOC, READONLY, CODE
-  7 .text._ZN6APDWeb14loop_webclientEv 0000009a  00000000  00000000  0000ccfe  2**0
+  7 .text._ZN6APDWeb14loop_webclientEv 0000009a  00000000  00000000  0000d33e  2**0
                   CONTENTS, ALLOC, LOAD, RELOC, READONLY, CODE
-  8 .text._GLOBAL__I__ZN6APDWebC2EP7APDTime 00000016  00000000  00000000  0000cd98  2**0
+  8 .text._GLOBAL__I__ZN6APDWebC2EP7APDTime 00000016  00000000  00000000  0000d3d8  2**0
                   CONTENTS, ALLOC, LOAD, RELOC, READONLY, CODE
-  9 .ctors        00000002  00000000  00000000  0000cdae  2**0
+  9 .ctors        00000002  00000000  00000000  0000d3ee  2**0
                   CONTENTS, ALLOC, LOAD, RELOC, READONLY, DATA
- 10 .text._ZN6APDWeb7failureEv 0000005e  00000000  00000000  0000cdb0  2**0
+ 10 .text._ZN6APDWeb7failureEv 0000005e  00000000  00000000  0000d3f0  2**0
                   CONTENTS, ALLOC, LOAD, RELOC, READONLY, CODE
- 11 .text._ZN6APDWeb11web_endpageEP14EthernetClient 00000034  00000000  00000000  0000ce0e  2**0
+ 11 .text._ZN6APDWeb11web_endpageEP14EthernetClient 00000034  00000000  00000000  0000d44e  2**0
                   CONTENTS, ALLOC, LOAD, RELOC, READONLY, CODE
- 12 .text._ZN6SdFileD1Ev 0000001a  00000000  00000000  0000ce42  2**0
+ 12 .text._ZN6APDWeb25new_thingspeakconf_parserEPviPc 000000c0  00000000  00000000  0000d482  2**0
                   CONTENTS, ALLOC, LOAD, RELOC, READONLY, CODE
- 13 .text._ZN6APDWeb25new_thingspeakconf_parserEPviPc 000000c0  00000000  00000000  0000ce5c  2**0
+ 13 .text._ZN6APDWeb19new_cosmconf_parserEPviPc 000000c8  00000000  00000000  0000d542  2**0
                   CONTENTS, ALLOC, LOAD, RELOC, READONLY, CODE
- 14 .text._ZN6APDWeb19new_cosmconf_parserEPviPc 000000c8  00000000  00000000  0000cf1c  2**0
+ 14 .text._ZN6APDWeb22new_apduinoconf_parserEPviPc 000000d2  00000000  00000000  0000d60a  2**0
                   CONTENTS, ALLOC, LOAD, RELOC, READONLY, CODE
- 15 .text._ZN6APDWeb22new_apduinoconf_parserEPviPc 000000d2  00000000  00000000  0000cfe4  2**0
+ 15 .text._ZN6APDWeb9myCPrintPEP14EthernetClientPv 00000092  00000000  00000000  0000d6dc  2**0
                   CONTENTS, ALLOC, LOAD, RELOC, READONLY, CODE
- 16 .text._ZN6APDWeb9myCPrintPEP14EthernetClientPv 00000092  00000000  00000000  0000d0b6  2**0
+ 16 .text._ZN6APDWeb15json_array_itemEP14EthernetClientiPKcS3_S3_ 000000b6  00000000  00000000  0000d76e  2**0
                   CONTENTS, ALLOC, LOAD, RELOC, READONLY, CODE
- 17 .text._ZN6APDWeb15json_array_itemEP14EthernetClientiPKcS3_S3_ 000000b6  00000000  00000000  0000d148  2**0
+ 17 .text._ZN6APDWeb11json_statusEP14EthernetClient 000003ea  00000000  00000000  0000d824  2**0
                   CONTENTS, ALLOC, LOAD, RELOC, READONLY, CODE
- 18 .text._ZN6APDWeb11json_statusEP14EthernetClient 000003ea  00000000  00000000  0000d1fe  2**0
+ 18 .text._ZN6APDWeb11json_headerEP14EthernetClient 0000002a  00000000  00000000  0000dc0e  2**0
                   CONTENTS, ALLOC, LOAD, RELOC, READONLY, CODE
- 19 .text._ZN6APDWeb11json_headerEP14EthernetClient 0000002a  00000000  00000000  0000d5e8  2**0
+ 19 .text._ZN6APDWeb17claim_device_linkEP14EthernetClient 0000007e  00000000  00000000  0000dc38  2**0
                   CONTENTS, ALLOC, LOAD, RELOC, READONLY, CODE
- 20 .text._ZN6APDWeb17claim_device_linkEP14EthernetClient 0000007e  00000000  00000000  0000d612  2**0
+ 20 .text._ZN6APDWeb12web_notfoundEP14EthernetClient 00000028  00000000  00000000  0000dcb6  2**0
                   CONTENTS, ALLOC, LOAD, RELOC, READONLY, CODE
- 21 .text._ZN6APDWeb12web_notfoundEP14EthernetClient 00000028  00000000  00000000  0000d690  2**0
+ 21 .text._ZN6APDWeb15web_maintenanceEP14EthernetClient 0000002a  00000000  00000000  0000dcde  2**0
                   CONTENTS, ALLOC, LOAD, RELOC, READONLY, CODE
- 22 .text._ZN6APDWeb15web_maintenanceEP14EthernetClient 0000002a  00000000  00000000  0000d6b8  2**0
+ 22 .text._ZN6APDWeb10web_statusEP14EthernetClient 0000043c  00000000  00000000  0000dd08  2**0
                   CONTENTS, ALLOC, LOAD, RELOC, READONLY, CODE
- 23 .text._ZN6APDWeb10web_statusEP14EthernetClient 0000043c  00000000  00000000  0000d6e2  2**0
+ 23 .text._ZN6APDWeb13web_startpageEP14EthernetClientPci 00000378  00000000  00000000  0000e144  2**0
                   CONTENTS, ALLOC, LOAD, RELOC, READONLY, CODE
- 24 .text._ZN6APDWeb13web_startpageEP14EthernetClientPci 00000378  00000000  00000000  0000db1e  2**0
+ 24 .text._ZN6APDWeb10web_headerEP14EthernetClient 0000002a  00000000  00000000  0000e4bc  2**0
                   CONTENTS, ALLOC, LOAD, RELOC, READONLY, CODE
- 25 .text._ZN6APDWeb10web_headerEP14EthernetClient 0000002a  00000000  00000000  0000de96  2**0
+ 25 .text._ZN6APDWebD1Ev 00000030  00000000  00000000  0000e4e6  2**0
                   CONTENTS, ALLOC, LOAD, RELOC, READONLY, CODE
- 26 .text._ZN6APDWebD1Ev 00000030  00000000  00000000  0000dec0  2**0
+ 26 .text._ZN6APDWebD2Ev 00000030  00000000  00000000  0000e516  2**0
                   CONTENTS, ALLOC, LOAD, RELOC, READONLY, CODE
- 27 .text._ZN6APDWebD2Ev 00000030  00000000  00000000  0000def0  2**0
+ 27 .text._ZN6APDWeb24get_thingspeaklog_stringEPc 000001b6  00000000  00000000  0000e546  2**0
                   CONTENTS, ALLOC, LOAD, RELOC, READONLY, CODE
- 28 .text._ZN6APDWeb24get_thingspeaklog_stringEPc 000001b6  00000000  00000000  0000df20  2**0
+ 28 .text._ZN6APDWeb18thingspeak_loggingEv 0000021e  00000000  00000000  0000e6fc  2**0
                   CONTENTS, ALLOC, LOAD, RELOC, READONLY, CODE
- 29 .text._ZN6APDWeb18thingspeak_loggingEv 0000021e  00000000  00000000  0000e0d6  2**0
+ 29 .text._ZN6APDWeb21get_pachubelog_stringEPc 0000021c  00000000  00000000  0000e91a  2**0
                   CONTENTS, ALLOC, LOAD, RELOC, READONLY, CODE
- 30 .text._ZN6APDWeb21get_pachubelog_stringEPc 0000021c  00000000  00000000  0000e2f4  2**0
+ 30 .text._ZN6APDWeb15pachube_loggingEv 000002f8  00000000  00000000  0000eb36  2**0
                   CONTENTS, ALLOC, LOAD, RELOC, READONLY, CODE
- 31 .text._ZN6APDWeb15pachube_loggingEv 00000300  00000000  00000000  0000e510  2**0
+ 31 .text._ZN6APDWeb18get_lastlog_stringEPc 00000150  00000000  00000000  0000ee2e  2**0
                   CONTENTS, ALLOC, LOAD, RELOC, READONLY, CODE
- 32 .text._ZN6APDWeb18get_lastlog_stringEPc 00000150  00000000  00000000  0000e810  2**0
+ 32 .text._ZN6APDWeb11web_loggingEv 00000236  00000000  00000000  0000ef7e  2**0
                   CONTENTS, ALLOC, LOAD, RELOC, READONLY, CODE
- 33 .text._ZN6APDWeb11web_loggingEv 00000236  00000000  00000000  0000e960  2**0
+ 33 .text._ZN6APDWeb15setup_webclientEv 0000003e  00000000  00000000  0000f1b4  2**0
                   CONTENTS, ALLOC, LOAD, RELOC, READONLY, CODE
- 34 .text._ZN6APDWeb15setup_webclientEv 0000003e  00000000  00000000  0000eb96  2**0
+ 34 .text._ZN6APDWeb15forwardToMarkerEP14EthernetClientPcS2_ 0000009c  00000000  00000000  0000f1f2  2**0
                   CONTENTS, ALLOC, LOAD, RELOC, READONLY, CODE
- 35 .text._ZN6APDWeb15forwardToMarkerEP14EthernetClientPcS2_ 0000009c  00000000  00000000  0000ebd4  2**0
+ 35 .text._ZN6APDWeb26processProvisioningRequestEP14EthernetClient 0000041c  00000000  00000000  0000f28e  2**0
                   CONTENTS, ALLOC, LOAD, RELOC, READONLY, CODE
- 36 .text._ZN6APDWeb26processProvisioningRequestEP14EthernetClient 00000402  00000000  00000000  0000ec70  2**0
+ 36 .text._ZN6APDWeb10saveAPIkeyEPcS0_ 000000a6  00000000  00000000  0000f6aa  2**0
                   CONTENTS, ALLOC, LOAD, RELOC, READONLY, CODE
- 37 .text._ZN6APDWeb10saveAPIkeyEPcS0_ 00000098  00000000  00000000  0000f072  2**0
+ 37 .text._ZN6APDWeb11dumpPachubeEv 0000019c  00000000  00000000  0000f750  2**0
                   CONTENTS, ALLOC, LOAD, RELOC, READONLY, CODE
- 38 .text._ZN6APDWeb11dumpPachubeEv 0000018e  00000000  00000000  0000f10a  2**0
+ 38 .text._ZN6APDWeb9ListFilesE14EthernetClientPKch 000002c4  00000000  00000000  0000f8ec  2**0
                   CONTENTS, ALLOC, LOAD, RELOC, READONLY, CODE
- 39 .text._ZN6APDWeb9ListFilesE14EthernetClientPKch 000002c4  00000000  00000000  0000f298  2**0
+ 39 .text._ZN6APDWeb9ServeFileE14EthernetClientPKc 00000178  00000000  00000000  0000fbb0  2**0
                   CONTENTS, ALLOC, LOAD, RELOC, READONLY, CODE
- 40 .text._ZN6APDWeb11loop_serverEv 00000472  00000000  00000000  0000f55c  2**0
+ 40 .text._ZN6APDWeb11loop_serverEv 000003ae  00000000  00000000  0000fd28  2**0
                   CONTENTS, ALLOC, LOAD, RELOC, READONLY, CODE
- 41 .text._ZN6APDWeb14startWebServerEPP9APDSensoriPP10APDControliPP7APDRuleiP10APDStorage 000000d6  00000000  00000000  0000f9ce  2**0
+ 41 .text._ZN6APDWeb14startWebServerEPP9APDSensoriPP10APDControliPP7APDRuleiP10APDStorage 000000d6  00000000  00000000  000100d6  2**0
                   CONTENTS, ALLOC, LOAD, RELOC, READONLY, CODE
- 42 .text._ZN6APDWeb15startWebLoggingEm 000000b2  00000000  00000000  0000faa4  2**0
+ 42 .text._ZN6APDWeb15startWebLoggingEm 00000088  00000000  00000000  000101ac  2**0
                   CONTENTS, ALLOC, LOAD, RELOC, READONLY, CODE
- 43 .text._ZN6APDWeb10loadAPIkeyEPcS0_ 00000104  00000000  00000000  0000fb56  2**0
+ 43 .text._ZN6APDWeb10loadAPIkeyEPcS0_ 00000112  00000000  00000000  00010234  2**0
                   CONTENTS, ALLOC, LOAD, RELOC, READONLY, CODE
- 44 .text._ZN6APDWeb22setupThingSpeakLoggingEv 0000011e  00000000  00000000  0000fc5a  2**0
+ 44 .text._ZN6APDWeb22setupThingSpeakLoggingEv 0000011e  00000000  00000000  00010346  2**0
                   CONTENTS, ALLOC, LOAD, RELOC, READONLY, CODE
- 45 .text._ZN6APDWeb16setupCosmLoggingEv 0000011e  00000000  00000000  0000fd78  2**0
+ 45 .text._ZN6APDWeb16setupCosmLoggingEv 0000011e  00000000  00000000  00010464  2**0
                   CONTENTS, ALLOC, LOAD, RELOC, READONLY, CODE
- 46 .text._ZN6APDWeb9initBlankEP7APDTime 000002e2  00000000  00000000  0000fe96  2**0
+ 46 .text._ZN6APDWeb9initBlankEP7APDTime 000002e2  00000000  00000000  00010582  2**0
                   CONTENTS, ALLOC, LOAD, RELOC, READONLY, CODE
- 47 .text._ZN6APDWeb7wc_busyEv 0000011e  00000000  00000000  00010178  2**0
+ 47 .text._ZN6APDWeb7wc_busyEv 0000009a  00000000  00000000  00010864  2**0
                   CONTENTS, ALLOC, LOAD, RELOC, READONLY, CODE
- 48 .text._ZN6APDWeb13self_registerEv 00000294  00000000  00000000  00010296  2**0
+ 48 .text._ZN6APDWeb13self_registerEv 00000294  00000000  00000000  000108fe  2**0
                   CONTENTS, ALLOC, LOAD, RELOC, READONLY, CODE
- 49 .text._ZN6APDWeb21registration_responseEPS_ 00000384  00000000  00000000  0001052a  2**0
+ 49 .text._ZN6APDWeb21registration_responseEPS_ 00000384  00000000  00000000  00010b92  2**0
                   CONTENTS, ALLOC, LOAD, RELOC, READONLY, CODE
- 50 .text._ZN6APDWeb18setupAPDuinoOnlineEv 0000017c  00000000  00000000  000108ae  2**0
+ 50 .text._ZN6APDWeb18setupAPDuinoOnlineEv 0000017c  00000000  00000000  00010f16  2**0
                   CONTENTS, ALLOC, LOAD, RELOC, READONLY, CODE
- 51 .text._ZN6APDWeb5startEv 000002c4  00000000  00000000  00010a2a  2**0
+ 51 .text._ZN6APDWeb5startEv 000002c4  00000000  00000000  00011092  2**0
                   CONTENTS, ALLOC, LOAD, RELOC, READONLY, CODE
- 52 .text._ZN6APDWeb7restartEv 00000076  00000000  00000000  00010cee  2**0
+ 52 .text._ZN6APDWeb7restartEv 00000060  00000000  00000000  00011356  2**0
                   CONTENTS, ALLOC, LOAD, RELOC, READONLY, CODE
- 53 .text._ZN6APDWeb4loopEv 00000130  00000000  00000000  00010d64  2**0
+ 53 .text._ZN6APDWeb4loopEv 00000118  00000000  00000000  000113b6  2**0
                   CONTENTS, ALLOC, LOAD, RELOC, READONLY, CODE
- 54 .text._ZN6APDWebC1EP7NETCONFP7APDTime 00000080  00000000  00000000  00010e94  2**0
+ 54 .text._ZN6APDWebC1EP7NETCONFP7APDTime 00000080  00000000  00000000  000114ce  2**0
                   CONTENTS, ALLOC, LOAD, RELOC, READONLY, CODE
- 55 .text._ZN6APDWebC2EP7NETCONFP7APDTime 00000080  00000000  00000000  00010f14  2**0
+ 55 .text._ZN6APDWebC2EP7NETCONFP7APDTime 00000080  00000000  00000000  0001154e  2**0
                   CONTENTS, ALLOC, LOAD, RELOC, READONLY, CODE
- 56 .text._ZN6APDWebC1EP7APDTime 00000034  00000000  00000000  00010f94  2**0
+ 56 .text._ZN6APDWebC1EP7APDTime 00000034  00000000  00000000  000115ce  2**0
                   CONTENTS, ALLOC, LOAD, RELOC, READONLY, CODE
- 57 .text._ZN6APDWebC2EP7APDTime 00000034  00000000  00000000  00010fc8  2**0
+ 57 .text._ZN6APDWebC2EP7APDTime 00000034  00000000  00000000  00011602  2**0
                   CONTENTS, ALLOC, LOAD, RELOC, READONLY, CODE
- 58 .text._ZN6APDWebD0Ev 00000036  00000000  00000000  00010ffc  2**0
+ 58 .text._ZN6APDWebD0Ev 00000036  00000000  00000000  00011636  2**0
                   CONTENTS, ALLOC, LOAD, RELOC, READONLY, CODE
- 59 .rodata._ZTV6APDWeb 00000008  00000000  00000000  00011032  2**0
+ 59 .rodata._ZTV6APDWeb 00000008  00000000  00000000  0001166c  2**0
                   CONTENTS, ALLOC, LOAD, RELOC, READONLY, DATA
- 60 .bss._ZL11INADDR_NONE 00000006  00000000  00000000  0001103a  2**0
+ 60 .bss._ZL11INADDR_NONE 00000006  00000000  00000000  00011674  2**0
                   ALLOC
- 61 .progmem.data 0000115e  00000000  00000000  0001103a  2**0
+ 61 .progmem.data 00001084  00000000  00000000  00011674  2**0
                   CONTENTS, ALLOC, LOAD, READONLY, DATA
- 62 .rodata._ZL9USERAGENT 00000009  00000000  00000000  00012198  2**0
+ 62 .rodata._ZL9USERAGENT 00000009  00000000  00000000  000126f8  2**0
                   CONTENTS, ALLOC, LOAD, READONLY, DATA
- 63 .rodata._ZL10WEBLOG_URI 00000011  00000000  00000000  000121a1  2**0
+ 63 .rodata._ZL10WEBLOG_URI 00000011  00000000  00000000  00012701  2**0
                   CONTENTS, ALLOC, LOAD, READONLY, DATA
- 64 .rodata._ZTV6Client 0000001c  00000000  00000000  000121b2  2**0
+ 64 .rodata._ZTV6Client 0000001c  00000000  00000000  00012712  2**0
                   CONTENTS, ALLOC, LOAD, RELOC, READONLY, DATA
- 65 .rodata._ZTV6Stream 00000010  00000000  00000000  000121ce  2**0
+ 65 .rodata._ZTV6Stream 00000010  00000000  00000000  0001272e  2**0
                   CONTENTS, ALLOC, LOAD, RELOC, READONLY, DATA
- 66 .rodata._ZZN6APDWeb9initBlankEP7APDTimeE5C.134 00000006  00000000  00000000  000121de  2**0
+ 66 .rodata._ZZN6APDWeb9initBlankEP7APDTimeE5C.134 00000006  00000000  00000000  0001273e  2**0
                   CONTENTS, ALLOC, LOAD, READONLY, DATA
 
 Disassembly of section .text._ZN6APDWeb13pause_serviceEv:
@@ -22317,30 +22317,6 @@ APDWeb::~APDWeb()
   2e:	df 91       	pop	r29
   30:	cf 91       	pop	r28
   32:	08 95       	ret
-
-Disassembly of section .text._ZN6SdFileD1Ev:
-
-00000000 <_ZN6SdFileD1Ev>:
-		SerPrintP("Failed to configure Ethernet. Fix DHCP on your LAN or provide a valid static config on SD and reset.\n");
-	}
-}
-
-
-APDWeb::~APDWeb()
-   0:	fc 01       	movw	r30, r24
-   2:	80 e0       	ldi	r24, 0x00	; 0
-   4:	90 e0       	ldi	r25, 0x00	; 0
-   6:	91 83       	std	Z+1, r25	; 0x01
-   8:	80 83       	st	Z, r24
-   a:	87 81       	ldd	r24, Z+7	; 0x07
-   c:	88 23       	and	r24, r24
-{
-	if (pwwwclient != NULL) free(pwwwclient);
-   e:	01 f0       	breq	.+0      	; 0x10 <_ZN6SdFileD1Ev+0x10>
-  10:	cf 01       	movw	r24, r30
-  12:	04 96       	adiw	r24, 0x04	; 4
-  14:	0e 94 00 00 	call	0	; 0x0 <_ZN6SdFileD1Ev>
-  18:	08 95       	ret
 
 Disassembly of section .text._ZN6APDWeb25new_thingspeakconf_parserEPviPc:
 
@@ -25472,191 +25448,188 @@ APDWeb::~APDWeb()
  160:	89 2b       	or	r24, r25
  162:	01 f4       	brne	.+0      	; 0x164 <_ZN6APDWeb15pachube_loggingEv+0x164>
  164:	00 c0       	rjmp	.+0      	; 0x166 <_ZN6APDWeb15pachube_loggingEv+0x166>
- 166:	80 e0       	ldi	r24, 0x00	; 0
- 168:	90 e0       	ldi	r25, 0x00	; 0
- 16a:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb15pachube_loggingEv>
- 16e:	d5 01       	movw	r26, r10
- 170:	92 96       	adiw	r26, 0x22	; 34
- 172:	8d 91       	ld	r24, X+
- 174:	9c 91       	ld	r25, X
- 176:	93 97       	sbiw	r26, 0x23	; 35
- 178:	60 e0       	ldi	r22, 0x00	; 0
- 17a:	70 e0       	ldi	r23, 0x00	; 0
- 17c:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb15pachube_loggingEv>
- 180:	f5 01       	movw	r30, r10
- 182:	82 a1       	ldd	r24, Z+34	; 0x22
- 184:	93 a1       	ldd	r25, Z+35	; 0x23
- 186:	b4 01       	movw	r22, r8
- 188:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb15pachube_loggingEv>
- 18c:	d5 01       	movw	r26, r10
- 18e:	92 96       	adiw	r26, 0x22	; 34
- 190:	8d 91       	ld	r24, X+
- 192:	9c 91       	ld	r25, X
- 194:	93 97       	sbiw	r26, 0x23	; 35
- 196:	60 e0       	ldi	r22, 0x00	; 0
- 198:	70 e0       	ldi	r23, 0x00	; 0
- 19a:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb15pachube_loggingEv>
- 19e:	f5 01       	movw	r30, r10
- 1a0:	82 a1       	ldd	r24, Z+34	; 0x22
- 1a2:	93 a1       	ldd	r25, Z+35	; 0x23
- 1a4:	60 e0       	ldi	r22, 0x00	; 0
- 1a6:	70 e0       	ldi	r23, 0x00	; 0
- 1a8:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb15pachube_loggingEv>
- 1ac:	d5 01       	movw	r26, r10
- 1ae:	92 96       	adiw	r26, 0x22	; 34
- 1b0:	8d 91       	ld	r24, X+
- 1b2:	9c 91       	ld	r25, X
- 1b4:	93 97       	sbiw	r26, 0x23	; 35
- 1b6:	b3 01       	movw	r22, r6
- 1b8:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb15pachube_loggingEv>
- 1bc:	f5 01       	movw	r30, r10
- 1be:	82 a1       	ldd	r24, Z+34	; 0x22
- 1c0:	93 a1       	ldd	r25, Z+35	; 0x23
- 1c2:	60 e0       	ldi	r22, 0x00	; 0
- 1c4:	70 e0       	ldi	r23, 0x00	; 0
- 1c6:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb15pachube_loggingEv>
- 1ca:	b5 01       	movw	r22, r10
- 1cc:	67 5f       	subi	r22, 0xF7	; 247
- 1ce:	7e 4f       	sbci	r23, 0xFE	; 254
- 1d0:	d5 01       	movw	r26, r10
- 1d2:	92 96       	adiw	r26, 0x22	; 34
- 1d4:	8d 91       	ld	r24, X+
- 1d6:	9c 91       	ld	r25, X
- 1d8:	93 97       	sbiw	r26, 0x23	; 35
- 1da:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb15pachube_loggingEv>
- 1de:	f5 01       	movw	r30, r10
- 1e0:	82 a1       	ldd	r24, Z+34	; 0x22
- 1e2:	93 a1       	ldd	r25, Z+35	; 0x23
- 1e4:	60 e0       	ldi	r22, 0x00	; 0
- 1e6:	70 e0       	ldi	r23, 0x00	; 0
- 1e8:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb15pachube_loggingEv>
- 1ec:	d5 01       	movw	r26, r10
- 1ee:	92 96       	adiw	r26, 0x22	; 34
- 1f0:	8d 91       	ld	r24, X+
- 1f2:	9c 91       	ld	r25, X
- 1f4:	93 97       	sbiw	r26, 0x23	; 35
- 1f6:	60 e0       	ldi	r22, 0x00	; 0
- 1f8:	70 e0       	ldi	r23, 0x00	; 0
- 1fa:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb15pachube_loggingEv>
- 1fe:	f5 01       	movw	r30, r10
- 200:	82 a1       	ldd	r24, Z+34	; 0x22
- 202:	93 a1       	ldd	r25, Z+35	; 0x23
- 204:	60 e0       	ldi	r22, 0x00	; 0
- 206:	70 e0       	ldi	r23, 0x00	; 0
- 208:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb15pachube_loggingEv>
- 20c:	d5 01       	movw	r26, r10
- 20e:	92 96       	adiw	r26, 0x22	; 34
- 210:	8d 91       	ld	r24, X+
- 212:	9c 91       	ld	r25, X
- 214:	93 97       	sbiw	r26, 0x23	; 35
- 216:	60 e0       	ldi	r22, 0x00	; 0
- 218:	70 e0       	ldi	r23, 0x00	; 0
- 21a:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb15pachube_loggingEv>
- 21e:	f2 01       	movw	r30, r4
- 220:	01 90       	ld	r0, Z+
- 222:	00 20       	and	r0, r0
- 224:	01 f4       	brne	.+0      	; 0x226 <_ZN6APDWeb15pachube_loggingEv+0x226>
- 226:	31 97       	sbiw	r30, 0x01	; 1
- 228:	e4 19       	sub	r30, r4
- 22a:	f5 09       	sbc	r31, r5
- 22c:	d5 01       	movw	r26, r10
- 22e:	92 96       	adiw	r26, 0x22	; 34
- 230:	8d 91       	ld	r24, X+
- 232:	9c 91       	ld	r25, X
- 234:	93 97       	sbiw	r26, 0x23	; 35
- 236:	bf 01       	movw	r22, r30
- 238:	4a e0       	ldi	r20, 0x0A	; 10
- 23a:	50 e0       	ldi	r21, 0x00	; 0
- 23c:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb15pachube_loggingEv>
- 240:	f5 01       	movw	r30, r10
- 242:	82 a1       	ldd	r24, Z+34	; 0x22
- 244:	93 a1       	ldd	r25, Z+35	; 0x23
- 246:	60 e0       	ldi	r22, 0x00	; 0
- 248:	70 e0       	ldi	r23, 0x00	; 0
- 24a:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb15pachube_loggingEv>
- 24e:	d5 01       	movw	r26, r10
- 250:	92 96       	adiw	r26, 0x22	; 34
- 252:	8d 91       	ld	r24, X+
- 254:	9c 91       	ld	r25, X
- 256:	93 97       	sbiw	r26, 0x23	; 35
- 258:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb15pachube_loggingEv>
- 25c:	f5 01       	movw	r30, r10
- 25e:	82 a1       	ldd	r24, Z+34	; 0x22
- 260:	93 a1       	ldd	r25, Z+35	; 0x23
- 262:	b2 01       	movw	r22, r4
+ 166:	d5 01       	movw	r26, r10
+ 168:	92 96       	adiw	r26, 0x22	; 34
+ 16a:	8d 91       	ld	r24, X+
+ 16c:	9c 91       	ld	r25, X
+ 16e:	93 97       	sbiw	r26, 0x23	; 35
+ 170:	60 e0       	ldi	r22, 0x00	; 0
+ 172:	70 e0       	ldi	r23, 0x00	; 0
+ 174:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb15pachube_loggingEv>
+ 178:	f5 01       	movw	r30, r10
+ 17a:	82 a1       	ldd	r24, Z+34	; 0x22
+ 17c:	93 a1       	ldd	r25, Z+35	; 0x23
+ 17e:	b4 01       	movw	r22, r8
+ 180:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb15pachube_loggingEv>
+ 184:	d5 01       	movw	r26, r10
+ 186:	92 96       	adiw	r26, 0x22	; 34
+ 188:	8d 91       	ld	r24, X+
+ 18a:	9c 91       	ld	r25, X
+ 18c:	93 97       	sbiw	r26, 0x23	; 35
+ 18e:	60 e0       	ldi	r22, 0x00	; 0
+ 190:	70 e0       	ldi	r23, 0x00	; 0
+ 192:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb15pachube_loggingEv>
+ 196:	f5 01       	movw	r30, r10
+ 198:	82 a1       	ldd	r24, Z+34	; 0x22
+ 19a:	93 a1       	ldd	r25, Z+35	; 0x23
+ 19c:	60 e0       	ldi	r22, 0x00	; 0
+ 19e:	70 e0       	ldi	r23, 0x00	; 0
+ 1a0:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb15pachube_loggingEv>
+ 1a4:	d5 01       	movw	r26, r10
+ 1a6:	92 96       	adiw	r26, 0x22	; 34
+ 1a8:	8d 91       	ld	r24, X+
+ 1aa:	9c 91       	ld	r25, X
+ 1ac:	93 97       	sbiw	r26, 0x23	; 35
+ 1ae:	b3 01       	movw	r22, r6
+ 1b0:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb15pachube_loggingEv>
+ 1b4:	f5 01       	movw	r30, r10
+ 1b6:	82 a1       	ldd	r24, Z+34	; 0x22
+ 1b8:	93 a1       	ldd	r25, Z+35	; 0x23
+ 1ba:	60 e0       	ldi	r22, 0x00	; 0
+ 1bc:	70 e0       	ldi	r23, 0x00	; 0
+ 1be:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb15pachube_loggingEv>
+ 1c2:	b5 01       	movw	r22, r10
+ 1c4:	67 5f       	subi	r22, 0xF7	; 247
+ 1c6:	7e 4f       	sbci	r23, 0xFE	; 254
+ 1c8:	d5 01       	movw	r26, r10
+ 1ca:	92 96       	adiw	r26, 0x22	; 34
+ 1cc:	8d 91       	ld	r24, X+
+ 1ce:	9c 91       	ld	r25, X
+ 1d0:	93 97       	sbiw	r26, 0x23	; 35
+ 1d2:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb15pachube_loggingEv>
+ 1d6:	f5 01       	movw	r30, r10
+ 1d8:	82 a1       	ldd	r24, Z+34	; 0x22
+ 1da:	93 a1       	ldd	r25, Z+35	; 0x23
+ 1dc:	60 e0       	ldi	r22, 0x00	; 0
+ 1de:	70 e0       	ldi	r23, 0x00	; 0
+ 1e0:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb15pachube_loggingEv>
+ 1e4:	d5 01       	movw	r26, r10
+ 1e6:	92 96       	adiw	r26, 0x22	; 34
+ 1e8:	8d 91       	ld	r24, X+
+ 1ea:	9c 91       	ld	r25, X
+ 1ec:	93 97       	sbiw	r26, 0x23	; 35
+ 1ee:	60 e0       	ldi	r22, 0x00	; 0
+ 1f0:	70 e0       	ldi	r23, 0x00	; 0
+ 1f2:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb15pachube_loggingEv>
+ 1f6:	f5 01       	movw	r30, r10
+ 1f8:	82 a1       	ldd	r24, Z+34	; 0x22
+ 1fa:	93 a1       	ldd	r25, Z+35	; 0x23
+ 1fc:	60 e0       	ldi	r22, 0x00	; 0
+ 1fe:	70 e0       	ldi	r23, 0x00	; 0
+ 200:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb15pachube_loggingEv>
+ 204:	d5 01       	movw	r26, r10
+ 206:	92 96       	adiw	r26, 0x22	; 34
+ 208:	8d 91       	ld	r24, X+
+ 20a:	9c 91       	ld	r25, X
+ 20c:	93 97       	sbiw	r26, 0x23	; 35
+ 20e:	60 e0       	ldi	r22, 0x00	; 0
+ 210:	70 e0       	ldi	r23, 0x00	; 0
+ 212:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb15pachube_loggingEv>
+ 216:	f2 01       	movw	r30, r4
+ 218:	01 90       	ld	r0, Z+
+ 21a:	00 20       	and	r0, r0
+ 21c:	01 f4       	brne	.+0      	; 0x21e <_ZN6APDWeb15pachube_loggingEv+0x21e>
+ 21e:	31 97       	sbiw	r30, 0x01	; 1
+ 220:	e4 19       	sub	r30, r4
+ 222:	f5 09       	sbc	r31, r5
+ 224:	d5 01       	movw	r26, r10
+ 226:	92 96       	adiw	r26, 0x22	; 34
+ 228:	8d 91       	ld	r24, X+
+ 22a:	9c 91       	ld	r25, X
+ 22c:	93 97       	sbiw	r26, 0x23	; 35
+ 22e:	bf 01       	movw	r22, r30
+ 230:	4a e0       	ldi	r20, 0x0A	; 10
+ 232:	50 e0       	ldi	r21, 0x00	; 0
+ 234:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb15pachube_loggingEv>
+ 238:	f5 01       	movw	r30, r10
+ 23a:	82 a1       	ldd	r24, Z+34	; 0x22
+ 23c:	93 a1       	ldd	r25, Z+35	; 0x23
+ 23e:	60 e0       	ldi	r22, 0x00	; 0
+ 240:	70 e0       	ldi	r23, 0x00	; 0
+ 242:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb15pachube_loggingEv>
+ 246:	d5 01       	movw	r26, r10
+ 248:	92 96       	adiw	r26, 0x22	; 34
+ 24a:	8d 91       	ld	r24, X+
+ 24c:	9c 91       	ld	r25, X
+ 24e:	93 97       	sbiw	r26, 0x23	; 35
+ 250:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb15pachube_loggingEv>
+ 254:	f5 01       	movw	r30, r10
+ 256:	82 a1       	ldd	r24, Z+34	; 0x22
+ 258:	93 a1       	ldd	r25, Z+35	; 0x23
+ 25a:	b2 01       	movw	r22, r4
+ 25c:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb15pachube_loggingEv>
+ 260:	80 e0       	ldi	r24, 0x00	; 0
+ 262:	90 e0       	ldi	r25, 0x00	; 0
  264:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb15pachube_loggingEv>
- 268:	80 e0       	ldi	r24, 0x00	; 0
- 26a:	90 e0       	ldi	r25, 0x00	; 0
- 26c:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb15pachube_loggingEv>
- 270:	00 c0       	rjmp	.+0      	; 0x272 <_ZN6APDWeb15pachube_loggingEv+0x272>
- 272:	80 e0       	ldi	r24, 0x00	; 0
- 274:	90 e0       	ldi	r25, 0x00	; 0
- 276:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb15pachube_loggingEv>
- 27a:	d5 01       	movw	r26, r10
- 27c:	92 96       	adiw	r26, 0x22	; 34
- 27e:	ed 91       	ld	r30, X+
- 280:	fc 91       	ld	r31, X
- 282:	93 97       	sbiw	r26, 0x23	; 35
- 284:	a0 81       	ld	r26, Z
- 286:	b1 81       	ldd	r27, Z+1	; 0x01
- 288:	52 96       	adiw	r26, 0x12	; 18
- 28a:	2d 91       	ld	r18, X+
- 28c:	3c 91       	ld	r19, X
- 28e:	53 97       	sbiw	r26, 0x13	; 19
- 290:	cf 01       	movw	r24, r30
- 292:	f9 01       	movw	r30, r18
- 294:	19 95       	eicall
- 296:	00 c0       	rjmp	.+0      	; 0x298 <_ZN6APDWeb15pachube_loggingEv+0x298>
- 298:	80 e0       	ldi	r24, 0x00	; 0
- 29a:	90 e0       	ldi	r25, 0x00	; 0
- 29c:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb15pachube_loggingEv>
- 2a0:	c5 01       	movw	r24, r10
- 2a2:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb15pachube_loggingEv>
- 2a6:	f5 01       	movw	r30, r10
- 2a8:	a2 a1       	ldd	r26, Z+34	; 0x22
- 2aa:	b3 a1       	ldd	r27, Z+35	; 0x23
- 2ac:	10 97       	sbiw	r26, 0x00	; 0
- 2ae:	01 f0       	breq	.+0      	; 0x2b0 <_ZN6APDWeb15pachube_loggingEv+0x2b0>
- 2b0:	ed 91       	ld	r30, X+
- 2b2:	fc 91       	ld	r31, X
- 2b4:	11 97       	sbiw	r26, 0x01	; 1
- 2b6:	04 88       	ldd	r0, Z+20	; 0x14
- 2b8:	f5 89       	ldd	r31, Z+21	; 0x15
- 2ba:	e0 2d       	mov	r30, r0
- 2bc:	cd 01       	movw	r24, r26
- 2be:	19 95       	eicall
- 2c0:	88 23       	and	r24, r24
- 2c2:	01 f0       	breq	.+0      	; 0x2c4 <_ZN6APDWeb15pachube_loggingEv+0x2c4>
- 2c4:	81 e0       	ldi	r24, 0x01	; 1
- 2c6:	00 c0       	rjmp	.+0      	; 0x2c8 <_ZN6APDWeb15pachube_loggingEv+0x2c8>
- 2c8:	80 e0       	ldi	r24, 0x00	; 0
- 2ca:	d5 01       	movw	r26, r10
- 2cc:	98 96       	adiw	r26, 0x28	; 40
- 2ce:	8c 93       	st	X, r24
- 2d0:	ca 5b       	subi	r28, 0xBA	; 186
- 2d2:	dd 4f       	sbci	r29, 0xFD	; 253
- 2d4:	0f b6       	in	r0, 0x3f	; 63
- 2d6:	f8 94       	cli
- 2d8:	de bf       	out	0x3e, r29	; 62
- 2da:	0f be       	out	0x3f, r0	; 63
- 2dc:	cd bf       	out	0x3d, r28	; 61
- 2de:	cf 91       	pop	r28
- 2e0:	df 91       	pop	r29
- 2e2:	1f 91       	pop	r17
- 2e4:	0f 91       	pop	r16
- 2e6:	ff 90       	pop	r15
- 2e8:	ef 90       	pop	r14
- 2ea:	df 90       	pop	r13
- 2ec:	cf 90       	pop	r12
- 2ee:	bf 90       	pop	r11
- 2f0:	af 90       	pop	r10
- 2f2:	9f 90       	pop	r9
- 2f4:	8f 90       	pop	r8
- 2f6:	7f 90       	pop	r7
- 2f8:	6f 90       	pop	r6
- 2fa:	5f 90       	pop	r5
- 2fc:	4f 90       	pop	r4
- 2fe:	08 95       	ret
+ 268:	00 c0       	rjmp	.+0      	; 0x26a <_ZN6APDWeb15pachube_loggingEv+0x26a>
+ 26a:	80 e0       	ldi	r24, 0x00	; 0
+ 26c:	90 e0       	ldi	r25, 0x00	; 0
+ 26e:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb15pachube_loggingEv>
+ 272:	d5 01       	movw	r26, r10
+ 274:	92 96       	adiw	r26, 0x22	; 34
+ 276:	ed 91       	ld	r30, X+
+ 278:	fc 91       	ld	r31, X
+ 27a:	93 97       	sbiw	r26, 0x23	; 35
+ 27c:	a0 81       	ld	r26, Z
+ 27e:	b1 81       	ldd	r27, Z+1	; 0x01
+ 280:	52 96       	adiw	r26, 0x12	; 18
+ 282:	2d 91       	ld	r18, X+
+ 284:	3c 91       	ld	r19, X
+ 286:	53 97       	sbiw	r26, 0x13	; 19
+ 288:	cf 01       	movw	r24, r30
+ 28a:	f9 01       	movw	r30, r18
+ 28c:	19 95       	eicall
+ 28e:	00 c0       	rjmp	.+0      	; 0x290 <_ZN6APDWeb15pachube_loggingEv+0x290>
+ 290:	80 e0       	ldi	r24, 0x00	; 0
+ 292:	90 e0       	ldi	r25, 0x00	; 0
+ 294:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb15pachube_loggingEv>
+ 298:	c5 01       	movw	r24, r10
+ 29a:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb15pachube_loggingEv>
+ 29e:	f5 01       	movw	r30, r10
+ 2a0:	a2 a1       	ldd	r26, Z+34	; 0x22
+ 2a2:	b3 a1       	ldd	r27, Z+35	; 0x23
+ 2a4:	10 97       	sbiw	r26, 0x00	; 0
+ 2a6:	01 f0       	breq	.+0      	; 0x2a8 <_ZN6APDWeb15pachube_loggingEv+0x2a8>
+ 2a8:	ed 91       	ld	r30, X+
+ 2aa:	fc 91       	ld	r31, X
+ 2ac:	11 97       	sbiw	r26, 0x01	; 1
+ 2ae:	04 88       	ldd	r0, Z+20	; 0x14
+ 2b0:	f5 89       	ldd	r31, Z+21	; 0x15
+ 2b2:	e0 2d       	mov	r30, r0
+ 2b4:	cd 01       	movw	r24, r26
+ 2b6:	19 95       	eicall
+ 2b8:	88 23       	and	r24, r24
+ 2ba:	01 f0       	breq	.+0      	; 0x2bc <_ZN6APDWeb15pachube_loggingEv+0x2bc>
+ 2bc:	81 e0       	ldi	r24, 0x01	; 1
+ 2be:	00 c0       	rjmp	.+0      	; 0x2c0 <_ZN6APDWeb15pachube_loggingEv+0x2c0>
+ 2c0:	80 e0       	ldi	r24, 0x00	; 0
+ 2c2:	d5 01       	movw	r26, r10
+ 2c4:	98 96       	adiw	r26, 0x28	; 40
+ 2c6:	8c 93       	st	X, r24
+ 2c8:	ca 5b       	subi	r28, 0xBA	; 186
+ 2ca:	dd 4f       	sbci	r29, 0xFD	; 253
+ 2cc:	0f b6       	in	r0, 0x3f	; 63
+ 2ce:	f8 94       	cli
+ 2d0:	de bf       	out	0x3e, r29	; 62
+ 2d2:	0f be       	out	0x3f, r0	; 63
+ 2d4:	cd bf       	out	0x3d, r28	; 61
+ 2d6:	cf 91       	pop	r28
+ 2d8:	df 91       	pop	r29
+ 2da:	1f 91       	pop	r17
+ 2dc:	0f 91       	pop	r16
+ 2de:	ff 90       	pop	r15
+ 2e0:	ef 90       	pop	r14
+ 2e2:	df 90       	pop	r13
+ 2e4:	cf 90       	pop	r12
+ 2e6:	bf 90       	pop	r11
+ 2e8:	af 90       	pop	r10
+ 2ea:	9f 90       	pop	r9
+ 2ec:	8f 90       	pop	r8
+ 2ee:	7f 90       	pop	r7
+ 2f0:	6f 90       	pop	r6
+ 2f2:	5f 90       	pop	r5
+ 2f4:	4f 90       	pop	r4
+ 2f6:	08 95       	ret
 
 Disassembly of section .text._ZN6APDWeb18get_lastlog_stringEPc:
 
@@ -26543,210 +26516,222 @@ APDWeb::~APDWeb()
  23e:	e8 17       	cp	r30, r24
  240:	f9 07       	cpc	r31, r25
  242:	01 f4       	brne	.+0      	; 0x244 <_ZN6APDWeb26processProvisioningRequestEP14EthernetClient+0x244>
- 244:	12 e6       	ldi	r17, 0x62	; 98
- 246:	c1 2e       	mov	r12, r17
- 248:	d1 2c       	mov	r13, r1
- 24a:	d7 01       	movw	r26, r14
- 24c:	ed 91       	ld	r30, X+
- 24e:	fc 91       	ld	r31, X
- 250:	04 80       	ldd	r0, Z+4	; 0x04
- 252:	f5 81       	ldd	r31, Z+5	; 0x05
- 254:	e0 2d       	mov	r30, r0
- 256:	c7 01       	movw	r24, r14
- 258:	19 95       	eicall
- 25a:	89 2b       	or	r24, r25
- 25c:	01 f0       	breq	.+0      	; 0x25e <_ZN6APDWeb26processProvisioningRequestEP14EthernetClient+0x25e>
- 25e:	c3 01       	movw	r24, r6
- 260:	66 e2       	ldi	r22, 0x26	; 38
- 262:	70 e0       	ldi	r23, 0x00	; 0
- 264:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb26processProvisioningRequestEP14EthernetClient>
- 268:	00 97       	sbiw	r24, 0x00	; 0
- 26a:	01 f4       	brne	.+0      	; 0x26c <_ZN6APDWeb26processProvisioningRequestEP14EthernetClient+0x26c>
- 26c:	d7 01       	movw	r26, r14
- 26e:	ed 91       	ld	r30, X+
- 270:	fc 91       	ld	r31, X
- 272:	06 80       	ldd	r0, Z+6	; 0x06
- 274:	f7 81       	ldd	r31, Z+7	; 0x07
- 276:	e0 2d       	mov	r30, r0
- 278:	c7 01       	movw	r24, r14
- 27a:	19 95       	eicall
- 27c:	18 2f       	mov	r17, r24
- 27e:	8b 32       	cpi	r24, 0x2B	; 43
- 280:	01 f0       	breq	.+0      	; 0x282 <_ZN6APDWeb26processProvisioningRequestEP14EthernetClient+0x282>
- 282:	00 c0       	rjmp	.+0      	; 0x284 <_ZN6APDWeb26processProvisioningRequestEP14EthernetClient+0x284>
- 284:	00 c0       	rjmp	.+0      	; 0x286 <_ZN6APDWeb26processProvisioningRequestEP14EthernetClient+0x286>
- 286:	89 8d       	ldd	r24, Y+25	; 0x19
- 288:	88 23       	and	r24, r24
- 28a:	01 f0       	breq	.+0      	; 0x28c <_ZN6APDWeb26processProvisioningRequestEP14EthernetClient+0x28c>
- 28c:	ce 01       	movw	r24, r28
- 28e:	46 96       	adiw	r24, 0x16	; 22
- 290:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb26processProvisioningRequestEP14EthernetClient>
- 294:	8c 81       	ldd	r24, Y+4	; 0x04
- 296:	88 23       	and	r24, r24
- 298:	01 f0       	breq	.+0      	; 0x29a <_ZN6APDWeb26processProvisioningRequestEP14EthernetClient+0x29a>
- 29a:	d5 01       	movw	r26, r10
- 29c:	9c 96       	adiw	r26, 0x2c	; 44
- 29e:	ed 91       	ld	r30, X+
- 2a0:	fc 91       	ld	r31, X
- 2a2:	9d 97       	sbiw	r26, 0x2d	; 45
- 2a4:	80 85       	ldd	r24, Z+8	; 0x08
- 2a6:	91 85       	ldd	r25, Z+9	; 0x09
- 2a8:	b1 01       	movw	r22, r2
- 2aa:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb26processProvisioningRequestEP14EthernetClient>
- 2ae:	88 23       	and	r24, r24
- 2b0:	01 f0       	breq	.+0      	; 0x2b2 <_ZN6APDWeb26processProvisioningRequestEP14EthernetClient+0x2b2>
- 2b2:	d5 01       	movw	r26, r10
- 2b4:	9c 96       	adiw	r26, 0x2c	; 44
- 2b6:	ed 91       	ld	r30, X+
- 2b8:	fc 91       	ld	r31, X
- 2ba:	9d 97       	sbiw	r26, 0x2d	; 45
- 2bc:	80 85       	ldd	r24, Z+8	; 0x08
- 2be:	91 85       	ldd	r25, Z+9	; 0x09
- 2c0:	b1 01       	movw	r22, r2
- 2c2:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb26processProvisioningRequestEP14EthernetClient>
- 2c6:	d5 01       	movw	r26, r10
- 2c8:	9c 96       	adiw	r26, 0x2c	; 44
- 2ca:	ed 91       	ld	r30, X+
- 2cc:	fc 91       	ld	r31, X
- 2ce:	9d 97       	sbiw	r26, 0x2d	; 45
- 2d0:	80 85       	ldd	r24, Z+8	; 0x08
- 2d2:	91 85       	ldd	r25, Z+9	; 0x09
- 2d4:	60 e0       	ldi	r22, 0x00	; 0
- 2d6:	70 e0       	ldi	r23, 0x00	; 0
- 2d8:	a1 01       	movw	r20, r2
- 2da:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb26processProvisioningRequestEP14EthernetClient>
- 2de:	cb 56       	subi	r28, 0x6B	; 107
- 2e0:	df 4f       	sbci	r29, 0xFF	; 255
- 2e2:	b8 81       	ld	r27, Y
- 2e4:	c5 59       	subi	r28, 0x95	; 149
- 2e6:	d0 40       	sbci	r29, 0x00	; 0
- 2e8:	bf 5f       	subi	r27, 0xFF	; 255
+ 244:	61 e0       	ldi	r22, 0x01	; 1
+ 246:	70 e0       	ldi	r23, 0x00	; 0
+ 248:	80 e0       	ldi	r24, 0x00	; 0
+ 24a:	90 e0       	ldi	r25, 0x00	; 0
+ 24c:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb26processProvisioningRequestEP14EthernetClient>
+ 250:	12 e6       	ldi	r17, 0x62	; 98
+ 252:	c1 2e       	mov	r12, r17
+ 254:	d1 2c       	mov	r13, r1
+ 256:	d7 01       	movw	r26, r14
+ 258:	ed 91       	ld	r30, X+
+ 25a:	fc 91       	ld	r31, X
+ 25c:	04 80       	ldd	r0, Z+4	; 0x04
+ 25e:	f5 81       	ldd	r31, Z+5	; 0x05
+ 260:	e0 2d       	mov	r30, r0
+ 262:	c7 01       	movw	r24, r14
+ 264:	19 95       	eicall
+ 266:	89 2b       	or	r24, r25
+ 268:	01 f0       	breq	.+0      	; 0x26a <_ZN6APDWeb26processProvisioningRequestEP14EthernetClient+0x26a>
+ 26a:	c3 01       	movw	r24, r6
+ 26c:	66 e2       	ldi	r22, 0x26	; 38
+ 26e:	70 e0       	ldi	r23, 0x00	; 0
+ 270:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb26processProvisioningRequestEP14EthernetClient>
+ 274:	00 97       	sbiw	r24, 0x00	; 0
+ 276:	01 f4       	brne	.+0      	; 0x278 <_ZN6APDWeb26processProvisioningRequestEP14EthernetClient+0x278>
+ 278:	d7 01       	movw	r26, r14
+ 27a:	ed 91       	ld	r30, X+
+ 27c:	fc 91       	ld	r31, X
+ 27e:	06 80       	ldd	r0, Z+6	; 0x06
+ 280:	f7 81       	ldd	r31, Z+7	; 0x07
+ 282:	e0 2d       	mov	r30, r0
+ 284:	c7 01       	movw	r24, r14
+ 286:	19 95       	eicall
+ 288:	18 2f       	mov	r17, r24
+ 28a:	8b 32       	cpi	r24, 0x2B	; 43
+ 28c:	01 f0       	breq	.+0      	; 0x28e <_ZN6APDWeb26processProvisioningRequestEP14EthernetClient+0x28e>
+ 28e:	00 c0       	rjmp	.+0      	; 0x290 <_ZN6APDWeb26processProvisioningRequestEP14EthernetClient+0x290>
+ 290:	00 c0       	rjmp	.+0      	; 0x292 <_ZN6APDWeb26processProvisioningRequestEP14EthernetClient+0x292>
+ 292:	89 8d       	ldd	r24, Y+25	; 0x19
+ 294:	88 23       	and	r24, r24
+ 296:	01 f0       	breq	.+0      	; 0x298 <_ZN6APDWeb26processProvisioningRequestEP14EthernetClient+0x298>
+ 298:	ce 01       	movw	r24, r28
+ 29a:	46 96       	adiw	r24, 0x16	; 22
+ 29c:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb26processProvisioningRequestEP14EthernetClient>
+ 2a0:	8c 81       	ldd	r24, Y+4	; 0x04
+ 2a2:	88 23       	and	r24, r24
+ 2a4:	01 f0       	breq	.+0      	; 0x2a6 <_ZN6APDWeb26processProvisioningRequestEP14EthernetClient+0x2a6>
+ 2a6:	d5 01       	movw	r26, r10
+ 2a8:	9c 96       	adiw	r26, 0x2c	; 44
+ 2aa:	ed 91       	ld	r30, X+
+ 2ac:	fc 91       	ld	r31, X
+ 2ae:	9d 97       	sbiw	r26, 0x2d	; 45
+ 2b0:	80 85       	ldd	r24, Z+8	; 0x08
+ 2b2:	91 85       	ldd	r25, Z+9	; 0x09
+ 2b4:	b1 01       	movw	r22, r2
+ 2b6:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb26processProvisioningRequestEP14EthernetClient>
+ 2ba:	88 23       	and	r24, r24
+ 2bc:	01 f0       	breq	.+0      	; 0x2be <_ZN6APDWeb26processProvisioningRequestEP14EthernetClient+0x2be>
+ 2be:	d5 01       	movw	r26, r10
+ 2c0:	9c 96       	adiw	r26, 0x2c	; 44
+ 2c2:	ed 91       	ld	r30, X+
+ 2c4:	fc 91       	ld	r31, X
+ 2c6:	9d 97       	sbiw	r26, 0x2d	; 45
+ 2c8:	80 85       	ldd	r24, Z+8	; 0x08
+ 2ca:	91 85       	ldd	r25, Z+9	; 0x09
+ 2cc:	b1 01       	movw	r22, r2
+ 2ce:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb26processProvisioningRequestEP14EthernetClient>
+ 2d2:	d5 01       	movw	r26, r10
+ 2d4:	9c 96       	adiw	r26, 0x2c	; 44
+ 2d6:	ed 91       	ld	r30, X+
+ 2d8:	fc 91       	ld	r31, X
+ 2da:	9d 97       	sbiw	r26, 0x2d	; 45
+ 2dc:	80 85       	ldd	r24, Z+8	; 0x08
+ 2de:	91 85       	ldd	r25, Z+9	; 0x09
+ 2e0:	60 e0       	ldi	r22, 0x00	; 0
+ 2e2:	70 e0       	ldi	r23, 0x00	; 0
+ 2e4:	a1 01       	movw	r20, r2
+ 2e6:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb26processProvisioningRequestEP14EthernetClient>
  2ea:	cb 56       	subi	r28, 0x6B	; 107
  2ec:	df 4f       	sbci	r29, 0xFF	; 255
- 2ee:	b8 83       	st	Y, r27
+ 2ee:	b8 81       	ld	r27, Y
  2f0:	c5 59       	subi	r28, 0x95	; 149
  2f2:	d0 40       	sbci	r29, 0x00	; 0
- 2f4:	c3 01       	movw	r24, r6
- 2f6:	66 e2       	ldi	r22, 0x26	; 38
- 2f8:	70 e0       	ldi	r23, 0x00	; 0
- 2fa:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb26processProvisioningRequestEP14EthernetClient>
- 2fe:	fc 01       	movw	r30, r24
- 300:	00 97       	sbiw	r24, 0x00	; 0
- 302:	01 f0       	breq	.+0      	; 0x304 <_ZN6APDWeb26processProvisioningRequestEP14EthernetClient+0x304>
- 304:	10 82       	st	Z, r1
- 306:	ce 01       	movw	r24, r28
- 308:	42 96       	adiw	r24, 0x12	; 18
- 30a:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb26processProvisioningRequestEP14EthernetClient>
- 30e:	00 c0       	rjmp	.+0      	; 0x310 <_ZN6APDWeb26processProvisioningRequestEP14EthernetClient+0x310>
- 310:	cb 56       	subi	r28, 0x6B	; 107
- 312:	df 4f       	sbci	r29, 0xFF	; 255
- 314:	e8 81       	ld	r30, Y
- 316:	c5 59       	subi	r28, 0x95	; 149
- 318:	d0 40       	sbci	r29, 0x00	; 0
- 31a:	ee 23       	and	r30, r30
- 31c:	01 f4       	brne	.+0      	; 0x31e <_ZN6APDWeb26processProvisioningRequestEP14EthernetClient+0x31e>
- 31e:	c7 01       	movw	r24, r14
- 320:	60 e0       	ldi	r22, 0x00	; 0
- 322:	70 e0       	ldi	r23, 0x00	; 0
+ 2f4:	bf 5f       	subi	r27, 0xFF	; 255
+ 2f6:	cb 56       	subi	r28, 0x6B	; 107
+ 2f8:	df 4f       	sbci	r29, 0xFF	; 255
+ 2fa:	b8 83       	st	Y, r27
+ 2fc:	c5 59       	subi	r28, 0x95	; 149
+ 2fe:	d0 40       	sbci	r29, 0x00	; 0
+ 300:	c3 01       	movw	r24, r6
+ 302:	66 e2       	ldi	r22, 0x26	; 38
+ 304:	70 e0       	ldi	r23, 0x00	; 0
+ 306:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb26processProvisioningRequestEP14EthernetClient>
+ 30a:	fc 01       	movw	r30, r24
+ 30c:	00 97       	sbiw	r24, 0x00	; 0
+ 30e:	01 f0       	breq	.+0      	; 0x310 <_ZN6APDWeb26processProvisioningRequestEP14EthernetClient+0x310>
+ 310:	10 82       	st	Z, r1
+ 312:	e0 e0       	ldi	r30, 0x00	; 0
+ 314:	f0 e0       	ldi	r31, 0x00	; 0
+ 316:	fb 8b       	std	Y+19, r31	; 0x13
+ 318:	ea 8b       	std	Y+18, r30	; 0x12
+ 31a:	89 8d       	ldd	r24, Y+25	; 0x19
+ 31c:	88 23       	and	r24, r24
+ 31e:	01 f0       	breq	.+0      	; 0x320 <_ZN6APDWeb26processProvisioningRequestEP14EthernetClient+0x320>
+ 320:	ce 01       	movw	r24, r28
+ 322:	46 96       	adiw	r24, 0x16	; 22
  324:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb26processProvisioningRequestEP14EthernetClient>
- 328:	d7 01       	movw	r26, r14
- 32a:	ed 91       	ld	r30, X+
- 32c:	fc 91       	ld	r31, X
- 32e:	04 80       	ldd	r0, Z+4	; 0x04
- 330:	f5 81       	ldd	r31, Z+5	; 0x05
- 332:	e0 2d       	mov	r30, r0
- 334:	c7 01       	movw	r24, r14
- 336:	19 95       	eicall
- 338:	89 2b       	or	r24, r25
- 33a:	01 f0       	breq	.+0      	; 0x33c <_ZN6APDWeb26processProvisioningRequestEP14EthernetClient+0x33c>
- 33c:	00 c0       	rjmp	.+0      	; 0x33e <_ZN6APDWeb26processProvisioningRequestEP14EthernetClient+0x33e>
- 33e:	c7 01       	movw	r24, r14
- 340:	60 e0       	ldi	r22, 0x00	; 0
- 342:	70 e0       	ldi	r23, 0x00	; 0
- 344:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb26processProvisioningRequestEP14EthernetClient>
- 348:	c7 01       	movw	r24, r14
- 34a:	60 e0       	ldi	r22, 0x00	; 0
- 34c:	70 e0       	ldi	r23, 0x00	; 0
- 34e:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb26processProvisioningRequestEP14EthernetClient>
- 352:	c7 01       	movw	r24, r14
- 354:	b4 01       	movw	r22, r8
- 356:	4a e0       	ldi	r20, 0x0A	; 10
- 358:	50 e0       	ldi	r21, 0x00	; 0
- 35a:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb26processProvisioningRequestEP14EthernetClient>
- 35e:	c7 01       	movw	r24, r14
- 360:	60 e0       	ldi	r22, 0x00	; 0
- 362:	70 e0       	ldi	r23, 0x00	; 0
- 364:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb26processProvisioningRequestEP14EthernetClient>
- 368:	c7 01       	movw	r24, r14
- 36a:	b4 01       	movw	r22, r8
- 36c:	4a e0       	ldi	r20, 0x0A	; 10
- 36e:	50 e0       	ldi	r21, 0x00	; 0
- 370:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb26processProvisioningRequestEP14EthernetClient>
- 374:	c7 01       	movw	r24, r14
- 376:	60 e0       	ldi	r22, 0x00	; 0
- 378:	70 e0       	ldi	r23, 0x00	; 0
- 37a:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb26processProvisioningRequestEP14EthernetClient>
- 37e:	c7 01       	movw	r24, r14
- 380:	cb 56       	subi	r28, 0x6B	; 107
- 382:	df 4f       	sbci	r29, 0xFF	; 255
- 384:	68 81       	ld	r22, Y
- 386:	c5 59       	subi	r28, 0x95	; 149
- 388:	d0 40       	sbci	r29, 0x00	; 0
- 38a:	4a e0       	ldi	r20, 0x0A	; 10
- 38c:	50 e0       	ldi	r21, 0x00	; 0
- 38e:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb26processProvisioningRequestEP14EthernetClient>
- 392:	c7 01       	movw	r24, r14
- 394:	60 e0       	ldi	r22, 0x00	; 0
- 396:	70 e0       	ldi	r23, 0x00	; 0
- 398:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb26processProvisioningRequestEP14EthernetClient>
- 39c:	84 14       	cp	r8, r4
- 39e:	95 04       	cpc	r9, r5
- 3a0:	01 f0       	breq	.+0      	; 0x3a2 <_ZN6APDWeb26processProvisioningRequestEP14EthernetClient+0x3a2>
- 3a2:	c7 01       	movw	r24, r14
- 3a4:	60 e0       	ldi	r22, 0x00	; 0
- 3a6:	70 e0       	ldi	r23, 0x00	; 0
+ 328:	00 c0       	rjmp	.+0      	; 0x32a <_ZN6APDWeb26processProvisioningRequestEP14EthernetClient+0x32a>
+ 32a:	cb 56       	subi	r28, 0x6B	; 107
+ 32c:	df 4f       	sbci	r29, 0xFF	; 255
+ 32e:	f8 81       	ld	r31, Y
+ 330:	c5 59       	subi	r28, 0x95	; 149
+ 332:	d0 40       	sbci	r29, 0x00	; 0
+ 334:	ff 23       	and	r31, r31
+ 336:	01 f4       	brne	.+0      	; 0x338 <_ZN6APDWeb26processProvisioningRequestEP14EthernetClient+0x338>
+ 338:	c7 01       	movw	r24, r14
+ 33a:	60 e0       	ldi	r22, 0x00	; 0
+ 33c:	70 e0       	ldi	r23, 0x00	; 0
+ 33e:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb26processProvisioningRequestEP14EthernetClient>
+ 342:	d7 01       	movw	r26, r14
+ 344:	ed 91       	ld	r30, X+
+ 346:	fc 91       	ld	r31, X
+ 348:	04 80       	ldd	r0, Z+4	; 0x04
+ 34a:	f5 81       	ldd	r31, Z+5	; 0x05
+ 34c:	e0 2d       	mov	r30, r0
+ 34e:	c7 01       	movw	r24, r14
+ 350:	19 95       	eicall
+ 352:	89 2b       	or	r24, r25
+ 354:	01 f0       	breq	.+0      	; 0x356 <_ZN6APDWeb26processProvisioningRequestEP14EthernetClient+0x356>
+ 356:	00 c0       	rjmp	.+0      	; 0x358 <_ZN6APDWeb26processProvisioningRequestEP14EthernetClient+0x358>
+ 358:	c7 01       	movw	r24, r14
+ 35a:	60 e0       	ldi	r22, 0x00	; 0
+ 35c:	70 e0       	ldi	r23, 0x00	; 0
+ 35e:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb26processProvisioningRequestEP14EthernetClient>
+ 362:	c7 01       	movw	r24, r14
+ 364:	60 e0       	ldi	r22, 0x00	; 0
+ 366:	70 e0       	ldi	r23, 0x00	; 0
+ 368:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb26processProvisioningRequestEP14EthernetClient>
+ 36c:	c7 01       	movw	r24, r14
+ 36e:	b4 01       	movw	r22, r8
+ 370:	4a e0       	ldi	r20, 0x0A	; 10
+ 372:	50 e0       	ldi	r21, 0x00	; 0
+ 374:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb26processProvisioningRequestEP14EthernetClient>
+ 378:	c7 01       	movw	r24, r14
+ 37a:	60 e0       	ldi	r22, 0x00	; 0
+ 37c:	70 e0       	ldi	r23, 0x00	; 0
+ 37e:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb26processProvisioningRequestEP14EthernetClient>
+ 382:	c7 01       	movw	r24, r14
+ 384:	b4 01       	movw	r22, r8
+ 386:	4a e0       	ldi	r20, 0x0A	; 10
+ 388:	50 e0       	ldi	r21, 0x00	; 0
+ 38a:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb26processProvisioningRequestEP14EthernetClient>
+ 38e:	c7 01       	movw	r24, r14
+ 390:	60 e0       	ldi	r22, 0x00	; 0
+ 392:	70 e0       	ldi	r23, 0x00	; 0
+ 394:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb26processProvisioningRequestEP14EthernetClient>
+ 398:	c7 01       	movw	r24, r14
+ 39a:	cb 56       	subi	r28, 0x6B	; 107
+ 39c:	df 4f       	sbci	r29, 0xFF	; 255
+ 39e:	68 81       	ld	r22, Y
+ 3a0:	c5 59       	subi	r28, 0x95	; 149
+ 3a2:	d0 40       	sbci	r29, 0x00	; 0
+ 3a4:	4a e0       	ldi	r20, 0x0A	; 10
+ 3a6:	50 e0       	ldi	r21, 0x00	; 0
  3a8:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb26processProvisioningRequestEP14EthernetClient>
- 3ac:	c5 01       	movw	r24, r10
- 3ae:	b7 01       	movw	r22, r14
- 3b0:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb26processProvisioningRequestEP14EthernetClient>
- 3b4:	00 c0       	rjmp	.+0      	; 0x3b6 <_ZN6APDWeb26processProvisioningRequestEP14EthernetClient+0x3b6>
- 3b6:	10 e2       	ldi	r17, 0x20	; 32
- 3b8:	00 c0       	rjmp	.+0      	; 0x3ba <_ZN6APDWeb26processProvisioningRequestEP14EthernetClient+0x3ba>
- 3ba:	80 e0       	ldi	r24, 0x00	; 0
- 3bc:	90 e0       	ldi	r25, 0x00	; 0
- 3be:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb26processProvisioningRequestEP14EthernetClient>
- 3c2:	00 c0       	rjmp	.+0      	; 0x3c4 <_ZN6APDWeb26processProvisioningRequestEP14EthernetClient+0x3c4>
- 3c4:	08 94       	sec
- 3c6:	81 1c       	adc	r8, r1
- 3c8:	91 1c       	adc	r9, r1
- 3ca:	11 e0       	ldi	r17, 0x01	; 1
- 3cc:	00 c0       	rjmp	.+0      	; 0x3ce <_ZN6APDWeb26processProvisioningRequestEP14EthernetClient+0x3ce>
- 3ce:	c9 56       	subi	r28, 0x69	; 105
- 3d0:	df 4f       	sbci	r29, 0xFF	; 255
- 3d2:	0f b6       	in	r0, 0x3f	; 63
- 3d4:	f8 94       	cli
- 3d6:	de bf       	out	0x3e, r29	; 62
- 3d8:	0f be       	out	0x3f, r0	; 63
- 3da:	cd bf       	out	0x3d, r28	; 61
- 3dc:	cf 91       	pop	r28
- 3de:	df 91       	pop	r29
- 3e0:	1f 91       	pop	r17
- 3e2:	0f 91       	pop	r16
- 3e4:	ff 90       	pop	r15
- 3e6:	ef 90       	pop	r14
- 3e8:	df 90       	pop	r13
- 3ea:	cf 90       	pop	r12
- 3ec:	bf 90       	pop	r11
- 3ee:	af 90       	pop	r10
- 3f0:	9f 90       	pop	r9
- 3f2:	8f 90       	pop	r8
- 3f4:	7f 90       	pop	r7
- 3f6:	6f 90       	pop	r6
- 3f8:	5f 90       	pop	r5
- 3fa:	4f 90       	pop	r4
- 3fc:	3f 90       	pop	r3
- 3fe:	2f 90       	pop	r2
- 400:	08 95       	ret
+ 3ac:	c7 01       	movw	r24, r14
+ 3ae:	60 e0       	ldi	r22, 0x00	; 0
+ 3b0:	70 e0       	ldi	r23, 0x00	; 0
+ 3b2:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb26processProvisioningRequestEP14EthernetClient>
+ 3b6:	84 14       	cp	r8, r4
+ 3b8:	95 04       	cpc	r9, r5
+ 3ba:	01 f0       	breq	.+0      	; 0x3bc <_ZN6APDWeb26processProvisioningRequestEP14EthernetClient+0x3bc>
+ 3bc:	c7 01       	movw	r24, r14
+ 3be:	60 e0       	ldi	r22, 0x00	; 0
+ 3c0:	70 e0       	ldi	r23, 0x00	; 0
+ 3c2:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb26processProvisioningRequestEP14EthernetClient>
+ 3c6:	c5 01       	movw	r24, r10
+ 3c8:	b7 01       	movw	r22, r14
+ 3ca:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb26processProvisioningRequestEP14EthernetClient>
+ 3ce:	00 c0       	rjmp	.+0      	; 0x3d0 <_ZN6APDWeb26processProvisioningRequestEP14EthernetClient+0x3d0>
+ 3d0:	10 e2       	ldi	r17, 0x20	; 32
+ 3d2:	00 c0       	rjmp	.+0      	; 0x3d4 <_ZN6APDWeb26processProvisioningRequestEP14EthernetClient+0x3d4>
+ 3d4:	80 e0       	ldi	r24, 0x00	; 0
+ 3d6:	90 e0       	ldi	r25, 0x00	; 0
+ 3d8:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb26processProvisioningRequestEP14EthernetClient>
+ 3dc:	00 c0       	rjmp	.+0      	; 0x3de <_ZN6APDWeb26processProvisioningRequestEP14EthernetClient+0x3de>
+ 3de:	08 94       	sec
+ 3e0:	81 1c       	adc	r8, r1
+ 3e2:	91 1c       	adc	r9, r1
+ 3e4:	11 e0       	ldi	r17, 0x01	; 1
+ 3e6:	00 c0       	rjmp	.+0      	; 0x3e8 <_ZN6APDWeb26processProvisioningRequestEP14EthernetClient+0x3e8>
+ 3e8:	c9 56       	subi	r28, 0x69	; 105
+ 3ea:	df 4f       	sbci	r29, 0xFF	; 255
+ 3ec:	0f b6       	in	r0, 0x3f	; 63
+ 3ee:	f8 94       	cli
+ 3f0:	de bf       	out	0x3e, r29	; 62
+ 3f2:	0f be       	out	0x3f, r0	; 63
+ 3f4:	cd bf       	out	0x3d, r28	; 61
+ 3f6:	cf 91       	pop	r28
+ 3f8:	df 91       	pop	r29
+ 3fa:	1f 91       	pop	r17
+ 3fc:	0f 91       	pop	r16
+ 3fe:	ff 90       	pop	r15
+ 400:	ef 90       	pop	r14
+ 402:	df 90       	pop	r13
+ 404:	cf 90       	pop	r12
+ 406:	bf 90       	pop	r11
+ 408:	af 90       	pop	r10
+ 40a:	9f 90       	pop	r9
+ 40c:	8f 90       	pop	r8
+ 40e:	7f 90       	pop	r7
+ 410:	6f 90       	pop	r6
+ 412:	5f 90       	pop	r5
+ 414:	4f 90       	pop	r4
+ 416:	3f 90       	pop	r3
+ 418:	2f 90       	pop	r2
+ 41a:	08 95       	ret
 
 Disassembly of section .text._ZN6APDWeb10saveAPIkeyEPcS0_:
 
@@ -26810,28 +26795,35 @@ APDWeb::~APDWeb()
   60:	80 e0       	ldi	r24, 0x00	; 0
   62:	90 e0       	ldi	r25, 0x00	; 0
   64:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb10saveAPIkeyEPcS0_>
-  68:	ce 01       	movw	r24, r28
-  6a:	01 96       	adiw	r24, 0x01	; 1
-  6c:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb10saveAPIkeyEPcS0_>
-  70:	00 c0       	rjmp	.+0      	; 0x72 <_ZN6APDWeb10saveAPIkeyEPcS0_+0x72>
-  72:	80 e0       	ldi	r24, 0x00	; 0
-  74:	90 e0       	ldi	r25, 0x00	; 0
-  76:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb10saveAPIkeyEPcS0_>
-  7a:	6f 96       	adiw	r28, 0x1f	; 31
-  7c:	0f b6       	in	r0, 0x3f	; 63
-  7e:	f8 94       	cli
-  80:	de bf       	out	0x3e, r29	; 62
-  82:	0f be       	out	0x3f, r0	; 63
-  84:	cd bf       	out	0x3d, r28	; 61
-  86:	cf 91       	pop	r28
-  88:	df 91       	pop	r29
-  8a:	1f 91       	pop	r17
-  8c:	0f 91       	pop	r16
-  8e:	ff 90       	pop	r15
-  90:	ef 90       	pop	r14
-  92:	df 90       	pop	r13
-  94:	cf 90       	pop	r12
-  96:	08 95       	ret
+  68:	88 85       	ldd	r24, Y+8	; 0x08
+  6a:	88 23       	and	r24, r24
+  6c:	01 f0       	breq	.+0      	; 0x6e <_ZN6APDWeb10saveAPIkeyEPcS0_+0x6e>
+  6e:	80 e0       	ldi	r24, 0x00	; 0
+  70:	90 e0       	ldi	r25, 0x00	; 0
+  72:	9a 83       	std	Y+2, r25	; 0x02
+  74:	89 83       	std	Y+1, r24	; 0x01
+  76:	ce 01       	movw	r24, r28
+  78:	05 96       	adiw	r24, 0x05	; 5
+  7a:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb10saveAPIkeyEPcS0_>
+  7e:	00 c0       	rjmp	.+0      	; 0x80 <_ZN6APDWeb10saveAPIkeyEPcS0_+0x80>
+  80:	80 e0       	ldi	r24, 0x00	; 0
+  82:	90 e0       	ldi	r25, 0x00	; 0
+  84:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb10saveAPIkeyEPcS0_>
+  88:	6f 96       	adiw	r28, 0x1f	; 31
+  8a:	0f b6       	in	r0, 0x3f	; 63
+  8c:	f8 94       	cli
+  8e:	de bf       	out	0x3e, r29	; 62
+  90:	0f be       	out	0x3f, r0	; 63
+  92:	cd bf       	out	0x3d, r28	; 61
+  94:	cf 91       	pop	r28
+  96:	df 91       	pop	r29
+  98:	1f 91       	pop	r17
+  9a:	0f 91       	pop	r16
+  9c:	ff 90       	pop	r15
+  9e:	ef 90       	pop	r14
+  a0:	df 90       	pop	r13
+  a2:	cf 90       	pop	r12
+  a4:	08 95       	ret
 
 Disassembly of section .text._ZN6APDWeb11dumpPachubeEv:
 
@@ -27019,25 +27011,32 @@ APDWeb::~APDWeb()
  15e:	40 e0       	ldi	r20, 0x00	; 0
  160:	50 e0       	ldi	r21, 0x00	; 0
  162:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb11dumpPachubeEv>
- 166:	ce 01       	movw	r24, r28
- 168:	01 96       	adiw	r24, 0x01	; 1
- 16a:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb11dumpPachubeEv>
- 16e:	cd 57       	subi	r28, 0x7D	; 125
- 170:	df 4f       	sbci	r29, 0xFF	; 255
- 172:	0f b6       	in	r0, 0x3f	; 63
- 174:	f8 94       	cli
- 176:	de bf       	out	0x3e, r29	; 62
- 178:	0f be       	out	0x3f, r0	; 63
- 17a:	cd bf       	out	0x3d, r28	; 61
- 17c:	cf 91       	pop	r28
- 17e:	df 91       	pop	r29
- 180:	1f 91       	pop	r17
- 182:	0f 91       	pop	r16
- 184:	ff 90       	pop	r15
- 186:	ef 90       	pop	r14
- 188:	df 90       	pop	r13
- 18a:	cf 90       	pop	r12
- 18c:	08 95       	ret
+ 166:	88 85       	ldd	r24, Y+8	; 0x08
+ 168:	88 23       	and	r24, r24
+ 16a:	01 f0       	breq	.+0      	; 0x16c <_ZN6APDWeb11dumpPachubeEv+0x16c>
+ 16c:	80 e0       	ldi	r24, 0x00	; 0
+ 16e:	90 e0       	ldi	r25, 0x00	; 0
+ 170:	9a 83       	std	Y+2, r25	; 0x02
+ 172:	89 83       	std	Y+1, r24	; 0x01
+ 174:	ce 01       	movw	r24, r28
+ 176:	05 96       	adiw	r24, 0x05	; 5
+ 178:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb11dumpPachubeEv>
+ 17c:	cd 57       	subi	r28, 0x7D	; 125
+ 17e:	df 4f       	sbci	r29, 0xFF	; 255
+ 180:	0f b6       	in	r0, 0x3f	; 63
+ 182:	f8 94       	cli
+ 184:	de bf       	out	0x3e, r29	; 62
+ 186:	0f be       	out	0x3f, r0	; 63
+ 188:	cd bf       	out	0x3d, r28	; 61
+ 18a:	cf 91       	pop	r28
+ 18c:	df 91       	pop	r29
+ 18e:	1f 91       	pop	r17
+ 190:	0f 91       	pop	r16
+ 192:	ff 90       	pop	r15
+ 194:	ef 90       	pop	r14
+ 196:	df 90       	pop	r13
+ 198:	cf 90       	pop	r12
+ 19a:	08 95       	ret
 
 Disassembly of section .text._ZN6APDWeb9ListFilesE14EthernetClientPKch:
 
@@ -27382,6 +27381,196 @@ APDWeb::~APDWeb()
  2c0:	2f 90       	pop	r2
  2c2:	08 95       	ret
 
+Disassembly of section .text._ZN6APDWeb9ServeFileE14EthernetClientPKc:
+
+00000000 <_ZN6APDWeb9ServeFileE14EthernetClientPKc>:
+		SerPrintP("Failed to configure Ethernet. Fix DHCP on your LAN or provide a valid static config on SD and reset.\n");
+	}
+}
+
+
+APDWeb::~APDWeb()
+   0:	cf 92       	push	r12
+   2:	df 92       	push	r13
+   4:	ef 92       	push	r14
+   6:	ff 92       	push	r15
+   8:	0f 93       	push	r16
+   a:	1f 93       	push	r17
+   c:	df 93       	push	r29
+{
+	if (pwwwclient != NULL) free(pwwwclient);
+   e:	cf 93       	push	r28
+  10:	cd b7       	in	r28, 0x3d	; 61
+  12:	de b7       	in	r29, 0x3e	; 62
+  14:	ac 97       	sbiw	r28, 0x2c	; 44
+  16:	0f b6       	in	r0, 0x3f	; 63
+  18:	f8 94       	cli
+	if (pwwwserver != NULL) free(pwwwclient);
+  1a:	de bf       	out	0x3e, r29	; 62
+  1c:	0f be       	out	0x3f, r0	; 63
+  1e:	cd bf       	out	0x3d, r28	; 61
+  20:	7c 01       	movw	r14, r24
+  22:	8b 01       	movw	r16, r22
+  24:	6a 01       	movw	r12, r20
+  26:	dc 01       	movw	r26, r24
+  28:	9c 96       	adiw	r26, 0x2c	; 44
+
+	// TODO Auto-generated destructor stub
+}
+  2a:	ed 91       	ld	r30, X+
+  2c:	fc 91       	ld	r31, X
+  2e:	9d 97       	sbiw	r26, 0x2d	; 45
+  30:	62 85       	ldd	r22, Z+10	; 0x0a
+  32:	73 85       	ldd	r23, Z+11	; 0x0b
+  34:	61 15       	cp	r22, r1
+  36:	71 05       	cpc	r23, r1
+  38:	01 f4       	brne	.+0      	; 0x3a <_ZN6APDWeb9ServeFileE14EthernetClientPKc+0x3a>
+  3a:	60 e0       	ldi	r22, 0x00	; 0
+  3c:	70 e0       	ldi	r23, 0x00	; 0
+  3e:	00 c0       	rjmp	.+0      	; 0x40 <_ZN6APDWeb9ServeFileE14EthernetClientPKc+0x40>
+  40:	6c 5f       	subi	r22, 0xFC	; 252
+  42:	7f 4f       	sbci	r23, 0xFF	; 255
+  44:	80 e0       	ldi	r24, 0x00	; 0
+  46:	90 e0       	ldi	r25, 0x00	; 0
+  48:	9f 87       	std	Y+15, r25	; 0x0f
+  4a:	8e 87       	std	Y+14, r24	; 0x0e
+  4c:	19 8a       	std	Y+17, r1	; 0x11
+  4e:	18 8a       	std	Y+16, r1	; 0x10
+  50:	1d 8a       	std	Y+21, r1	; 0x15
+  52:	1a 8a       	std	Y+18, r1	; 0x12
+  54:	ce 01       	movw	r24, r28
+  56:	42 96       	adiw	r24, 0x12	; 18
+  58:	a6 01       	movw	r20, r12
+  5a:	21 e0       	ldi	r18, 0x01	; 1
+  5c:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb9ServeFileE14EthernetClientPKc>
+  60:	88 23       	and	r24, r24
+  62:	01 f4       	brne	.+0      	; 0x64 <_ZN6APDWeb9ServeFileE14EthernetClientPKc+0x64>
+  64:	10 e0       	ldi	r17, 0x00	; 0
+  66:	00 c0       	rjmp	.+0      	; 0x68 <_ZN6APDWeb9ServeFileE14EthernetClientPKc+0x68>
+  68:	8d 89       	ldd	r24, Y+21	; 0x15
+  6a:	81 30       	cpi	r24, 0x01	; 1
+  6c:	01 f4       	brne	.+0      	; 0x6e <_ZN6APDWeb9ServeFileE14EthernetClientPKc+0x6e>
+  6e:	c8 01       	movw	r24, r16
+  70:	60 e0       	ldi	r22, 0x00	; 0
+  72:	70 e0       	ldi	r23, 0x00	; 0
+  74:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb9ServeFileE14EthernetClientPKc>
+  78:	c6 01       	movw	r24, r12
+  7a:	60 e0       	ldi	r22, 0x00	; 0
+  7c:	70 e0       	ldi	r23, 0x00	; 0
+  7e:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb9ServeFileE14EthernetClientPKc>
+  82:	89 2b       	or	r24, r25
+  84:	01 f4       	brne	.+0      	; 0x86 <_ZN6APDWeb9ServeFileE14EthernetClientPKc+0x86>
+  86:	c6 01       	movw	r24, r12
+  88:	60 e0       	ldi	r22, 0x00	; 0
+  8a:	70 e0       	ldi	r23, 0x00	; 0
+  8c:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb9ServeFileE14EthernetClientPKc>
+  90:	89 2b       	or	r24, r25
+  92:	01 f4       	brne	.+0      	; 0x94 <_ZN6APDWeb9ServeFileE14EthernetClientPKc+0x94>
+  94:	00 c0       	rjmp	.+0      	; 0x96 <_ZN6APDWeb9ServeFileE14EthernetClientPKc+0x96>
+  96:	c8 01       	movw	r24, r16
+  98:	60 e0       	ldi	r22, 0x00	; 0
+  9a:	70 e0       	ldi	r23, 0x00	; 0
+  9c:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb9ServeFileE14EthernetClientPKc>
+  a0:	c8 01       	movw	r24, r16
+  a2:	60 e0       	ldi	r22, 0x00	; 0
+  a4:	70 e0       	ldi	r23, 0x00	; 0
+  a6:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb9ServeFileE14EthernetClientPKc>
+  aa:	78 01       	movw	r14, r16
+  ac:	8e 01       	movw	r16, r28
+  ae:	0e 5e       	subi	r16, 0xEE	; 238
+  b0:	1f 4f       	sbci	r17, 0xFF	; 255
+  b2:	00 c0       	rjmp	.+0      	; 0xb4 <_ZN6APDWeb9ServeFileE14EthernetClientPKc+0xb4>
+  b4:	c7 01       	movw	r24, r14
+  b6:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb9ServeFileE14EthernetClientPKc>
+  ba:	c8 01       	movw	r24, r16
+  bc:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb9ServeFileE14EthernetClientPKc>
+  c0:	bc 01       	movw	r22, r24
+  c2:	97 ff       	sbrs	r25, 7
+  c4:	00 c0       	rjmp	.+0      	; 0xc6 <_ZN6APDWeb9ServeFileE14EthernetClientPKc+0xc6>
+  c6:	00 c0       	rjmp	.+0      	; 0xc8 <_ZN6APDWeb9ServeFileE14EthernetClientPKc+0xc8>
+  c8:	82 30       	cpi	r24, 0x02	; 2
+  ca:	00 f0       	brcs	.+0      	; 0xcc <_ZN6APDWeb9ServeFileE14EthernetClientPKc+0xcc>
+  cc:	c8 01       	movw	r24, r16
+  ce:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb9ServeFileE14EthernetClientPKc>
+  d2:	c7 01       	movw	r24, r14
+  d4:	b8 01       	movw	r22, r16
+  d6:	40 e0       	ldi	r20, 0x00	; 0
+  d8:	50 e0       	ldi	r21, 0x00	; 0
+  da:	20 e0       	ldi	r18, 0x00	; 0
+  dc:	30 e0       	ldi	r19, 0x00	; 0
+  de:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb9ServeFileE14EthernetClientPKc>
+  e2:	f8 01       	movw	r30, r16
+  e4:	82 81       	ldd	r24, Z+2	; 0x02
+  e6:	93 81       	ldd	r25, Z+3	; 0x03
+  e8:	9c 83       	std	Y+4, r25	; 0x04
+  ea:	8b 83       	std	Y+3, r24	; 0x03
+  ec:	84 81       	ldd	r24, Z+4	; 0x04
+  ee:	95 81       	ldd	r25, Z+5	; 0x05
+  f0:	a6 81       	ldd	r26, Z+6	; 0x06
+  f2:	b7 81       	ldd	r27, Z+7	; 0x07
+  f4:	8d 83       	std	Y+5, r24	; 0x05
+  f6:	9e 83       	std	Y+6, r25	; 0x06
+  f8:	af 83       	std	Y+7, r26	; 0x07
+  fa:	b8 87       	std	Y+8, r27	; 0x08
+  fc:	80 85       	ldd	r24, Z+8	; 0x08
+  fe:	91 85       	ldd	r25, Z+9	; 0x09
+ 100:	a2 85       	ldd	r26, Z+10	; 0x0a
+ 102:	b3 85       	ldd	r27, Z+11	; 0x0b
+ 104:	89 87       	std	Y+9, r24	; 0x09
+ 106:	9a 87       	std	Y+10, r25	; 0x0a
+ 108:	ab 87       	std	Y+11, r26	; 0x0b
+ 10a:	bc 87       	std	Y+12, r27	; 0x0c
+ 10c:	80 e0       	ldi	r24, 0x00	; 0
+ 10e:	90 e0       	ldi	r25, 0x00	; 0
+ 110:	9a 83       	std	Y+2, r25	; 0x02
+ 112:	89 83       	std	Y+1, r24	; 0x01
+ 114:	84 85       	ldd	r24, Z+12	; 0x0c
+ 116:	8d 87       	std	Y+13, r24	; 0x0d
+ 118:	c7 01       	movw	r24, r14
+ 11a:	be 01       	movw	r22, r28
+ 11c:	6f 5f       	subi	r22, 0xFF	; 255
+ 11e:	7f 4f       	sbci	r23, 0xFF	; 255
+ 120:	a6 01       	movw	r20, r12
+ 122:	23 e0       	ldi	r18, 0x03	; 3
+ 124:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb9ServeFileE14EthernetClientPKc>
+ 128:	c7 01       	movw	r24, r14
+ 12a:	b8 01       	movw	r22, r16
+ 12c:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb9ServeFileE14EthernetClientPKc>
+ 130:	ce 01       	movw	r24, r28
+ 132:	42 96       	adiw	r24, 0x12	; 18
+ 134:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb9ServeFileE14EthernetClientPKc>
+ 138:	11 e0       	ldi	r17, 0x01	; 1
+ 13a:	8d 89       	ldd	r24, Y+21	; 0x15
+ 13c:	88 23       	and	r24, r24
+ 13e:	01 f0       	breq	.+0      	; 0x140 <_ZN6APDWeb9ServeFileE14EthernetClientPKc+0x140>
+ 140:	80 e0       	ldi	r24, 0x00	; 0
+ 142:	90 e0       	ldi	r25, 0x00	; 0
+ 144:	9f 87       	std	Y+15, r25	; 0x0f
+ 146:	8e 87       	std	Y+14, r24	; 0x0e
+ 148:	ce 01       	movw	r24, r28
+ 14a:	42 96       	adiw	r24, 0x12	; 18
+ 14c:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb9ServeFileE14EthernetClientPKc>
+ 150:	81 2f       	mov	r24, r17
+ 152:	ac 96       	adiw	r28, 0x2c	; 44
+ 154:	0f b6       	in	r0, 0x3f	; 63
+ 156:	f8 94       	cli
+ 158:	de bf       	out	0x3e, r29	; 62
+ 15a:	0f be       	out	0x3f, r0	; 63
+ 15c:	cd bf       	out	0x3d, r28	; 61
+ 15e:	cf 91       	pop	r28
+ 160:	df 91       	pop	r29
+ 162:	1f 91       	pop	r17
+ 164:	0f 91       	pop	r16
+ 166:	ff 90       	pop	r15
+ 168:	ef 90       	pop	r14
+ 16a:	df 90       	pop	r13
+ 16c:	cf 90       	pop	r12
+ 16e:	08 95       	ret
+ 170:	c8 01       	movw	r24, r16
+ 172:	60 e0       	ldi	r22, 0x00	; 0
+ 174:	70 e0       	ldi	r23, 0x00	; 0
+ 176:	00 c0       	rjmp	.+0      	; 0x178 <_ZZN6APDWeb18thingspeak_loggingEvE3__c_3+0xf>
+
 Disassembly of section .text._ZN6APDWeb11loop_serverEv:
 
 00000000 <_ZN6APDWeb11loop_serverEv>:
@@ -27405,7 +27594,7 @@ APDWeb::~APDWeb()
   12:	cf 93       	push	r28
   14:	cd b7       	in	r28, 0x3d	; 61
   16:	de b7       	in	r29, 0x3e	; 62
-  18:	ca 5a       	subi	r28, 0xAA	; 170
+  18:	c8 59       	subi	r28, 0x98	; 152
 	if (pwwwserver != NULL) free(pwwwclient);
   1a:	d0 40       	sbci	r29, 0x00	; 0
   1c:	0f b6       	in	r0, 0x3f	; 63
@@ -27414,502 +27603,417 @@ APDWeb::~APDWeb()
   22:	0f be       	out	0x3f, r0	; 63
   24:	cd bf       	out	0x3d, r28	; 61
   26:	7c 01       	movw	r14, r24
-  28:	dc 01       	movw	r26, r24
+  28:	fc 01       	movw	r30, r24
 
 	// TODO Auto-generated destructor stub
 }
-  2a:	90 96       	adiw	r26, 0x20	; 32
-  2c:	6d 91       	ld	r22, X+
-  2e:	7c 91       	ld	r23, X
-  30:	91 97       	sbiw	r26, 0x21	; 33
-  32:	61 15       	cp	r22, r1
-  34:	71 05       	cpc	r23, r1
-  36:	01 f4       	brne	.+0      	; 0x38 <_ZN6APDWeb11loop_serverEv+0x38>
-  38:	00 c0       	rjmp	.+0      	; 0x3a <_ZN6APDWeb11loop_serverEv+0x3a>
-  3a:	fe 01       	movw	r30, r28
-  3c:	e6 55       	subi	r30, 0x56	; 86
-  3e:	ff 4f       	sbci	r31, 0xFF	; 255
-  40:	10 82       	st	Z, r1
-  42:	6e 01       	movw	r12, r28
-  44:	08 94       	sec
-  46:	c1 1c       	adc	r12, r1
-  48:	d1 1c       	adc	r13, r1
-  4a:	c6 01       	movw	r24, r12
-  4c:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb11loop_serverEv>
-  50:	c6 01       	movw	r24, r12
-  52:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb11loop_serverEv>
-  56:	88 23       	and	r24, r24
-  58:	01 f4       	brne	.+0      	; 0x5a <_ZN6APDWeb11loop_serverEv+0x5a>
-  5a:	00 c0       	rjmp	.+0      	; 0x5c <_ZN6APDWeb11loop_serverEv+0x5c>
-  5c:	f7 01       	movw	r30, r14
-  5e:	84 a1       	ldd	r24, Z+36	; 0x24
-  60:	95 a1       	ldd	r25, Z+37	; 0x25
-  62:	01 96       	adiw	r24, 0x01	; 1
-  64:	95 a3       	std	Z+37, r25	; 0x25
-  66:	84 a3       	std	Z+36, r24	; 0x24
-  68:	00 e0       	ldi	r16, 0x00	; 0
-  6a:	10 e0       	ldi	r17, 0x00	; 0
-  6c:	77 e4       	ldi	r23, 0x47	; 71
-  6e:	a7 2e       	mov	r10, r23
-  70:	b1 2c       	mov	r11, r1
-  72:	ac 0e       	add	r10, r28
-  74:	bd 1e       	adc	r11, r29
-  76:	00 c0       	rjmp	.+0      	; 0x78 <_ZN6APDWeb11loop_serverEv+0x78>
-  78:	c6 01       	movw	r24, r12
-  7a:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb11loop_serverEv>
-  7e:	89 2b       	or	r24, r25
-  80:	01 f4       	brne	.+0      	; 0x82 <_ZN6APDWeb11loop_serverEv+0x82>
-  82:	00 c0       	rjmp	.+0      	; 0x84 <_ZN6APDWeb11loop_serverEv+0x84>
-  84:	c6 01       	movw	r24, r12
-  86:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb11loop_serverEv>
-  8a:	8a 30       	cpi	r24, 0x0A	; 10
+  2a:	60 a1       	ldd	r22, Z+32	; 0x20
+  2c:	71 a1       	ldd	r23, Z+33	; 0x21
+  2e:	61 15       	cp	r22, r1
+  30:	71 05       	cpc	r23, r1
+  32:	01 f4       	brne	.+0      	; 0x34 <_ZN6APDWeb11loop_serverEv+0x34>
+  34:	00 c0       	rjmp	.+0      	; 0x36 <_ZN6APDWeb11loop_serverEv+0x36>
+  36:	fe 01       	movw	r30, r28
+  38:	e8 56       	subi	r30, 0x68	; 104
+  3a:	ff 4f       	sbci	r31, 0xFF	; 255
+  3c:	10 82       	st	Z, r1
+  3e:	6e 01       	movw	r12, r28
+  40:	08 94       	sec
+  42:	c1 1c       	adc	r12, r1
+  44:	d1 1c       	adc	r13, r1
+  46:	c6 01       	movw	r24, r12
+  48:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb11loop_serverEv>
+  4c:	c6 01       	movw	r24, r12
+  4e:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb11loop_serverEv>
+  52:	88 23       	and	r24, r24
+  54:	01 f4       	brne	.+0      	; 0x56 <_ZN6APDWeb11loop_serverEv+0x56>
+  56:	00 c0       	rjmp	.+0      	; 0x58 <_ZN6APDWeb11loop_serverEv+0x58>
+  58:	f7 01       	movw	r30, r14
+  5a:	84 a1       	ldd	r24, Z+36	; 0x24
+  5c:	95 a1       	ldd	r25, Z+37	; 0x25
+  5e:	01 96       	adiw	r24, 0x01	; 1
+  60:	95 a3       	std	Z+37, r25	; 0x25
+  62:	84 a3       	std	Z+36, r24	; 0x24
+  64:	00 e0       	ldi	r16, 0x00	; 0
+  66:	10 e0       	ldi	r17, 0x00	; 0
+  68:	55 e3       	ldi	r21, 0x35	; 53
+  6a:	a5 2e       	mov	r10, r21
+  6c:	b1 2c       	mov	r11, r1
+  6e:	ac 0e       	add	r10, r28
+  70:	bd 1e       	adc	r11, r29
+  72:	00 c0       	rjmp	.+0      	; 0x74 <_ZN6APDWeb11loop_serverEv+0x74>
+  74:	c6 01       	movw	r24, r12
+  76:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb11loop_serverEv>
+  7a:	89 2b       	or	r24, r25
+  7c:	01 f4       	brne	.+0      	; 0x7e <_ZN6APDWeb11loop_serverEv+0x7e>
+  7e:	00 c0       	rjmp	.+0      	; 0x80 <_ZN6APDWeb11loop_serverEv+0x80>
+  80:	c6 01       	movw	r24, r12
+  82:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb11loop_serverEv>
+  86:	8a 30       	cpi	r24, 0x0A	; 10
+  88:	01 f0       	breq	.+0      	; 0x8a <_ZN6APDWeb11loop_serverEv+0x8a>
+  8a:	8d 30       	cpi	r24, 0x0D	; 13
   8c:	01 f0       	breq	.+0      	; 0x8e <_ZN6APDWeb11loop_serverEv+0x8e>
-  8e:	8d 30       	cpi	r24, 0x0D	; 13
-  90:	01 f0       	breq	.+0      	; 0x92 <_ZN6APDWeb11loop_serverEv+0x92>
-  92:	f5 01       	movw	r30, r10
-  94:	e0 0f       	add	r30, r16
-  96:	f1 1f       	adc	r31, r17
-  98:	80 83       	st	Z, r24
-  9a:	0f 5f       	subi	r16, 0xFF	; 255
-  9c:	1f 4f       	sbci	r17, 0xFF	; 255
-  9e:	04 36       	cpi	r16, 0x64	; 100
-  a0:	11 05       	cpc	r17, r1
-  a2:	04 f4       	brge	.+0      	; 0xa4 <_ZN6APDWeb11loop_serverEv+0xa4>
-  a4:	00 c0       	rjmp	.+0      	; 0xa6 <_ZN6APDWeb11loop_serverEv+0xa6>
-  a6:	03 e6       	ldi	r16, 0x63	; 99
-  a8:	10 e0       	ldi	r17, 0x00	; 0
-  aa:	00 c0       	rjmp	.+0      	; 0xac <_ZN6APDWeb11loop_serverEv+0xac>
-  ac:	67 e4       	ldi	r22, 0x47	; 71
-  ae:	c6 2e       	mov	r12, r22
-  b0:	d1 2c       	mov	r13, r1
-  b2:	cc 0e       	add	r12, r28
-  b4:	dd 1e       	adc	r13, r29
-  b6:	0c 0d       	add	r16, r12
-  b8:	1d 1d       	adc	r17, r13
-  ba:	d8 01       	movw	r26, r16
-  bc:	1c 92       	st	X, r1
-  be:	c6 01       	movw	r24, r12
-  c0:	60 e0       	ldi	r22, 0x00	; 0
-  c2:	70 e0       	ldi	r23, 0x00	; 0
-  c4:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb11loop_serverEv>
-  c8:	89 2b       	or	r24, r25
-  ca:	01 f0       	breq	.+0      	; 0xcc <_ZN6APDWeb11loop_serverEv+0xcc>
-  cc:	8e 01       	movw	r16, r28
-  ce:	0f 5f       	subi	r16, 0xFF	; 255
-  d0:	1f 4f       	sbci	r17, 0xFF	; 255
-  d2:	c8 01       	movw	r24, r16
-  d4:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb11loop_serverEv>
-  d8:	c7 01       	movw	r24, r14
-  da:	b8 01       	movw	r22, r16
-  dc:	40 e0       	ldi	r20, 0x00	; 0
-  de:	50 e0       	ldi	r21, 0x00	; 0
-  e0:	20 e0       	ldi	r18, 0x00	; 0
-  e2:	30 e0       	ldi	r19, 0x00	; 0
-  e4:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb11loop_serverEv>
-  e8:	8b 81       	ldd	r24, Y+3	; 0x03
-  ea:	9c 81       	ldd	r25, Y+4	; 0x04
-  ec:	99 8b       	std	Y+17, r25	; 0x11
-  ee:	88 8b       	std	Y+16, r24	; 0x10
-  f0:	8d 81       	ldd	r24, Y+5	; 0x05
-  f2:	9e 81       	ldd	r25, Y+6	; 0x06
-  f4:	af 81       	ldd	r26, Y+7	; 0x07
-  f6:	b8 85       	ldd	r27, Y+8	; 0x08
-  f8:	8a 8b       	std	Y+18, r24	; 0x12
-  fa:	9b 8b       	std	Y+19, r25	; 0x13
-  fc:	ac 8b       	std	Y+20, r26	; 0x14
-  fe:	bd 8b       	std	Y+21, r27	; 0x15
- 100:	89 85       	ldd	r24, Y+9	; 0x09
- 102:	9a 85       	ldd	r25, Y+10	; 0x0a
- 104:	ab 85       	ldd	r26, Y+11	; 0x0b
- 106:	bc 85       	ldd	r27, Y+12	; 0x0c
- 108:	8e 8b       	std	Y+22, r24	; 0x16
- 10a:	9f 8b       	std	Y+23, r25	; 0x17
- 10c:	a8 8f       	std	Y+24, r26	; 0x18
- 10e:	b9 8f       	std	Y+25, r27	; 0x19
- 110:	80 e0       	ldi	r24, 0x00	; 0
- 112:	90 e0       	ldi	r25, 0x00	; 0
- 114:	9f 87       	std	Y+15, r25	; 0x0f
- 116:	8e 87       	std	Y+14, r24	; 0x0e
- 118:	8d 85       	ldd	r24, Y+13	; 0x0d
- 11a:	8a 8f       	std	Y+26, r24	; 0x1a
- 11c:	c7 01       	movw	r24, r14
- 11e:	be 01       	movw	r22, r28
- 120:	62 5f       	subi	r22, 0xF2	; 242
- 122:	7f 4f       	sbci	r23, 0xFF	; 255
- 124:	40 e0       	ldi	r20, 0x00	; 0
- 126:	50 e0       	ldi	r21, 0x00	; 0
- 128:	23 e0       	ldi	r18, 0x03	; 3
- 12a:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb11loop_serverEv>
- 12e:	00 c0       	rjmp	.+0      	; 0x130 <_ZN6APDWeb11loop_serverEv+0x130>
- 130:	c6 01       	movw	r24, r12
- 132:	60 e0       	ldi	r22, 0x00	; 0
- 134:	70 e0       	ldi	r23, 0x00	; 0
- 136:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb11loop_serverEv>
- 13a:	89 2b       	or	r24, r25
- 13c:	01 f4       	brne	.+0      	; 0x13e <_ZN6APDWeb11loop_serverEv+0x13e>
- 13e:	00 c0       	rjmp	.+0      	; 0x140 <_ZN6APDWeb11loop_serverEv+0x140>
- 140:	c6 01       	movw	r24, r12
- 142:	60 e0       	ldi	r22, 0x00	; 0
- 144:	70 e0       	ldi	r23, 0x00	; 0
- 146:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb11loop_serverEv>
- 14a:	fc 01       	movw	r30, r24
- 14c:	10 82       	st	Z, r1
- 14e:	1c a6       	std	Y+44, r1	; 0x2c
- 150:	1f a6       	std	Y+47, r1	; 0x2f
- 152:	1b a6       	std	Y+43, r1	; 0x2b
- 154:	1a a6       	std	Y+42, r1	; 0x2a
- 156:	80 e0       	ldi	r24, 0x00	; 0
- 158:	90 e0       	ldi	r25, 0x00	; 0
- 15a:	99 a7       	std	Y+41, r25	; 0x29
- 15c:	88 a7       	std	Y+40, r24	; 0x28
- 15e:	80 e0       	ldi	r24, 0x00	; 0
- 160:	90 e0       	ldi	r25, 0x00	; 0
- 162:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb11loop_serverEv>
- 166:	d7 01       	movw	r26, r14
- 168:	9c 96       	adiw	r26, 0x2c	; 44
- 16a:	ed 91       	ld	r30, X+
- 16c:	fc 91       	ld	r31, X
- 16e:	9d 97       	sbiw	r26, 0x2d	; 45
- 170:	62 85       	ldd	r22, Z+10	; 0x0a
- 172:	73 85       	ldd	r23, Z+11	; 0x0b
- 174:	61 15       	cp	r22, r1
- 176:	71 05       	cpc	r23, r1
- 178:	01 f4       	brne	.+0      	; 0x17a <_ZN6APDWeb11loop_serverEv+0x17a>
- 17a:	60 e0       	ldi	r22, 0x00	; 0
- 17c:	70 e0       	ldi	r23, 0x00	; 0
- 17e:	00 c0       	rjmp	.+0      	; 0x180 <_ZN6APDWeb11loop_serverEv+0x180>
- 180:	6c 5f       	subi	r22, 0xFC	; 252
+  8e:	f5 01       	movw	r30, r10
+  90:	e0 0f       	add	r30, r16
+  92:	f1 1f       	adc	r31, r17
+  94:	80 83       	st	Z, r24
+  96:	0f 5f       	subi	r16, 0xFF	; 255
+  98:	1f 4f       	sbci	r17, 0xFF	; 255
+  9a:	04 36       	cpi	r16, 0x64	; 100
+  9c:	11 05       	cpc	r17, r1
+  9e:	04 f4       	brge	.+0      	; 0xa0 <_ZN6APDWeb11loop_serverEv+0xa0>
+  a0:	00 c0       	rjmp	.+0      	; 0xa2 <_ZN6APDWeb11loop_serverEv+0xa2>
+  a2:	03 e6       	ldi	r16, 0x63	; 99
+  a4:	10 e0       	ldi	r17, 0x00	; 0
+  a6:	00 c0       	rjmp	.+0      	; 0xa8 <_ZN6APDWeb11loop_serverEv+0xa8>
+  a8:	45 e3       	ldi	r20, 0x35	; 53
+  aa:	c4 2e       	mov	r12, r20
+  ac:	d1 2c       	mov	r13, r1
+  ae:	cc 0e       	add	r12, r28
+  b0:	dd 1e       	adc	r13, r29
+  b2:	0c 0d       	add	r16, r12
+  b4:	1d 1d       	adc	r17, r13
+  b6:	f8 01       	movw	r30, r16
+  b8:	10 82       	st	Z, r1
+  ba:	c6 01       	movw	r24, r12
+  bc:	60 e0       	ldi	r22, 0x00	; 0
+  be:	70 e0       	ldi	r23, 0x00	; 0
+  c0:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb11loop_serverEv>
+  c4:	89 2b       	or	r24, r25
+  c6:	01 f0       	breq	.+0      	; 0xc8 <_ZN6APDWeb11loop_serverEv+0xc8>
+  c8:	8e 01       	movw	r16, r28
+  ca:	0f 5f       	subi	r16, 0xFF	; 255
+  cc:	1f 4f       	sbci	r17, 0xFF	; 255
+  ce:	c8 01       	movw	r24, r16
+  d0:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb11loop_serverEv>
+  d4:	c7 01       	movw	r24, r14
+  d6:	b8 01       	movw	r22, r16
+  d8:	40 e0       	ldi	r20, 0x00	; 0
+  da:	50 e0       	ldi	r21, 0x00	; 0
+  dc:	20 e0       	ldi	r18, 0x00	; 0
+  de:	30 e0       	ldi	r19, 0x00	; 0
+  e0:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb11loop_serverEv>
+  e4:	8b 81       	ldd	r24, Y+3	; 0x03
+  e6:	9c 81       	ldd	r25, Y+4	; 0x04
+  e8:	99 8b       	std	Y+17, r25	; 0x11
+  ea:	88 8b       	std	Y+16, r24	; 0x10
+  ec:	8d 81       	ldd	r24, Y+5	; 0x05
+  ee:	9e 81       	ldd	r25, Y+6	; 0x06
+  f0:	af 81       	ldd	r26, Y+7	; 0x07
+  f2:	b8 85       	ldd	r27, Y+8	; 0x08
+  f4:	8a 8b       	std	Y+18, r24	; 0x12
+  f6:	9b 8b       	std	Y+19, r25	; 0x13
+  f8:	ac 8b       	std	Y+20, r26	; 0x14
+  fa:	bd 8b       	std	Y+21, r27	; 0x15
+  fc:	89 85       	ldd	r24, Y+9	; 0x09
+  fe:	9a 85       	ldd	r25, Y+10	; 0x0a
+ 100:	ab 85       	ldd	r26, Y+11	; 0x0b
+ 102:	bc 85       	ldd	r27, Y+12	; 0x0c
+ 104:	8e 8b       	std	Y+22, r24	; 0x16
+ 106:	9f 8b       	std	Y+23, r25	; 0x17
+ 108:	a8 8f       	std	Y+24, r26	; 0x18
+ 10a:	b9 8f       	std	Y+25, r27	; 0x19
+ 10c:	80 e0       	ldi	r24, 0x00	; 0
+ 10e:	90 e0       	ldi	r25, 0x00	; 0
+ 110:	9f 87       	std	Y+15, r25	; 0x0f
+ 112:	8e 87       	std	Y+14, r24	; 0x0e
+ 114:	8d 85       	ldd	r24, Y+13	; 0x0d
+ 116:	8a 8f       	std	Y+26, r24	; 0x1a
+ 118:	c7 01       	movw	r24, r14
+ 11a:	be 01       	movw	r22, r28
+ 11c:	62 5f       	subi	r22, 0xF2	; 242
+ 11e:	7f 4f       	sbci	r23, 0xFF	; 255
+ 120:	40 e0       	ldi	r20, 0x00	; 0
+ 122:	50 e0       	ldi	r21, 0x00	; 0
+ 124:	23 e0       	ldi	r18, 0x03	; 3
+ 126:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb11loop_serverEv>
+ 12a:	00 c0       	rjmp	.+0      	; 0x12c <_ZN6APDWeb11loop_serverEv+0x12c>
+ 12c:	c6 01       	movw	r24, r12
+ 12e:	60 e0       	ldi	r22, 0x00	; 0
+ 130:	70 e0       	ldi	r23, 0x00	; 0
+ 132:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb11loop_serverEv>
+ 136:	89 2b       	or	r24, r25
+ 138:	01 f0       	breq	.+0      	; 0x13a <_ZN6APDWeb11loop_serverEv+0x13a>
+ 13a:	c6 01       	movw	r24, r12
+ 13c:	60 e0       	ldi	r22, 0x00	; 0
+ 13e:	70 e0       	ldi	r23, 0x00	; 0
+ 140:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb11loop_serverEv>
+ 144:	fc 01       	movw	r30, r24
+ 146:	10 82       	st	Z, r1
+ 148:	8b 81       	ldd	r24, Y+3	; 0x03
+ 14a:	9c 81       	ldd	r25, Y+4	; 0x04
+ 14c:	9e 8f       	std	Y+30, r25	; 0x1e
+ 14e:	8d 8f       	std	Y+29, r24	; 0x1d
+ 150:	8d 81       	ldd	r24, Y+5	; 0x05
+ 152:	9e 81       	ldd	r25, Y+6	; 0x06
+ 154:	af 81       	ldd	r26, Y+7	; 0x07
+ 156:	b8 85       	ldd	r27, Y+8	; 0x08
+ 158:	8f 8f       	std	Y+31, r24	; 0x1f
+ 15a:	98 a3       	std	Y+32, r25	; 0x20
+ 15c:	a9 a3       	std	Y+33, r26	; 0x21
+ 15e:	ba a3       	std	Y+34, r27	; 0x22
+ 160:	89 85       	ldd	r24, Y+9	; 0x09
+ 162:	9a 85       	ldd	r25, Y+10	; 0x0a
+ 164:	ab 85       	ldd	r26, Y+11	; 0x0b
+ 166:	bc 85       	ldd	r27, Y+12	; 0x0c
+ 168:	8b a3       	std	Y+35, r24	; 0x23
+ 16a:	9c a3       	std	Y+36, r25	; 0x24
+ 16c:	ad a3       	std	Y+37, r26	; 0x25
+ 16e:	be a3       	std	Y+38, r27	; 0x26
+ 170:	80 e0       	ldi	r24, 0x00	; 0
+ 172:	90 e0       	ldi	r25, 0x00	; 0
+ 174:	9c 8f       	std	Y+28, r25	; 0x1c
+ 176:	8b 8f       	std	Y+27, r24	; 0x1b
+ 178:	8d 85       	ldd	r24, Y+13	; 0x0d
+ 17a:	8f a3       	std	Y+39, r24	; 0x27
+ 17c:	c7 01       	movw	r24, r14
+ 17e:	be 01       	movw	r22, r28
+ 180:	65 5e       	subi	r22, 0xE5	; 229
  182:	7f 4f       	sbci	r23, 0xFF	; 255
- 184:	8e 01       	movw	r16, r28
- 186:	09 5b       	subi	r16, 0xB9	; 185
- 188:	1f 4f       	sbci	r17, 0xFF	; 255
- 18a:	58 e0       	ldi	r21, 0x08	; 8
- 18c:	c5 2e       	mov	r12, r21
- 18e:	d1 2c       	mov	r13, r1
- 190:	c0 0e       	add	r12, r16
- 192:	d1 1e       	adc	r13, r17
- 194:	ce 01       	movw	r24, r28
- 196:	8c 96       	adiw	r24, 0x2c	; 44
- 198:	a6 01       	movw	r20, r12
- 19a:	21 e0       	ldi	r18, 0x01	; 1
+ 184:	ae 01       	movw	r20, r28
+ 186:	43 5c       	subi	r20, 0xC3	; 195
+ 188:	5f 4f       	sbci	r21, 0xFF	; 255
+ 18a:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb11loop_serverEv>
+ 18e:	88 23       	and	r24, r24
+ 190:	01 f0       	breq	.+0      	; 0x192 <_ZN6APDWeb11loop_serverEv+0x192>
+ 192:	00 c0       	rjmp	.+0      	; 0x194 <_ZN6APDWeb11loop_serverEv+0x194>
+ 194:	00 c0       	rjmp	.+0      	; 0x196 <_ZN6APDWeb11loop_serverEv+0x196>
+ 196:	c6 01       	movw	r24, r12
+ 198:	60 e0       	ldi	r22, 0x00	; 0
+ 19a:	70 e0       	ldi	r23, 0x00	; 0
  19c:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb11loop_serverEv>
- 1a0:	88 23       	and	r24, r24
+ 1a0:	89 2b       	or	r24, r25
  1a2:	01 f4       	brne	.+0      	; 0x1a4 <_ZN6APDWeb11loop_serverEv+0x1a4>
- 1a4:	ce 01       	movw	r24, r28
- 1a6:	01 96       	adiw	r24, 0x01	; 1
- 1a8:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb11loop_serverEv>
- 1ac:	00 c0       	rjmp	.+0      	; 0x1ae <_ZN6APDWeb11loop_serverEv+0x1ae>
- 1ae:	8f a5       	ldd	r24, Y+47	; 0x2f
- 1b0:	81 30       	cpi	r24, 0x01	; 1
- 1b2:	01 f4       	brne	.+0      	; 0x1b4 <_ZN6APDWeb11loop_serverEv+0x1b4>
- 1b4:	7e 01       	movw	r14, r28
- 1b6:	08 94       	sec
- 1b8:	e1 1c       	adc	r14, r1
- 1ba:	f1 1c       	adc	r15, r1
- 1bc:	c7 01       	movw	r24, r14
- 1be:	60 e0       	ldi	r22, 0x00	; 0
- 1c0:	70 e0       	ldi	r23, 0x00	; 0
- 1c2:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb11loop_serverEv>
- 1c6:	c8 01       	movw	r24, r16
- 1c8:	60 e0       	ldi	r22, 0x00	; 0
- 1ca:	70 e0       	ldi	r23, 0x00	; 0
- 1cc:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb11loop_serverEv>
- 1d0:	89 2b       	or	r24, r25
- 1d2:	01 f4       	brne	.+0      	; 0x1d4 <_ZN6APDWeb11loop_serverEv+0x1d4>
- 1d4:	c8 01       	movw	r24, r16
- 1d6:	60 e0       	ldi	r22, 0x00	; 0
- 1d8:	70 e0       	ldi	r23, 0x00	; 0
- 1da:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb11loop_serverEv>
- 1de:	89 2b       	or	r24, r25
- 1e0:	01 f4       	brne	.+0      	; 0x1e2 <_ZN6APDWeb11loop_serverEv+0x1e2>
- 1e2:	00 c0       	rjmp	.+0      	; 0x1e4 <_ZN6APDWeb11loop_serverEv+0x1e4>
- 1e4:	ce 01       	movw	r24, r28
- 1e6:	01 96       	adiw	r24, 0x01	; 1
- 1e8:	60 e0       	ldi	r22, 0x00	; 0
- 1ea:	70 e0       	ldi	r23, 0x00	; 0
- 1ec:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb11loop_serverEv>
- 1f0:	8e 01       	movw	r16, r28
- 1f2:	0f 5f       	subi	r16, 0xFF	; 255
- 1f4:	1f 4f       	sbci	r17, 0xFF	; 255
- 1f6:	c8 01       	movw	r24, r16
- 1f8:	60 e0       	ldi	r22, 0x00	; 0
- 1fa:	70 e0       	ldi	r23, 0x00	; 0
- 1fc:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb11loop_serverEv>
- 200:	4c e2       	ldi	r20, 0x2C	; 44
- 202:	c4 2e       	mov	r12, r20
- 204:	d1 2c       	mov	r13, r1
- 206:	cc 0e       	add	r12, r28
- 208:	dd 1e       	adc	r13, r29
- 20a:	f0 2e       	mov	r15, r16
- 20c:	01 2f       	mov	r16, r17
- 20e:	00 c0       	rjmp	.+0      	; 0x210 <_ZN6APDWeb11loop_serverEv+0x210>
- 210:	8f 2d       	mov	r24, r15
- 212:	90 2f       	mov	r25, r16
- 214:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb11loop_serverEv>
- 218:	c6 01       	movw	r24, r12
- 21a:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb11loop_serverEv>
- 21e:	bc 01       	movw	r22, r24
- 220:	97 ff       	sbrs	r25, 7
- 222:	00 c0       	rjmp	.+0      	; 0x224 <_ZN6APDWeb11loop_serverEv+0x224>
- 224:	00 c0       	rjmp	.+0      	; 0x226 <_ZN6APDWeb11loop_serverEv+0x226>
- 226:	82 30       	cpi	r24, 0x02	; 2
- 228:	00 f0       	brcs	.+0      	; 0x22a <_ZN6APDWeb11loop_serverEv+0x22a>
- 22a:	8e 01       	movw	r16, r28
- 22c:	0f 5f       	subi	r16, 0xFF	; 255
- 22e:	1f 4f       	sbci	r17, 0xFF	; 255
- 230:	c8 01       	movw	r24, r16
- 232:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb11loop_serverEv>
- 236:	c7 01       	movw	r24, r14
- 238:	b8 01       	movw	r22, r16
- 23a:	40 e0       	ldi	r20, 0x00	; 0
- 23c:	50 e0       	ldi	r21, 0x00	; 0
- 23e:	20 e0       	ldi	r18, 0x00	; 0
- 240:	30 e0       	ldi	r19, 0x00	; 0
- 242:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb11loop_serverEv>
- 246:	8b 81       	ldd	r24, Y+3	; 0x03
- 248:	9c 81       	ldd	r25, Y+4	; 0x04
- 24a:	9e 8f       	std	Y+30, r25	; 0x1e
- 24c:	8d 8f       	std	Y+29, r24	; 0x1d
- 24e:	8d 81       	ldd	r24, Y+5	; 0x05
- 250:	9e 81       	ldd	r25, Y+6	; 0x06
- 252:	af 81       	ldd	r26, Y+7	; 0x07
- 254:	b8 85       	ldd	r27, Y+8	; 0x08
- 256:	8f 8f       	std	Y+31, r24	; 0x1f
- 258:	98 a3       	std	Y+32, r25	; 0x20
- 25a:	a9 a3       	std	Y+33, r26	; 0x21
- 25c:	ba a3       	std	Y+34, r27	; 0x22
- 25e:	89 85       	ldd	r24, Y+9	; 0x09
- 260:	9a 85       	ldd	r25, Y+10	; 0x0a
- 262:	ab 85       	ldd	r26, Y+11	; 0x0b
- 264:	bc 85       	ldd	r27, Y+12	; 0x0c
- 266:	8b a3       	std	Y+35, r24	; 0x23
- 268:	9c a3       	std	Y+36, r25	; 0x24
- 26a:	ad a3       	std	Y+37, r26	; 0x25
- 26c:	be a3       	std	Y+38, r27	; 0x26
- 26e:	80 e0       	ldi	r24, 0x00	; 0
- 270:	90 e0       	ldi	r25, 0x00	; 0
- 272:	9c 8f       	std	Y+28, r25	; 0x1c
- 274:	8b 8f       	std	Y+27, r24	; 0x1b
- 276:	8d 85       	ldd	r24, Y+13	; 0x0d
- 278:	8f a3       	std	Y+39, r24	; 0x27
- 27a:	c7 01       	movw	r24, r14
- 27c:	be 01       	movw	r22, r28
- 27e:	65 5e       	subi	r22, 0xE5	; 229
- 280:	7f 4f       	sbci	r23, 0xFF	; 255
- 282:	a6 01       	movw	r20, r12
- 284:	23 e0       	ldi	r18, 0x03	; 3
- 286:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb11loop_serverEv>
- 28a:	c7 01       	movw	r24, r14
- 28c:	b8 01       	movw	r22, r16
+ 1a4:	c6 01       	movw	r24, r12
+ 1a6:	60 e0       	ldi	r22, 0x00	; 0
+ 1a8:	70 e0       	ldi	r23, 0x00	; 0
+ 1aa:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb11loop_serverEv>
+ 1ae:	89 2b       	or	r24, r25
+ 1b0:	01 f4       	brne	.+0      	; 0x1b2 <_ZN6APDWeb11loop_serverEv+0x1b2>
+ 1b2:	00 c0       	rjmp	.+0      	; 0x1b4 <_ZN6APDWeb11loop_serverEv+0x1b4>
+ 1b4:	8b 81       	ldd	r24, Y+3	; 0x03
+ 1b6:	9c 81       	ldd	r25, Y+4	; 0x04
+ 1b8:	9b a7       	std	Y+43, r25	; 0x2b
+ 1ba:	8a a7       	std	Y+42, r24	; 0x2a
+ 1bc:	8d 81       	ldd	r24, Y+5	; 0x05
+ 1be:	9e 81       	ldd	r25, Y+6	; 0x06
+ 1c0:	af 81       	ldd	r26, Y+7	; 0x07
+ 1c2:	b8 85       	ldd	r27, Y+8	; 0x08
+ 1c4:	8c a7       	std	Y+44, r24	; 0x2c
+ 1c6:	9d a7       	std	Y+45, r25	; 0x2d
+ 1c8:	ae a7       	std	Y+46, r26	; 0x2e
+ 1ca:	bf a7       	std	Y+47, r27	; 0x2f
+ 1cc:	89 85       	ldd	r24, Y+9	; 0x09
+ 1ce:	9a 85       	ldd	r25, Y+10	; 0x0a
+ 1d0:	ab 85       	ldd	r26, Y+11	; 0x0b
+ 1d2:	bc 85       	ldd	r27, Y+12	; 0x0c
+ 1d4:	88 ab       	std	Y+48, r24	; 0x30
+ 1d6:	99 ab       	std	Y+49, r25	; 0x31
+ 1d8:	aa ab       	std	Y+50, r26	; 0x32
+ 1da:	bb ab       	std	Y+51, r27	; 0x33
+ 1dc:	80 e0       	ldi	r24, 0x00	; 0
+ 1de:	90 e0       	ldi	r25, 0x00	; 0
+ 1e0:	99 a7       	std	Y+41, r25	; 0x29
+ 1e2:	88 a7       	std	Y+40, r24	; 0x28
+ 1e4:	8d 85       	ldd	r24, Y+13	; 0x0d
+ 1e6:	8c ab       	std	Y+52, r24	; 0x34
+ 1e8:	c7 01       	movw	r24, r14
+ 1ea:	be 01       	movw	r22, r28
+ 1ec:	68 5d       	subi	r22, 0xD8	; 216
+ 1ee:	7f 4f       	sbci	r23, 0xFF	; 255
+ 1f0:	40 e0       	ldi	r20, 0x00	; 0
+ 1f2:	50 e0       	ldi	r21, 0x00	; 0
+ 1f4:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb11loop_serverEv>
+ 1f8:	88 23       	and	r24, r24
+ 1fa:	01 f0       	breq	.+0      	; 0x1fc <_ZN6APDWeb11loop_serverEv+0x1fc>
+ 1fc:	00 c0       	rjmp	.+0      	; 0x1fe <_ZN6APDWeb11loop_serverEv+0x1fe>
+ 1fe:	f7 01       	movw	r30, r14
+ 200:	84 8d       	ldd	r24, Z+28	; 0x1c
+ 202:	8e 01       	movw	r16, r28
+ 204:	0f 5f       	subi	r16, 0xFF	; 255
+ 206:	1f 4f       	sbci	r17, 0xFF	; 255
+ 208:	82 fd       	sbrc	r24, 2
+ 20a:	00 c0       	rjmp	.+0      	; 0x20c <_ZN6APDWeb11loop_serverEv+0x20c>
+ 20c:	c8 01       	movw	r24, r16
+ 20e:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb11loop_serverEv>
+ 212:	c7 01       	movw	r24, r14
+ 214:	b8 01       	movw	r22, r16
+ 216:	40 e0       	ldi	r20, 0x00	; 0
+ 218:	50 e0       	ldi	r21, 0x00	; 0
+ 21a:	24 e1       	ldi	r18, 0x14	; 20
+ 21c:	30 e0       	ldi	r19, 0x00	; 0
+ 21e:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb11loop_serverEv>
+ 222:	c7 01       	movw	r24, r14
+ 224:	b8 01       	movw	r22, r16
+ 226:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb11loop_serverEv>
+ 22a:	c7 01       	movw	r24, r14
+ 22c:	b8 01       	movw	r22, r16
+ 22e:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb11loop_serverEv>
+ 232:	00 c0       	rjmp	.+0      	; 0x234 <_ZN6APDWeb11loop_serverEv+0x234>
+ 234:	8e 01       	movw	r16, r28
+ 236:	0f 5f       	subi	r16, 0xFF	; 255
+ 238:	1f 4f       	sbci	r17, 0xFF	; 255
+ 23a:	c8 01       	movw	r24, r16
+ 23c:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb11loop_serverEv>
+ 240:	c7 01       	movw	r24, r14
+ 242:	b8 01       	movw	r22, r16
+ 244:	40 e0       	ldi	r20, 0x00	; 0
+ 246:	50 e0       	ldi	r21, 0x00	; 0
+ 248:	20 e0       	ldi	r18, 0x00	; 0
+ 24a:	30 e0       	ldi	r19, 0x00	; 0
+ 24c:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb11loop_serverEv>
+ 250:	c8 01       	movw	r24, r16
+ 252:	60 e0       	ldi	r22, 0x00	; 0
+ 254:	70 e0       	ldi	r23, 0x00	; 0
+ 256:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb11loop_serverEv>
+ 25a:	c7 01       	movw	r24, r14
+ 25c:	b8 01       	movw	r22, r16
+ 25e:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb11loop_serverEv>
+ 262:	81 e0       	ldi	r24, 0x01	; 1
+ 264:	90 e0       	ldi	r25, 0x00	; 0
+ 266:	00 c0       	rjmp	.+0      	; 0x268 <_ZN6APDWeb11loop_serverEv+0x268>
+ 268:	c8 01       	movw	r24, r16
+ 26a:	60 e0       	ldi	r22, 0x00	; 0
+ 26c:	70 e0       	ldi	r23, 0x00	; 0
+ 26e:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb11loop_serverEv>
+ 272:	89 2b       	or	r24, r25
+ 274:	01 f0       	breq	.+0      	; 0x276 <_ZN6APDWeb11loop_serverEv+0x276>
+ 276:	8e 01       	movw	r16, r28
+ 278:	0f 5f       	subi	r16, 0xFF	; 255
+ 27a:	1f 4f       	sbci	r17, 0xFF	; 255
+ 27c:	c8 01       	movw	r24, r16
+ 27e:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb11loop_serverEv>
+ 282:	c7 01       	movw	r24, r14
+ 284:	b8 01       	movw	r22, r16
+ 286:	40 e0       	ldi	r20, 0x00	; 0
+ 288:	50 e0       	ldi	r21, 0x00	; 0
+ 28a:	20 e0       	ldi	r18, 0x00	; 0
+ 28c:	30 e0       	ldi	r19, 0x00	; 0
  28e:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb11loop_serverEv>
- 292:	ce 01       	movw	r24, r28
- 294:	8c 96       	adiw	r24, 0x2c	; 44
- 296:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb11loop_serverEv>
- 29a:	ce 01       	movw	r24, r28
- 29c:	88 96       	adiw	r24, 0x28	; 40
- 29e:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb11loop_serverEv>
- 2a2:	00 c0       	rjmp	.+0      	; 0x2a4 <_ZN6APDWeb11loop_serverEv+0x2a4>
- 2a4:	c6 01       	movw	r24, r12
- 2a6:	60 e0       	ldi	r22, 0x00	; 0
- 2a8:	70 e0       	ldi	r23, 0x00	; 0
- 2aa:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb11loop_serverEv>
- 2ae:	89 2b       	or	r24, r25
- 2b0:	01 f4       	brne	.+0      	; 0x2b2 <_ZN6APDWeb11loop_serverEv+0x2b2>
- 2b2:	c6 01       	movw	r24, r12
- 2b4:	60 e0       	ldi	r22, 0x00	; 0
- 2b6:	70 e0       	ldi	r23, 0x00	; 0
- 2b8:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb11loop_serverEv>
- 2bc:	89 2b       	or	r24, r25
- 2be:	01 f4       	brne	.+0      	; 0x2c0 <_ZN6APDWeb11loop_serverEv+0x2c0>
- 2c0:	00 c0       	rjmp	.+0      	; 0x2c2 <_ZN6APDWeb11loop_serverEv+0x2c2>
- 2c2:	f7 01       	movw	r30, r14
- 2c4:	84 8d       	ldd	r24, Z+28	; 0x1c
- 2c6:	8e 01       	movw	r16, r28
- 2c8:	0f 5f       	subi	r16, 0xFF	; 255
- 2ca:	1f 4f       	sbci	r17, 0xFF	; 255
- 2cc:	82 fd       	sbrc	r24, 2
- 2ce:	00 c0       	rjmp	.+0      	; 0x2d0 <_ZN6APDWeb11loop_serverEv+0x2d0>
- 2d0:	c8 01       	movw	r24, r16
- 2d2:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb11loop_serverEv>
- 2d6:	c7 01       	movw	r24, r14
- 2d8:	b8 01       	movw	r22, r16
- 2da:	40 e0       	ldi	r20, 0x00	; 0
- 2dc:	50 e0       	ldi	r21, 0x00	; 0
- 2de:	24 e1       	ldi	r18, 0x14	; 20
- 2e0:	30 e0       	ldi	r19, 0x00	; 0
- 2e2:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb11loop_serverEv>
- 2e6:	c7 01       	movw	r24, r14
- 2e8:	b8 01       	movw	r22, r16
+ 292:	c8 01       	movw	r24, r16
+ 294:	60 e0       	ldi	r22, 0x00	; 0
+ 296:	70 e0       	ldi	r23, 0x00	; 0
+ 298:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb11loop_serverEv>
+ 29c:	c7 01       	movw	r24, r14
+ 29e:	b8 01       	movw	r22, r16
+ 2a0:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb11loop_serverEv>
+ 2a4:	82 e0       	ldi	r24, 0x02	; 2
+ 2a6:	90 e0       	ldi	r25, 0x00	; 0
+ 2a8:	f7 01       	movw	r30, r14
+ 2aa:	97 8f       	std	Z+31, r25	; 0x1f
+ 2ac:	86 8f       	std	Z+30, r24	; 0x1e
+ 2ae:	00 c0       	rjmp	.+0      	; 0x2b0 <_ZN6APDWeb11loop_serverEv+0x2b0>
+ 2b0:	c8 01       	movw	r24, r16
+ 2b2:	60 e0       	ldi	r22, 0x00	; 0
+ 2b4:	70 e0       	ldi	r23, 0x00	; 0
+ 2b6:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb11loop_serverEv>
+ 2ba:	89 2b       	or	r24, r25
+ 2bc:	01 f0       	breq	.+0      	; 0x2be <_ZN6APDWeb11loop_serverEv+0x2be>
+ 2be:	8e 01       	movw	r16, r28
+ 2c0:	0f 5f       	subi	r16, 0xFF	; 255
+ 2c2:	1f 4f       	sbci	r17, 0xFF	; 255
+ 2c4:	c8 01       	movw	r24, r16
+ 2c6:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb11loop_serverEv>
+ 2ca:	c7 01       	movw	r24, r14
+ 2cc:	b8 01       	movw	r22, r16
+ 2ce:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb11loop_serverEv>
+ 2d2:	00 c0       	rjmp	.+0      	; 0x2d4 <_ZN6APDWeb11loop_serverEv+0x2d4>
+ 2d4:	c8 01       	movw	r24, r16
+ 2d6:	60 e0       	ldi	r22, 0x00	; 0
+ 2d8:	70 e0       	ldi	r23, 0x00	; 0
+ 2da:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb11loop_serverEv>
+ 2de:	89 2b       	or	r24, r25
+ 2e0:	01 f0       	breq	.+0      	; 0x2e2 <_ZN6APDWeb11loop_serverEv+0x2e2>
+ 2e2:	8e 01       	movw	r16, r28
+ 2e4:	0f 5f       	subi	r16, 0xFF	; 255
+ 2e6:	1f 4f       	sbci	r17, 0xFF	; 255
+ 2e8:	c8 01       	movw	r24, r16
  2ea:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb11loop_serverEv>
  2ee:	c7 01       	movw	r24, r14
  2f0:	b8 01       	movw	r22, r16
- 2f2:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb11loop_serverEv>
- 2f6:	00 c0       	rjmp	.+0      	; 0x2f8 <_ZN6APDWeb11loop_serverEv+0x2f8>
- 2f8:	8e 01       	movw	r16, r28
- 2fa:	0f 5f       	subi	r16, 0xFF	; 255
- 2fc:	1f 4f       	sbci	r17, 0xFF	; 255
- 2fe:	c8 01       	movw	r24, r16
- 300:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb11loop_serverEv>
- 304:	c7 01       	movw	r24, r14
- 306:	b8 01       	movw	r22, r16
- 308:	40 e0       	ldi	r20, 0x00	; 0
- 30a:	50 e0       	ldi	r21, 0x00	; 0
- 30c:	20 e0       	ldi	r18, 0x00	; 0
- 30e:	30 e0       	ldi	r19, 0x00	; 0
- 310:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb11loop_serverEv>
- 314:	c8 01       	movw	r24, r16
- 316:	60 e0       	ldi	r22, 0x00	; 0
- 318:	70 e0       	ldi	r23, 0x00	; 0
- 31a:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb11loop_serverEv>
- 31e:	c7 01       	movw	r24, r14
- 320:	b8 01       	movw	r22, r16
- 322:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb11loop_serverEv>
- 326:	81 e0       	ldi	r24, 0x01	; 1
- 328:	90 e0       	ldi	r25, 0x00	; 0
- 32a:	d7 01       	movw	r26, r14
- 32c:	5f 96       	adiw	r26, 0x1f	; 31
- 32e:	9c 93       	st	X, r25
- 330:	8e 93       	st	-X, r24
- 332:	5e 97       	sbiw	r26, 0x1e	; 30
- 334:	00 c0       	rjmp	.+0      	; 0x336 <_ZN6APDWeb11loop_serverEv+0x336>
- 336:	c6 01       	movw	r24, r12
- 338:	60 e0       	ldi	r22, 0x00	; 0
- 33a:	70 e0       	ldi	r23, 0x00	; 0
- 33c:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb11loop_serverEv>
- 340:	89 2b       	or	r24, r25
- 342:	01 f0       	breq	.+0      	; 0x344 <_ZN6APDWeb11loop_serverEv+0x344>
- 344:	8e 01       	movw	r16, r28
- 346:	0f 5f       	subi	r16, 0xFF	; 255
- 348:	1f 4f       	sbci	r17, 0xFF	; 255
- 34a:	c8 01       	movw	r24, r16
- 34c:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb11loop_serverEv>
- 350:	c7 01       	movw	r24, r14
- 352:	b8 01       	movw	r22, r16
- 354:	40 e0       	ldi	r20, 0x00	; 0
- 356:	50 e0       	ldi	r21, 0x00	; 0
- 358:	20 e0       	ldi	r18, 0x00	; 0
- 35a:	30 e0       	ldi	r19, 0x00	; 0
- 35c:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb11loop_serverEv>
- 360:	c8 01       	movw	r24, r16
- 362:	60 e0       	ldi	r22, 0x00	; 0
- 364:	70 e0       	ldi	r23, 0x00	; 0
- 366:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb11loop_serverEv>
- 36a:	c7 01       	movw	r24, r14
- 36c:	b8 01       	movw	r22, r16
- 36e:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb11loop_serverEv>
- 372:	82 e0       	ldi	r24, 0x02	; 2
- 374:	90 e0       	ldi	r25, 0x00	; 0
- 376:	f7 01       	movw	r30, r14
- 378:	97 8f       	std	Z+31, r25	; 0x1f
- 37a:	86 8f       	std	Z+30, r24	; 0x1e
- 37c:	00 c0       	rjmp	.+0      	; 0x37e <_ZN6APDWeb11loop_serverEv+0x37e>
- 37e:	c6 01       	movw	r24, r12
- 380:	60 e0       	ldi	r22, 0x00	; 0
- 382:	70 e0       	ldi	r23, 0x00	; 0
- 384:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb11loop_serverEv>
- 388:	89 2b       	or	r24, r25
- 38a:	01 f0       	breq	.+0      	; 0x38c <_ZN6APDWeb11loop_serverEv+0x38c>
- 38c:	8e 01       	movw	r16, r28
- 38e:	0f 5f       	subi	r16, 0xFF	; 255
- 390:	1f 4f       	sbci	r17, 0xFF	; 255
- 392:	c8 01       	movw	r24, r16
- 394:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb11loop_serverEv>
- 398:	c7 01       	movw	r24, r14
- 39a:	b8 01       	movw	r22, r16
- 39c:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb11loop_serverEv>
- 3a0:	00 c0       	rjmp	.+0      	; 0x3a2 <_ZN6APDWeb11loop_serverEv+0x3a2>
- 3a2:	c6 01       	movw	r24, r12
- 3a4:	60 e0       	ldi	r22, 0x00	; 0
- 3a6:	70 e0       	ldi	r23, 0x00	; 0
- 3a8:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb11loop_serverEv>
- 3ac:	89 2b       	or	r24, r25
- 3ae:	01 f0       	breq	.+0      	; 0x3b0 <_ZN6APDWeb11loop_serverEv+0x3b0>
- 3b0:	8e 01       	movw	r16, r28
- 3b2:	0f 5f       	subi	r16, 0xFF	; 255
- 3b4:	1f 4f       	sbci	r17, 0xFF	; 255
- 3b6:	c8 01       	movw	r24, r16
- 3b8:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb11loop_serverEv>
- 3bc:	c7 01       	movw	r24, r14
- 3be:	b8 01       	movw	r22, r16
- 3c0:	40 e0       	ldi	r20, 0x00	; 0
- 3c2:	50 e0       	ldi	r21, 0x00	; 0
- 3c4:	20 e0       	ldi	r18, 0x00	; 0
- 3c6:	30 e0       	ldi	r19, 0x00	; 0
- 3c8:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb11loop_serverEv>
- 3cc:	c7 01       	movw	r24, r14
- 3ce:	b8 01       	movw	r22, r16
- 3d0:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb11loop_serverEv>
- 3d4:	00 c0       	rjmp	.+0      	; 0x3d6 <_ZN6APDWeb11loop_serverEv+0x3d6>
- 3d6:	c6 01       	movw	r24, r12
- 3d8:	60 e0       	ldi	r22, 0x00	; 0
- 3da:	70 e0       	ldi	r23, 0x00	; 0
- 3dc:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb11loop_serverEv>
- 3e0:	89 2b       	or	r24, r25
- 3e2:	01 f0       	breq	.+0      	; 0x3e4 <_ZN6APDWeb11loop_serverEv+0x3e4>
- 3e4:	d7 01       	movw	r26, r14
- 3e6:	5c 96       	adiw	r26, 0x1c	; 28
- 3e8:	8c 91       	ld	r24, X
- 3ea:	8e 01       	movw	r16, r28
- 3ec:	0f 5f       	subi	r16, 0xFF	; 255
- 3ee:	1f 4f       	sbci	r17, 0xFF	; 255
- 3f0:	82 fd       	sbrc	r24, 2
- 3f2:	00 c0       	rjmp	.+0      	; 0x3f4 <_ZN6APDWeb11loop_serverEv+0x3f4>
- 3f4:	c7 01       	movw	r24, r14
- 3f6:	b8 01       	movw	r22, r16
- 3f8:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb11loop_serverEv>
- 3fc:	00 c0       	rjmp	.+0      	; 0x3fe <_ZN6APDWeb11loop_serverEv+0x3fe>
- 3fe:	c7 01       	movw	r24, r14
- 400:	b8 01       	movw	r22, r16
- 402:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb11loop_serverEv>
- 406:	00 c0       	rjmp	.+0      	; 0x408 <_ZN6APDWeb11loop_serverEv+0x408>
- 408:	ce 01       	movw	r24, r28
- 40a:	01 96       	adiw	r24, 0x01	; 1
- 40c:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb11loop_serverEv>
- 410:	00 c0       	rjmp	.+0      	; 0x412 <_ZN6APDWeb11loop_serverEv+0x412>
- 412:	c6 01       	movw	r24, r12
- 414:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb11loop_serverEv>
- 418:	88 23       	and	r24, r24
- 41a:	01 f0       	breq	.+0      	; 0x41c <_ZN6APDWeb11loop_serverEv+0x41c>
- 41c:	00 c0       	rjmp	.+0      	; 0x41e <_ZN6APDWeb11loop_serverEv+0x41e>
- 41e:	61 e0       	ldi	r22, 0x01	; 1
- 420:	70 e0       	ldi	r23, 0x00	; 0
- 422:	80 e0       	ldi	r24, 0x00	; 0
- 424:	90 e0       	ldi	r25, 0x00	; 0
- 426:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb11loop_serverEv>
- 42a:	ce 01       	movw	r24, r28
- 42c:	01 96       	adiw	r24, 0x01	; 1
- 42e:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb11loop_serverEv>
- 432:	00 c0       	rjmp	.+0      	; 0x434 <_ZN6APDWeb11loop_serverEv+0x434>
- 434:	c7 01       	movw	r24, r14
- 436:	60 e0       	ldi	r22, 0x00	; 0
- 438:	70 e0       	ldi	r23, 0x00	; 0
- 43a:	00 c0       	rjmp	.+0      	; 0x43c <_ZN6APDWeb11loop_serverEv+0x43c>
- 43c:	c6 01       	movw	r24, r12
- 43e:	60 e0       	ldi	r22, 0x00	; 0
- 440:	70 e0       	ldi	r23, 0x00	; 0
- 442:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb11loop_serverEv>
- 446:	89 2b       	or	r24, r25
- 448:	01 f0       	breq	.+0      	; 0x44a <_ZN6APDWeb11loop_serverEv+0x44a>
- 44a:	00 c0       	rjmp	.+0      	; 0x44c <_ZN6APDWeb11loop_serverEv+0x44c>
- 44c:	00 c0       	rjmp	.+0      	; 0x44e <_ZN6APDWeb11loop_serverEv+0x44e>
- 44e:	c6 55       	subi	r28, 0x56	; 86
- 450:	df 4f       	sbci	r29, 0xFF	; 255
- 452:	0f b6       	in	r0, 0x3f	; 63
- 454:	f8 94       	cli
- 456:	de bf       	out	0x3e, r29	; 62
- 458:	0f be       	out	0x3f, r0	; 63
- 45a:	cd bf       	out	0x3d, r28	; 61
- 45c:	cf 91       	pop	r28
- 45e:	df 91       	pop	r29
- 460:	1f 91       	pop	r17
- 462:	0f 91       	pop	r16
- 464:	ff 90       	pop	r15
- 466:	ef 90       	pop	r14
- 468:	df 90       	pop	r13
- 46a:	cf 90       	pop	r12
- 46c:	bf 90       	pop	r11
- 46e:	af 90       	pop	r10
- 470:	08 95       	ret
+ 2f2:	40 e0       	ldi	r20, 0x00	; 0
+ 2f4:	50 e0       	ldi	r21, 0x00	; 0
+ 2f6:	20 e0       	ldi	r18, 0x00	; 0
+ 2f8:	30 e0       	ldi	r19, 0x00	; 0
+ 2fa:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb11loop_serverEv>
+ 2fe:	c7 01       	movw	r24, r14
+ 300:	b8 01       	movw	r22, r16
+ 302:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb11loop_serverEv>
+ 306:	00 c0       	rjmp	.+0      	; 0x308 <_ZN6APDWeb11loop_serverEv+0x308>
+ 308:	c8 01       	movw	r24, r16
+ 30a:	60 e0       	ldi	r22, 0x00	; 0
+ 30c:	70 e0       	ldi	r23, 0x00	; 0
+ 30e:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb11loop_serverEv>
+ 312:	89 2b       	or	r24, r25
+ 314:	01 f0       	breq	.+0      	; 0x316 <_ZN6APDWeb11loop_serverEv+0x316>
+ 316:	f7 01       	movw	r30, r14
+ 318:	84 8d       	ldd	r24, Z+28	; 0x1c
+ 31a:	8e 01       	movw	r16, r28
+ 31c:	0f 5f       	subi	r16, 0xFF	; 255
+ 31e:	1f 4f       	sbci	r17, 0xFF	; 255
+ 320:	82 fd       	sbrc	r24, 2
+ 322:	00 c0       	rjmp	.+0      	; 0x324 <_ZN6APDWeb11loop_serverEv+0x324>
+ 324:	c7 01       	movw	r24, r14
+ 326:	b8 01       	movw	r22, r16
+ 328:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb11loop_serverEv>
+ 32c:	00 c0       	rjmp	.+0      	; 0x32e <_ZN6APDWeb11loop_serverEv+0x32e>
+ 32e:	c7 01       	movw	r24, r14
+ 330:	b8 01       	movw	r22, r16
+ 332:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb11loop_serverEv>
+ 336:	00 c0       	rjmp	.+0      	; 0x338 <_ZN6APDWeb11loop_serverEv+0x338>
+ 338:	c8 01       	movw	r24, r16
+ 33a:	60 e0       	ldi	r22, 0x00	; 0
+ 33c:	70 e0       	ldi	r23, 0x00	; 0
+ 33e:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb11loop_serverEv>
+ 342:	89 2b       	or	r24, r25
+ 344:	01 f4       	brne	.+0      	; 0x346 <_ZN6APDWeb11loop_serverEv+0x346>
+ 346:	ce 01       	movw	r24, r28
+ 348:	01 96       	adiw	r24, 0x01	; 1
+ 34a:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb11loop_serverEv>
+ 34e:	00 c0       	rjmp	.+0      	; 0x350 <_ZN6APDWeb11loop_serverEv+0x350>
+ 350:	c6 01       	movw	r24, r12
+ 352:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb11loop_serverEv>
+ 356:	88 23       	and	r24, r24
+ 358:	01 f0       	breq	.+0      	; 0x35a <_ZN6APDWeb11loop_serverEv+0x35a>
+ 35a:	00 c0       	rjmp	.+0      	; 0x35c <_ZN6APDWeb11loop_serverEv+0x35c>
+ 35c:	61 e0       	ldi	r22, 0x01	; 1
+ 35e:	70 e0       	ldi	r23, 0x00	; 0
+ 360:	80 e0       	ldi	r24, 0x00	; 0
+ 362:	90 e0       	ldi	r25, 0x00	; 0
+ 364:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb11loop_serverEv>
+ 368:	ce 01       	movw	r24, r28
+ 36a:	01 96       	adiw	r24, 0x01	; 1
+ 36c:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb11loop_serverEv>
+ 370:	00 c0       	rjmp	.+0      	; 0x372 <_ZN6APDWeb11loop_serverEv+0x372>
+ 372:	8e 01       	movw	r16, r28
+ 374:	0b 5c       	subi	r16, 0xCB	; 203
+ 376:	1f 4f       	sbci	r17, 0xFF	; 255
+ 378:	c8 01       	movw	r24, r16
+ 37a:	60 e0       	ldi	r22, 0x00	; 0
+ 37c:	70 e0       	ldi	r23, 0x00	; 0
+ 37e:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb11loop_serverEv>
+ 382:	89 2b       	or	r24, r25
+ 384:	01 f0       	breq	.+0      	; 0x386 <_ZN6APDWeb11loop_serverEv+0x386>
+ 386:	00 c0       	rjmp	.+0      	; 0x388 <_ZN6APDWeb11loop_serverEv+0x388>
+ 388:	00 c0       	rjmp	.+0      	; 0x38a <_ZN6APDWeb11loop_serverEv+0x38a>
+ 38a:	c8 56       	subi	r28, 0x68	; 104
+ 38c:	df 4f       	sbci	r29, 0xFF	; 255
+ 38e:	0f b6       	in	r0, 0x3f	; 63
+ 390:	f8 94       	cli
+ 392:	de bf       	out	0x3e, r29	; 62
+ 394:	0f be       	out	0x3f, r0	; 63
+ 396:	cd bf       	out	0x3d, r28	; 61
+ 398:	cf 91       	pop	r28
+ 39a:	df 91       	pop	r29
+ 39c:	1f 91       	pop	r17
+ 39e:	0f 91       	pop	r16
+ 3a0:	ff 90       	pop	r15
+ 3a2:	ef 90       	pop	r14
+ 3a4:	df 90       	pop	r13
+ 3a6:	cf 90       	pop	r12
+ 3a8:	bf 90       	pop	r11
+ 3aa:	af 90       	pop	r10
+ 3ac:	08 95       	ret
 
 Disassembly of section .text._ZN6APDWeb14startWebServerEPP9APDSensoriPP10APDControliPP7APDRuleiP10APDStorage:
 
@@ -28092,35 +28196,18 @@ APDWeb::~APDWeb()
   68:	80 e0       	ldi	r24, 0x00	; 0
   6a:	90 e0       	ldi	r25, 0x00	; 0
   6c:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb15startWebLoggingEm>
-  70:	8a e4       	ldi	r24, 0x4A	; 74
-  72:	90 e0       	ldi	r25, 0x00	; 0
-  74:	a8 0e       	add	r10, r24
-  76:	b9 1e       	adc	r11, r25
-  78:	80 e0       	ldi	r24, 0x00	; 0
-  7a:	90 e0       	ldi	r25, 0x00	; 0
-  7c:	b5 01       	movw	r22, r10
-  7e:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb15startWebLoggingEm>
-  82:	80 e0       	ldi	r24, 0x00	; 0
-  84:	90 e0       	ldi	r25, 0x00	; 0
-  86:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb15startWebLoggingEm>
-  8a:	c5 01       	movw	r24, r10
-  8c:	04 97       	sbiw	r24, 0x04	; 4
-  8e:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb15startWebLoggingEm>
-  92:	80 e0       	ldi	r24, 0x00	; 0
-  94:	90 e0       	ldi	r25, 0x00	; 0
-  96:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb15startWebLoggingEm>
-  9a:	8f 2d       	mov	r24, r15
-  9c:	df 91       	pop	r29
-  9e:	cf 91       	pop	r28
-  a0:	1f 91       	pop	r17
-  a2:	0f 91       	pop	r16
-  a4:	ff 90       	pop	r15
-  a6:	ef 90       	pop	r14
-  a8:	df 90       	pop	r13
-  aa:	cf 90       	pop	r12
-  ac:	bf 90       	pop	r11
-  ae:	af 90       	pop	r10
-  b0:	08 95       	ret
+  70:	8f 2d       	mov	r24, r15
+  72:	df 91       	pop	r29
+  74:	cf 91       	pop	r28
+  76:	1f 91       	pop	r17
+  78:	0f 91       	pop	r16
+  7a:	ff 90       	pop	r15
+  7c:	ef 90       	pop	r14
+  7e:	df 90       	pop	r13
+  80:	cf 90       	pop	r12
+  82:	bf 90       	pop	r11
+  84:	af 90       	pop	r10
+  86:	08 95       	ret
 
 Disassembly of section .text._ZN6APDWeb10loadAPIkeyEPcS0_:
 
@@ -28191,13 +28278,13 @@ APDWeb::~APDWeb()
   6a:	01 f0       	breq	.+0      	; 0x6c <_ZN6APDWeb10loadAPIkeyEPcS0_+0x6c>
   6c:	00 e0       	ldi	r16, 0x00	; 0
   6e:	10 e0       	ldi	r17, 0x00	; 0
-  70:	f5 e0       	ldi	r31, 0x05	; 5
-  72:	af 2e       	mov	r10, r31
+  70:	75 e0       	ldi	r23, 0x05	; 5
+  72:	a7 2e       	mov	r10, r23
   74:	b1 2c       	mov	r11, r1
   76:	ac 0e       	add	r10, r28
   78:	bd 1e       	adc	r11, r29
-  7a:	e0 e2       	ldi	r30, 0x20	; 32
-  7c:	ee 2e       	mov	r14, r30
+  7a:	60 e2       	ldi	r22, 0x20	; 32
+  7c:	e6 2e       	mov	r14, r22
   7e:	f1 2c       	mov	r15, r1
   80:	ec 0e       	add	r14, r28
   82:	fd 1e       	adc	r15, r29
@@ -28237,30 +28324,37 @@ APDWeb::~APDWeb()
   cc:	00 c0       	rjmp	.+0      	; 0xce <_ZN6APDWeb10loadAPIkeyEPcS0_+0xce>
   ce:	80 e0       	ldi	r24, 0x00	; 0
   d0:	18 2f       	mov	r17, r24
-  d2:	ce 01       	movw	r24, r28
-  d4:	01 96       	adiw	r24, 0x01	; 1
-  d6:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb10loadAPIkeyEPcS0_>
-  da:	00 c0       	rjmp	.+0      	; 0xdc <_ZN6APDWeb10loadAPIkeyEPcS0_+0xdc>
-  dc:	10 e0       	ldi	r17, 0x00	; 0
-  de:	81 2f       	mov	r24, r17
-  e0:	cd 57       	subi	r28, 0x7D	; 125
-  e2:	df 4f       	sbci	r29, 0xFF	; 255
-  e4:	0f b6       	in	r0, 0x3f	; 63
-  e6:	f8 94       	cli
-  e8:	de bf       	out	0x3e, r29	; 62
-  ea:	0f be       	out	0x3f, r0	; 63
-  ec:	cd bf       	out	0x3d, r28	; 61
-  ee:	cf 91       	pop	r28
-  f0:	df 91       	pop	r29
-  f2:	1f 91       	pop	r17
-  f4:	0f 91       	pop	r16
-  f6:	ff 90       	pop	r15
-  f8:	ef 90       	pop	r14
-  fa:	df 90       	pop	r13
-  fc:	cf 90       	pop	r12
-  fe:	bf 90       	pop	r11
- 100:	af 90       	pop	r10
- 102:	08 95       	ret
+  d2:	88 85       	ldd	r24, Y+8	; 0x08
+  d4:	88 23       	and	r24, r24
+  d6:	01 f0       	breq	.+0      	; 0xd8 <_ZN6APDWeb10loadAPIkeyEPcS0_+0xd8>
+  d8:	80 e0       	ldi	r24, 0x00	; 0
+  da:	90 e0       	ldi	r25, 0x00	; 0
+  dc:	9a 83       	std	Y+2, r25	; 0x02
+  de:	89 83       	std	Y+1, r24	; 0x01
+  e0:	ce 01       	movw	r24, r28
+  e2:	05 96       	adiw	r24, 0x05	; 5
+  e4:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb10loadAPIkeyEPcS0_>
+  e8:	00 c0       	rjmp	.+0      	; 0xea <_ZN6APDWeb10loadAPIkeyEPcS0_+0xea>
+  ea:	10 e0       	ldi	r17, 0x00	; 0
+  ec:	81 2f       	mov	r24, r17
+  ee:	cd 57       	subi	r28, 0x7D	; 125
+  f0:	df 4f       	sbci	r29, 0xFF	; 255
+  f2:	0f b6       	in	r0, 0x3f	; 63
+  f4:	f8 94       	cli
+  f6:	de bf       	out	0x3e, r29	; 62
+  f8:	0f be       	out	0x3f, r0	; 63
+  fa:	cd bf       	out	0x3d, r28	; 61
+  fc:	cf 91       	pop	r28
+  fe:	df 91       	pop	r29
+ 100:	1f 91       	pop	r17
+ 102:	0f 91       	pop	r16
+ 104:	ff 90       	pop	r15
+ 106:	ef 90       	pop	r14
+ 108:	df 90       	pop	r13
+ 10a:	cf 90       	pop	r12
+ 10c:	bf 90       	pop	r11
+ 10e:	af 90       	pop	r10
+ 110:	08 95       	ret
 
 Disassembly of section .text._ZN6APDWeb22setupThingSpeakLoggingEv:
 
@@ -28283,11 +28377,11 @@ APDWeb::~APDWeb()
    e:	80 e0       	ldi	r24, 0x00	; 0
   10:	90 e0       	ldi	r25, 0x00	; 0
   12:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb22setupThingSpeakLoggingEv>
-  16:	aa e4       	ldi	r26, 0x4A	; 74
-  18:	ea 2e       	mov	r14, r26
+  16:	ea e4       	ldi	r30, 0x4A	; 74
+  18:	ee 2e       	mov	r14, r30
 	if (pwwwserver != NULL) free(pwwwclient);
-  1a:	a1 e0       	ldi	r26, 0x01	; 1
-  1c:	fa 2e       	mov	r15, r26
+  1a:	e1 e0       	ldi	r30, 0x01	; 1
+  1c:	fe 2e       	mov	r15, r30
   1e:	ec 0e       	add	r14, r28
   20:	fd 1e       	adc	r15, r29
   22:	f7 01       	movw	r30, r14
@@ -28427,11 +28521,11 @@ APDWeb::~APDWeb()
    e:	80 e0       	ldi	r24, 0x00	; 0
   10:	90 e0       	ldi	r25, 0x00	; 0
   12:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb16setupCosmLoggingEv>
-  16:	b9 e0       	ldi	r27, 0x09	; 9
-  18:	eb 2e       	mov	r14, r27
+  16:	f9 e0       	ldi	r31, 0x09	; 9
+  18:	ef 2e       	mov	r14, r31
 	if (pwwwserver != NULL) free(pwwwclient);
-  1a:	b1 e0       	ldi	r27, 0x01	; 1
-  1c:	fb 2e       	mov	r15, r27
+  1a:	f1 e0       	ldi	r31, 0x01	; 1
+  1c:	ff 2e       	mov	r15, r31
   1e:	ec 0e       	add	r14, r28
   20:	fd 1e       	adc	r15, r29
   22:	f7 01       	movw	r30, r14
@@ -28664,16 +28758,16 @@ APDWeb::~APDWeb()
   c2:	b0 e0       	ldi	r27, 0x00	; 0
   c4:	aa 0e       	add	r10, r26
   c6:	bb 1e       	adc	r11, r27
-  c8:	00 e5       	ldi	r16, 0x50	; 80
-  ca:	c0 2e       	mov	r12, r16
+  c8:	b0 e5       	ldi	r27, 0x50	; 80
+  ca:	cb 2e       	mov	r12, r27
   cc:	d1 2c       	mov	r13, r1
   ce:	f5 01       	movw	r30, r10
   d0:	c1 92       	st	Z+, r12
   d2:	d1 92       	st	Z+, r13
-  d4:	10 e6       	ldi	r17, 0x60	; 96
-  d6:	e1 2e       	mov	r14, r17
-  d8:	1a ee       	ldi	r17, 0xEA	; 234
-  da:	f1 2e       	mov	r15, r17
+  d4:	a0 e6       	ldi	r26, 0x60	; 96
+  d6:	ea 2e       	mov	r14, r26
+  d8:	aa ee       	ldi	r26, 0xEA	; 234
+  da:	fa 2e       	mov	r15, r26
   dc:	01 2d       	mov	r16, r1
   de:	11 2d       	mov	r17, r1
   e0:	df 01       	movw	r26, r30
@@ -28941,148 +29035,87 @@ Disassembly of section .text._ZN6APDWeb7wc_busyEv:
 
 
 APDWeb::~APDWeb()
-   0:	af 92       	push	r10
-   2:	bf 92       	push	r11
-   4:	cf 92       	push	r12
-   6:	df 92       	push	r13
-   8:	ef 92       	push	r14
-   a:	ff 92       	push	r15
-   c:	0f 93       	push	r16
+   0:	cf 93       	push	r28
+   2:	df 93       	push	r29
+   4:	ec 01       	movw	r28, r24
+   6:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb7wc_busyEv>
+   a:	9b 01       	movw	r18, r22
+   c:	ac 01       	movw	r20, r24
 {
 	if (pwwwclient != NULL) free(pwwwclient);
-   e:	1f 93       	push	r17
-  10:	cf 93       	push	r28
-  12:	df 93       	push	r29
-  14:	ec 01       	movw	r28, r24
-  16:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb7wc_busyEv>
+   e:	ce 5b       	subi	r28, 0xBE	; 190
+  10:	df 4f       	sbci	r29, 0xFF	; 255
+  12:	88 81       	ld	r24, Y
+  14:	99 81       	ldd	r25, Y+1	; 0x01
+  16:	aa 81       	ldd	r26, Y+2	; 0x02
+  18:	bb 81       	ldd	r27, Y+3	; 0x03
 	if (pwwwserver != NULL) free(pwwwclient);
-  1a:	5b 01       	movw	r10, r22
-  1c:	6c 01       	movw	r12, r24
-  1e:	ce 5b       	subi	r28, 0xBE	; 190
-  20:	df 4f       	sbci	r29, 0xFF	; 255
-  22:	88 81       	ld	r24, Y
-  24:	99 81       	ldd	r25, Y+1	; 0x01
-  26:	aa 81       	ldd	r26, Y+2	; 0x02
-  28:	bb 81       	ldd	r27, Y+3	; 0x03
+  1a:	c2 54       	subi	r28, 0x42	; 66
+  1c:	d0 40       	sbci	r29, 0x00	; 0
+  1e:	00 97       	sbiw	r24, 0x00	; 0
+  20:	a1 05       	cpc	r26, r1
+  22:	b1 05       	cpc	r27, r1
+  24:	01 f0       	breq	.+0      	; 0x26 <_ZN6APDWeb7wc_busyEv+0x26>
+  26:	c0 5c       	subi	r28, 0xC0	; 192
+  28:	df 4f       	sbci	r29, 0xFF	; 255
 
 	// TODO Auto-generated destructor stub
 }
-  2a:	c2 54       	subi	r28, 0x42	; 66
-  2c:	d0 40       	sbci	r29, 0x00	; 0
-  2e:	00 97       	sbiw	r24, 0x00	; 0
-  30:	a1 05       	cpc	r26, r1
-  32:	b1 05       	cpc	r27, r1
-  34:	01 f0       	breq	.+0      	; 0x36 <_ZN6APDWeb7wc_busyEv+0x36>
-  36:	c0 5c       	subi	r28, 0xC0	; 192
+  2a:	88 81       	ld	r24, Y
+  2c:	99 81       	ldd	r25, Y+1	; 0x01
+  2e:	c0 54       	subi	r28, 0x40	; 64
+  30:	d0 40       	sbci	r29, 0x00	; 0
+  32:	89 2b       	or	r24, r25
+  34:	01 f4       	brne	.+0      	; 0x36 <_ZN6APDWeb7wc_busyEv+0x36>
+  36:	ce 5b       	subi	r28, 0xBE	; 190
   38:	df 4f       	sbci	r29, 0xFF	; 255
-  3a:	88 81       	ld	r24, Y
-  3c:	99 81       	ldd	r25, Y+1	; 0x01
-  3e:	c0 54       	subi	r28, 0x40	; 64
-  40:	d0 40       	sbci	r29, 0x00	; 0
-  42:	89 2b       	or	r24, r25
-  44:	01 f4       	brne	.+0      	; 0x46 <_ZN6APDWeb7wc_busyEv+0x46>
-  46:	ce 5b       	subi	r28, 0xBE	; 190
-  48:	df 4f       	sbci	r29, 0xFF	; 255
-  4a:	a8 82       	st	Y, r10
-  4c:	b9 82       	std	Y+1, r11	; 0x01
-  4e:	ca 82       	std	Y+2, r12	; 0x02
-  50:	db 82       	std	Y+3, r13	; 0x03
-  52:	c2 54       	subi	r28, 0x42	; 66
-  54:	d0 40       	sbci	r29, 0x00	; 0
-  56:	fe 01       	movw	r30, r28
-  58:	e0 5c       	subi	r30, 0xC0	; 192
-  5a:	ff 4f       	sbci	r31, 0xFF	; 255
-  5c:	80 81       	ld	r24, Z
-  5e:	91 81       	ldd	r25, Z+1	; 0x01
-  60:	01 96       	adiw	r24, 0x01	; 1
-  62:	91 83       	std	Z+1, r25	; 0x01
-  64:	80 83       	st	Z, r24
-  66:	80 51       	subi	r24, 0x10	; 16
-  68:	97 42       	sbci	r25, 0x27	; 39
-  6a:	04 f4       	brge	.+0      	; 0x6c <_ZN6APDWeb7wc_busyEv+0x6c>
-  6c:	ce 5b       	subi	r28, 0xBE	; 190
-  6e:	df 4f       	sbci	r29, 0xFF	; 255
-  70:	88 81       	ld	r24, Y
-  72:	99 81       	ldd	r25, Y+1	; 0x01
-  74:	aa 81       	ldd	r26, Y+2	; 0x02
-  76:	bb 81       	ldd	r27, Y+3	; 0x03
-  78:	c2 54       	subi	r28, 0x42	; 66
-  7a:	d0 40       	sbci	r29, 0x00	; 0
-  7c:	a6 01       	movw	r20, r12
-  7e:	95 01       	movw	r18, r10
-  80:	28 1b       	sub	r18, r24
-  82:	39 0b       	sbc	r19, r25
-  84:	4a 0b       	sbc	r20, r26
-  86:	5b 0b       	sbc	r21, r27
-  88:	da 01       	movw	r26, r20
-  8a:	c9 01       	movw	r24, r18
-  8c:	81 53       	subi	r24, 0x31	; 49
-  8e:	95 47       	sbci	r25, 0x75	; 117
-  90:	a0 40       	sbci	r26, 0x00	; 0
-  92:	b0 40       	sbci	r27, 0x00	; 0
-  94:	00 f0       	brcs	.+0      	; 0x96 <_ZN6APDWeb7wc_busyEv+0x96>
-  96:	80 e0       	ldi	r24, 0x00	; 0
-  98:	90 e0       	ldi	r25, 0x00	; 0
-  9a:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb7wc_busyEv>
-  9e:	80 e4       	ldi	r24, 0x40	; 64
-  a0:	e8 2e       	mov	r14, r24
-  a2:	f1 2c       	mov	r15, r1
-  a4:	ec 0e       	add	r14, r28
-  a6:	fd 1e       	adc	r15, r29
-  a8:	f7 01       	movw	r30, r14
-  aa:	60 81       	ld	r22, Z
-  ac:	71 81       	ldd	r23, Z+1	; 0x01
-  ae:	80 e0       	ldi	r24, 0x00	; 0
-  b0:	90 e0       	ldi	r25, 0x00	; 0
-  b2:	4a e0       	ldi	r20, 0x0A	; 10
-  b4:	50 e0       	ldi	r21, 0x00	; 0
-  b6:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb7wc_busyEv>
-  ba:	80 e0       	ldi	r24, 0x00	; 0
-  bc:	90 e0       	ldi	r25, 0x00	; 0
-  be:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb7wc_busyEv>
-  c2:	8e 01       	movw	r16, r28
-  c4:	0e 5b       	subi	r16, 0xBE	; 190
-  c6:	1f 4f       	sbci	r17, 0xFF	; 255
-  c8:	f8 01       	movw	r30, r16
-  ca:	80 81       	ld	r24, Z
-  cc:	91 81       	ldd	r25, Z+1	; 0x01
-  ce:	a2 81       	ldd	r26, Z+2	; 0x02
-  d0:	b3 81       	ldd	r27, Z+3	; 0x03
-  d2:	a8 1a       	sub	r10, r24
-  d4:	b9 0a       	sbc	r11, r25
-  d6:	ca 0a       	sbc	r12, r26
-  d8:	db 0a       	sbc	r13, r27
-  da:	80 e0       	ldi	r24, 0x00	; 0
-  dc:	90 e0       	ldi	r25, 0x00	; 0
-  de:	b6 01       	movw	r22, r12
-  e0:	a5 01       	movw	r20, r10
-  e2:	2a e0       	ldi	r18, 0x0A	; 10
-  e4:	30 e0       	ldi	r19, 0x00	; 0
-  e6:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb7wc_busyEv>
-  ea:	80 e0       	ldi	r24, 0x00	; 0
-  ec:	90 e0       	ldi	r25, 0x00	; 0
-  ee:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb7wc_busyEv>
-  f2:	ce 01       	movw	r24, r28
-  f4:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb7wc_busyEv>
-  f8:	f7 01       	movw	r30, r14
-  fa:	11 82       	std	Z+1, r1	; 0x01
-  fc:	10 82       	st	Z, r1
-  fe:	f8 01       	movw	r30, r16
- 100:	10 82       	st	Z, r1
- 102:	11 82       	std	Z+1, r1	; 0x01
- 104:	12 82       	std	Z+2, r1	; 0x02
- 106:	13 82       	std	Z+3, r1	; 0x03
- 108:	df 91       	pop	r29
- 10a:	cf 91       	pop	r28
- 10c:	1f 91       	pop	r17
- 10e:	0f 91       	pop	r16
- 110:	ff 90       	pop	r15
- 112:	ef 90       	pop	r14
- 114:	df 90       	pop	r13
- 116:	cf 90       	pop	r12
- 118:	bf 90       	pop	r11
- 11a:	af 90       	pop	r10
- 11c:	08 95       	ret
+  3a:	28 83       	st	Y, r18
+  3c:	39 83       	std	Y+1, r19	; 0x01
+  3e:	4a 83       	std	Y+2, r20	; 0x02
+  40:	5b 83       	std	Y+3, r21	; 0x03
+  42:	c2 54       	subi	r28, 0x42	; 66
+  44:	d0 40       	sbci	r29, 0x00	; 0
+  46:	fe 01       	movw	r30, r28
+  48:	e0 5c       	subi	r30, 0xC0	; 192
+  4a:	ff 4f       	sbci	r31, 0xFF	; 255
+  4c:	80 81       	ld	r24, Z
+  4e:	91 81       	ldd	r25, Z+1	; 0x01
+  50:	01 96       	adiw	r24, 0x01	; 1
+  52:	91 83       	std	Z+1, r25	; 0x01
+  54:	80 83       	st	Z, r24
+  56:	80 51       	subi	r24, 0x10	; 16
+  58:	97 42       	sbci	r25, 0x27	; 39
+  5a:	04 f4       	brge	.+0      	; 0x5c <_ZN6APDWeb7wc_busyEv+0x5c>
+  5c:	ce 5b       	subi	r28, 0xBE	; 190
+  5e:	df 4f       	sbci	r29, 0xFF	; 255
+  60:	88 81       	ld	r24, Y
+  62:	99 81       	ldd	r25, Y+1	; 0x01
+  64:	aa 81       	ldd	r26, Y+2	; 0x02
+  66:	bb 81       	ldd	r27, Y+3	; 0x03
+  68:	c2 54       	subi	r28, 0x42	; 66
+  6a:	d0 40       	sbci	r29, 0x00	; 0
+  6c:	28 1b       	sub	r18, r24
+  6e:	39 0b       	sbc	r19, r25
+  70:	4a 0b       	sbc	r20, r26
+  72:	5b 0b       	sbc	r21, r27
+  74:	21 53       	subi	r18, 0x31	; 49
+  76:	35 47       	sbci	r19, 0x75	; 117
+  78:	40 40       	sbci	r20, 0x00	; 0
+  7a:	50 40       	sbci	r21, 0x00	; 0
+  7c:	00 f0       	brcs	.+0      	; 0x7e <_ZN6APDWeb7wc_busyEv+0x7e>
+  7e:	ce 01       	movw	r24, r28
+  80:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb7wc_busyEv>
+  84:	c0 5c       	subi	r28, 0xC0	; 192
+  86:	df 4f       	sbci	r29, 0xFF	; 255
+  88:	19 92       	st	Y+, r1
+  8a:	19 92       	st	Y+, r1
+  8c:	18 82       	st	Y, r1
+  8e:	19 82       	std	Y+1, r1	; 0x01
+  90:	1a 82       	std	Y+2, r1	; 0x02
+  92:	1b 82       	std	Y+3, r1	; 0x03
+  94:	df 91       	pop	r29
+  96:	cf 91       	pop	r28
+  98:	08 95       	ret
 
 Disassembly of section .text._ZN6APDWeb13self_registerEv:
 
@@ -29149,8 +29182,8 @@ APDWeb::~APDWeb()
   5e:	ed b7       	in	r30, 0x3d	; 61
   60:	fe b7       	in	r31, 0x3e	; 62
   62:	31 96       	adiw	r30, 0x01	; 1
-  64:	97 e0       	ldi	r25, 0x07	; 7
-  66:	89 2e       	mov	r8, r25
+  64:	17 e0       	ldi	r17, 0x07	; 7
+  66:	81 2e       	mov	r8, r17
   68:	91 2c       	mov	r9, r1
   6a:	8c 0e       	add	r8, r28
   6c:	9d 1e       	adc	r9, r29
@@ -29486,13 +29519,13 @@ APDWeb::~APDWeb()
   76:	89 2b       	or	r24, r25
   78:	01 f4       	brne	.+0      	; 0x7a <_ZN6APDWeb21registration_responseEPS_+0x7a>
   7a:	00 c0       	rjmp	.+0      	; 0x7c <_ZN6APDWeb21registration_responseEPS_+0x7c>
-  7c:	58 ec       	ldi	r21, 0xC8	; 200
-  7e:	a5 2e       	mov	r10, r21
+  7c:	28 ec       	ldi	r18, 0xC8	; 200
+  7e:	a2 2e       	mov	r10, r18
   80:	b1 2c       	mov	r11, r1
   82:	ae 0c       	add	r10, r14
   84:	bf 1c       	adc	r11, r15
-  86:	4a e4       	ldi	r20, 0x4A	; 74
-  88:	24 2e       	mov	r2, r20
+  86:	9a e4       	ldi	r25, 0x4A	; 74
+  88:	29 2e       	mov	r2, r25
   8a:	31 2c       	mov	r3, r1
   8c:	2e 0c       	add	r2, r14
   8e:	3f 1c       	adc	r3, r15
@@ -29504,13 +29537,13 @@ APDWeb::~APDWeb()
   9a:	88 24       	eor	r8, r8
   9c:	8a 94       	dec	r8
   9e:	98 2c       	mov	r9, r8
-  a0:	34 e4       	ldi	r19, 0x44	; 68
-  a2:	c3 2e       	mov	r12, r19
+  a0:	84 e4       	ldi	r24, 0x44	; 68
+  a2:	c8 2e       	mov	r12, r24
   a4:	d1 2c       	mov	r13, r1
   a6:	cc 0e       	add	r12, r28
   a8:	dd 1e       	adc	r13, r29
-  aa:	24 e0       	ldi	r18, 0x04	; 4
-  ac:	42 2e       	mov	r4, r18
+  aa:	04 e0       	ldi	r16, 0x04	; 4
+  ac:	40 2e       	mov	r4, r16
   ae:	51 2c       	mov	r5, r1
   b0:	4c 0c       	add	r4, r12
   b2:	5d 1c       	adc	r5, r13
@@ -30119,8 +30152,8 @@ APDWeb::~APDWeb()
   66:	01 f4       	brne	.+0      	; 0x68 <_ZN6APDWeb5startEv+0x68>
   68:	f3 01       	movw	r30, r6
   6a:	87 ad       	ldd	r24, Z+63	; 0x3f
-  6c:	12 e0       	ldi	r17, 0x02	; 2
-  6e:	41 2e       	mov	r4, r17
+  6c:	a2 e0       	ldi	r26, 0x02	; 2
+  6e:	4a 2e       	mov	r4, r26
   70:	51 2c       	mov	r5, r1
   72:	46 0c       	add	r4, r6
   74:	57 1c       	adc	r5, r7
@@ -30141,8 +30174,8 @@ APDWeb::~APDWeb()
   94:	80 e0       	ldi	r24, 0x00	; 0
   96:	90 e0       	ldi	r25, 0x00	; 0
   98:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb5startEv>
-  9c:	b8 e0       	ldi	r27, 0x08	; 8
-  9e:	cb 2e       	mov	r12, r27
+  9c:	e8 e0       	ldi	r30, 0x08	; 8
+  9e:	ce 2e       	mov	r12, r30
   a0:	d1 2c       	mov	r13, r1
   a2:	c6 0c       	add	r12, r6
   a4:	d7 1c       	adc	r13, r7
@@ -30151,8 +30184,8 @@ APDWeb::~APDWeb()
   ac:	80 e0       	ldi	r24, 0x00	; 0
   ae:	90 e0       	ldi	r25, 0x00	; 0
   b0:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb5startEv>
-  b4:	a0 e1       	ldi	r26, 0x10	; 16
-  b6:	8a 2e       	mov	r8, r26
+  b4:	70 e1       	ldi	r23, 0x10	; 16
+  b6:	87 2e       	mov	r8, r23
   b8:	91 2c       	mov	r9, r1
   ba:	86 0c       	add	r8, r6
   bc:	97 1c       	adc	r9, r7
@@ -30161,8 +30194,8 @@ APDWeb::~APDWeb()
   c4:	80 e0       	ldi	r24, 0x00	; 0
   c6:	90 e0       	ldi	r25, 0x00	; 0
   c8:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb5startEv>
-  cc:	fc e0       	ldi	r31, 0x0C	; 12
-  ce:	ef 2e       	mov	r14, r31
+  cc:	6c e0       	ldi	r22, 0x0C	; 12
+  ce:	e6 2e       	mov	r14, r22
   d0:	f1 2c       	mov	r15, r1
   d2:	e6 0c       	add	r14, r6
   d4:	f7 1c       	adc	r15, r7
@@ -30176,16 +30209,16 @@ APDWeb::~APDWeb()
   e8:	1f 4f       	sbci	r17, 0xFF	; 255
   ea:	c8 01       	movw	r24, r16
   ec:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb5startEv>
-  f0:	e5 e0       	ldi	r30, 0x05	; 5
-  f2:	ae 2e       	mov	r10, r30
+  f0:	55 e0       	ldi	r21, 0x05	; 5
+  f2:	a5 2e       	mov	r10, r21
   f4:	b1 2c       	mov	r11, r1
   f6:	ac 0e       	add	r10, r28
   f8:	bd 1e       	adc	r11, r29
   fa:	c5 01       	movw	r24, r10
   fc:	b6 01       	movw	r22, r12
   fe:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb5startEv>
- 102:	7b e0       	ldi	r23, 0x0B	; 11
- 104:	c7 2e       	mov	r12, r23
+ 102:	4b e0       	ldi	r20, 0x0B	; 11
+ 104:	c4 2e       	mov	r12, r20
  106:	d1 2c       	mov	r13, r1
  108:	cc 0e       	add	r12, r28
  10a:	dd 1e       	adc	r13, r29
@@ -30198,8 +30231,8 @@ APDWeb::~APDWeb()
  11a:	c8 01       	movw	r24, r16
  11c:	b7 01       	movw	r22, r14
  11e:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb5startEv>
- 122:	67 e1       	ldi	r22, 0x17	; 23
- 124:	e6 2e       	mov	r14, r22
+ 122:	37 e1       	ldi	r19, 0x17	; 23
+ 124:	e3 2e       	mov	r14, r19
  126:	f1 2c       	mov	r15, r1
  128:	ec 0e       	add	r14, r28
  12a:	fd 1e       	adc	r15, r29
@@ -30407,59 +30440,50 @@ APDWeb::~APDWeb()
    6:	89 a5       	ldd	r24, Y+41	; 0x29
    8:	88 23       	and	r24, r24
    a:	01 f0       	breq	.+0      	; 0xc <_ZN6APDWeb7restartEv+0xc>
-   c:	8a a1       	ldd	r24, Y+34	; 0x22
+   c:	aa a1       	ldd	r26, Y+34	; 0x22
 {
 	if (pwwwclient != NULL) free(pwwwclient);
-   e:	9b a1       	ldd	r25, Y+35	; 0x23
-  10:	89 2b       	or	r24, r25
+   e:	bb a1       	ldd	r27, Y+35	; 0x23
+  10:	10 97       	sbiw	r26, 0x00	; 0
   12:	01 f0       	breq	.+0      	; 0x14 <_ZN6APDWeb7restartEv+0x14>
-  14:	80 e0       	ldi	r24, 0x00	; 0
-  16:	90 e0       	ldi	r25, 0x00	; 0
-  18:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb7restartEv>
+  14:	ed 91       	ld	r30, X+
+  16:	fc 91       	ld	r31, X
+  18:	11 97       	sbiw	r26, 0x01	; 1
 	if (pwwwserver != NULL) free(pwwwclient);
-  1c:	ea a1       	ldd	r30, Y+34	; 0x22
-  1e:	fb a1       	ldd	r31, Y+35	; 0x23
-  20:	a0 81       	ld	r26, Z
-  22:	b1 81       	ldd	r27, Z+1	; 0x01
-  24:	52 96       	adiw	r26, 0x12	; 18
-  26:	2d 91       	ld	r18, X+
-  28:	3c 91       	ld	r19, X
+  1a:	02 88       	ldd	r0, Z+18	; 0x12
+  1c:	f3 89       	ldd	r31, Z+19	; 0x13
+  1e:	e0 2d       	mov	r30, r0
+  20:	cd 01       	movw	r24, r26
+  22:	19 95       	eicall
+  24:	68 ee       	ldi	r22, 0xE8	; 232
+  26:	73 e0       	ldi	r23, 0x03	; 3
+  28:	80 e0       	ldi	r24, 0x00	; 0
 
 	// TODO Auto-generated destructor stub
 }
-  2a:	53 97       	sbiw	r26, 0x13	; 19
-  2c:	cf 01       	movw	r24, r30
-  2e:	f9 01       	movw	r30, r18
-  30:	19 95       	eicall
-  32:	68 ee       	ldi	r22, 0xE8	; 232
-  34:	73 e0       	ldi	r23, 0x03	; 3
-  36:	80 e0       	ldi	r24, 0x00	; 0
-  38:	90 e0       	ldi	r25, 0x00	; 0
-  3a:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb7restartEv>
-  3e:	80 e0       	ldi	r24, 0x00	; 0
-  40:	90 e0       	ldi	r25, 0x00	; 0
+  2a:	90 e0       	ldi	r25, 0x00	; 0
+  2c:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb7restartEv>
+  30:	19 a6       	std	Y+41, r1	; 0x29
+  32:	1d 8e       	std	Y+29, r1	; 0x1d
+  34:	1c 8e       	std	Y+28, r1	; 0x1c
+  36:	ce 01       	movw	r24, r28
+  38:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb7restartEv>
+  3c:	88 23       	and	r24, r24
+  3e:	01 f0       	breq	.+0      	; 0x40 <_ZN6APDWeb7restartEv+0x40>
+  40:	ce 01       	movw	r24, r28
   42:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb7restartEv>
-  46:	19 a6       	std	Y+41, r1	; 0x29
-  48:	1d 8e       	std	Y+29, r1	; 0x1d
-  4a:	1c 8e       	std	Y+28, r1	; 0x1c
-  4c:	ce 01       	movw	r24, r28
-  4e:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb7restartEv>
-  52:	88 23       	and	r24, r24
-  54:	01 f0       	breq	.+0      	; 0x56 <_ZN6APDWeb7restartEv+0x56>
-  56:	ce 01       	movw	r24, r28
-  58:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb7restartEv>
-  5c:	00 c0       	rjmp	.+0      	; 0x5e <_ZN6APDWeb7restartEv+0x5e>
-  5e:	8c 8d       	ldd	r24, Y+28	; 0x1c
-  60:	9d 8d       	ldd	r25, Y+29	; 0x1d
-  62:	80 68       	ori	r24, 0x80	; 128
-  64:	9d 8f       	std	Y+29, r25	; 0x1d
-  66:	8c 8f       	std	Y+28, r24	; 0x1c
-  68:	ce 01       	movw	r24, r28
-  6a:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb7restartEv>
-  6e:	89 a5       	ldd	r24, Y+41	; 0x29
-  70:	df 91       	pop	r29
-  72:	cf 91       	pop	r28
-  74:	08 95       	ret
+  46:	00 c0       	rjmp	.+0      	; 0x48 <_ZN6APDWeb7restartEv+0x48>
+  48:	8c 8d       	ldd	r24, Y+28	; 0x1c
+  4a:	9d 8d       	ldd	r25, Y+29	; 0x1d
+  4c:	80 68       	ori	r24, 0x80	; 128
+  4e:	9d 8f       	std	Y+29, r25	; 0x1d
+  50:	8c 8f       	std	Y+28, r24	; 0x1c
+  52:	ce 01       	movw	r24, r28
+  54:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb7restartEv>
+  58:	89 a5       	ldd	r24, Y+41	; 0x29
+  5a:	df 91       	pop	r29
+  5c:	cf 91       	pop	r28
+  5e:	08 95       	ret
 
 Disassembly of section .text._ZN6APDWeb4loopEv:
 
@@ -30530,87 +30554,77 @@ APDWeb::~APDWeb()
   68:	80 81       	ld	r24, Z
   6a:	91 81       	ldd	r25, Z+1	; 0x01
   6c:	00 97       	sbiw	r24, 0x00	; 0
-  6e:	01 f4       	brne	.+0      	; 0x70 <_ZN6APDWeb4loopEv+0x70>
-  70:	00 c0       	rjmp	.+0      	; 0x72 <_ZN6APDWeb4loopEv+0x72>
-  72:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb4loopEv>
-  76:	88 23       	and	r24, r24
-  78:	01 f4       	brne	.+0      	; 0x7a <_ZN6APDWeb4loopEv+0x7a>
-  7a:	00 c0       	rjmp	.+0      	; 0x7c <_ZN6APDWeb4loopEv+0x7c>
-  7c:	80 e0       	ldi	r24, 0x00	; 0
-  7e:	90 e0       	ldi	r25, 0x00	; 0
-  80:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb4loopEv>
-  84:	ce 01       	movw	r24, r28
-  86:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb4loopEv>
-  8a:	00 c0       	rjmp	.+0      	; 0x8c <_ZN6APDWeb4loopEv+0x8c>
-  8c:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb4loopEv>
-  90:	88 23       	and	r24, r24
-  92:	01 f4       	brne	.+0      	; 0x94 <_ZN6APDWeb4loopEv+0x94>
-  94:	00 c0       	rjmp	.+0      	; 0x96 <_ZN6APDWeb4loopEv+0x96>
-  96:	80 e0       	ldi	r24, 0x00	; 0
-  98:	90 e0       	ldi	r25, 0x00	; 0
+  6e:	01 f0       	breq	.+0      	; 0x70 <_ZN6APDWeb4loopEv+0x70>
+  70:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb4loopEv>
+  74:	88 23       	and	r24, r24
+  76:	01 f0       	breq	.+0      	; 0x78 <_ZN6APDWeb4loopEv+0x78>
+  78:	80 e0       	ldi	r24, 0x00	; 0
+  7a:	90 e0       	ldi	r25, 0x00	; 0
+  7c:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb4loopEv>
+  80:	ce 01       	movw	r24, r28
+  82:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb4loopEv>
+  86:	00 c0       	rjmp	.+0      	; 0x88 <_ZN6APDWeb4loopEv+0x88>
+  88:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb4loopEv>
+  8c:	88 23       	and	r24, r24
+  8e:	01 f0       	breq	.+0      	; 0x90 <_ZN6APDWeb4loopEv+0x90>
+  90:	80 e0       	ldi	r24, 0x00	; 0
+  92:	90 e0       	ldi	r25, 0x00	; 0
+  94:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb4loopEv>
+  98:	ce 01       	movw	r24, r28
   9a:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb4loopEv>
-  9e:	ce 01       	movw	r24, r28
+  9e:	00 c0       	rjmp	.+0      	; 0xa0 <_ZN6APDWeb4loopEv+0xa0>
   a0:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb4loopEv>
-  a4:	00 c0       	rjmp	.+0      	; 0xa6 <_ZN6APDWeb4loopEv+0xa6>
-  a6:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb4loopEv>
-  aa:	88 23       	and	r24, r24
-  ac:	01 f0       	breq	.+0      	; 0xae <_ZN6APDWeb4loopEv+0xae>
-  ae:	80 e0       	ldi	r24, 0x00	; 0
-  b0:	90 e0       	ldi	r25, 0x00	; 0
+  a4:	88 23       	and	r24, r24
+  a6:	01 f0       	breq	.+0      	; 0xa8 <_ZN6APDWeb4loopEv+0xa8>
+  a8:	80 e0       	ldi	r24, 0x00	; 0
+  aa:	90 e0       	ldi	r25, 0x00	; 0
+  ac:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb4loopEv>
+  b0:	ce 01       	movw	r24, r28
   b2:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb4loopEv>
-  b6:	ce 01       	movw	r24, r28
-  b8:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb4loopEv>
-  bc:	f8 01       	movw	r30, r16
-  be:	80 81       	ld	r24, Z
-  c0:	91 81       	ldd	r25, Z+1	; 0x01
-  c2:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb4loopEv>
-  c6:	00 c0       	rjmp	.+0      	; 0xc8 <_ZN6APDWeb4loopEv+0xc8>
-  c8:	ce 01       	movw	r24, r28
-  ca:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb4loopEv>
-  ce:	00 c0       	rjmp	.+0      	; 0xd0 <_ZN6APDWeb4loopEv+0xd0>
-  d0:	80 e0       	ldi	r24, 0x00	; 0
-  d2:	90 e0       	ldi	r25, 0x00	; 0
-  d4:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb4loopEv>
+  b6:	f8 01       	movw	r30, r16
+  b8:	80 81       	ld	r24, Z
+  ba:	91 81       	ldd	r25, Z+1	; 0x01
+  bc:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb4loopEv>
+  c0:	00 c0       	rjmp	.+0      	; 0xc2 <_ZN6APDWeb4loopEv+0xc2>
+  c2:	ce 01       	movw	r24, r28
+  c4:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb4loopEv>
+  c8:	00 c0       	rjmp	.+0      	; 0xca <_ZN6APDWeb4loopEv+0xca>
+  ca:	ce 01       	movw	r24, r28
+  cc:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb4loopEv>
+  d0:	88 a1       	ldd	r24, Y+32	; 0x20
+  d2:	99 a1       	ldd	r25, Y+33	; 0x21
+  d4:	89 2b       	or	r24, r25
+  d6:	01 f0       	breq	.+0      	; 0xd8 <_ZN6APDWeb4loopEv+0xd8>
   d8:	ce 01       	movw	r24, r28
   da:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb4loopEv>
-  de:	88 a1       	ldd	r24, Y+32	; 0x20
-  e0:	99 a1       	ldd	r25, Y+33	; 0x21
-  e2:	89 2b       	or	r24, r25
-  e4:	01 f0       	breq	.+0      	; 0xe6 <_ZN6APDWeb4loopEv+0xe6>
-  e6:	ce 01       	movw	r24, r28
-  e8:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb4loopEv>
-  ec:	8f ad       	ldd	r24, Y+63	; 0x3f
-  ee:	88 23       	and	r24, r24
-  f0:	01 f0       	breq	.+0      	; 0xf2 <_ZN6APDWeb4loopEv+0xf2>
-  f2:	80 e0       	ldi	r24, 0x00	; 0
-  f4:	90 e0       	ldi	r25, 0x00	; 0
-  f6:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb4loopEv>
-  fa:	ce 01       	movw	r24, r28
-  fc:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb4loopEv>
- 100:	00 c0       	rjmp	.+0      	; 0x102 <_ZN6APDWeb4loopEv+0x102>
- 102:	8e 01       	movw	r16, r28
- 104:	03 57       	subi	r16, 0x73	; 115
- 106:	1e 4f       	sbci	r17, 0xFE	; 254
- 108:	f8 01       	movw	r30, r16
- 10a:	80 81       	ld	r24, Z
- 10c:	91 81       	ldd	r25, Z+1	; 0x01
- 10e:	00 97       	sbiw	r24, 0x00	; 0
- 110:	01 f0       	breq	.+0      	; 0x112 <_ZN6APDWeb4loopEv+0x112>
- 112:	00 c0       	rjmp	.+0      	; 0x114 <_ZN6APDWeb4loopEv+0x114>
- 114:	8e 01       	movw	r16, r28
- 116:	01 57       	subi	r16, 0x71	; 113
- 118:	1e 4f       	sbci	r17, 0xFE	; 254
- 11a:	f8 01       	movw	r30, r16
- 11c:	80 81       	ld	r24, Z
- 11e:	91 81       	ldd	r25, Z+1	; 0x01
- 120:	00 97       	sbiw	r24, 0x00	; 0
- 122:	01 f4       	brne	.+0      	; 0x124 <_ZN6APDWeb4loopEv+0x124>
- 124:	00 c0       	rjmp	.+0      	; 0x126 <_ZN6APDWeb4loopEv+0x126>
- 126:	df 91       	pop	r29
- 128:	cf 91       	pop	r28
- 12a:	1f 91       	pop	r17
- 12c:	0f 91       	pop	r16
- 12e:	08 95       	ret
+  de:	8f ad       	ldd	r24, Y+63	; 0x3f
+  e0:	88 23       	and	r24, r24
+  e2:	01 f0       	breq	.+0      	; 0xe4 <_ZN6APDWeb4loopEv+0xe4>
+  e4:	ce 01       	movw	r24, r28
+  e6:	0e 94 00 00 	call	0	; 0x0 <_ZN6APDWeb4loopEv>
+  ea:	00 c0       	rjmp	.+0      	; 0xec <_ZN6APDWeb4loopEv+0xec>
+  ec:	8e 01       	movw	r16, r28
+  ee:	03 57       	subi	r16, 0x73	; 115
+  f0:	1e 4f       	sbci	r17, 0xFE	; 254
+  f2:	f8 01       	movw	r30, r16
+  f4:	80 81       	ld	r24, Z
+  f6:	91 81       	ldd	r25, Z+1	; 0x01
+  f8:	00 97       	sbiw	r24, 0x00	; 0
+  fa:	01 f4       	brne	.+0      	; 0xfc <_ZN6APDWeb4loopEv+0xfc>
+  fc:	8e 01       	movw	r16, r28
+  fe:	01 57       	subi	r16, 0x71	; 113
+ 100:	1e 4f       	sbci	r17, 0xFE	; 254
+ 102:	f8 01       	movw	r30, r16
+ 104:	80 81       	ld	r24, Z
+ 106:	91 81       	ldd	r25, Z+1	; 0x01
+ 108:	00 97       	sbiw	r24, 0x00	; 0
+ 10a:	01 f4       	brne	.+0      	; 0x10c <_ZN6APDWeb4loopEv+0x10c>
+ 10c:	00 c0       	rjmp	.+0      	; 0x10e <_ZN6APDWeb4loopEv+0x10e>
+ 10e:	df 91       	pop	r29
+ 110:	cf 91       	pop	r28
+ 112:	1f 91       	pop	r17
+ 114:	0f 91       	pop	r16
+ 116:	08 95       	ret
 
 Disassembly of section .text._ZN6APDWebC1EP7NETCONFP7APDTime:
 

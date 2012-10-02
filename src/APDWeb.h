@@ -216,6 +216,7 @@ private:
   void web_maintenance(EthernetClient *pClient);
   static void web_notfound(EthernetClient *pClient);
   void ListFiles(EthernetClient client, const char *szPath, uint8_t flags);
+  bool ServeFile(EthernetClient client, const char *szPath);
   void processProvisioningRequest(EthernetClient *pclient);
   void claim_device_link(EthernetClient *pClient);
 
