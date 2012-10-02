@@ -58,25 +58,42 @@ APDTime::APDTime(boolean bRTC) {
         pRTC->begin();
 
         if (! pRTC->isrunning()) {
+        	Serial.println(APDUINO_MSG_RTCNOTRUNNING);
+#ifdef VERBOSE
           SerPrintP("RTC is NOT running (no hw?)...");
+#endif
           free(this->pRTC);
           this->pRTC = NULL;
 //          SerPrintP("RTC HW NEEDS TESTING!\n");
           //RTC.adjust(DateTime(__DATE__, __TIME__));
         } else {
           // we have RTC
+        	Serial.println(APDUINO_MSG_HWRTCOK);
+#ifdef VERBOSE
           SerPrintP("HW RTC OK..."); //pRTC->now());
+#endif
         }
       } else {
+      	Serial.println(APDUINO_ERROR_RTCALLOCFAIL);
+#ifdef VERBOSE
           SerPrintP("RTC alloc fail...");
+#endif
           pRTC = NULL;
       }
     }else{
+    	Serial.println(APDUINO_ERROR_RTCALREADYINIT);
+#ifdef VERBOSE
         SerPrintP("RTC already init...");
+#endif
     }
   } else {
       // millis based already by default
-      if (pRTCm == NULL) SerPrintP("ERROR - SW clock should be running!\n");
+      if (pRTCm == NULL) {
+      	Serial.println(APDUINO_ERROR_SWRTCFAIL);
+#ifdef VERBOSE
+      	SerPrintP("ERROR - SW clock should be running!\n");
+#endif
+      }
   }
 
 }
@@ -94,22 +111,28 @@ void APDTime::initBlank() {
   pRTC = NULL;
   pRTCm = new RTC_Millis();
   if (pRTCm) {
-      SerPrintP("Starting SW clock...");
+  	Serial.println(APDUINO_MSG_SWRTCSTART);
+#ifdef VERBOSE
+  	SerPrintP("Starting SW clock...");
+#endif
       // TODO check & load time from APDLOG.TXT last message, if exists
       pRTCm->begin(DateTime(__DATE__, __TIME__));           // SW clock always start @ last build time - adjusted later if RTC | NTP
       PrintDateTime(pRTCm->now());
       SerPrintP("\n");
   } else {
+  	Serial.println(APDUINO_ERROR_SWRTCSETUPFAIL);
+#ifdef VERBOSE
       SerPrintP("Seems SW clock setup failed. :(\n");
+#endif
   }
   memcpy(timeServer,0,4*sizeof(byte));
   localPort = 0;
   pUdp = NULL;
-//#ifdef DEBUG
+#ifdef VERBOSE
   SerPrintP("SW DateTime: ");
   PrintDateTime(this->now());
   SerPrintP("\n");
-//#endif
+#endif
 }
 
 DateTime APDTime::now() {
@@ -125,7 +148,7 @@ DateTime APDTime::now() {
 // and that the buffer is long enough to hold the result (otherwise bad things WILL happen)
 char *APDTime::nowS(char *strbuf) {
   DateTime now = this->now();
-  sprintf(strbuf,"%04d-%02d-%02d %02d:%02d:%02d",now.year(),now.month(),now.day(),now.hour(),now.minute(),now.second());
+  sprintf_P(strbuf,PSTR("%04d-%02d-%02d %02d:%02d:%02d"),now.year(),now.month(),now.day(),now.hour(),now.minute(),now.second());
   return strbuf;
 }
 
@@ -139,14 +162,17 @@ char *APDTime::getUpTimeS(char *psz_uptime) {
   int uphours = (ut / 3600) % 24;
   int upmins = (ut % 3600) / 60;
   int upsec = (ut % 3600) % 60;
-  sprintf(psz_uptime,"%03dd%02dh%02dm%02ds",updays,uphours,upmins,upsec);
+  sprintf_P(psz_uptime,PSTR("%03dd%02dh%02dm%02ds"),updays,uphours,upmins,upsec);
   return psz_uptime;
 }
 
 // TODO return whatever udp would return
 void APDTime::setupNTPSync(int UDPPort, byte *TimeServer, int iTZ, int iDST ) {
   // check if not in use...
+	Serial.println(APDUINO_MSG_SETUPUDPFORNTP);
+#ifdef VERBOSE
   SerPrintP("SETUP UDP 4 NTP\n");
+#endif
   if (pUdp==NULL) {
     //Ethernet.begin(mac, ip, );     // For when you are directly connected to the Internet.
     memcpy(timeServer,TimeServer,4);
@@ -156,14 +182,23 @@ void APDTime::setupNTPSync(int UDPPort, byte *TimeServer, int iTZ, int iDST ) {
     pUdp = new EthernetUDP;
     if (pUdp != NULL) {
       if (pUdp->begin(localPort)) {
+      	Serial.println(APDUINO_MSG_UDPFORNTPOK);
+#ifdef VERBOSE
           SerPrintP("UDP networking prepared for NTP.\n");
+#endif
       } else {
+      	Serial.println(APDUINO_WARN_NOUDPFORNTP);
+#ifdef VERBOSE
           SerPrintP("UDP network setup for NTP FAILED.\n");
+#endif
           free(pUdp);
           pUdp = NULL;
       }
     }else{
+    	Serial.println(APDUINO_ERR_UDPNETINITFAIL);
+#ifdef VERBOSE
         SerPrintP("UDP Networking initialization failed.\n");
+#endif
     }
   }
 }
@@ -178,7 +213,7 @@ void APDTime::PrintDateTime(DateTime t)
     //char datestr[24] = "";
     char datestr[32] = "";
     // TODO implement format string, input by user
-    sprintf(datestr, "%04d-%02d-%02d %02d:%02d:%02d", t.year(), t.month(), t.day(), t.hour(), t.minute(), t.second());
+    sprintf_P(datestr, PSTR("%04d-%02d-%02d %02d:%02d:%02d"), t.year(), t.month(), t.day(), t.hour(), t.minute(), t.second());
     Serial.print(datestr);
 }
 
@@ -195,7 +230,10 @@ unsigned long APDTime::sendNTPpacket(byte *address)
 {
   unsigned long ulret = 0;
   if (this->pUdp != NULL) {
+  	Serial.println(APDUINO_MSG_NTPUDPPACKPREP);
+#ifdef VERBOSE
     SerPrintP("PREPARING NTP PACKET...\n");
+#endif
     memset(pb, 0, NTP_PACKET_SIZE);		// blank packet
     // Initialize values needed to form NTP request
     // (see URL above for details on the packets)
@@ -208,7 +246,10 @@ unsigned long APDTime::sendNTPpacket(byte *address)
     pb[13]  = 0x4E;
     pb[14]  = 49;
     pb[15]  = 52;
+    Serial.println(APDUINO_MSG_NTPUDPPACKSEND);
+#ifdef VERBOSE
     SerPrintP("SENDING NTP PACKET...\n");
+#endif
     // all NTP fields have been given values, now
     // you can send a packet requesting a timestamp:
   #if ARDUINO >= 100
@@ -217,27 +258,41 @@ unsigned long APDTime::sendNTPpacket(byte *address)
     	this->pUdp->write(pb,NTP_PACKET_SIZE);
     	this->pUdp->endPacket();
     } else {
+    	Serial.println(APDUINO_ERROR_NTPUDPSTARTFAIL);
+#ifdef VERBOSE
     	SerPrintP("ERR STARTING UDP.\n");
+#endif
     }
   #else
     pUdp->sendPacket( pb,NTP_PACKET_SIZE,  address, 123); //NTP requests are to port 123
   #endif
   } else {
+  	Serial.println(APDUINO_ERROR_NTPNOUDP);
+#ifdef VERBOSE
       SerPrintP("NO UDP\n");
+#endif
   }
   return ulret;
 }
 
 
 void APDTime::adjust(DateTime dt) {
+#ifdef VERBOSE
 	SerPrintP("ADJUST:");
+#endif
   if (this->pRTC != NULL && this->pRTC->isrunning()) {
+#ifdef VERBOSE
       SerPrintP("RTC,");
+#endif
       pRTC->adjust(dt);
   }
+#ifdef VERBOSE
   SerPrintP("SW.");
+#endif
   pRTCm->adjust(dt);
+#ifdef VERBOSE
   SerPrintP("DONE.\n");
+#endif
 }
 
 
@@ -254,14 +309,17 @@ void APDTime::adjust(DateTime dt) {
 void APDTime::ntpSync()
 {
 	if (pUdp == NULL) {
+		Serial.println(APDUINO_ERROR_NTPNOUDP);
+#ifdef VERBOSE
 		SerPrintP("\nNO UDP OBJ!");
+#endif
 		return;
 	}
 #ifdef DEBUG
   SerPrintP("\nNTP SYNC!\n");
 #endif
   if (this->pRTCm != NULL && timeServer[0] != 0) {
-//#ifdef DEBUG
+#ifdef VERBOSE
     SerPrintP("\nSW:");
     PrintDateTime(pRTCm->now());
     if (pRTC != NULL && pRTC->isrunning()) {
@@ -269,17 +327,18 @@ void APDTime::ntpSync()
         PrintDateTime(pRTC->now());
     }
     SerPrintP(".NTP REQ:");
+
     //delay(5);
     SerDumpIP(timeServer);
     SerPrintP(".\n");
     //delay(10);
-//#endif
+#endif
 
     // send an NTP packet to a time server
     this->sendNTPpacket(timeServer);
-//#ifdef DEBUG
+#ifdef VERBOSE
     SerPrintP("Packet sent.\n");
-//#endif
+#endif
     // wait to see if a reply is available
     //delay(3000);                // TODO iso loop and check if there is a response, bail out after soft timeout
     for (int i =0; i < 1000; i++) {	// approx 10 secs.
@@ -300,7 +359,7 @@ void APDTime::ntpSync()
   #else
       pUdp->readPacket(pb, NTP_PACKET_SIZE);
   #endif
-#ifdef DEBUG
+#ifdef VERBOSE
        SerPrintP("Processing NTP response ...");
 #endif
       // NTP contains four timestamps with an integer part and a fraction part
@@ -365,7 +424,7 @@ void APDTime::ntpSync()
       if (f4 > 0.4) t4++;    // adjust fractional part, see above
       this->adjust(DateTime(t4));
 
-//#ifdef DEBUG
+#ifdef VERBOSE
       if (this->pRTC != NULL) {
         SerPrintP("RTC after : ");
         PrintDateTime(pRTC->now());
@@ -378,13 +437,19 @@ void APDTime::ntpSync()
       PrintDateTime(this->now());
 
       SerPrintP("\ndone ...\n");
-//#endif
+#endif
     }
     else
     {
+    	Serial.println(APDUINO_ERROR_NTPNOUDP);
+#ifdef VERBOSE
       SerPrintP("No UDP available ...");
+#endif
     }
   } else {
+  	Serial.println(APDUINO_ERROR_NTPNORTC);
+#ifdef VERBOSE
       Serial.println("No RTC. Sorry.");
+#endif
   }
 }

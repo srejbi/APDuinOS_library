@@ -28,7 +28,8 @@
 APDSerial::APDSerial(long baudrate) {
 	// TODO Auto-generated constructor stub
 	Serial.begin(baudrate);
-	SerPrintP("APD Serial initialized "); Serial.print(baudrate); SerPrintP(" bauds.\n");
+	Serial.println(APDUINO_MSG_SERIAL_INIT);			// todo replace this with future msg handler
+	Serial.print(baudrate); SerPrintP(" bauds.\n");
 }
 
 APDSerial::~APDSerial() {
@@ -71,7 +72,8 @@ void APDSerial::myPrintP(void *Pstring,boolean bLn) {
       Serial.print(psob);
       free(psob);
     } else {
-      Serial.print("OUT OF RAM. ("); Serial.print(ilen,DEC); Serial.println(")");
+    	Serial.print(APDUINO_ERROR_OUTOFRAM);		// todo replace this with the future error handler
+//      Serial.print("OUT OF RAM. ("); Serial.print(ilen,DEC); Serial.println(")");
     }
   }
 }

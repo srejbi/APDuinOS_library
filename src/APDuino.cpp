@@ -104,7 +104,7 @@ void APDuino::init(long baudrate) {
 
   // TODO we should store the results and switch to an alternative sprintf/printf (once implemented)
   if (!testprintf() || !testscanf()) {
-  	SerPrintP("Bad version of printf/scanf linked!\n");
+  	Serial.println(APDUINO_ERROR_SSCANF);				// TODO replace this with future error handler
   } else {
 
   }
@@ -112,7 +112,9 @@ void APDuino::init(long baudrate) {
   bAPDuinoConfigured = false;
 
   // now comes the setup
+#ifdef DEBUG
   SerPrintP("Initializing...\n");
+#endif
 #ifdef ENABLE_DISPLAY
   display_callback("Initializing...");
 #endif
@@ -270,10 +272,12 @@ void APDuino::setupWithStorage(int iChip, int iSpeed) {
 			// from outside
 
 		} else {
-			SerPrintP("STORAGE NOT READY.\n");
+			Serial.println(APDUINO_ERROR_STORAGENOTREADY);
+			//SerPrintP("STORAGE NOT READY.\n");
 		}
   } else {
-    	SerPrintP("STORAGE SETUP ERROR.\n");
+  		Serial.println(APDUINO_ERROR_STORAGENOTSETUP);
+    	//SerPrintP("STORAGE SETUP ERROR.\n");
     }
 }
 
@@ -293,19 +297,24 @@ boolean APDuino::storage_ready() {
 
 
 void APDuino::setupTimeKeeping() {
+#ifdef DEBUG
   SerPrintP("Time...");
+#endif
   if (this->pAPDTime == NULL) {
       this->pAPDTime = new APDTime(true);       // try with RTC
   }
 //#ifdef DEBUG
   else {
-      SerPrintP("already done.\n");
+  	Serial.println(APDUINO_WARNING_TIMEALREADYSETUP);
+      //SerPrintP("already done.\n");
   }
 //#endif
 }
 
 void APDuino::checkTimeKeeping() {
+#ifdef DEBUG
   SerPrintP("Time check...");
+#endif
   if (this->pAPDTime != NULL) {
       // TODO add NTP switch
       pAPDTime->ntpSync();
@@ -313,7 +322,8 @@ void APDuino::checkTimeKeeping() {
       char tbuf[20] = "1970/01/01 00:00:00";
       SerPrintP("now: "); Serial.print(this->pAPDTime->nowS(tbuf)); SerPrintP("...");
   } else {
-      SerPrintP("Nothing to check?");
+  	Serial.println(APDUINO_ERROR_NOTIMEOBJECT);
+      //SerPrintP("Nothing to check?");
   }
 }
 
@@ -362,7 +372,8 @@ void APDuino::loop() {
 
     // this following hack is to enable rules only after we should have read sensors
     if (this->bFirstLoopDone == false ) { //&& bProcessRules == false) {
-    	SerPrintP("Enabling Rule Processing...\n");
+    	Serial.println(APDUINO_MSG_ENABLERULEPROC);		// TODO replace with future message handler
+    	//SerPrintP("Enabling Rule Processing...\n");
     	this->bFirstLoopDone = true;
     	this->bProcessRules = true;
     } //else {
@@ -404,7 +415,8 @@ void APDuino::loop_core() {
     		soft_reset();														// soft-reset is an improper way to restart (does not reset hardware)
     		break;
     	default:
-    		SerPrintP("W");														// WARNING unknown request, ignoring
+    		Serial.println(APDUINO_WARN_UNKNOWNREQUEST);
+    		//SerPrintP("W");														// WARNING unknown request, ignoring
     	}
     }
   }
@@ -432,9 +444,11 @@ void APDuino::loop_operations() {
   if (psa != NULL ) {  // do we really need a metro here? or only the individual metros ... && pSensorMetro != NULL && pSensorMetro->check()) {
     //SerPrintP("SENSORCHECK -> ");
     //delay(20);
+#ifdef DEBUG
     char tbuf[11] = "";
     sprintf(tbuf,"SENS(%d)",iNextSensor);
-//    Serial.println(tbuf);
+    Serial.println(tbuf);
+#endif
     //glcd_debug_update(tbuf);
     this->psa->pollSensors(this->bProcessRules);
 //    SerPrintP("SENSORCHKDONE");
@@ -464,7 +478,9 @@ APDStorage *APDuino::setupStorage(int iSS, int iChip, int iSpeed) {
   if (this->pAPDStorage == NULL) {
       this->pAPDStorage = new APDStorage(iSS,iChip,iSpeed);
       if (this->pAPDStorage != NULL) {
-//          SerPrintP("ATTEMPTING TO START STORAGE...\n");
+#ifdef DEBUG
+      	SerPrintP("ATTEMPTING TO START STORAGE...\n");
+#endif
           pAPDStorage->start();
           SerPrintP("Storage ");
           if (pAPDStorage->ready()) {
@@ -474,10 +490,12 @@ APDStorage *APDuino::setupStorage(int iSS, int iChip, int iSpeed) {
           }
           SerPrintP("Ready.\n");
       } else {
-          SerPrintP("ERR: S02\n");		//S02 - Storage allocation error
+      	Serial.println(APDUINO_ERROR_STORAGEALLOC);
+          //SerPrintP("ERR: S02\n");		//S02 - Storage allocation error
       }
   } else {
-      SerPrintP("ERR: S01.\n");				// S01 - Storage already allocated
+  	Serial.println(APDUINO_ERROR_STORAGEALLOCALREADY);
+      //SerPrintP("ERR: S01.\n");				// S01 - Storage already allocated
   }
   return this->pAPDStorage;
 }
@@ -494,9 +512,11 @@ boolean APDuino::startLogging(unsigned long ulLoggingFreq) {
   boolean bLogging = false;
   if (bAPDuinoConfigured && pAPDStorage != NULL && pAPDStorage->ready() ) {    // check storage status
       if (pAPDStorage->logrotate() >= 0) {
-          SerPrintP("Log2SD ok.\n");
+      	Serial.println(APDUINO_MSG_SDLOGOK);
+          //SerPrintP("Log2SD ok.\n");
       } else {
-          SerPrintP("ERR: L01\n");			// L01 - Unknown error related to SD logrotate
+      	Serial.println(APDUINO_ERROR_LOGUNKNOWN);
+          //SerPrintP("ERR: L01\n");			// L01 - Unknown error related to SD logrotate
       }
       if (this->pLoggingMetro == NULL) {
          this->pLoggingMetro = new Metro(ulLoggingFreq,true);           // ignore missed events
@@ -527,28 +547,40 @@ boolean APDuino::bConfigured() {
 }
 //FIXME direct references to controls
 int APDuino::AddCustomFunction(int iPos, void (*pcf)()){
+#ifdef DEBUG
   SerPrintP("SET CUSTFUNC @IDX "); Serial.print(iPos);
+#endif
   if (this->pcustfuncs[iPos] == NULL) {
+#ifdef DEBUG
       SerPrintP("NULL, SET: "); Serial.print((unsigned int)pcf,DEC);
+#endif
       this->pcustfuncs[iPos] = pcf;
       // loop though controls, see if any of them is referring to the given index
       for (int i=0; i<this->pca->iControlCount; i++) {
         APDControl *pc = this->pca->pAPDControls[i];
         if (pc != NULL && pc->config.control_type == SOFTWARE_CONTROL ) {
+#ifdef DEBUG
             SerPrintP("SW CTRL @ IDX");Serial.print(i);SerPrintP(" - ");
+#endif
           if (pc->config.control_pin == iPos) {
             if (this->pcustfuncs[pc->config.control_pin] != NULL) {
               // assign the custom function pointer to the control; take control's PIN as IDX
-      //#ifdef DEBUG
+#ifdef DEBUG
               SerPrintP("SET CUSTFUNC IDX "); Serial.print(pc->config.control_pin);
               SerPrintP(" CTRLIDX"); Serial.print(i); SerPrintP(".\n");
-      //#endif
+#endif
               pc->pcustfunc = this->pcustfuncs[pc->config.control_pin];      // cvalue must hold the cfunc idx
             } else {
+            	Serial.println(APDUINO_WARN_NOCUSTFUNCATIDX);
+#ifdef DEBUG
                 SerPrintP("NO CUSTFUNCPTR @ SPEC IDX!\n");
+#endif
             }
           } else {
+          	Serial.println(APDUINO_WARN_CUSTFUNCMISMATCH);
+#ifdef DEBUG
               SerPrintP("CTRL NOT REFERRING TO THIS CUSTFUNC, SKIP.\n")
+#endif
           }
         }
       }
@@ -575,8 +607,9 @@ boolean APDuino::disableRuleProcessing() {
 
 boolean APDuino::reconfigure() {
 	boolean retcode = false;
-
+#ifdef DEBUG
   SerPrintP("\nRECONREQ...\n");
+#endif
   delay(100);
 
   // put APDWeb in maintenance mode to PREVENT ACCESS TO sensors, controls, rules
@@ -585,64 +618,67 @@ boolean APDuino::reconfigure() {
     bProcessRules = false;
     unsigned long ulRam = freeMemory();
 
+#ifdef DEBUG
   	SerPrintP("Reconfiguring Arrays!\n");
   	delay(10);
   	Serial.print( ulRam, DEC); SerPrintP(" RAM free.\n");
   	delay(100);
+#endif
 
 		this->iNextSensor = -1;				// invalidate next sensor index
 
 		delete(this->pra);
+#ifdef DEBUG
 		SerPrintP("Deleted Rule Array.\n");	Serial.print( freeMemory(), DEC); SerPrintP(" RAM free.\n");	delay(100);
+#endif
 		delete(this->pca);
+#ifdef DEBUG
 		SerPrintP("Deleted Control Array.\n");	Serial.print( freeMemory(), DEC); SerPrintP(" RAM free.\n");	delay(100);
+#endif
 		delete(this->psa);
+#ifdef DEBUG
 		SerPrintP("Deleted Sensor Array.\n");	Serial.print( freeMemory(), DEC); SerPrintP(" RAM free.\n");	delay(100);
-
   	SerPrintP("Deleted Arrays!\n");
   	Serial.print( freeMemory(), DEC); SerPrintP(" RAM free.\n");
   	delay(100);
+#endif
 
 		psa = new APDSensorArray();
 		pca = new APDControlArray(&pcustfuncs);
 		pra = new APDRuleArray(psa,pca,&(this->bfIdle));
-
+#ifdef DEBUG
   	SerPrintP("Reallocated Arrays!\n"); delay(10);
   	Serial.print( freeMemory(), DEC); SerPrintP(" RAM free.\n");
   	delay(10);
 
+  	SerPrintP("\ninit sensors\n"); delay(10);
+#endif
+		this->psa->loadSensors(this->pAPDStorage);
+		//SerPrintP("APD Sensors - ok.\n");
+		//GLCD.Puts(".");
 
-			SerPrintP("\ninit sensors\n"); delay(10);
+#ifdef DEBUG
+		SerPrintP("\ninit controls\n"); delay(10);
+#endif
+		this->pca->loadControls(this->pAPDStorage);
+		//SerPrintP("APD Controls - ok.\n");
+		//GLCD.Puts(".");
 
-			//this->setupSensors();
-			this->psa->loadSensors(this->pAPDStorage);
-			//SerPrintP("APD Sensors - ok.\n");
-			//GLCD.Puts(".");
-
-			//setup_apd_controls();
-			SerPrintP("\ninit controls\n"); delay(10);
-
-			//this->setupControls();
-			this->pca->loadControls(this->pAPDStorage);
-			//SerPrintP("APD Controls - ok.\n");
-			//GLCD.Puts(".");
-
-			//setup_apd_rules();
+#ifdef DEBUG
 			SerPrintP("init rules\n"); delay(10);
+#endif
+		this->pra->loadRules(this->pAPDStorage);
+		//SerPrintP("APD Rules - ok.\n");
 
-			//this->setupRules();
-			this->pra->loadRules(this->pAPDStorage);
-			//SerPrintP("APD Rules - ok.\n");
+		// Update pointers in APDWeb
+		this->pAPDWeb->pAPDRules = this->pra->pAPDRules;
+		this->pAPDWeb->iRuleCount = this->pra->iRuleCount;
+		this->pAPDWeb->pAPDControls = this->pca->pAPDControls;
+		this->pAPDWeb->iControlCount = this->pca->iControlCount;
+		this->pAPDWeb->pAPDSensors = this->psa->pAPDSensors;
+		this->pAPDWeb->iSensorCount = this->psa->iSensorCount;
 
-			// Update pointers in APDWeb
-			this->pAPDWeb->pAPDRules = this->pra->pAPDRules;
-			this->pAPDWeb->iRuleCount = this->pra->iRuleCount;
-			this->pAPDWeb->pAPDControls = this->pca->pAPDControls;
-			this->pAPDWeb->iControlCount = this->pca->iControlCount;
-			this->pAPDWeb->pAPDSensors = this->psa->pAPDSensors;
-			this->pAPDWeb->iSensorCount = this->psa->iSensorCount;
-
-
+#ifdef DEBUG
 	  	SerPrintP("Reconfigured Arrays!\n");
 	  	Serial.print( freeMemory(), DEC); SerPrintP(" RAM free.\n");
 	  	delay(10);
@@ -652,19 +688,20 @@ boolean APDuino::reconfigure() {
 	  	} else {
 	  		SerPrintP("\nMEMORY LEAK DETECTED!\n");
 	  	}
+#endif
+		// enable "real-time" rule evaluation
+		this->psa->enableRuleEvaluation(&(APDRuleArray::evaluateSensorRules),(void *)this->pra);
 
-			// enable "real-time" rule evaluation
-			this->psa->enableRuleEvaluation(&(APDRuleArray::evaluateSensorRules),(void *)this->pra);
+		// FIXME check if we are initialized, set it in bConfigured
+		// TODO revise what is obligatory. for now, 1 sensor or control is enough to be considered as configured
+		this->bAPDuinoConfigured =  this->pAPDStorage->ready() && (this->psa->iSensorCount > 0  || this->pca->iControlCount > 0); // && this->pra->iRuleCount > 0;
 
-			// FIXME check if we are initialized, set it in bConfigured
-			// TODO revise what is obligatory. for now, 1 sensor or control is enough to be considered as configured
-			this->bAPDuinoConfigured =  this->pAPDStorage->ready() && (this->psa->iSensorCount > 0  || this->pca->iControlCount > 0); // && this->pra->iRuleCount > 0;
-
-			this->bFirstLoopDone = false;									// we have not yet looped with the new config (no sensor values)
-			bProcessRules = bProcRulesOld;								// restore old rule processing state
-			retcode = this->pAPDWeb->continue_service();	// return if web server continues processing
+		this->bFirstLoopDone = false;									// we have not yet looped with the new config (no sensor values)
+		bProcessRules = bProcRulesOld;								// restore old rule processing state
+		retcode = this->pAPDWeb->continue_service();	// return if web server continues processing
   } else {
-  	SerPrintP("E");					// ERROR could not pause web service
+  	Serial.println(APDUINO_ERROR_COULDNOTPAUSEWWW);
+  	//SerPrintP("E");					// ERROR could not pause web service
   }
 
   return retcode;
@@ -690,6 +727,7 @@ void APDuino::new_ethconf_parser(void *pAPD, int iline, char *psz) {
       &(nc.localPort),
       &(nc.wwwPort));
   (nc.subnet[0]) = ab;
+#ifdef DEBUG
   SerPrintP("Parsed config:\n");
   // print configuration
   SerPrintP("IP: ");
@@ -704,14 +742,20 @@ void APDuino::new_ethconf_parser(void *pAPD, int iline, char *psz) {
 	Serial.println(nc.localPort);
 	SerPrintP(" WWW: ");
 	Serial.println(nc.wwwPort);
-
+#endif
   if (ips < 24) {
-      SerPrintP("\nBad config. Please reprovision from APDuino Online.\n");
+  	Serial.println(APDUINO_ERROR_BADNETCONFIG);
+      //SerPrintP("\nBad config. Please reprovision from APDuino Online.\n");
   }
+#ifdef DEBUG
   SerPrintP("\nIP config parsed "); Serial.print(ips); SerPrintP(" entities.\n");
+#endif
   //TODO add compatibility code (so other options can follow, even if not parsed)
   if (((APDuino *)pAPD)->pAPDWeb == NULL ) {
+  	Serial.println(APDUINO_MSG_ETHERNETFROMCONF);
+#ifdef DEBUG
       SerPrintP("Init net with loaded config... \n");
+#endif
       ((APDuino *)pAPD)->pAPDWeb = new APDWeb(&nc,((APDuino*)pAPD)->pAPDTime);
   }
 
@@ -724,7 +768,8 @@ void APDuino::new_ethconf_parser(void *pAPD, int iline, char *psz) {
 
 
 void APDuino::setupNetworking() {
-  SerPrintP("Net init...");
+	Serial.println(APDUINO_MSG_NETINIT);
+  //SerPrintP("Net init...");
   delay(250);                   // probably just starting up, adding a little delay, 1/4s
   if (pAPDWeb == NULL) {      // replace with check if IP config is present
 #ifdef DEBUG
@@ -736,29 +781,38 @@ void APDuino::setupNetworking() {
           SerPrintP("done.\n");
 #endif
         } else {
-            SerPrintP("No/Bad netconfig.\n");
+        	Serial.println(APDUINO_ERROR_BADNETCONFIG);
+            //SerPrintP("No/Bad netconfig.\n");
         }
     } else {
-       SerPrintP("STORAGE ERR?\n");
+    	Serial.println(APDUINO_ERROR_SUSPECTSTORAGEERR);
+       //SerPrintP("STORAGE ERR?\n");
     }
     if (pAPDWeb == NULL) {
-        SerPrintP("DHCP fallback...\n");
+    		Serial.println(APDUINO_MSG_DHCPFALLBACK);
+        //SerPrintP("DHCP fallback...\n");
         pAPDWeb = new APDWeb(this->pAPDTime);
     }
   } else {
-      SerPrintP("Net already started?\n");
+  	Serial.println(APDUINO_ERROR_NETALREADYSTARTED);
+      //SerPrintP("Net already started?\n");
   }
 }
 
 boolean APDuino::startWebServer() {
   boolean retcode = false;
+#ifdef DEBUG
   SerPrintP("WWWS...");
+#endif
   if (pAPDWeb != NULL) {
+#ifdef DEBUG
       SerPrintP("starting ...");
+#endif
       pAPDWeb->startWebServer(this->psa->pAPDSensors,this->psa->iSensorCount,this->pca->pAPDControls,this->pca->iControlCount,this->pra->pAPDRules,this->pra->iRuleCount,pAPDStorage);
       retcode = (pAPDWeb != NULL && pAPDWeb->pwwwserver != NULL && pAPDWeb->pwwwclient !=NULL);
   } else {
-      SerPrintP("NONET\n");
+  	Serial.println(APDUINO_ERROR_NONETFORWWW);
+      //SerPrintP("NONET\n");
   }
   return retcode;
 }

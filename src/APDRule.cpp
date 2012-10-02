@@ -53,7 +53,9 @@ APDRule::APDRule(RDCONF *rdc, APDSensorArray *pSA, APDControlArray *pCA) {
 //            float *pcsensorvalue;                         // pointer to a sensor to take control value from
 //            void *pmetro;                                 // we might put a metro, or something else on it...
       this->finternal = this->config.rf_value;                                  // fill the internal float with the provided static test value
+#ifdef VERBOSE
       SerPrintP("RULE: '"); Serial.print( this->config.label); SerPrintP("'");
+#endif
       this->pcsensorvalue = NULL;               // done in init
       this->pmetro = NULL;                      // done in init
       // set rule evaluation sensor / value
@@ -65,17 +67,22 @@ APDRule::APDRule(RDCONF *rdc, APDSensorArray *pSA, APDControlArray *pCA) {
 
 
 //            this->pvalue = &(pAPDSensors[this->config.rf_sensor_idx].fvalue);
+#ifdef VERBOSE
         SerPrintP(" IN SENSOR(id");Serial.print(this->config.rf_sensor_idx);
         SerPrintP(" - ");
-
+#endif
         // TODO THIS PART IS CRUCIAL - outside
         //Serial.print(pAPDSensors[this->config.rf_sensor_idx].config.label);
+#ifdef VERBOSE
         SerPrintP(") ");
+#endif
       } else {
         this->psensor = NULL;
 //            this->pvalue = &(this->finternal);      // use the provided static value
 //            SerPrintP(" evals Static Value=");Serial.print(this->finternal); SerPrintP(" ");
+#ifdef VERBOSE
         SerPrintP(" IS VIRTUAL");
+#endif
       }
 
       // test value is always the internal number, for now
@@ -91,20 +98,29 @@ APDRule::APDRule(RDCONF *rdc, APDSensorArray *pSA, APDControlArray *pCA) {
         if (this->config.ra_sensor_idx >= 0) {// && this->config.ra_sensor_idx < pAPD->iSensorCount) {
             // THIS HAS TO BE SET ON THE APDUINO LEVEL
           //this->pcsensorvalue = &(pAPDSensors[this->config.ra_sensor_idx].fvalue);
+#ifdef VERBOSE
           SerPrintP(" SENSORVAL "); //Serial.print(pAPDSensors[this->config.ra_sensor_idx].config.label);
+#endif
           Serial.print(this->config.ra_sensor_idx,DEC);
         } else {
           // TODO check the config.value_mapping
+#ifdef VERBOSE
           SerPrintP(" STATIC VALUE ");
+#endif
           this->cvalue = this->config.ra_value;      // use the provided static value
 
           //TODO reimplement outside
           //this->cvalue = (pAPDControls[this->config.rule_control_idx].iValue);
         }
+#ifdef VERBOSE
         SerPrintP(" CONTROL "); Serial.print(this->config.rule_control_idx); SerPrintP(" -\" name can't be known yet. postproc needed...");
+#endif
         //; Serial.print(this->pcontrol->config.label);SerPrintP("\" ");                // TODO dont access pcontrol, ptr not set!
       } else {
+      	Serial.println(APDUINO_WARN_RULEINVALIDCONTROL);
+#ifdef VERBOSE
         SerPrintP(" NULL/INVALID CONTROL.");
+#endif
         this->pcontrol = NULL;
         // todo revise this
         //this->cvalue = &(this->finternal);      // use the provided static value
@@ -112,66 +128,97 @@ APDRule::APDRule(RDCONF *rdc, APDSensorArray *pSA, APDControlArray *pCA) {
         //this->cvalue = this->config.ra_value;      // use the provided static value
       }
       if (this->config.conditions[0]!=0) {
+#ifdef VERBOSE
       	SerPrintP(" EVALS: \"");Serial.print(this->config.conditions);SerPrintP("\" --");
+#endif
       }
 
       // select control functions
+#ifdef VERBOSE
       SerPrintP(" T: ");
+#endif
       this->ptcontrolfunc= get_rule_action_ptr(this->config.rule_true_action);
-
+#ifdef VERBOSE
       SerPrintP(" F: ");
+#endif
       this->pfcontrolfunc= get_rule_action_ptr(this->config.rule_false_action);
 
       // choose the evaluation function
-
+#ifdef VERBOSE
       SerPrintP(" depending on -");
+#endif
       /* link in the rule evaluation funtion */
       this->prulefunc = NULL;    // initialize as nullptr
       switch (this->config.rule_definition) {
         case RF_FALSE:
+#ifdef VERBOSE
           SerPrintP("FALSE Rule");
+#endif
           this->prulefunc = (&apd_rule_false);
           break;
         case RF_TRUE:
+#ifdef VERBOSE
           SerPrintP("TRUE Rule");
+#endif
           this->prulefunc = (&apd_rule_true);
           break;
         case RF_METRO:
+#ifdef VERBOSE
           SerPrintP("METRO Rule");
+#endif
           this->prulefunc = (&apd_rule_metro);
           if (this->pmetro = new Metro(this->config.rf_value)) {      // the correct metro value is the sensor's test val
+#ifdef VERBOSE
           	SerPrintP("Rule Metro allocated");
+#endif
           } else {
+         Serial.println(APDUINO_ERROR_RMETROALLOCFAIL);
+#ifdef VERBOSE
           	SerPrintP("Failed to allocate rule metro.");
+#endif
           }
           break;
         case RF_RTC_PASSED:
+#ifdef VERBOSE
           SerPrintP("RTC Rule");
+#endif
           this->prulefunc = (&apd_rule_rtc_passed);
           break;
         case RF_IDLE_CHECK:
+#ifdef VERBOSE
           SerPrintP("IDLE Rule");
+#endif
           this->prulefunc = (&apd_rule_idle_check);
           break;
         case RF_RAM_CHECK:
+#ifdef VERBOSE
           SerPrintP("RAM Rule");
+#endif
           this->prulefunc = (&apd_rule_ram_check);
           break;
         case RF_SENSOR_GT:
+#ifdef VERBOSE
 			SerPrintP("SENSOR GT VAL Rule");
+#endif
 			this->prulefunc = (&apd_rule_sensor_gt);
 			break;
         case RF_SENSOR_GTE:
         	break;
         case RF_SENSOR_LT:
+#ifdef VERBOSE
             SerPrintP("SENSOR LT VAL Rule");
+#endif
             this->prulefunc = (&apd_rule_sensor_lt);
             break;
         case RF_SENSOR_LTE:
+#ifdef VERBOSE
           SerPrintP("NOT SUPPORTED");
+#endif
           break;
         case RF_SENSOR_EQ:
+#ifdef VERBOSE
             SerPrintP("SENSOR EQ VAL Rule");
+#endif
             this->prulefunc = (&apd_rule_sensor_equ);
             break;
         case RF_SENSOR_GT_SENSOR:
@@ -179,14 +226,21 @@ APDRule::APDRule(RDCONF *rdc, APDSensorArray *pSA, APDControlArray *pCA) {
         case RF_SENSOR_LT_SENSOR:
         case RF_SENSOR_LTE_SENSOR:
         case RF_SENSOR_EQ_SENSOR:
+#ifdef VERBOSE
           SerPrintP("NOT SUPPORTED");
+#endif
           break;
         case RF_EVALUATE:
+#ifdef VERBOSE
 					SerPrintP("EVALUATE CONDITIONS");
+#endif
 					this->prulefunc = (&apd_rule_eval_conditions);
 					break;
         default:
+        	Serial.println(APDUINO_ERROR_RDEFINVALID);
+#ifdef VERBOSE
           SerPrintP("Invalid rule definition."); Serial.print(this->config.rule_definition);
+#endif
       }
 }
 
@@ -308,81 +362,88 @@ void (*APDRule::get_rule_action_ptr(int rule_action))(APDControl *,int) {
 
   switch (rule_action) {
     case APDRA_SET_OFF:
+#ifdef VERBOSE
       SerPrintP("Off Control");
+#endif
       pfunc= (&APDControl::apd_action_set_off);
       break;
     case APDRA_SET_ON:
+#ifdef VERBOSE
       SerPrintP("On Control");
+#endif
       pfunc= (&APDControl::apd_action_set_on);
       break;
     case APDRA_SWITCH_VALUE:
-//#ifdef DEBUG
+#ifdef VERBOSE
     SerPrintP("Switch Control");
-//#endif
+#endif
       pfunc= (&APDControl::apd_action_switch);
       break;
     case APDRA_SET_VALUE:
-//#ifdef DEBUG
+#ifdef VERBOSE
     SerPrintP("Set Value Control");
-//#endif
+#endif
       pfunc= (&APDControl::apd_action_set_value);
       break;
     case APDRA_RCSWITCH_ON:
-    //#ifdef DEBUG
+#ifdef VERBOSE
         SerPrintP("RC-Switch On");
-    //#endif
+#endif
           pfunc= (&APDControl::apd_action_rc_switch_on);
           break;
     case APDRA_RCSWITCH_OFF:
-    //#ifdef DEBUG
+#ifdef VERBOSE
         SerPrintP("RC-Switch Off");
-    //#endif
+#endif
           pfunc= (&APDControl::apd_action_rc_switch_off);
           break;
     case APDRA_RCPLUG_SET_VALUE:
-    //#ifdef DEBUG
+#ifdef VERBOSE
         SerPrintP("RC-Plug Set Value");
-    //#endif
+#endif
           pfunc= (&APDControl::apd_action_rc_plug_set_value);
           break;
     case APDRA_RCPLUG_ON:
-    //#ifdef DEBUG
+#ifdef VERBOSE
         SerPrintP("RC-Plug On");
-    //#endif
+#endif
           pfunc= (&APDControl::apd_action_rc_plug_on);
           break;
     case APDRA_RCPLUG_OFF:
-    //#ifdef DEBUG
+#ifdef VERBOSE
         SerPrintP("RC-Plug Off");
-    //#endif
+#endif
           pfunc= (&APDControl::apd_action_rc_plug_off);
           break;
     case APDRA_VIRT_CUST_FUNC:
-//#ifdef DEBUG
+#ifdef VERBOSE
     SerPrintP("Custom Function Control");
-//#endif
+#endif
       pfunc= (&APDControl::apd_action_custom_function);
       break;
     case APDRA_VIRT_SCREEN_NEXT:
-//#ifdef DEBUG
+#ifdef VERBOSE
     SerPrintP("Next Screen Control");
-//#endif
+#endif
       pfunc= (&APDControl::apd_action_next_screen);
       break;
     case APDRA_VIRT_SYNCNTP:
-//#ifdef DEBUG
+#ifdef VERBOSE
     SerPrintP("NTPSync Control");
-//#endif
+#endif
       pfunc= (&APDControl::apd_action_sync_ntp);
       break;
     case APDRA_NOOP:
-//#ifdef DEBUG
+#ifdef VERBOSE
     SerPrintP("NOOP Control");
-//#endif
+#endif
       pfunc= (&APDControl::apd_action_noop);
       break;
     default:
-      SerPrintP("Invalid Control definition."); Serial.print(rule_action);
+    	Serial.println(APDUINO_ERROR_RACTIONINVALID);
+#ifdef VERBOSE
+      SerPrintP("Invalid Control Action definition."); Serial.print(rule_action);
+#endif
   }
   return pfunc;
 }

@@ -59,8 +59,10 @@ APDControlArray::~APDControlArray()
 
 void APDControlArray::new_control_parser(void *pCA, int iline, char *psz) {
   CDCONF cdc;
+#ifdef VERBOSE
   Serial.print("CONTROL READ: "); Serial.print(psz);
-  int iscand = sscanf( psz, "%s %d,%d,%d,%d,%s",
+#endif
+  int iscand = sscanf_P( psz, PSTR("%s %d,%d,%d,%d,%s"),
       (cdc.label),
       &(cdc.control_type),
       &(cdc.control_pin),
@@ -69,11 +71,15 @@ void APDControlArray::new_control_parser(void *pCA, int iline, char *psz) {
       (cdc.extra_data));
 
   if (iscand < 6) {
+#ifdef VERBOSE
 		SerPrintP("no extra data");
+#endif
 		memset(cdc.extra_data,0,sizeof(char)*24);
 	}
 	if (iscand < 5) {
+#ifdef VERBOSE
 		SerPrintP("no logging");
+#endif
 		cdc.control_log = 0;
 	}
 
@@ -128,22 +134,27 @@ int APDControlArray::loadControls(APDStorage *pAPDStorage) {
 #endif
                 pc->pcustfunc = (void (*)())this->pcustfuncs[pc->config.control_pin];      // cvalue must hold the cfunc idx
               } else {
-                  SerPrintP("E406");	// CA: missing custom function.
+              	Serial.println(APDUINO_ERROR_CAMISSINGCUSTFUNC);
+                  //SerPrintP("E406");	// CA: missing custom function.
               }
             } else {
-                SerPrintP("E405");		// CA: invalid custom function.
+            	Serial.println(APDUINO_ERROR_CAINVALIDCUSTFUNC);
+              //SerPrintP("E405");		// CA: invalid custom function.
             }
           }
         }
 
       } else {
-        SerPrintP("E403\n");	//CA alloc failed.
+      	Serial.println(APDUINO_ERROR_CAALLOCFAIL);
+        //SerPrintP("E403\n");	//CA alloc failed.
       }
     } else {
-      SerPrintP("W402\n");	//No controls defined.
+    	Serial.println(APDUINO_ERROR_CANOCONTROLS);
+      //SerPrintP("W402\n");	//No controls defined.
     }
   } else {
-    SerPrintP("E401\n");		//CA already allocated.
+  	Serial.println(APDUINO_ERROR_CAALREADYALLOC);
+    //SerPrintP("E401\n");		//CA already allocated.
     // TODO should implement cleanup and reload
   }
 }
@@ -162,7 +173,7 @@ int APDControlArray::dumpToFile(APDStorage *pAPDStorage, char *pszFileName) {
       char line[BUFSIZ]="";
       APDControl *pc = pAPDControls[i];
       // TODO update with recent fields
-      sprintf(line,"%s %d,%d,%d",
+      sprintf_P(line,PSTR("%s %d,%d,%d"),
           (pc->config.label),
           (pc->config.control_type),
           (pc->config.control_pin),
@@ -176,7 +187,8 @@ int APDControlArray::dumpToFile(APDStorage *pAPDStorage, char *pszFileName) {
   }
   else {
       // TODO add an error macro in storage, replace all error opening stuff with reference to that
-    SerPrintP("E429('"); Serial.print(pszFileName); SerPrintP("')\n");	// error opening dumpfile
+  	Serial.println(APDUINO_ERROR_CADUMPOPENFAIL);
+    //SerPrintP("E429('"); Serial.print(pszFileName); SerPrintP("')\n");	// error opening dumpfile
   }
 
 }
@@ -199,15 +211,22 @@ APDControl *APDControlArray::findReusableControl(CDCONF *cdc) {
   // TODO: put all reusable controls below
   case RCPLUG_CONTROL:
     preusable = this->firstControlByPin(cdc->control_pin, cdc->control_type);
+#ifdef VERBOSE
     if (preusable) {
         SerPrintP("REUSING @");
         Serial.print((unsigned int)preusable,HEX);
     }
+#endif
     break;
   default:
+  	;
+#ifdef VERBOSE
     SerPrintP("NOT ");
+#endif
   }
+#ifdef VERBOSE
   SerPrintP("REUSABLE");
+#endif
   return preusable;
 }
 

@@ -68,7 +68,7 @@ void APDRuleArray::new_rule_parser(void *pRA, int iline, char *psz) {
   Serial.print("RULE READ: "); Serial.print(psz);
 #endif
   //TODO add counter & checks on scanned parameters
-  sscanf( psz, "%s %d,%d,%f,%d,%d,%d,%d,%d,%d,%d %s",
+  sscanf_P( psz, PSTR("%s %d,%d,%f,%d,%d,%d,%d,%d,%d,%d %s"),
       (rdc.label),
       &(rdc.rule_definition),
       &(rdc.rf_sensor_idx),
@@ -181,15 +181,18 @@ int APDRuleArray::loadRules(APDStorage *pAPDStorage) {
   //          }
           }       // end enumerating rules
 
-          SerPrintP("Rules ok.\n");
+          //SerPrintP("Rules ok.\n");
         } else {
-          SerPrintP("E503\n");
+        	Serial.println(APDUINO_ERROR_RAALLOCFAIL);
+        	//SerPrintP("E503\n");
         }
       } else {
-        SerPrintP("E502\n");
+      	Serial.println(APDUINO_ERROR_RANORULES);
+        //SerPrintP("E502\n");
       }
     } else {
-      SerPrintP("E501\n");
+    	Serial.println(APDUINO_ERROR_RAALREADYALLOC);
+      //SerPrintP("E501\n");
     }
 }
 
@@ -207,7 +210,7 @@ void APDRuleArray::dumpToFile(APDStorage *pAPDStorage, char *pszFileName) {
       char line[BUFSIZ]="";
       APDRule *pr = pAPDRules[i];
       // TODO update with recent fields
-      sprintf(line,"%s %d,%d,%f,%d,%d,%d,%d,%d,%d",
+      sprintf_P(line,PSTR("%s %d,%d,%f,%d,%d,%d,%d,%d,%d"),
           pr->config.label, pr->config.rule_definition,
           pr->config.rf_sensor_idx,
           pr->config.rf_value,
@@ -226,7 +229,8 @@ void APDRuleArray::dumpToFile(APDStorage *pAPDStorage, char *pszFileName) {
   }
   else {
       // TODO add an error macro in storage, replace all error opening stuff with reference to that
-    SerPrintP("E505('"); Serial.print(pszFileName); SerPrintP("')\n");
+  	Serial.println(APDUINO_ERROR_RADUMPOPENFAIL);
+    //SerPrintP("E505('"); Serial.print(pszFileName); SerPrintP("')\n");
   }
 }
 

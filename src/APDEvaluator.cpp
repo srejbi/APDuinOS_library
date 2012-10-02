@@ -51,11 +51,11 @@ APDEvaluator::~APDEvaluator() {
 void APDEvaluator::parse_error(const char* string) {
   unsigned int i;
   char szMessage[128];
-  sprintf(szMessage, "Unexpected symbol '%c' at position %u.\n\n", string[G_STRING_ITERATOR], G_STRING_ITERATOR);
+  sprintf_P(szMessage, PSTR("Unexpected symbol '%c' at position %u.\n\n"), string[G_STRING_ITERATOR], G_STRING_ITERATOR);
   Serial.print(szMessage);
-  sprintf(szMessage, "String: '%s'\n", string);
+  sprintf_P(szMessage, PSTR("String: '%s'\n"), string);
   Serial.print(szMessage);
-  sprintf(szMessage, "Problem: ");
+  sprintf_P(szMessage, PSTR("Problem: "));
   Serial.print(szMessage);
   for(i = 0; i < G_STRING_ITERATOR; ++i) {
     SerPrintP(" ");

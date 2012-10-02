@@ -32,9 +32,15 @@ APDWeb::APDWeb(APDTime *pTime)
 	// TODO Auto-generated constructor stub
 	initBlank(pTime);
 	if (start()) {
+		Serial.println(APDUINO_MSG_ETHSTARTED);
+#ifdef VERBOSE
 		SerPrintP("Eth started.\n");
+#endif
 	} else {
+		Serial.println(APDUINO_ERROR_ETHCONF);
+#ifdef VERBOSE
 		SerPrintP("Failed to configure Ethernet. Fix DHCP on your LAN or provide a valid static config on SD and reset.\n");
+#endif
 	}
 }
 
@@ -53,14 +59,26 @@ APDWeb::APDWeb(NETCONF *pnc, APDTime *pTime)
 	initBlank(pTime);
 	memcpy(&net,pnc,sizeof(NETCONF));             // copy the provided config
 	if (start()) {
+		Serial.println(APDUINO_MSG_CONFETHSTARTED);
+#ifdef VERBOSE
 		SerPrintP("Eth started with conf provided.\n");
+#endif
 	} else {
+		Serial.println(APDUINO_WARN_NETCONFDHCPFALLBACK);
+#ifdef VERBOSE
 		SerPrintP("Failed to start Ethernet with static configuration. Fallback to DHCP.\n");
+#endif
 		initBlank(pTime);
 		if (start()) {
+			Serial.println(APDUINO_MSG_NETOK);
+#ifdef VERBOSE
 			SerPrintP("Ethernet should be ok.\n");
+#endif
 		} else {
+			Serial.println(APDUINO_ERROR_DHCPFAILED);
+#ifdef VERBOSE
 			SerPrintP("Fix DHCP on your LAN or provide a valid static config on SD and reset.\n");
+#endif
 		}
 	}
 }
@@ -136,16 +154,19 @@ void APDWeb::initBlank(APDTime *pTime)
 }
 
 boolean APDWeb::start() {
-
+#ifdef VERBOSE
 	SerPrintP("\nMAC:");
+
 	for (byte thisByte = 0; thisByte < 6; thisByte++) {
 		Serial.print(net.mac[thisByte],HEX);
 		if (thisByte < 5) SerPrintP(":");
 	}
+#endif
 
 	//net.ip[0] = 0;
 	if ((bRestart && !this->bDHCP) || (!bRestart && net.ip[0] != 0)) {                 // if an IP seems to be provided
-
+		Serial.println(APDUINO_MSG_TRYINGSTATICIP);
+#ifdef VERBOSE
 		SerPrintP("Trying static IP...\n");
 		SerPrintP("IP: ");
 		// display and save in RAM config to netconfig
@@ -159,22 +180,30 @@ boolean APDWeb::start() {
 		SerPrintP("DNS: ");
 		// display and save in RAM config to netconfig
 	    SerDumpIP(net.pridns);
-
+#endif
 		Ethernet.begin(net.mac, net.ip, net.pridns, net.gateway, net.subnet);
 		bEthConfigured = true;
 		operational_state = OPSTATE_CONFIGURED | OPSTATE_STARTED;
 		this->bDHCP = false;
 		// todo read on howto check state
 	} else {                              // go for DHCP
+		Serial.println(APDUINO_MSG_TRYINGDHCPIP);
+#ifdef DEBUG
 		SerPrintP("Trying DHCP...");
+#endif
 		if (Ethernet.begin(net.mac) == 0) {
+			Serial.println(APDUINO_ERROR_DHCPSTARTFAIL);
+#ifdef VERBOSE
 			SerPrintP("Error.");
+#endif
 			operational_state = OPSTATE_BLANK | OPSTATE_ERROR;
 			return false;
 		}
 		// we should have a lease now
+		Serial.println(APDUINO_MSG_DHCPLEASED);
+#ifdef VERBOSE
 		SerPrintP("DHCP DONE.\nIP: ");
-
+#endif
 		// we should have a lease now, save data
 		uint32_t ipaddr = (uint32_t)Ethernet.localIP();
 		memcpy((void *)(byte *)net.ip, (void *)&ipaddr, sizeof(byte)*4);
@@ -187,6 +216,7 @@ boolean APDWeb::start() {
 		ipaddr = Ethernet.dnsServerIP();
 		memcpy((void *)(byte *)net.pridns, (void *)&ipaddr, sizeof(byte)*4);
 #endif
+#ifdef VERBOSE
 		// display and save in RAM config to netconfig
 		SerDumpIP(net.ip);
 		SerPrintP("\nMASK: ");
@@ -194,8 +224,8 @@ boolean APDWeb::start() {
 		SerPrintP("\nGW: ");
 		SerDumpIP(net.gateway);
 		SerPrintP("\nDNS: ");
-	    SerDumpIP(net.pridns);
-
+	  SerDumpIP(net.pridns);
+#endif
 		bEthConfigured = true;
 		operational_state = OPSTATE_CONFIGURED | OPSTATE_STARTED;
 	}
@@ -236,11 +266,19 @@ boolean APDWeb::restart() {
 }
 
 void APDWeb::failure() {
+#ifdef VERBOSE
 	SerPrintP("FC"); Serial.print(this->iFailureCount); SerPrintP("++");
+#endif
 	if (++this->iFailureCount >= MAX_NET_FAILURES) {	// TODO replace 3 with a variable
+#ifdef VERBOSE
 		SerPrintP("->FC="); Serial.print(iFailureCount);
+#endif
 		this->bRestart = true;		// request a restart (will be done in loop)
+
+		Serial.println(APDUINO_MSG_NETFAILSRESTART);
+#ifdef VERBOSE
 		SerPrintP(" -> restart req.\n");
+#endif
 	}
 }
 
@@ -274,23 +312,6 @@ boolean APDWeb::setupAPDuinoOnline() {
 #ifdef DEBUG
 		SerPrintP("WE HAVE NET\n");
 #endif
-//		//  TODO save reg. data to temp buffer and save after proper handshake w/ server
-//		strcpy(this->apduino_server_name, hostname);
-//#ifdef DEBUG
-//		Serial.print(apduino_server_name); SerPrintP("@");
-//#endif
-//		for (int i=0;i<4;i++) {
-//			this->apduino_server_ip[i] = (*phostip)[i];
-//#ifdef DEBUG
-//			Serial.print(apduino_server_ip[i],DEC);SerPrintP(".");
-//#endif
-//		}
-//		this->apduino_server_port = hostport;
-
-		//loadAPIkey(szAPDUINO_API_KEY,"APIKEY.CFG");             // TODO -> load api key for ; allow multiple keys for different services
-
-
-
 
 		if (pAPDStorage->readFileWithParser("ONLINE.CFG",&new_apduinoconf_parser,(void*)this) > 0) {
 		} else {
@@ -301,36 +322,34 @@ boolean APDWeb::setupAPDuinoOnline() {
 			apduino_logging_freq = DEFAULT_ONLINE_LOG_FREQ;
 		}
 		//
-
+#ifdef VERBOSE
 		SerPrintP("APDuino Online server:"); Serial.println(apduino_server_name);
 		SerPrintP("@");
 		SerDumpIP(apduino_server_ip);
-
+#endif
 		if (apduino_server_ip[0]>0) {                            // if we have a server name
 			loadAPIkey(szAPDUINO_API_KEY,"APIKEY.CFG");             // load api key for apduino.com
+#ifdef VERBOSE
 			Serial.print(szAPDUINO_API_KEY);
 			delay(20);
+#endif
 
-			#ifdef DEBUG
-					SerPrintP("Executing self-registration proc.\n");
-			#endif
+#ifdef DEBUG
+			SerPrintP("Executing self-registration proc.\n");
+#endif
 			self_register();								// this will get a server-generated key
 
 			startWebLogging(apduino_logging_freq);
 			retcode = true;
-//					if (this->pmetro == NULL) {
-//						this->pmetro = new Metro(apduino_logging_freq, true);                     // TODO check this
-//						retcode = true;
-//					}
-
-
 		} else {
-			SerPrintP("E21.\n");
+			Serial.println(APDUINO_ERROR_APDUINOONLINEIP);
+			//SerPrintP("E21.\n");
 		}
 
 		retcode = true;
 	} else {
-		SerPrintP("E20.\n");
+		Serial.println(APDUINO_ERROR_STORAGEERRORAO);
+		//SerPrintP("E20.\n");
 	}
 	return retcode;
 }
@@ -346,7 +365,7 @@ boolean APDWeb::loadAPIkey(char *szAPIKey, char *szAPIFile) {
 		if (dataFile.isOpen()) {
 			//SerPrintP("Opened file\n");
 			while (bread=dataFile.fgets(line, sizeof(line))) {      // get the next line
-				if (char *nl=strstr(line,"\n") ) {
+				if (char *nl=strstr_P(line,PSTR("\n")) ) {
 					*nl = '\0';
 				}
 				if (strlen(line)) {
@@ -370,10 +389,16 @@ void APDWeb::saveAPIkey(char *szAPIKey, char *szAPIFile)
 			dataFile.println(szAPIKey);
 			dataFile.close();
 		} else {
+			Serial.println(APDUINO_ERROR_AKSAVEIOERR);
+#ifdef VERBOSE
 			SerPrintP("IO ERR.");		// TODO add error codes
+#endif
 		}
 	} else {
+		Serial.println(APDUINO_ERROR_AKSAVESTORAGE);
+#ifdef VERBOSE
 		SerPrintP("NO STORAGE.");
+#endif
 	}
 }
 
@@ -391,23 +416,27 @@ boolean APDWeb::startWebLogging(unsigned long uWWWLoggingFreq) {
 	SerPrintP("APDW: ONLINE LOG SINK: ");
 	Serial.print(apduino_server_name); SerPrintP("@");
 	SerDumpIP(apduino_server_ip);
-#endif
 
 	SerPrintP("\n\n");
+#endif
+
 	return retcode;
 }
 
 
 boolean APDWeb::setupCosmLogging() {
 	boolean retcode = false;
+
 	SerPrintP("COSM...");
 
 	szCOSM_API_KEY[0] = 0;
 	if (bEthConfigured && pAPDStorage != NULL && pAPDStorage->ready() && this->phmetro == NULL) {
 		if (pAPDStorage->readFileWithParser("PACHUBE.CFG",&new_cosmconf_parser,(void*)this) > 0) {
+#ifdef VERBOSE
 			SerPrintP("server:"); Serial.println(cosm_server_name);
 			SerPrintP("@");
 			SerDumpIP(cosm_server_ip);
+#endif
 			if (cosm_server_ip[0]>0) {                            // if we have a server name
 				//SerPrintP("loading API key\n");
 				loadAPIkey(szCOSM_API_KEY,"PACHUBE.KEY");             // TODO -> load api key for ; allow multiple keys for different services
@@ -415,18 +444,26 @@ boolean APDWeb::setupCosmLogging() {
 				delay(20);
 
 			} else {
+#ifdef VERBOSE
 				SerPrintP("FAIL.\n");
+#endif
 			}
+#ifdef VERBOSE
 			SerPrintP("SET UP.\n");
+#endif
 			this->phmetro = new Metro(cosm_logging_freq, true);                     // TODO check this
 			retcode = true;
 
 		} else {
+#ifdef VERBOSE
 			SerPrintP("CONF ERR.\n");
+#endif
 		}
 
 	} else {
+#ifdef VERBOSE
 		SerPrintP("ERR.\n");
+#endif
 	}
 	return retcode;
 }
@@ -434,43 +471,46 @@ boolean APDWeb::setupCosmLogging() {
 
 boolean APDWeb::setupThingSpeakLogging() {
 	boolean retcode = false;
+#ifdef VERBOSE
 	SerPrintP("THINGSPEAK...");
-
+#endif
 	szTHINGSPEAK_API_KEY[0] = 0;
 	if (bEthConfigured && pAPDStorage != NULL && pAPDStorage->ready() && this->tsmetro == NULL) {
 		if (pAPDStorage->readFileWithParser("THINGSPK.CFG",&new_thingspeakconf_parser,(void*)this) > 0) {
+#ifdef VERBOSE
 			SerPrintP("server:"); Serial.println(thingspeak_server_name);
 			SerPrintP("@");
 			SerDumpIP(thingspeak_server_ip);
+#endif
 
 			if (thingspeak_server_ip[0]>0) {                            // if we have a server name
-//				SerPrintP("loading API key\n");
-				loadAPIkey(szTHINGSPEAK_API_KEY,"THINGSPK.KEY");             // TODO -> load api key for ; allow multiple keys for different services
+				loadAPIkey(szTHINGSPEAK_API_KEY,"THINGSPK.KEY");
+#ifdef VERBOSE
 				Serial.print(szTHINGSPEAK_API_KEY);
 				delay(20);
-				//              SerPrintP("creating streams...\n");
-				//              for (int i=0;i<iSensorCount;i++) {
-				//                if (pAPDSensors[i]->config.sensor_log) {          // if sensor to be logged
-				//                    SerPrintP("SHOULD SETUP"); Serial.print(pAPDSensors[i]->config.label); SerPrintP(" PH STREAM\n");
-				//                  setupPachubeDataStream(pAPDSensors[i]->config.label,pAPDSensors[i]->fvalue);
-				//                }
-				//              }
-
-
+#endif
 
 			} else {
+#ifdef VERBOSE
 				SerPrintP("FAIL.\n");
+#endif
 			}
+#ifdef VERBOSE
 			SerPrintP("SETUP.\n");
+#endif
 			this->tsmetro = new Metro(thingspeak_logging_freq, true);                     // TODO check this
 			retcode = true;
 
 		} else {
+#ifdef VERBOSE
 			SerPrintP("CONF ERR.\n");
+#endif
 		}
 
 	} else {
+#ifdef VERBOSE
 		SerPrintP("ERR.\n");
+#endif
 	}
 	return retcode;
 }
@@ -478,9 +518,13 @@ boolean APDWeb::setupThingSpeakLogging() {
 
 void APDWeb::startWebServer(APDSensor **pSensors, int iSensorCount, APDControl **pControls, int iControlCount, APDRule **pRules, int iRuleCount, APDStorage *pAPDStorage)
 {
+#ifdef VERBOSE
 	SerPrintP("WS");
+#endif
 	if (pwwwserver == NULL) {
+#ifdef VERBOSE
 		SerPrintP("Starting WWW Server on port "); Serial.print(net.wwwPort); SerPrintP("...\n");
+#endif
 		pwwwserver = new EthernetServer(net.wwwPort);
 		pwwwserver->begin();
 		this->pAPDSensors = pSensors;
@@ -492,14 +536,16 @@ void APDWeb::startWebServer(APDSensor **pSensors, int iSensorCount, APDControl *
 		this->pAPDStorage = pAPDStorage;
 		this->setup_webclient();
 	} else {
+#ifdef VERBOSE
 		SerPrintP("WS already running?\n");
+#endif
 	}
 }
 
 
 void APDWeb::web_header(EthernetClient *pClient) {
-	WCPrintP(pClient,"HTTP/1.1 200 OK\n");
-	WCPrintP(pClient,"Content-Type: text/html\n\n");
+	WCPrintP(pClient,"HTTP/1.1 200 OK\n"
+			"Content-Type: text/html\n\n");
 	delay(1);
 }
 
@@ -512,18 +558,20 @@ void APDWeb::web_startpage(EthernetClient *pClient, char *title,int refresh=0) {
 			WCPrintP(pClient,"<meta http-equiv=\"refresh\" content=\""); pClient->print(refresh); WCPrintP(pClient,"\"/>\n");
 		}
 		WCPrintP(pClient,"<link href=\"http://"); pClient->print(apduino_server_name); WCPrintP(pClient,"/devices/"); WCPrintP(pClient,"stylesheet?api_key=");  pClient->print(szAPDUINO_API_KEY); WCPrintP(pClient,"\" media=\"screen\" rel=\"stylesheet\" type=\"text/css\" />");
-		WCPrintP(pClient,"</head>\n");
-		WCPrintP(pClient,"<body>\n");
+		WCPrintP(pClient,"</head>\n"
+											"<body>\n");
 		//WCPrintP(pClient,"<img src=\"http://"); pClient->print(apduino_server_name); WCPrintP(pClient,"/images/apduino.png\" />"
-		WCPrintP(pClient,"<div class=\"apduino_header\">");
-		WCPrintP(pClient,"<h1>APDuino: "); pClient->print(title);	WCPrintP(pClient,"</h1><hr/>\n");
+		WCPrintP(pClient,"<div class=\"apduino_header\">"
+										"<h1>APDuino: "); pClient->print(title);
+		WCPrintP(pClient,"</h1><hr/>\n");
 
-		WCPrintP(pClient,"<div class=\"stats\">");
-		WCPrintP(pClient,"<sub>Version: ");    pClient->print(APDUINO_VERSION); WCPrintP(pClient,"."); pClient->print(APDUINO_BUILD); WCPrintP(pClient,"</sub>");
+		WCPrintP(pClient,"<div class=\"stats\">"
+											"<sub>Version: "); pClient->print(APDUINO_VERSION); WCPrintP(pClient,"."); pClient->print(APDUINO_BUILD); WCPrintP(pClient,"</sub>");
 		WCPrintP(pClient,"<table>\n<tr><th>TimeStamp</th><th>Uptime</th><th>WWW Client</th><th>Net Fails</th><th>Net Restarts</th><th>RAM Free</th></tr>\n");
 
 		WCPrintP(pClient,"<tr><td>");
-		char ts[] = "1970/01/01 00:00:00";        // string used for timestamp
+		char ts[20] = "";
+		strcpy_P(ts,PSTR("1970/01/01 00:00:00"));        // string used for timestamp
 		if (this->pAPDTime != NULL) pAPDTime->nowS(ts);
 		pClient->print(ts);
 		WCPrintP(pClient,"</td><td>");
@@ -542,15 +590,11 @@ void APDWeb::web_startpage(EthernetClient *pClient, char *title,int refresh=0) {
 		WCPrintP(pClient,"</td><td>");
 		dtostrf(freeMemory(),5,0,tbuf);
 		pClient->print(tbuf);
-		WCPrintP(pClient,"</td></tr>\n");
-		WCPrintP(pClient,"</table></div>\n");
-		delay(1);
-//		WCPrintP(pClient,"<p>");
-//		//TODO fix timestamping - DONE (?)
-//
-//		WCPrintP(pClient,"</p>");
-		WCPrintP(pClient,"<hr/>");
-		WCPrintP(pClient,"</div>");		// closing header
+		WCPrintP(pClient,"</td></tr>\n"
+									"</table></div>\n");
+
+		WCPrintP(pClient,"<hr/>"
+										"</div>");		// closing header
 
 		WCPrintP(pClient,"<div id=\"sidebar\"><ul>");							// sidebar
 		if (!(operational_state & OPSTATE_PAUSED)) { WCPrintP(pClient,"<li><a href=\"/\">Status</a></li>"); }
@@ -571,8 +615,6 @@ void APDWeb::web_endpage(EthernetClient *pClient) {
 #ifdef DEBUG
 		SerPrintP("SEND_STATUS END.\n");
 #endif
-		// give the web browser time to receive the data
-		delay(1);
 	} else {
 #ifdef DEBUG
 		SerPrintP("Client gone.?!\n");
@@ -580,117 +622,69 @@ void APDWeb::web_endpage(EthernetClient *pClient) {
 	}
 }
 
+void APDWeb::webstatus_table_item(EthernetClient *pClient, const char *group, const int index, const char *name, const char *value, const char *logged ) {
+	WCPrintP(pClient,"<tr class=\"line\">"
+										"<td class=\""); pClient->print(group); WCPrintP(pClient,"_name\">");
+	pClient->print(index); WCPrintP(pClient," : ");
+	pClient->print(name);
+	WCPrintP(pClient,"</td><td class=\""); pClient->print(group); WCPrintP(pClient,"_value\">");
+	pClient->print(value);
+	WCPrintP(pClient,"</td><td");
+	if (strcmp_P(logged,PSTR("1"))) {
+		WCPrintP(pClient," class=\""); pClient->print(group); WCPrintP(pClient,"-chart\" id=\"chart-"); pClient->print(name); WCPrintP(pClient,"\"");
+	}
+	WCPrintP(pClient,"></td></tr>");		// end row
+}
+
 void APDWeb::web_status(EthernetClient *pClient) {
 	if (*pClient) {
 		char tbuf[20] ="";
-		// TODO put header into a separate function
-		//WCPrintP(pClient,"<div class=\"apduino_header\>");
-		//    SerPrintP("\nSEND_STATUS START.");
-
-
 #ifdef DEBUG
 		Serial.print(iSensorCount); SerPrintP("sensors should be listed...\n");
 #endif
 
-		WCPrintP(pClient,"<div class=\"status\">");
-
-		WCPrintP(pClient,"<div class=\"sensors\"><h1>Sensors</h1>");
-		//WCPrintP(pClient,"<table><tr><th>Sensor</th><th>Value</th><th>Log?</th><th></th></tr>");
-		WCPrintP(pClient,"<table id=\"sensors_table\">");
-
+		WCPrintP(pClient,"<div class=\"status\">"
+				"<div class=\"sensors\"><h1>Sensors</h1>"
+				"<table id=\"sensors_table\">");
 
 		//    SerPrintP("Output sensors...");
 		for (int i = 0; i < iSensorCount; i++) {
+			webstatus_table_item(pClient, "sensor", i, pAPDSensors[i]->config.label, pAPDSensors[i]->getValueS(tbuf), (pAPDSensors[i]->config.sensor_log ? "1" : "0") );
 #ifdef DEBUG
 			SerPrintP("Sensor "); Serial.print(i);
 #endif
-			WCPrintP(pClient,"<tr class=\"line\">");
-			WCPrintP(pClient,"<td class=\"sensor_name\">");
-			//WCPrintP(pClient,"SENSOR_");
-			pClient->print(i); WCPrintP(pClient," : ");
-			pClient->print((char *)pAPDSensors[i]->config.label);
-			WCPrintP(pClient,"</td><td class=\"sensor_value\">");
-			//WCPrintP(pClient," = ");
-			pAPDSensors[i]->getValueS(tbuf);
-			pClient->print(tbuf);
-			//WCPrintP(pClient,"</td><td>");
-			//if (pAPDSensors[i]->config.sensor_log) WCPrintP(pClient,"Y");
-			//pClient->println("<br/>");
-			WCPrintP(pClient,"</td><td");
-			if (pAPDSensors[i]->config.sensor_log) {
-				WCPrintP(pClient," id=\"chart-"); pClient->print((char *)pAPDSensors[i]->config.label); WCPrintP(pClient,"\"");
-			}
-			WCPrintP(pClient,">");
-			WCPrintP(pClient,"</td></tr>");
-			delay(1);
 		}
 
-		WCPrintP(pClient,"</table>");
-		WCPrintP(pClient,"</div>");
+		WCPrintP(pClient,"</table>"
+										"</div>");
 		// CONTROLS OUTPUT
-		WCPrintP(pClient,"<div class=\"controls\"><h1>Controls</h1>");
-		//WCPrintP(pClient,"<table><tr><th>Control</th><th>Value</th><th>Log?</th><th></th></tr>");
-		WCPrintP(pClient,"<table id=\"controls_table\">");
+		WCPrintP(pClient,"<div class=\"controls\"><h1>Controls</h1>"
+				"<table id=\"controls_table\">");
 
 		//    SerPrintP("Output controls...");
 		for (int i = 0; i < iControlCount; i++) {
 #ifdef DEBUG
 			SerPrintP("Control "); Serial.print(i);
 #endif
-			WCPrintP(pClient,"<tr class=\"line\">");
-			WCPrintP(pClient,"<td class=\"control_name\">");
-			pClient->print(i); WCPrintP(pClient," : ");
-			pClient->print((char *)pAPDControls[i]->config.label);
-			WCPrintP(pClient,"</td><td class=\"control_value\">");
-			//WCPrintP(pClient," = ");
-			pAPDControls[i]->getValueS(tbuf);		// get control value
-			pClient->print(tbuf);
-			WCPrintP(pClient,"</td><td>");
-			//if (pAPDSensors[i]->config.sensor_log) WCPrintP(pClient,"Y");
-			pClient->println("<br/>");
-			WCPrintP(pClient,"</td><td");
-			if (pAPDControls[i]->config.control_log) {
-				WCPrintP(pClient," id=\"chart-"); pClient->print((char *)pAPDControls[i]->config.label); WCPrintP(pClient,"\"");
-			}
-			WCPrintP(pClient,">");
-			WCPrintP(pClient,"</td></tr>");
-			delay(1);
+			webstatus_table_item(pClient, "control", i, pAPDControls[i]->config.label, pAPDControls[i]->getValueS(tbuf), (pAPDControls[i]->config.control_log ? "1" : "0") );
 		}
 
-		WCPrintP(pClient,"</table>");		// controls table
-		WCPrintP(pClient,"</div>\n");		// controls div
+		WCPrintP(pClient,"</table>"
+										"</div>\n");		// controls div
 
 		//    RULES OUTPUT
-		WCPrintP(pClient,"<div class=\"rules\"><h1>Rules</h1>");
-		//WCPrintP(pClient,"<table><tr><th>Control</th><th>Value</th><th>Log?</th><th></th></tr>");
-		WCPrintP(pClient,"<table id=\"rules_table\">");
+		WCPrintP(pClient,"<div class=\"rules\"><h1>Rules</h1>"
+				"<table id=\"rules_table\">");
 
 		for (int i = 0; i < iRuleCount; i++) {
 #ifdef DEBUG
 			SerPrintP("Rule "); Serial.print(i);
 #endif
-			WCPrintP(pClient,"<tr class=\"line\">");
-			WCPrintP(pClient,"<td class=\"rule_name\">");
-			pClient->print(i); WCPrintP(pClient," : ");
-			pClient->print((char *)pAPDRules[i]->config.label);
-			WCPrintP(pClient,"</td><td class=\"rule_value\">");
-			//WCPrintP(pClient," = ");
-			pAPDRules[i]->getValueS(tbuf);		// get control value
-			pClient->print(tbuf);
-			WCPrintP(pClient,"</td><td>");
-			//if (pAPDSensors[i]->config.sensor_log) WCPrintP(pClient,"Y");
-			pClient->println("<br/>");
-			WCPrintP(pClient,"</td><td");
-			//if (pAPDRules[i]->config.control_log) {
-			//	WCPrintP(pClient," id=\"chart-"); pClient->print((char *)pAPDControls[i]->config.label); WCPrintP(pClient,"\"");
-			//}
-			WCPrintP(pClient,">");
-			WCPrintP(pClient,"</td></tr>");
-			delay(1);
+			webstatus_table_item(pClient, "rule", i, pAPDRules[i]->config.label, pAPDRules[i]->getValueS(tbuf), "0" );
 		}
 
-		WCPrintP(pClient,"</table>");		// controls table
-		WCPrintP(pClient,"</div>\n");		// controls div
+		WCPrintP(pClient,"</table>"
+											"</div>\n");		// controls div
 
 
 		WCPrintP(pClient,"</div>\n");		// status div
@@ -702,15 +696,15 @@ void APDWeb::web_status(EthernetClient *pClient) {
 }
 
 void APDWeb::web_maintenance(EthernetClient *pClient) {
-	WCPrintP(pClient, "HTTP/1.1 503 (Service unavailable)\n");
-	WCPrintP(pClient, "Content-Type: text/html\n\n");
-	WCPrintP(pClient, "<h2>Temporarily unavailable. Please try again later.</h2>\n");
+	WCPrintP(pClient, "HTTP/1.1 503 (Service unavailable)\n"
+			"Content-Type: text/html\n\n"
+			"<h2>Temporarily unavailable. Please try again later.</h2>\n");
 }
 
 void APDWeb::web_notfound(EthernetClient *pClient) {
-	WCPrintP(pClient, "HTTP/1.1 404 Not Found\n");
-	WCPrintP(pClient, "Content-Type: text/html\n\n");
-	WCPrintP(pClient, "<h2>File Not Found!</h2>\n");
+	WCPrintP(pClient, "HTTP/1.1 404 Not Found\n"
+			"Content-Type: text/html\n\n"
+			"<h2>File Not Found!</h2>\n");
 }
 
 void APDWeb::claim_device_link(EthernetClient *pClient) {
@@ -825,12 +819,16 @@ void APDWeb::ListFiles(EthernetClient client, const char *szPath, uint8_t flags)
 						WCPrintP(&client,".");
 					}
 					client.print((char)p.name[i]);
+#ifdef DEBUG
 					Serial.print((char)p.name[i]);
+#endif
 				}
 				if (DIR_IS_SUBDIR(&p)) {
 					WCPrintP(&client,"/");
 				}
+#ifdef DEBUG
 				Serial.println("");
+#endif
 				WCPrintP(&client,"\">");
 
 				// print file name with possible blank fill
@@ -864,8 +862,10 @@ void APDWeb::ListFiles(EthernetClient client, const char *szPath, uint8_t flags)
 		}
 		WCPrintP(&client,"</ul>\n</div>\n");
 	} else {
-		SerPrintP("W03");
-		WCPrintP(&client,"W03\n");		//NO STORAGE ERROR
+		Serial.println(APDUINO_ERROR_WWWFSNOSTORAGE);
+		//todo redirect this error also to www client
+		//SerPrintP("W03");
+		//WCPrintP(&client,"W03\n");		//NO STORAGE ERROR
 	}
 	if (proot != this->pAPDStorage->p_root) {
 		free(proot);
@@ -1284,7 +1284,9 @@ void APDWeb::registration_response(APDWeb *pAPDWeb){
 
 		pAPDWeb->pwwwcp = NULL;			// reset the www parser callback
 		if (bReReg) {
+#ifdef VERBOSE
 			SerPrintP("Confirming registration.\n");
+#endif
 			pAPDWeb->self_register();          // re-run registration with the new API key so server creates the device
 		}
 	}
@@ -1298,7 +1300,7 @@ boolean APDWeb::self_register() {
 	char www_postdata[96];
 	if ( pwwwclient!=NULL ) {
 		if ( !pwwwclient->connected() ) {
-			sprintf(www_postdata,"lan_ip=%d.%d.%d.%d&v=%s.%s",net.ip[0],net.ip[1],net.ip[2],net.ip[3],APDUINO_VERSION,APDUINO_BUILD);
+			sprintf_P(www_postdata,PSTR("lan_ip=%d.%d.%d.%d&v=%s.%s"),net.ip[0],net.ip[1],net.ip[2],net.ip[3],APDUINO_VERSION,APDUINO_BUILD);
 #ifdef DEBUG
 			SerPrintP("SR: "); Serial.print(www_postdata); SerPrintP(" ...");
 #endif
@@ -1572,92 +1574,21 @@ void APDWeb::web_logging() {
 	bWebClient = (pwwwclient!=0) && pwwwclient->connected();
 }
 
-/*
-void APDWeb::setupPachubeDataStream(char *szDataStream,float value) {
-  return ;
-  if ( pwwwclient ) {           // TODO check if we're registered
-      SerPrintP("PHS SETUP----");
-    if ( !pwwwclient->connected() ) {
-        SerPrintP("progressing----");
-      char feedUrl[64] = "";
-      char www_logdata[64];
-      SerPrintP("ASSEMBLING PH LOG\n");
-      sprintf(www_logdata,"%s,%f",szDataStream,value);
-
-      sprintf(feedUrl,"/v2/feeds/%lu/datastreams/%s",cosm_feed_id,szDataStream);
-
-      if( pwwwclient->connect(cosm_server_ip, cosm_server_port) ) {
-//#ifdef DEBUG
-        SerPrintP("Pachube connect: http://"); Serial.print(cosm_server_name); Serial.print(feedUrl); SerPrintP("\n");
-//#endif
-        Serial.println(www_logdata);
-        SerPrintP("----------------");
-        // send the HTTP PUT request:
-        WCPrintP(pwwwclient,"POST "); pwwwclient->print(feedUrl); WCPrintP(pwwwclient," HTTP/1.1\n");
-        WCPrintP(pwwwclient,"Host: ");    pwwwclient->println(cosm_server_name);
-        // TODO fix api key
-        WCPrintP(pwwwclient,"X-PachubeApiKey: ");   pwwwclient->println(szCOSM_API_KEY);
-        WCPrintP(pwwwclient,"User-Agent: "); pwwwclient->println(USERAGENT);
-        //pwwwclient->println("Content-Type: application/x-www-form-urlencoded");
-        WCPrintP(pwwwclient,"Content-Type: text/csv;\n");
-        WCPrintP(pwwwclient,"Accept: text/csv;\n");
-        WCPrintP(pwwwclient,"Content-Length: ");
-
-        // calculate the length of the sensor reading in bytes:
-        // 8 bytes for "sensor1," + number of digits of the data:
-        int thisLength = strlen(www_logdata);
-        pwwwclient->println(thisLength);
-
-        // last pieces of the HTTP PUT request:
-        //pwwwclient->println("Connection: close");
-        pwwwclient->println();
-
-        // here's the actual content of the PUT request:
-        pwwwclient->println(www_logdata);
-        SerPrintP("Fetching response...\n");
-        while(pwwwclient->connected()) {
-            while (pwwwclient->available()) {    // with bytes to read
-              char c = pwwwclient->read();        // then read a byte
-        //#ifdef DEBUG
-              Serial.print(c);
-        //#endif
-            }
-        }
-
-          // if the server's disconnected, stop the client:
-          if (!pwwwclient->connected()) {
-            pwwwclient->stop();
-            bWebClient = false;
-          }
-      }
-
-    } else {
-//#ifdef DEBUG
-      SerPrintP("Pachube: failed to connect.\n");
-//#endif
-      pwwwclient->stop();          // stop client now
-    }
-  } else {
-      SerPrintP("NO NETWORK??");
-  }
-  bWebClient = (pwwwclient!=0) && pwwwclient->connected();
-}
-*/
-
-
 void APDWeb::pachube_logging() {
 	if ( pwwwclient ) {           // TODO check if we're registered
 		if ( !pwwwclient->connected() ) {
 			char feedUrl[64] = "";
 			char www_logdata[512];
+#ifdef DEBUG
 			SerPrintP("ASSEMBLING PH LOG\n");
+#endif
 			get_pachubelog_string(www_logdata);
 
-			sprintf(feedUrl,"/v2/feeds/%lu.csv",cosm_feed_id);
-
+			sprintf_P(feedUrl,PSTR("/v2/feeds/%lu.csv"),cosm_feed_id);
+#ifdef VERBOSE
 			Serial.println(www_logdata);
 			SerPrintP("\n\nconn:"); Serial.print(cosm_server_name); Serial.println(feedUrl);
-
+#endif
 			if( pwwwclient->connect(cosm_server_ip, cosm_server_port) ) {
 	//			SerPrintP("connected. sending...");
 
@@ -1888,7 +1819,7 @@ void APDWeb::dumpPachube() {
 	if (dataFile.isOpen()) {
 		char line[BUFSIZ]="";
 		// TODO update with recent fields
-		sprintf(line,"%s %2x%2x%2x%2x,%d,%lu,%lu",
+		sprintf_P(line,PSTR("%s %2x%2x%2x%2x,%d,%lu,%lu"),
 				this->cosm_server_name,
 				(this->cosm_server_ip[0]),(this->cosm_server_ip[1]),(this->cosm_server_ip[2]),(this->cosm_server_ip[3]),
 				(this->cosm_server_port),

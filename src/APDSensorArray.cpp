@@ -43,9 +43,13 @@ APDSensorArray::~APDSensorArray()
   if (this->pAPDSensors != NULL) {
       for (int i=0; i<this->iSensorCount; i++) {
           if (this->pAPDSensors[i] != NULL) {
+#ifdef DEBUG
           	SerPrintP("\nX S"); Serial.print(i); delay(50);
+#endif
               delete((this->pAPDSensors[i]));				// each APDSensor was new by 'new_sensor_parser'
+#ifdef DEBUG
               SerPrintP("OK.\n"); delay(20);
+#endif
               this->pAPDSensors[i] = NULL;
           }
       }
@@ -75,7 +79,7 @@ int APDSensorArray::dumpToFile(APDStorage *pAPDStorage, char * pszFileName) {
       char line[BUFSIZ]="";
       APDSensor *ps = pAPDSensors[i];
       // TODO update with recent fields
-      sprintf(line,"%s %i,%i,%i,%i,%i,%i,%i,%s",ps->config.label,ps->config.sensor_type,ps->config.sensor_class,ps->config.sensor_subtype,ps->config.sensor_pin,ps->config.sensor_secondary_pin,ps->config.sensor_freq,ps->config.sensor_log,ps->config.extra_data);
+      sprintf_P(line,PSTR("%s %i,%i,%i,%i,%i,%i,%i,%s"),ps->config.label,ps->config.sensor_type,ps->config.sensor_class,ps->config.sensor_subtype,ps->config.sensor_pin,ps->config.sensor_secondary_pin,ps->config.sensor_freq,ps->config.sensor_log,ps->config.extra_data);
       dataFile.println(line);
     }
     dataFile.close();
@@ -99,7 +103,7 @@ void APDSensorArray::new_sensor_parser(void *pSA, int iline, char *psz) {
 #ifdef DEBUG
   SerPrintP("\nSDCONF READS: \""); Serial.print(psz); SerPrintP("\"");
 #endif
-  int iscand = sscanf( psz, "%s %d,%d,%d,%d,%d,%d,%d,%s",
+  int iscand = sscanf_P( psz, PSTR("%s %d,%d,%d,%d,%d,%d,%d,%s"),
       (sdc.label),
       &(sdc.sensor_type),
       &(sdc.sensor_class),
@@ -136,39 +140,56 @@ void APDSensorArray::new_sensor_parser(void *pSA, int iline, char *psz) {
   //(((APDuino *)pAPD)->pAPDSensors[iline]) = new APDSensor(&sdc);
   switch (sdc.sensor_type) {
   case ANALOG_SENSOR:
+#ifdef VERBOSE
     SerPrintP("ANALOG");
+#endif
     newsensor = new AnalogSensor(&sdc);
     break;
   case DIGITAL_SENSOR:
+#ifdef VERBOSE
     SerPrintP("DIGITAL");
+#endif
     newsensor = new DigitalSensor(&sdc);
     break;
   case DHT_SENSOR:
+#ifdef VERBOSE
     SerPrintP("DHT");
+#endif
     newsensor = new DHTSensor(&sdc, reusablesensor);
     break;
   case ONEWIRE_SENSOR:
+#ifdef VERBOSE
     SerPrintP("1-WIRE");
+#endif
     newsensor = new OneWireSensor(&sdc, reusablesensor);
     break;
   case SONAR_SENSOR:
+#ifdef VERBOSE
     SerPrintP("SONAR");
+#endif
     newsensor = new SonarSensor(&sdc);
     break;
   case BMP085_SENSOR:
+#ifdef VERBOSE
     SerPrintP("BMP085");
+#endif
     newsensor = new BMPSensor(&sdc, reusablesensor);
     break;
   case VIBRATION_SENSOR:
+#ifdef VERBOSE
     SerPrintP("VIBRATION");
+#endif
     newsensor = new VibrationSensor(&sdc);
     break;
   case ATLASSCIENTIFIC_SENSOR:
+#ifdef VERBOSE
       SerPrintP("ATLASSCIENTIFIC");
+#endif
       newsensor = new AtlasScientificSensor(&sdc, reusablesensor);
       break;
   default:
-    SerPrintP("E310");			// E310 - unknown sensor type
+  	Serial.println(APDUINO_ERROR_UNKNOWNSENSORTYPE);
+    //SerPrintP("E310");			// E310 - unknown sensor type
   }
   ((APDSensorArray*)pSA)->pAPDSensors[iline] = newsensor;
   // done with sensor definition line
@@ -210,15 +231,22 @@ APDSensor *APDSensorArray::findReusableSensor(SDCONF *sdc) {
   case BMP085_SENSOR:
   case ATLASSCIENTIFIC_SENSOR:
     preusable = this->firstSensorByPin(sdc->sensor_pin, sdc->sensor_type);
+#ifdef VERBOSE
     if (preusable) {
         SerPrintP("REUSING @");
         Serial.print((unsigned int)preusable,HEX);
     }
+#endif
     break;
   default:
+  	;
+#ifdef VERBOSE
     SerPrintP("NOT ");
+#endif
   }
+#ifdef VERBOSE
   SerPrintP("REUSABLE");
+#endif
   return preusable;
 }
 
@@ -240,10 +268,14 @@ int APDSensorArray::loadSensors(APDStorage *pAPDStorage) {
 #endif
     // TODO check if SD is available!
     iSensorCount =  get_line_count_from_file("SENSORS.CFG");
+#ifdef VERBOSE
     Serial.print(iSensorCount); SerPrintP(" sensors seem to be defined...");
+#endif
 
     if (iSensorCount > -1) {
+#ifdef VERBOSE
       SerPrintP("Sensor Array: allocating "); Serial.print(sizeof(APDSensor *)*iSensorCount,DEC); SerPrintP(" bytes of RAM\n");
+#endif
 
       pAPDSensors = (APDSensor**)malloc(sizeof(APDSensor*)*iSensorCount);
 
@@ -262,13 +294,16 @@ int APDSensorArray::loadSensors(APDStorage *pAPDStorage) {
 
         iNextSensor = 0;                // first sensor to read
       } else {
-        SerPrintP("E303\n");					// failed to allocate array
+      	Serial.println(APDUINO_ERROR_SAALLOCFAIL);
+        //SerPrintP("E303\n");					// failed to allocate array
       }
     } else {
-        SerPrintP("E302\n");					// no sensors
+    	Serial.println(APDUINO_ERROR_SAEMPTY);
+      //  SerPrintP("E302\n");					// no sensors
     }
   } else {
-    SerPrintP("E301\n");							// already there
+  	Serial.println(APDUINO_ERROR_SAALREADYALLOC);
+    //SerPrintP("E301\n");							// already there
   }
   return iSensorCount;
 }
@@ -282,7 +317,7 @@ int APDSensorArray::count() {
 
 char *APDSensorArray::labelS(int iSensorIdx, char *szlabel) {
   //SerPrintP("labelS\n"); Serial.print(iSensorIdx);
-  strcpy(szlabel,"");
+  szlabel[0]='\0';
   if (iSensorIdx >= 0 && iSensorIdx < this->iSensorCount) {
 #ifdef DEBUG
       SerPrintP("calling getlabel"); Serial.println(iSensorIdx);

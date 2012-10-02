@@ -42,20 +42,28 @@ APDControl::APDControl(CDCONF *cdc, APDControl *preusablecontrol) {
   // allocate ram for the control object/struct, as needed - depending on the type
   switch (this->config.control_type) {
     case ANALOG_CONTROL:
+#ifdef VERBOSE
       SerPrintP("ANALOG CONTROL");
+#endif
       apd_action_set_value(this,this->config.initial_value);
       break;
     case DIGITAL_CONTROL:
+#ifdef VERBOSE
       SerPrintP("DIGITAL CONTROL");
+#endif
       apd_action_set_value(this,this->config.initial_value);
       break;
     case RCSWITCH_CONTROL:
+#ifdef VERBOSE
     	SerPrintP("RCSWITCH CONTROL");
+#endif
       {
 				this->psharedclass = (void *)(new RCSwitch());
 				RCSwitch *pswitch = (RCSwitch *)this->psharedclass;
 				pswitch->enableTransmit(this->config.control_pin);
+#ifdef VERBOSE
 				SerPrintP("Enabled transmission.\n");
+#endif
 				//TODO enable the optional parameters via the extra config
 			// Optional set pulse length.
 			// pswitch->setPulseLength(320);
@@ -68,7 +76,9 @@ APDControl::APDControl(CDCONF *cdc, APDControl *preusablecontrol) {
 			}
       break;
     case RCPLUG_CONTROL:
+#ifdef VERBOSE
     	SerPrintP("RCPLUG CONTROL");
+#endif
       {
     		if (preusablecontrol != NULL) {	// reuse existing RCSwitch
     			this->primary = false;
@@ -78,7 +88,9 @@ APDControl::APDControl(CDCONF *cdc, APDControl *preusablecontrol) {
     			this->psharedclass = (void *)(new RCSwitch());
 					RCSwitch *pswitch = (RCSwitch *)this->psharedclass;
 					pswitch->enableTransmit(this->config.control_pin);
+#ifdef VERBOSE
 					SerPrintP("Enabled transmission.\n");
+#endif
 					//TODO enable the optional parameters via the extra config
 				// Optional set pulse length.
 				// pswitch->setPulseLength(320);
@@ -92,12 +104,17 @@ APDControl::APDControl(CDCONF *cdc, APDControl *preusablecontrol) {
 			}
       break;
     case SOFTWARE_CONTROL:
+#ifdef VERBOSE
       SerPrintP("SOFTWARE CONTROL");
+#endif
       //TODO implement
       //apd_action_set_value(this,this->config.initial_value);
       break;
     default:
+    	Serial.println(APDUINO_WARN_CTYPEINVALID);
+#ifdef VERBOSE
       SerPrintP("Invalid control type.");
+#endif
   }
   // we should have now a pointer to the APDSensor
 }
@@ -117,7 +134,10 @@ APDControl::~APDControl() {
 			}
 			break;
 		default:
+			;
+#ifdef VERBOSE
 			SerPrintP("Who allocated pextra??!");
+#endif
 		}
 	}
 }
@@ -287,17 +307,25 @@ void APDControl::apd_action_rc_switch_on(APDControl *pAPDControl, int iControl) 
 	if (pAPDControl->config.control_type == RCSWITCH_CONTROL) {
 	  RCSwitch *pswitch = (RCSwitch *)pAPDControl->psharedclass;
 	  if (pswitch != NULL) {
+#ifdef VERBOSE
 	  SerPrintP("Switch On :");
+#endif
 	  uint8_t uac = highByte(iControl);
 	  uint8_t ucc = lowByte(iControl);
 	  pswitch->switchOn(uac,ucc);
+#ifdef VERBOSE
 	  Serial.print((int)uac, DEC); SerPrintP("-"); Serial.print((int)ucc,DEC); SerPrintP("\n");
+#endif
 
 	  } else {
+#ifdef VERBOSE
 		  SerPrintP("Missing RC-Switch object!\n");
+#endif
 	  }
 	} else {
+#ifdef VERBOSE
 		SerPrintP("Wrong control type.\n");
+#endif
 	}
 }
 
@@ -311,17 +339,25 @@ void APDControl::apd_action_rc_switch_off(APDControl *pAPDControl, int iControl)
 	if (pAPDControl->config.control_type == RCSWITCH_CONTROL) {
 	  RCSwitch *pswitch = (RCSwitch *)pAPDControl->psharedclass;
 	  if (pswitch != NULL) {
+#ifdef VERBOSE
 	  SerPrintP("Switch Off: ");
+#endif
 	  uint8_t uac = highByte(iControl);
 	  uint8_t ucc = lowByte(iControl);
-	  pswitch->switchOff(uac,ucc);
-	  Serial.print((int)uac, DEC); SerPrintP("-"); Serial.print((int)ucc,DEC); SerPrintP("\n");
 
+	  pswitch->switchOff(uac,ucc);
+#ifdef VERBOSE
+	  Serial.print((int)uac, DEC); SerPrintP("-"); Serial.print((int)ucc,DEC); SerPrintP("\n");
+#endif
 	  } else {
+#ifdef VERBOSE
 		  SerPrintP("Missing RC-Switch object!\n");
+#endif
 	  }
 	} else {
+#ifdef VERBOSE
 		SerPrintP("Wrong control type.\n");
+#endif
 	}
 }
 
@@ -343,23 +379,34 @@ void APDControl::apd_action_rc_plug_set_value(APDControl *pAPDControl, int iValu
 			if (pswitch != NULL) {
 
 				if (iValue == 0) {
+#ifdef VERBOSE
 					SerPrintP("Switch Off :");
+#endif
 					pswitch->switchOff(uac,ucc);
 				} else {
+#ifdef VERBOSE
 					SerPrintP("Switch On :");
+#endif
 					pswitch->switchOn(uac,ucc);
 				}
 				pAPDControl->iValue = (int)(iValue != 0);
+#ifdef VERBOSE
 				Serial.print((int)uac, DEC); SerPrintP("-"); Serial.print((int)ucc,DEC); SerPrintP("\n");
-
+#endif
 			} else {
+#ifdef VERBOSE
 				SerPrintP("Missing RC-Switch object!\n");
+#endif
 			}
 	  } else {
+#ifdef VERBOSE
 	  	SerPrintP("Missing RC-Plug data!\n")
+#endif
 	  }
 	} else {
+#ifdef VERBOSE
 		SerPrintP("Wrong control type.\n");
+#endif
 	}
 }
 

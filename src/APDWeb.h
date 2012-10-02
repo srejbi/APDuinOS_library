@@ -212,6 +212,7 @@ private:
   static void web_header(EthernetClient *pClient);
   void web_startpage(EthernetClient *pClient, char *title,int refresh);
   void web_endpage(EthernetClient *pClient);
+  static void webstatus_table_item(EthernetClient *pClient, const char *group, const int index, const char *name, const char *value, const char *logged );
   void web_status(EthernetClient *pClient);
   void web_maintenance(EthernetClient *pClient);
   static void web_notfound(EthernetClient *pClient);
