@@ -593,7 +593,7 @@ boolean APDRule::apd_rule_sensor_gt(APDRule *pRule) {
 
 boolean APDRule::apd_rule_eval_conditions(APDRule *pRule){
 #ifdef DEBUG
-  SerPrintP("EVALUATE CONDITIONS);
+  SerPrintP("EVALUATE CONDITIONS");
 #endif
   APDRule *pr = (APDRule*)pRule;
   APDEvaluator *ape = new APDEvaluator(pr->psa, pr->pca);
