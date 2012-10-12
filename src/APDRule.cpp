@@ -515,7 +515,7 @@ boolean APDRule::apd_rule_scheduled(APDRule *pRule) {
   	Serial.print(","); Serial.print(phours); Serial.print(","); Serial.print(pdays); Serial.print(",");  Serial.print(pmonths); Serial.print(","); Serial.println(pweekdays);
 
   	// TODO evaluate compared to current time
-
+  	//APDTime.
 
 
   }

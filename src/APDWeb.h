@@ -84,8 +84,8 @@ struct NETCONF {
 class APDWeb
 {
 public:
-  APDWeb(APDTime *pTime);
-  APDWeb(NETCONF *pnc, APDTime *pTime);
+  APDWeb();
+  APDWeb(NETCONF *pnc);
   virtual
   ~APDWeb();
 
@@ -117,7 +117,7 @@ private:
 
   boolean bEthConfigured;                   // will be true if we have an eth connection (DHCP or static)
 
-  APDTime *pAPDTime;                        // timekeeping; will receive ptr. no need to free
+  //APDTime *pAPDTime;                        // timekeeping; will receive ptr. no need to free
   APDStorage *pAPDStorage;									// pointer to storage
 
   APDSensor **pAPDSensors;
@@ -179,7 +179,7 @@ private:
   void get_thingspeaklog_string(char *szLogBuf);
 
   // initialization
-  void initBlank(APDTime *pTime);
+  void initBlank();
   boolean start();
   boolean restart();
 

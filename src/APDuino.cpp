@@ -50,7 +50,7 @@ APDuino::~APDuino() {
 
   free(this->pAPDWeb);
   free(this->pAPDStorage);
-  free(this->pAPDTime);
+  //free(this->pAPDTime);	// being made static
 
   free(pAPDSerial);
   // TODO Auto-generated destructor stub
@@ -84,7 +84,7 @@ void APDuino::init(long baudrate) {
 
   pAPDStorage = NULL;          // will be the storage
 
-  pAPDTime = NULL;
+ // pAPDTime = NULL;
 
   pAPDWeb = NULL;
 
@@ -134,12 +134,14 @@ boolean APDuino::initApplication() {
 		this->setupNetworking();  // TODO provide details here
 		delay(50);
 
-		bInitialized = (pAPDTime != NULL && pAPDWeb != NULL);
+		//bInitialized = (pAPDTime != NULL && pAPDWeb != NULL);
+		bInitialized = (pAPDWeb != NULL);
 
 		// TODO - hardcoded NTP address - allow user to set NTP server
 		//byte hackts[4] = ;
 
-		this->pAPDTime->setupNTPSync(8888, DEFAULT_TIMESERVER_IP,1,1);
+		//this->pAPDTime->setupNTPSync(8888, DEFAULT_TIMESERVER_IP,1,1);
+		APDTime::setupNTPSync(8888, DEFAULT_TIMESERVER_IP,1,1);
 		this->checkTimeKeeping();
 	#ifdef DEBUG
 		SerPrintP("\ninit sensors\n");
@@ -283,12 +285,12 @@ void APDuino::setupWithStorage(int iChip, int iSpeed) {
 
 unsigned long APDuino::getUpTime() {
   // TODO nullptrchk
-  return this->pAPDTime->getUpTime();
+  return APDTime::getUpTime();
 }
 
 char *APDuino::getUpTimeS(char *psz_uptime) {
   // TODO nullptr chk
-  return this->pAPDTime->getUpTimeS(psz_uptime);
+  return APDTime::getUpTimeS(psz_uptime);
 }
 
 boolean APDuino::storage_ready() {
@@ -300,9 +302,12 @@ void APDuino::setupTimeKeeping() {
 #ifdef DEBUG
   SerPrintP("Time...");
 #endif
-  if (this->pAPDTime == NULL) {
-      this->pAPDTime = new APDTime(true);       // try with RTC
+//  if (this->pAPDTime == NULL) {
+    if (!APDTime::started()) {
+//      this->pAPDTime = new APDTime(true);       // try with RTC
+  		APDTime::begin(true);       // try with RTC
   }
+
 //#ifdef DEBUG
   else {
   	Serial.println(APDUINO_WARNING_TIMEALREADYSETUP);
@@ -315,20 +320,21 @@ void APDuino::checkTimeKeeping() {
 #ifdef DEBUG
   SerPrintP("Time check...");
 #endif
-  if (this->pAPDTime != NULL) {
+  //if (this->pAPDTime != NULL) {
+  if (APDTime::started()) {
       // TODO add NTP switch
-      pAPDTime->ntpSync();
-      SerPrintP("check@:"); Serial.print((unsigned long)this->pAPDTime,DEC);
+      APDTime::ntpSync();
+      SerPrintP("check@:"); Serial.print((unsigned long)APDTime::now().unixtime(),DEC);
       char tbuf[20] = "1970/01/01 00:00:00";
-      SerPrintP("now: "); Serial.print(this->pAPDTime->nowS(tbuf)); SerPrintP("...");
+      SerPrintP("now: "); Serial.print(APDTime::nowS(tbuf)); SerPrintP("...");
   } else {
-  	Serial.println(APDUINO_ERROR_NOTIMEOBJECT);
+  	Serial.println(APDUINO_ERROR_NOTIMEOBJECT);		// TODO deprecate
       //SerPrintP("Nothing to check?");
   }
 }
 
 DateTime APDuino::timeNow() {
-  return pAPDTime->now();
+  return APDTime::now();
 }
 
 
@@ -756,7 +762,8 @@ void APDuino::new_ethconf_parser(void *pAPD, int iline, char *psz) {
 #ifdef DEBUG
       SerPrintP("Init net with loaded config... \n");
 #endif
-      ((APDuino *)pAPD)->pAPDWeb = new APDWeb(&nc,((APDuino*)pAPD)->pAPDTime);
+      //((APDuino *)pAPD)->pAPDWeb = new APDWeb(&nc,((APDuino*)pAPD)->pAPDTime);
+      ((APDuino *)pAPD)->pAPDWeb = new APDWeb(&nc);
   }
 
 
@@ -791,7 +798,8 @@ void APDuino::setupNetworking() {
     if (pAPDWeb == NULL) {
     		Serial.println(APDUINO_MSG_DHCPFALLBACK);
         //SerPrintP("DHCP fallback...\n");
-        pAPDWeb = new APDWeb(this->pAPDTime);
+        //pAPDWeb = new APDWeb(this->pAPDTime);
+    		pAPDWeb = new APDWeb();
     }
   } else {
   	Serial.println(APDUINO_ERROR_NETALREADYSTARTED);
@@ -859,11 +867,12 @@ void APDuino::log_data() {
   SerPrintP("Assembling log...");
 #endif
   char ts[] = "1970/01/01 00:00:00";        // string used for timestamp
-  if (this->pAPDTime != NULL) {
-    this->pAPDTime->nowS(ts);
-  } else {
-    this->getUpTimeS(ts);
-  }
+  //if (this->pAPDTime != NULL) {
+    //this->pAPDTime->nowS(ts);
+    APDTime::nowS(ts);
+  //} else {
+  //  this->getUpTimeS(ts);
+  //}
   strcpy(plog,ts);
   plog += strlen(ts);
 

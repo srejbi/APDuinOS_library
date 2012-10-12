@@ -132,7 +132,7 @@ public:
 	APDRuleArray *pra;                    // will replace APD Rules pointer
 
 	volatile int iNextSensor;            // next sensor to poll, point to first one (if any)
-	APDTime *pAPDTime;
+	//APDTime *pAPDTime;		// deprecating this as APDTime is being made static
 
 	void (*pcustfuncs[10])() ;                        // allow 10 custom functions to be called
 	int AddCustomFunction(int iPos, void (*pcf)());

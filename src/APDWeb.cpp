@@ -27,10 +27,10 @@
 
 #define WCPrintP(pc,s) myCPrintP(pc,(PSTR(s)));
 
-APDWeb::APDWeb(APDTime *pTime)
+APDWeb::APDWeb()
 {
 	// TODO Auto-generated constructor stub
-	initBlank(pTime);
+	initBlank();
 	if (start()) {
 		Serial.println(APDUINO_MSG_ETHSTARTED);
 #ifdef VERBOSE
@@ -53,10 +53,10 @@ APDWeb::~APDWeb()
 	// TODO Auto-generated destructor stub
 }
 
-APDWeb::APDWeb(NETCONF *pnc, APDTime *pTime)
+APDWeb::APDWeb(NETCONF *pnc)
 {
 	// TODO Auto-generated constructor stub
-	initBlank(pTime);
+	initBlank();
 	memcpy(&net,pnc,sizeof(NETCONF));             // copy the provided config
 	if (start()) {
 		Serial.println(APDUINO_MSG_CONFETHSTARTED);
@@ -68,7 +68,7 @@ APDWeb::APDWeb(NETCONF *pnc, APDTime *pTime)
 #ifdef VERBOSE
 		SerPrintP("Failed to start Ethernet with static configuration. Fallback to DHCP.\n");
 #endif
-		initBlank(pTime);
+		initBlank();
 		if (start()) {
 			Serial.println(APDUINO_MSG_NETOK);
 #ifdef VERBOSE
@@ -85,13 +85,13 @@ APDWeb::APDWeb(NETCONF *pnc, APDTime *pTime)
 
 
 
-void APDWeb::initBlank(APDTime *pTime)
+void APDWeb::initBlank()
 {
 #ifdef DEBUG
 	SerPrintP("APDWeb initializing...\n");
 #endif
 	//pAPDTime = NULL;
-	pAPDTime = pTime;
+	//pAPDTime = pTime;
 #ifdef DEBUG
 	if (pAPDTime == NULL) SerPrintP("NO VALID TIME SOURCE!\n");
 #endif
@@ -572,11 +572,9 @@ void APDWeb::web_startpage(EthernetClient *pClient, char *title,int refresh=0) {
 		WCPrintP(pClient,"<tr><td>");
 		char ts[20] = "";
 		strcpy_P(ts,PSTR("1970/01/01 00:00:00"));        // string used for timestamp
-		if (this->pAPDTime != NULL) pAPDTime->nowS(ts);
-		pClient->print(ts);
+		pClient->print(APDTime::nowS(ts));
 		WCPrintP(pClient,"</td><td>");
-		if (this->pAPDTime != NULL) pAPDTime->getUpTimeS(ts);
-		pClient->print(ts);
+		pClient->print(APDTime::getUpTimeS(ts));
 		WCPrintP(pClient,"</td><td>");
 		char tbuf[20] ="";
 		dtostrf(uCCount,5,0,tbuf);
@@ -1456,7 +1454,7 @@ bool APDWeb::continue_service() {
 void APDWeb::get_lastlog_string(char *szLogBuf) {
 	char ts[20] = "";
 	strcpy_P(ts,PSTR("1970/01/01 00:00:00"));        // string used for timestamp
-	if (this->pAPDTime != NULL) this->pAPDTime->nowS(ts);                 // pull correct time
+	APDTime::nowS(ts);                 // pull correct time
 	char *pcLog = szLogBuf;
 	char dataString[16]="";                // make a string for assembling the data to log:
 
@@ -1889,10 +1887,8 @@ void APDWeb::json_status(EthernetClient *pClient) {
 		sprintf_P(tbuf,PSTR("%s.%s"),APDUINO_VERSION,APDUINO_BUILD);
 		json_array_item(pClient,0,"version",tbuf,"0");
 		strcpy_P(tbuf,PSTR("1970/01/01 00:00:00")); 			       // default string used for timestamp
-		if (this->pAPDTime != NULL) pAPDTime->nowS(tbuf);				// todo what if not ok
-		json_array_item(pClient,1,"timestamp",tbuf,"0");
-    if (this->pAPDTime != NULL) pAPDTime->getUpTimeS(tbuf);	// todo what if not ok
-    json_array_item(pClient,2,"uptime",tbuf,"0");
+		json_array_item(pClient,1,"timestamp",APDTime::nowS(tbuf),"0");
+    json_array_item(pClient,2,"uptime",APDTime::getUpTimeS(tbuf),"0");
 		json_array_item(pClient,3,"wwwclient",dtostrf(uCCount,5,0,tbuf),"0");
 		json_array_item(pClient,4,"netfail",dtostrf(iFailureCount,5,0,tbuf),"0");
 		json_array_item(pClient,5,"netrestarts",dtostrf(iRestartCount,5,0,tbuf),"0");
