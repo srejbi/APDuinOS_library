@@ -499,6 +499,26 @@ boolean APDRule::apd_rule_metro(APDRule *pRule) {
 boolean APDRule::apd_rule_scheduled(APDRule *pRule) {
   //TODO: implement checking the cvalue as time against rtc - use UNIX time
   boolean bret = false;
+  if (pRule->config.pszcron) {		// if a cron timing is specified
+  	int ilen = strlen(pRule->config.pszcron);
+  	char *psztemp = (char *)malloc(sizeof(char)*(ilen+1));
+  	char *pmins=0,*phours=0,*pdays=0,*pmonths=0,*pweekdays=0;
+  	char **ppcronstrs[5] = { &pmins, &phours, &pdays, &pmonths, &pweekdays };	// put the pointers to an array
+  	int i=0;
+  	for (int j=0; j < 5 && i < ilen; j++) {	// iterate the positions
+  		*(ppcronstrs[j]) = &psztemp[i];					// store the starting pointer to mins, hours, days, months, weekdays as we iterate through the string
+  		while (psztemp[i] != '_' && i < ilen) { i++; }		// skip to the next underscore
+  		if (psztemp[i] == '_') { psztemp[i] = 0; i++; }	// terminate substring (staring address just saved to a position)
+  	}
+  	// now we should have substrings
+  	SerPrintP("CRON STRING: "); Serial.print(pmins);
+  	Serial.print(","); Serial.print(phours); Serial.print(","); Serial.print(pdays); Serial.print(",");  Serial.print(pmonths); Serial.print(","); Serial.println(pweekdays);
+
+  	// TODO evaluate compared to current time
+
+
+
+  }
   return bret;
 }
 

@@ -70,7 +70,7 @@ void APDRuleArray::new_rule_parser(void *pRA, int iline, char *psz) {
   Serial.print("RULE READ: "); Serial.print(psz);
 #endif
   //TODO add counter & checks on scanned parameters
-  sscanf_P( psz, PSTR("%s %d,%d,%f,%d,%d,%d,%d,%d,%d,%d %s %s"),
+  sscanf_P( psz, PSTR("%s %d,%d,%f,%d,%d,%d,%d,%d,%d,%d '%s' %s"),
       (rdc.label),
       &(rdc.rule_definition),
       &(rdc.rf_sensor_idx),
@@ -85,6 +85,11 @@ void APDRuleArray::new_rule_parser(void *pRA, int iline, char *psz) {
       rdc.pszcron,
       (rdc.conditions));
 
+  if (strlen(rdc.pszcron)) {		// TODO think about this; it will probably never be empty as it's followed by conditions(possibly). we likely have to enclose this...
+  	for (int i=0; i<strlen(rdc.pszcron); i++) {
+  		if (rdc.pszcron[i] == '_') rdc.pszcron[i] = ' ';		// "split" on underscores
+  	}
+  }
   ((APDRuleArray*)pRA)->pAPDRules[iline] = new APDRule(&rdc,((APDRuleArray*)pRA)->pSA, ((APDRuleArray*)pRA)->pCA);
   free(rdc.pszcron);			// no longer need the string buffer
   //TODO check for errors and use an internal (class) index to keep track of the next rule to be populated
