@@ -37,7 +37,7 @@
 #define RF_FALSE              0
 #define RF_TRUE               1
 #define RF_METRO              3
-#define RF_RTC_PASSED         4
+#define RF_SCHEDULED          4
 #define RF_IDLE_CHECK         5
 #define RF_RAM_CHECK          6
 #define RF_SENSOR_GT          64
@@ -73,6 +73,8 @@
 #define REEXEC_FALSE							2
 #define REEXEC_BOTH								3
 
+#define MAX_CRON_EXPR_LEN         64		// max allowed length for cron expressions
+
 // file storage structure
 struct RDCONF {
   char label[13];
@@ -86,6 +88,7 @@ struct RDCONF {
   int ra_value;               // value to pass
   int ra_sensor_idx;          // -1 if ignored, sensor index if value from sensor
   int reexec;									// 0 - only exec if changed, 1 - reexec TRUE, 2 - reexec FALSE, 3 - REEXEC
+  char *pszcron;							// pointer to a cron expression string (if specified); will be allocated dynamically
   char conditions[33];				// conditional expression to be evaluated
 };
 
@@ -122,7 +125,7 @@ public:
 
   static boolean apd_rule_idle_check(APDRule *pRule);
   static boolean apd_rule_metro(APDRule *pRule);
-  static boolean apd_rule_rtc_passed(APDRule *pRule);
+  static boolean apd_rule_scheduled(APDRule *pRule);
   //boolean apd_rule_rtc_metro(void *pRule);
   static boolean apd_rule_true(APDRule *pRule);
   static boolean apd_rule_false(APDRule *pRule);

@@ -64,11 +64,13 @@ APDRuleArray::~APDRuleArray()
 
 void APDRuleArray::new_rule_parser(void *pRA, int iline, char *psz) {
   RDCONF rdc;
+  // TODO check malloc results
+  rdc.pszcron = malloc(sizeof(char)*MAX_CRON_EXPR_LEN+1);		// we might need this buffer for cron expr. if not, it will be freed
 #ifdef DEBUG
   Serial.print("RULE READ: "); Serial.print(psz);
 #endif
   //TODO add counter & checks on scanned parameters
-  sscanf_P( psz, PSTR("%s %d,%d,%f,%d,%d,%d,%d,%d,%d,%d %s"),
+  sscanf_P( psz, PSTR("%s %d,%d,%f,%d,%d,%d,%d,%d,%d,%d %s %s"),
       (rdc.label),
       &(rdc.rule_definition),
       &(rdc.rf_sensor_idx),
@@ -80,10 +82,11 @@ void APDRuleArray::new_rule_parser(void *pRA, int iline, char *psz) {
       &(rdc.ra_value),
       &(rdc.ra_sensor_idx),
       &(rdc.reexec),
+      rdc.pszcron,
       (rdc.conditions));
 
   ((APDRuleArray*)pRA)->pAPDRules[iline] = new APDRule(&rdc,((APDRuleArray*)pRA)->pSA, ((APDRuleArray*)pRA)->pCA);
-
+  free(rdc.pszcron);			// no longer need the string buffer
   //TODO check for errors and use an internal (class) index to keep track of the next rule to be populated
 
   // now do something with the values parsed...
@@ -196,6 +199,7 @@ int APDRuleArray::loadRules(APDStorage *pAPDStorage) {
     }
 }
 
+// TODO this function is out of structure-sync...
 void APDRuleArray::dumpToFile(APDStorage *pAPDStorage, char *pszFileName) {
   // make a string for assembling the data to log:
 #ifdef DEBUG

@@ -37,7 +37,15 @@ APDRule::APDRule(RDCONF *rdc, APDSensorArray *pSA, APDControlArray *pCA) {
   initBlank();
 
   memcpy((void*)&(this->config),(void*)rdc,sizeof(RDCONF));       // copy the structure to config
-
+  if (rdc->pszcron && (int l = strlen(rdc->pszcron))) {
+  	if (this->config.pszcron = malloc(sizeof(char)*l+1)) {
+  		strcpy(this->config.pszcron, rdc->pszcron);
+  	} else {
+  		Serial.println(APDUINO_ERROR_RAOUTOFMEM);
+  	}
+  } else {
+  	this->config.pszcron = NULL;
+  }
   this->psa = pSA;
   this->pca = pCA;
 
@@ -182,7 +190,7 @@ APDRule::APDRule(RDCONF *rdc, APDSensorArray *pSA, APDControlArray *pCA) {
 #ifdef VERBOSE
           SerPrintP("RTC Rule");
 #endif
-          this->prulefunc = (&apd_rule_rtc_passed);
+          this->prulefunc = (&apd_rule_scheduled);
           break;
         case RF_IDLE_CHECK:
 #ifdef VERBOSE
@@ -258,6 +266,7 @@ APDRule::~APDRule()
 {
   // TODO Auto-generated destructor stub
 	if (this->pmetro) delete(this->pmetro);		// delete metro if any
+	free(this->config.pszcron);									// free up any dynamically allocated cron string
 	initBlank();
 }
 
@@ -485,9 +494,11 @@ boolean APDRule::apd_rule_metro(APDRule *pRule) {
   return retcode;
 }
 
-boolean APDRule::apd_rule_rtc_passed(APDRule *pRule) {
+// processes a cron-like time specification and returns true if job has to run
+boolean APDRule::apd_rule_scheduled(APDRule *pRule) {
   //TODO: implement checking the cvalue as time against rtc - use UNIX time
-  return false;
+  boolean bret = false;
+  return bret;
 }
 
 //boolean apd_rule_rtc_metro(void *pRule) {

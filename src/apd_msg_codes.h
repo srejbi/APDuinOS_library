@@ -131,6 +131,7 @@
 #define APDUINO_ERROR_RDEFINVALID 0x02A0			// Invalid Rule definition
 #define APDUINO_ERROR_RMETROALLOCFAIL 0x02A1			// Failed to allocate Rule Metro
 #define APDUINO_ERROR_RACTIONINVALID 0x02A2			// Invalid action definition for Rule
+#define APDUINO_ERROR_RAOUTOFMEM 0x02A3			// Rule out of memory
 
 // WARNINGS
 #define APDUINO_WARNING_TIMEALREADYSETUP 0x0301	// Time already initialized
