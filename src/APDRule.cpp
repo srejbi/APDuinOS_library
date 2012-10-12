@@ -515,8 +515,35 @@ boolean APDRule::apd_rule_scheduled(APDRule *pRule) {
   	Serial.print(","); Serial.print(phours); Serial.print(","); Serial.print(pdays); Serial.print(",");  Serial.print(pmonths); Serial.print(","); Serial.println(pweekdays);
 
   	// TODO evaluate compared to current time
-  	//APDTime.
-
+  	DateTime now = APDTime::now();
+  	char cnow[3]="";
+  	sprintf_P(cnow,PSTR("%02d"),now.minute());
+  	// check if minute is *, equal to value or list containing value
+  	if (!strcmp_P(pmins,PSTR("*")) || !strcmp(pmins,cnow) ||
+  			(strstr_P(pmins,cnow) && !strchr(pmins,'/'))) {		// should handle "*", "10", "10,20" type inputs on minute
+  		// if minute was matching
+  		sprintf_P(cnow,PSTR("%02d"),now.hour());
+    	if (!strcmp_P(phours,PSTR("*")) || !strcmp(phours,cnow) ||
+    			(strstr_P(phours,cnow) && !strchr(phours,'/'))) {
+    			// if hour was matching
+    			sprintf_P(cnow,PSTR("%02d"),now.day());
+					if (!strcmp_P(pdays,PSTR("*")) || !strcmp(pdays,cnow) ||
+							(strstr_P(pdays,cnow) && !strchr(pdays,'/'))) {
+						// if day was matching
+						sprintf_P(cnow,PSTR("%02d"),now.month());
+						if (!strcmp_P(pmonths,PSTR("*")) || !strcmp(pmonths,cnow) ||
+								(strstr_P(pmonths,cnow) && !strchr(pmonths,'/'))) {
+							// if month was matching
+							sprintf_P(cnow,PSTR("%d"),now.dayOfWeek());
+							if (!strcmp_P(pweekdays,PSTR("*")) || !strcmp(pweekdays,cnow) ||
+									(strstr_P(pweekdays,cnow) && !strchr(pweekdays,'/'))) {
+								bret = true;
+								// todo store cron evaluation timestamp to avoid reeval?
+							}  // weekday
+						}  // month
+					}  // day
+    	}  // hour
+  	}	// minute
 
   }
   return bret;
