@@ -35,10 +35,11 @@ APDRule::APDRule()
 // initialize with RDCONF
 APDRule::APDRule(RDCONF *rdc, APDSensorArray *pSA, APDControlArray *pCA) {
   initBlank();
+  int l = 0;
 
   memcpy((void*)&(this->config),(void*)rdc,sizeof(RDCONF));       // copy the structure to config
-  if (rdc->pszcron && (int l = strlen(rdc->pszcron))) {
-  	if (this->config.pszcron = malloc(sizeof(char)*l+1)) {
+  if (rdc->pszcron && (l = strlen(rdc->pszcron)) > 0 ) {
+  	if (this->config.pszcron = (char *)malloc(sizeof(char)*(l+1))) {
   		strcpy(this->config.pszcron, rdc->pszcron);
   	} else {
   		Serial.println(APDUINO_ERROR_RAOUTOFMEM);
@@ -186,7 +187,7 @@ APDRule::APDRule(RDCONF *rdc, APDSensorArray *pSA, APDControlArray *pCA) {
 #endif
           }
           break;
-        case RF_RTC_PASSED:
+        case RF_SCHEDULED:
 #ifdef VERBOSE
           SerPrintP("RTC Rule");
 #endif

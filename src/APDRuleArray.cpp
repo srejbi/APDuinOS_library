@@ -65,7 +65,7 @@ APDRuleArray::~APDRuleArray()
 void APDRuleArray::new_rule_parser(void *pRA, int iline, char *psz) {
   RDCONF rdc;
   // TODO check malloc results
-  rdc.pszcron = malloc(sizeof(char)*MAX_CRON_EXPR_LEN+1);		// we might need this buffer for cron expr. if not, it will be freed
+  rdc.pszcron = (char *)malloc(sizeof(char)*(MAX_CRON_EXPR_LEN+1));		// we might need this buffer for cron expr. if not, it will be freed
 #ifdef DEBUG
   Serial.print("RULE READ: "); Serial.print(psz);
 #endif
