@@ -11732,67 +11732,67 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, ALLOC, LOAD, DATA
   2 .bss          00000000  00000000  00000000  0000003c  2**0
                   ALLOC
-  3 .stab         00002010  00000000  00000000  0000003c  2**2
+  3 .stab         0000201c  00000000  00000000  0000003c  2**2
                   CONTENTS, RELOC, READONLY, DEBUGGING
-  4 .stabstr      0000532e  00000000  00000000  0000204c  2**0
+  4 .stabstr      0000532e  00000000  00000000  00002058  2**0
                   CONTENTS, READONLY, DEBUGGING
-  5 .text._ZN7APDRule6bStateEv 00000002  00000000  00000000  0000737a  2**0
+  5 .text._ZN7APDRule6bStateEv 00000002  00000000  00000000  00007386  2**0
                   CONTENTS, ALLOC, LOAD, RELOC, READONLY, CODE
-  6 .text._ZN7APDRule19apd_rule_idle_checkEPS_ 00000030  00000000  00000000  0000737c  2**0
+  6 .text._ZN7APDRule19apd_rule_idle_checkEPS_ 00000030  00000000  00000000  00007388  2**0
                   CONTENTS, ALLOC, LOAD, RELOC, READONLY, CODE
-  7 .text._ZN7APDRule13apd_rule_trueEPS_ 00000004  00000000  00000000  000073ac  2**0
+  7 .text._ZN7APDRule13apd_rule_trueEPS_ 00000004  00000000  00000000  000073b8  2**0
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-  8 .text._ZN7APDRule14apd_rule_falseEPS_ 00000004  00000000  00000000  000073b0  2**0
+  8 .text._ZN7APDRule14apd_rule_falseEPS_ 00000004  00000000  00000000  000073bc  2**0
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-  9 .text._ZN7APDRule19apd_rule_sensor_equEPS_ 0000005c  00000000  00000000  000073b4  2**0
+  9 .text._ZN7APDRule19apd_rule_sensor_equEPS_ 0000005c  00000000  00000000  000073c0  2**0
                   CONTENTS, ALLOC, LOAD, RELOC, READONLY, CODE
- 10 .text._ZN7APDRule18apd_rule_sensor_ltEPS_ 0000005c  00000000  00000000  00007410  2**0
+ 10 .text._ZN7APDRule18apd_rule_sensor_ltEPS_ 0000005c  00000000  00000000  0000741c  2**0
                   CONTENTS, ALLOC, LOAD, RELOC, READONLY, CODE
- 11 .text._ZN7APDRule18apd_rule_sensor_gtEPS_ 0000005c  00000000  00000000  0000746c  2**0
+ 11 .text._ZN7APDRule18apd_rule_sensor_gtEPS_ 0000005c  00000000  00000000  00007478  2**0
                   CONTENTS, ALLOC, LOAD, RELOC, READONLY, CODE
- 12 .text._GLOBAL__I__ZN7APDRuleC2Ev 00000016  00000000  00000000  000074c8  2**0
+ 12 .text._GLOBAL__I__ZN7APDRuleC2Ev 00000016  00000000  00000000  000074d4  2**0
                   CONTENTS, ALLOC, LOAD, RELOC, READONLY, CODE
- 13 .ctors        00000002  00000000  00000000  000074de  2**0
+ 13 .ctors        00000002  00000000  00000000  000074ea  2**0
                   CONTENTS, ALLOC, LOAD, RELOC, READONLY, DATA
- 14 .text._ZN7APDRule24apd_rule_eval_conditionsEPS_ 00000072  00000000  00000000  000074e0  2**0
+ 14 .text._ZN7APDRule24apd_rule_eval_conditionsEPS_ 00000072  00000000  00000000  000074ec  2**0
                   CONTENTS, ALLOC, LOAD, RELOC, READONLY, CODE
- 15 .text._ZN7APDRule18apd_rule_ram_checkEPS_ 00000024  00000000  00000000  00007552  2**0
+ 15 .text._ZN7APDRule18apd_rule_ram_checkEPS_ 00000024  00000000  00000000  0000755e  2**0
                   CONTENTS, ALLOC, LOAD, RELOC, READONLY, CODE
- 16 .text._ZN7APDRule18apd_rule_scheduledEPS_ 00000460  00000000  00000000  00007576  2**0
+ 16 .text._ZN7APDRule18apd_rule_scheduledEPS_ 0000046c  00000000  00000000  00007582  2**0
                   CONTENTS, ALLOC, LOAD, RELOC, READONLY, CODE
- 17 .text._ZN7APDRule14apd_rule_metroEPS_ 00000034  00000000  00000000  000079d6  2**0
+ 17 .text._ZN7APDRule14apd_rule_metroEPS_ 00000034  00000000  00000000  000079ee  2**0
                   CONTENTS, ALLOC, LOAD, RELOC, READONLY, CODE
- 18 .text._ZN7APDRule19get_rule_action_ptrEi 000000d4  00000000  00000000  00007a0a  2**0
+ 18 .text._ZN7APDRule19get_rule_action_ptrEi 000000d4  00000000  00000000  00007a22  2**0
                   CONTENTS, ALLOC, LOAD, RELOC, READONLY, CODE
- 19 .text._ZN7APDRule9getValueSEPc 0000005a  00000000  00000000  00007ade  2**0
+ 19 .text._ZN7APDRule9getValueSEPc 0000005a  00000000  00000000  00007af6  2**0
                   CONTENTS, ALLOC, LOAD, RELOC, READONLY, CODE
- 20 .text._ZN7APDRule12evaluateRuleEv 0000016a  00000000  00000000  00007b38  2**0
+ 20 .text._ZN7APDRule12evaluateRuleEv 0000016a  00000000  00000000  00007b50  2**0
                   CONTENTS, ALLOC, LOAD, RELOC, READONLY, CODE
- 21 .text._ZN7APDRule9initBlankEv 0000005c  00000000  00000000  00007ca2  2**0
+ 21 .text._ZN7APDRule9initBlankEv 0000005c  00000000  00000000  00007cba  2**0
                   CONTENTS, ALLOC, LOAD, RELOC, READONLY, CODE
- 22 .text._ZN7APDRuleC1EPc 00000012  00000000  00000000  00007cfe  2**0
+ 22 .text._ZN7APDRuleC1EPc 00000012  00000000  00000000  00007d16  2**0
                   CONTENTS, ALLOC, LOAD, RELOC, READONLY, CODE
- 23 .text._ZN7APDRuleC2EPc 00000012  00000000  00000000  00007d10  2**0
+ 23 .text._ZN7APDRuleC2EPc 00000012  00000000  00000000  00007d28  2**0
                   CONTENTS, ALLOC, LOAD, RELOC, READONLY, CODE
- 24 .text._ZN7APDRuleC1Ev 00000012  00000000  00000000  00007d22  2**0
+ 24 .text._ZN7APDRuleC1Ev 00000012  00000000  00000000  00007d3a  2**0
                   CONTENTS, ALLOC, LOAD, RELOC, READONLY, CODE
- 25 .text._ZN7APDRuleC2Ev 00000012  00000000  00000000  00007d34  2**0
+ 25 .text._ZN7APDRuleC2Ev 00000012  00000000  00000000  00007d4c  2**0
                   CONTENTS, ALLOC, LOAD, RELOC, READONLY, CODE
- 26 .text._ZN7APDRuleD0Ev 0000003c  00000000  00000000  00007d46  2**0
+ 26 .text._ZN7APDRuleD0Ev 0000003c  00000000  00000000  00007d5e  2**0
                   CONTENTS, ALLOC, LOAD, RELOC, READONLY, CODE
- 27 .text._ZN7APDRuleD1Ev 00000036  00000000  00000000  00007d82  2**0
+ 27 .text._ZN7APDRuleD1Ev 00000036  00000000  00000000  00007d9a  2**0
                   CONTENTS, ALLOC, LOAD, RELOC, READONLY, CODE
- 28 .text._ZN7APDRuleD2Ev 00000036  00000000  00000000  00007db8  2**0
+ 28 .text._ZN7APDRuleD2Ev 00000036  00000000  00000000  00007dd0  2**0
                   CONTENTS, ALLOC, LOAD, RELOC, READONLY, CODE
- 29 .text._ZN7APDRuleC1EP6RDCONFP14APDSensorArrayP15APDControlArray 00000272  00000000  00000000  00007dee  2**0
+ 29 .text._ZN7APDRuleC1EP6RDCONFP14APDSensorArrayP15APDControlArray 00000272  00000000  00000000  00007e06  2**0
                   CONTENTS, ALLOC, LOAD, RELOC, READONLY, CODE
- 30 .text._ZN7APDRuleC2EP6RDCONFP14APDSensorArrayP15APDControlArray 00000272  00000000  00000000  00008060  2**0
+ 30 .text._ZN7APDRuleC2EP6RDCONFP14APDSensorArrayP15APDControlArray 00000272  00000000  00000000  00008078  2**0
                   CONTENTS, ALLOC, LOAD, RELOC, READONLY, CODE
- 31 .rodata._ZTV7APDRule 00000008  00000000  00000000  000082d2  2**0
+ 31 .rodata._ZTV7APDRule 00000008  00000000  00000000  000082ea  2**0
                   CONTENTS, ALLOC, LOAD, RELOC, READONLY, DATA
- 32 .bss._ZL11INADDR_NONE 00000006  00000000  00000000  000082da  2**0
+ 32 .bss._ZL11INADDR_NONE 00000006  00000000  00000000  000082f2  2**0
                   ALLOC
- 33 .progmem.data 00000093  00000000  00000000  000082da  2**0
+ 33 .progmem.data 00000093  00000000  00000000  000082f2  2**0
                   CONTENTS, ALLOC, LOAD, READONLY, DATA
 
 Disassembly of section .text._ZN7APDRule6bStateEv:
@@ -12166,14 +12166,14 @@ APDRule::APDRule(RDCONF *rdc, APDSensorArray *pSA, APDControlArray *pCA) {
   1c:	0f be       	out	0x3f, r0	; 63
   1e:	cd bf       	out	0x3d, r28	; 61
   initBlank();
-  20:	6c 01       	movw	r12, r24
+  20:	7c 01       	movw	r14, r24
   22:	80 e0       	ldi	r24, 0x00	; 0
   24:	90 e0       	ldi	r25, 0x00	; 0
   int l = 0;
 
   memcpy((void*)&(this->config),(void*)rdc,sizeof(RDCONF));       // copy the structure to config
   26:	0e 94 00 00 	call	0	; 0x0 <_ZN7APDRule18apd_rule_scheduledEPS_>
-  2a:	d6 01       	movw	r26, r12
+  2a:	d7 01       	movw	r26, r14
   2c:	95 96       	adiw	r26, 0x25	; 37
   2e:	8d 91       	ld	r24, X+
   30:	9c 91       	ld	r25, X
@@ -12194,8 +12194,8 @@ APDRule::APDRule(RDCONF *rdc, APDSensorArray *pSA, APDControlArray *pCA) {
   4c:	c8 01       	movw	r24, r16
   4e:	01 96       	adiw	r24, 0x01	; 1
   50:	0e 94 00 00 	call	0	; 0x0 <_ZN7APDRule18apd_rule_scheduledEPS_>
-  54:	7c 01       	movw	r14, r24
-  56:	f6 01       	movw	r30, r12
+  54:	6c 01       	movw	r12, r24
+  56:	f7 01       	movw	r30, r14
   	if (this->config.pszcron = (char *)malloc(sizeof(char)*(l+1))) {
   58:	65 a1       	ldd	r22, Z+37	; 0x25
   5a:	76 a1       	ldd	r23, Z+38	; 0x26
@@ -12266,7 +12266,7 @@ APDRule::APDRule(RDCONF *rdc, APDSensorArray *pSA, APDControlArray *pCA) {
       // set rule evaluation sensor / value
       if (this->config.rf_sensor_idx > -1 ) {              // TODO reimplement sensor indexing : && this->config.rf_sensor_idx < iSensorCount) {
   b6:	00 c0       	rjmp	.+0      	; 0xb8 <_ZN7APDRule18apd_rule_scheduledEPS_+0xb8>
-  b8:	c7 01       	movw	r24, r14
+  b8:	c6 01       	movw	r24, r12
   ba:	82 0f       	add	r24, r18
   bc:	93 1f       	adc	r25, r19
         //Serial.print(pAPDSensors[this->config.rf_sensor_idx].config.label);
@@ -12812,27 +12812,32 @@ APDRule::APDRule(RDCONF *rdc, APDSensorArray *pSA, APDControlArray *pCA) {
  42c:	80 e0       	ldi	r24, 0x00	; 0
  42e:	90 e0       	ldi	r25, 0x00	; 0
  430:	0e 94 00 00 	call	0	; 0x0 <_ZN7APDRule18apd_rule_scheduledEPS_>
- 434:	81 e0       	ldi	r24, 0x01	; 1
+ 434:	11 e0       	ldi	r17, 0x01	; 1
  436:	00 c0       	rjmp	.+0      	; 0x438 <_ZN7APDRule18apd_rule_scheduledEPS_+0x438>
- 438:	80 e0       	ldi	r24, 0x00	; 0
- 43a:	90 e0       	ldi	r25, 0x00	; 0
+ 438:	10 e0       	ldi	r17, 0x00	; 0
+ 43a:	c6 01       	movw	r24, r12
  43c:	0e 94 00 00 	call	0	; 0x0 <_ZN7APDRule18apd_rule_scheduledEPS_>
- 440:	80 e0       	ldi	r24, 0x00	; 0
- 442:	a3 96       	adiw	r28, 0x23	; 35
- 444:	0f b6       	in	r0, 0x3f	; 63
- 446:	f8 94       	cli
- 448:	de bf       	out	0x3e, r29	; 62
- 44a:	0f be       	out	0x3f, r0	; 63
- 44c:	cd bf       	out	0x3d, r28	; 61
- 44e:	cf 91       	pop	r28
- 450:	df 91       	pop	r29
- 452:	1f 91       	pop	r17
- 454:	0f 91       	pop	r16
- 456:	ff 90       	pop	r15
- 458:	ef 90       	pop	r14
- 45a:	df 90       	pop	r13
- 45c:	cf 90       	pop	r12
- 45e:	08 95       	ret
+ 440:	00 c0       	rjmp	.+0      	; 0x442 <_ZN7APDRule18apd_rule_scheduledEPS_+0x442>
+ 442:	80 e0       	ldi	r24, 0x00	; 0
+ 444:	90 e0       	ldi	r25, 0x00	; 0
+ 446:	0e 94 00 00 	call	0	; 0x0 <_ZN7APDRule18apd_rule_scheduledEPS_>
+ 44a:	10 e0       	ldi	r17, 0x00	; 0
+ 44c:	81 2f       	mov	r24, r17
+ 44e:	a3 96       	adiw	r28, 0x23	; 35
+ 450:	0f b6       	in	r0, 0x3f	; 63
+ 452:	f8 94       	cli
+ 454:	de bf       	out	0x3e, r29	; 62
+ 456:	0f be       	out	0x3f, r0	; 63
+ 458:	cd bf       	out	0x3d, r28	; 61
+ 45a:	cf 91       	pop	r28
+ 45c:	df 91       	pop	r29
+ 45e:	1f 91       	pop	r17
+ 460:	0f 91       	pop	r16
+ 462:	ff 90       	pop	r15
+ 464:	ef 90       	pop	r14
+ 466:	df 90       	pop	r13
+ 468:	cf 90       	pop	r12
+ 46a:	08 95       	ret
 
 Disassembly of section .text._ZN7APDRule14apd_rule_metroEPS_:
 

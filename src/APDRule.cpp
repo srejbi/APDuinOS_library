@@ -552,7 +552,7 @@ boolean APDRule::apd_rule_scheduled(APDRule *pRule) {
 					}  // day
     	}  // hour
   	}	// minute
-
+    free(psztemp);	// release temp str buf
   } else {
   	SerPrintP("ERR: NO CRONSPEC");
   }
