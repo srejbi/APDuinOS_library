@@ -11732,67 +11732,67 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, ALLOC, LOAD, DATA
   2 .bss          00000000  00000000  00000000  0000003c  2**0
                   ALLOC
-  3 .stab         00001f5c  00000000  00000000  0000003c  2**2
+  3 .stab         00002010  00000000  00000000  0000003c  2**2
                   CONTENTS, RELOC, READONLY, DEBUGGING
-  4 .stabstr      00005294  00000000  00000000  00001f98  2**0
+  4 .stabstr      00005343  00000000  00000000  0000204c  2**0
                   CONTENTS, READONLY, DEBUGGING
-  5 .text._ZN7APDRule6bStateEv 00000002  00000000  00000000  0000722c  2**0
+  5 .text._ZN7APDRule6bStateEv 00000002  00000000  00000000  0000738f  2**0
                   CONTENTS, ALLOC, LOAD, RELOC, READONLY, CODE
-  6 .text._ZN7APDRule19apd_rule_idle_checkEPS_ 00000030  00000000  00000000  0000722e  2**0
+  6 .text._ZN7APDRule19apd_rule_idle_checkEPS_ 00000030  00000000  00000000  00007391  2**0
                   CONTENTS, ALLOC, LOAD, RELOC, READONLY, CODE
-  7 .text._ZN7APDRule13apd_rule_trueEPS_ 00000004  00000000  00000000  0000725e  2**0
+  7 .text._ZN7APDRule13apd_rule_trueEPS_ 00000004  00000000  00000000  000073c1  2**0
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-  8 .text._ZN7APDRule14apd_rule_falseEPS_ 00000004  00000000  00000000  00007262  2**0
+  8 .text._ZN7APDRule14apd_rule_falseEPS_ 00000004  00000000  00000000  000073c5  2**0
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-  9 .text._ZN7APDRule19apd_rule_sensor_equEPS_ 0000005c  00000000  00000000  00007266  2**0
+  9 .text._ZN7APDRule19apd_rule_sensor_equEPS_ 0000005c  00000000  00000000  000073c9  2**0
                   CONTENTS, ALLOC, LOAD, RELOC, READONLY, CODE
- 10 .text._ZN7APDRule18apd_rule_sensor_ltEPS_ 0000005c  00000000  00000000  000072c2  2**0
+ 10 .text._ZN7APDRule18apd_rule_sensor_ltEPS_ 0000005c  00000000  00000000  00007425  2**0
                   CONTENTS, ALLOC, LOAD, RELOC, READONLY, CODE
- 11 .text._ZN7APDRule18apd_rule_sensor_gtEPS_ 0000005c  00000000  00000000  0000731e  2**0
+ 11 .text._ZN7APDRule18apd_rule_sensor_gtEPS_ 0000005c  00000000  00000000  00007481  2**0
                   CONTENTS, ALLOC, LOAD, RELOC, READONLY, CODE
- 12 .text._GLOBAL__I__ZN7APDRuleC2Ev 00000016  00000000  00000000  0000737a  2**0
+ 12 .text._GLOBAL__I__ZN7APDRuleC2Ev 00000016  00000000  00000000  000074dd  2**0
                   CONTENTS, ALLOC, LOAD, RELOC, READONLY, CODE
- 13 .ctors        00000002  00000000  00000000  00007390  2**0
+ 13 .ctors        00000002  00000000  00000000  000074f3  2**0
                   CONTENTS, ALLOC, LOAD, RELOC, READONLY, DATA
- 14 .text._ZN7APDRule24apd_rule_eval_conditionsEPS_ 00000072  00000000  00000000  00007392  2**0
+ 14 .text._ZN7APDRule24apd_rule_eval_conditionsEPS_ 00000072  00000000  00000000  000074f5  2**0
                   CONTENTS, ALLOC, LOAD, RELOC, READONLY, CODE
- 15 .text._ZN7APDRule18apd_rule_ram_checkEPS_ 00000024  00000000  00000000  00007404  2**0
+ 15 .text._ZN7APDRule18apd_rule_ram_checkEPS_ 00000024  00000000  00000000  00007567  2**0
                   CONTENTS, ALLOC, LOAD, RELOC, READONLY, CODE
- 16 .text._ZN7APDRule18apd_rule_scheduledEPS_ 0000041a  00000000  00000000  00007428  2**0
+ 16 .text._ZN7APDRule18apd_rule_scheduledEPS_ 00000460  00000000  00000000  0000758b  2**0
                   CONTENTS, ALLOC, LOAD, RELOC, READONLY, CODE
- 17 .text._ZN7APDRule14apd_rule_metroEPS_ 00000034  00000000  00000000  00007842  2**0
+ 17 .text._ZN7APDRule14apd_rule_metroEPS_ 00000034  00000000  00000000  000079eb  2**0
                   CONTENTS, ALLOC, LOAD, RELOC, READONLY, CODE
- 18 .text._ZN7APDRule19get_rule_action_ptrEi 000000d4  00000000  00000000  00007876  2**0
+ 18 .text._ZN7APDRule19get_rule_action_ptrEi 000000d4  00000000  00000000  00007a1f  2**0
                   CONTENTS, ALLOC, LOAD, RELOC, READONLY, CODE
- 19 .text._ZN7APDRule9getValueSEPc 0000005a  00000000  00000000  0000794a  2**0
+ 19 .text._ZN7APDRule9getValueSEPc 0000005a  00000000  00000000  00007af3  2**0
                   CONTENTS, ALLOC, LOAD, RELOC, READONLY, CODE
- 20 .text._ZN7APDRule12evaluateRuleEv 0000015e  00000000  00000000  000079a4  2**0
+ 20 .text._ZN7APDRule12evaluateRuleEv 0000015e  00000000  00000000  00007b4d  2**0
                   CONTENTS, ALLOC, LOAD, RELOC, READONLY, CODE
- 21 .text._ZN7APDRule9initBlankEv 0000005c  00000000  00000000  00007b02  2**0
+ 21 .text._ZN7APDRule9initBlankEv 0000005c  00000000  00000000  00007cab  2**0
                   CONTENTS, ALLOC, LOAD, RELOC, READONLY, CODE
- 22 .text._ZN7APDRuleC1EPc 00000012  00000000  00000000  00007b5e  2**0
+ 22 .text._ZN7APDRuleC1EPc 00000012  00000000  00000000  00007d07  2**0
                   CONTENTS, ALLOC, LOAD, RELOC, READONLY, CODE
- 23 .text._ZN7APDRuleC2EPc 00000012  00000000  00000000  00007b70  2**0
+ 23 .text._ZN7APDRuleC2EPc 00000012  00000000  00000000  00007d19  2**0
                   CONTENTS, ALLOC, LOAD, RELOC, READONLY, CODE
- 24 .text._ZN7APDRuleC1Ev 00000012  00000000  00000000  00007b82  2**0
+ 24 .text._ZN7APDRuleC1Ev 00000012  00000000  00000000  00007d2b  2**0
                   CONTENTS, ALLOC, LOAD, RELOC, READONLY, CODE
- 25 .text._ZN7APDRuleC2Ev 00000012  00000000  00000000  00007b94  2**0
+ 25 .text._ZN7APDRuleC2Ev 00000012  00000000  00000000  00007d3d  2**0
                   CONTENTS, ALLOC, LOAD, RELOC, READONLY, CODE
- 26 .text._ZN7APDRuleD0Ev 0000003c  00000000  00000000  00007ba6  2**0
+ 26 .text._ZN7APDRuleD0Ev 0000003c  00000000  00000000  00007d4f  2**0
                   CONTENTS, ALLOC, LOAD, RELOC, READONLY, CODE
- 27 .text._ZN7APDRuleD1Ev 00000036  00000000  00000000  00007be2  2**0
+ 27 .text._ZN7APDRuleD1Ev 00000036  00000000  00000000  00007d8b  2**0
                   CONTENTS, ALLOC, LOAD, RELOC, READONLY, CODE
- 28 .text._ZN7APDRuleD2Ev 00000036  00000000  00000000  00007c18  2**0
+ 28 .text._ZN7APDRuleD2Ev 00000036  00000000  00000000  00007dc1  2**0
                   CONTENTS, ALLOC, LOAD, RELOC, READONLY, CODE
- 29 .text._ZN7APDRuleC1EP6RDCONFP14APDSensorArrayP15APDControlArray 00000272  00000000  00000000  00007c4e  2**0
+ 29 .text._ZN7APDRuleC1EP6RDCONFP14APDSensorArrayP15APDControlArray 00000272  00000000  00000000  00007df7  2**0
                   CONTENTS, ALLOC, LOAD, RELOC, READONLY, CODE
- 30 .text._ZN7APDRuleC2EP6RDCONFP14APDSensorArrayP15APDControlArray 00000272  00000000  00000000  00007ec0  2**0
+ 30 .text._ZN7APDRuleC2EP6RDCONFP14APDSensorArrayP15APDControlArray 00000272  00000000  00000000  00008069  2**0
                   CONTENTS, ALLOC, LOAD, RELOC, READONLY, CODE
- 31 .rodata._ZTV7APDRule 00000008  00000000  00000000  00008132  2**0
+ 31 .rodata._ZTV7APDRule 00000008  00000000  00000000  000082db  2**0
                   CONTENTS, ALLOC, LOAD, RELOC, READONLY, DATA
- 32 .bss._ZL11INADDR_NONE 00000006  00000000  00000000  0000813a  2**0
+ 32 .bss._ZL11INADDR_NONE 00000006  00000000  00000000  000082e3  2**0
                   ALLOC
- 33 .progmem.data 0000002f  00000000  00000000  0000813a  2**0
+ 33 .progmem.data 0000009b  00000000  00000000  000082e3  2**0
                   CONTENTS, ALLOC, LOAD, READONLY, DATA
 
 Disassembly of section .text._ZN7APDRule6bStateEv:
@@ -11804,7 +11804,7 @@ Disassembly of section .text._ZN7APDRule6bStateEv:
 
 // initialize with RDCONF
 APDRule::APDRule(RDCONF *rdc, APDSensorArray *pSA, APDControlArray *pCA) {
-   0:	00 c0       	rjmp	.+0      	; 0x2 <_ZZN7APDRule18apd_rule_scheduledEPS_E3__c_8>
+   0:	00 c0       	rjmp	.+0      	; 0x2 <__zero_reg__+0x1>
 
 Disassembly of section .text._ZN7APDRule19apd_rule_idle_checkEPS_:
 
@@ -12149,182 +12149,182 @@ Disassembly of section .text._ZN7APDRule18apd_rule_scheduledEPS_:
 
 // initialize with RDCONF
 APDRule::APDRule(RDCONF *rdc, APDSensorArray *pSA, APDControlArray *pCA) {
-   0:	ef 92       	push	r14
-   2:	ff 92       	push	r15
-   4:	0f 93       	push	r16
-   6:	1f 93       	push	r17
-   8:	df 93       	push	r29
-   a:	cf 93       	push	r28
-   c:	cd b7       	in	r28, 0x3d	; 61
-   e:	de b7       	in	r29, 0x3e	; 62
-  10:	a3 97       	sbiw	r28, 0x23	; 35
-  12:	0f b6       	in	r0, 0x3f	; 63
-  14:	f8 94       	cli
-  16:	de bf       	out	0x3e, r29	; 62
-  18:	0f be       	out	0x3f, r0	; 63
-  1a:	cd bf       	out	0x3d, r28	; 61
-  1c:	dc 01       	movw	r26, r24
-  1e:	95 96       	adiw	r26, 0x25	; 37
+   0:	cf 92       	push	r12
+   2:	df 92       	push	r13
+   4:	ef 92       	push	r14
+   6:	ff 92       	push	r15
+   8:	0f 93       	push	r16
+   a:	1f 93       	push	r17
+   c:	df 93       	push	r29
+   e:	cf 93       	push	r28
+  10:	cd b7       	in	r28, 0x3d	; 61
+  12:	de b7       	in	r29, 0x3e	; 62
+  14:	a3 97       	sbiw	r28, 0x23	; 35
+  16:	0f b6       	in	r0, 0x3f	; 63
+  18:	f8 94       	cli
+  1a:	de bf       	out	0x3e, r29	; 62
+  1c:	0f be       	out	0x3f, r0	; 63
+  1e:	cd bf       	out	0x3d, r28	; 61
   initBlank();
-  20:	8d 91       	ld	r24, X+
-  22:	9c 91       	ld	r25, X
-  24:	96 97       	sbiw	r26, 0x26	; 38
+  20:	6c 01       	movw	r12, r24
+  22:	80 e0       	ldi	r24, 0x00	; 0
+  24:	90 e0       	ldi	r25, 0x00	; 0
   int l = 0;
 
   memcpy((void*)&(this->config),(void*)rdc,sizeof(RDCONF));       // copy the structure to config
-  26:	00 97       	sbiw	r24, 0x00	; 0
-  28:	01 f4       	brne	.+0      	; 0x2a <_ZN7APDRule18apd_rule_scheduledEPS_+0x2a>
-  2a:	00 c0       	rjmp	.+0      	; 0x2c <_ZN7APDRule18apd_rule_scheduledEPS_+0x2c>
-  2c:	dc 01       	movw	r26, r24
-  2e:	0d 90       	ld	r0, X+
-  30:	00 20       	and	r0, r0
-  32:	01 f4       	brne	.+0      	; 0x34 <_ZN7APDRule18apd_rule_scheduledEPS_+0x34>
-  34:	8d 01       	movw	r16, r26
+  26:	0e 94 00 00 	call	0	; 0x0 <_ZN7APDRule18apd_rule_scheduledEPS_>
+  2a:	d6 01       	movw	r26, r12
+  2c:	95 96       	adiw	r26, 0x25	; 37
+  2e:	8d 91       	ld	r24, X+
+  30:	9c 91       	ld	r25, X
+  32:	96 97       	sbiw	r26, 0x26	; 38
+  34:	00 97       	sbiw	r24, 0x00	; 0
   if (rdc->pszcron && (l = strlen(rdc->pszcron)) > 0 ) {
-  36:	01 50       	subi	r16, 0x01	; 1
-  38:	10 40       	sbci	r17, 0x00	; 0
-  3a:	08 1b       	sub	r16, r24
-  3c:	19 0b       	sbc	r17, r25
-  3e:	c8 01       	movw	r24, r16
-  40:	01 96       	adiw	r24, 0x01	; 1
-  42:	0e 94 00 00 	call	0	; 0x0 <_ZN7APDRule18apd_rule_scheduledEPS_>
-  46:	ac 01       	movw	r20, r24
-  48:	1a 82       	std	Y+2, r1	; 0x02
-  4a:	19 82       	std	Y+1, r1	; 0x01
-  4c:	1c 82       	std	Y+4, r1	; 0x04
-  4e:	1b 82       	std	Y+3, r1	; 0x03
-  50:	1e 82       	std	Y+6, r1	; 0x06
-  52:	1d 82       	std	Y+5, r1	; 0x05
-  54:	18 86       	std	Y+8, r1	; 0x08
-  56:	1f 82       	std	Y+7, r1	; 0x07
+  36:	01 f4       	brne	.+0      	; 0x38 <_ZN7APDRule18apd_rule_scheduledEPS_+0x38>
+  38:	00 c0       	rjmp	.+0      	; 0x3a <_ZN7APDRule18apd_rule_scheduledEPS_+0x3a>
+  3a:	dc 01       	movw	r26, r24
+  3c:	0d 90       	ld	r0, X+
+  3e:	00 20       	and	r0, r0
+  40:	01 f4       	brne	.+0      	; 0x42 <_ZN7APDRule18apd_rule_scheduledEPS_+0x42>
+  42:	8d 01       	movw	r16, r26
+  44:	01 50       	subi	r16, 0x01	; 1
+  46:	10 40       	sbci	r17, 0x00	; 0
+  48:	08 1b       	sub	r16, r24
+  4a:	19 0b       	sbc	r17, r25
+  4c:	c8 01       	movw	r24, r16
+  4e:	01 96       	adiw	r24, 0x01	; 1
+  50:	0e 94 00 00 	call	0	; 0x0 <_ZN7APDRule18apd_rule_scheduledEPS_>
+  54:	7c 01       	movw	r14, r24
+  56:	f6 01       	movw	r30, r12
   	if (this->config.pszcron = (char *)malloc(sizeof(char)*(l+1))) {
-  58:	1a 86       	std	Y+10, r1	; 0x0a
-  5a:	19 86       	std	Y+9, r1	; 0x09
-  5c:	fe 01       	movw	r30, r28
-  5e:	74 96       	adiw	r30, 0x14	; 20
-  60:	8a e0       	ldi	r24, 0x0A	; 10
-  62:	df 01       	movw	r26, r30
-  64:	1d 92       	st	X+, r1
-  66:	8a 95       	dec	r24
+  58:	65 a1       	ldd	r22, Z+37	; 0x25
+  5a:	76 a1       	ldd	r23, Z+38	; 0x26
+  5c:	0e 94 00 00 	call	0	; 0x0 <_ZN7APDRule18apd_rule_scheduledEPS_>
+  60:	1a 82       	std	Y+2, r1	; 0x02
+  62:	19 82       	std	Y+1, r1	; 0x01
+  64:	1c 82       	std	Y+4, r1	; 0x04
+  66:	1b 82       	std	Y+3, r1	; 0x03
   		strcpy(this->config.pszcron, rdc->pszcron);
-  68:	01 f4       	brne	.+0      	; 0x6a <_ZN7APDRule18apd_rule_scheduledEPS_+0x6a>
-  6a:	ce 01       	movw	r24, r28
-  6c:	01 96       	adiw	r24, 0x01	; 1
-  6e:	9d 8b       	std	Y+21, r25	; 0x15
-  70:	8c 8b       	std	Y+20, r24	; 0x14
-  72:	ce 01       	movw	r24, r28
+  68:	1e 82       	std	Y+6, r1	; 0x06
+  6a:	1d 82       	std	Y+5, r1	; 0x05
+  6c:	18 86       	std	Y+8, r1	; 0x08
+  6e:	1f 82       	std	Y+7, r1	; 0x07
+  70:	1a 86       	std	Y+10, r1	; 0x0a
+  72:	19 86       	std	Y+9, r1	; 0x09
   	} else {
   		Serial.println(APDUINO_ERROR_RAOUTOFMEM,HEX);
-  74:	03 96       	adiw	r24, 0x03	; 3
-  76:	9f 8b       	std	Y+23, r25	; 0x17
-  78:	8e 8b       	std	Y+22, r24	; 0x16
-  7a:	ce 01       	movw	r24, r28
-  7c:	05 96       	adiw	r24, 0x05	; 5
-  7e:	99 8f       	std	Y+25, r25	; 0x19
-  80:	88 8f       	std	Y+24, r24	; 0x18
+  74:	fe 01       	movw	r30, r28
+  76:	74 96       	adiw	r30, 0x14	; 20
+  78:	8a e0       	ldi	r24, 0x0A	; 10
+  7a:	df 01       	movw	r26, r30
+  7c:	1d 92       	st	X+, r1
+  7e:	8a 95       	dec	r24
+  80:	01 f4       	brne	.+0      	; 0x82 <_ZN7APDRule18apd_rule_scheduledEPS_+0x82>
   82:	ce 01       	movw	r24, r28
   	}
   } else {
   	this->config.pszcron = NULL;
   }
   this->psa = pSA;
-  84:	07 96       	adiw	r24, 0x07	; 7
-  86:	9b 8f       	std	Y+27, r25	; 0x1b
-  88:	8a 8f       	std	Y+26, r24	; 0x1a
+  84:	01 96       	adiw	r24, 0x01	; 1
+  86:	9d 8b       	std	Y+21, r25	; 0x15
+  88:	8c 8b       	std	Y+20, r24	; 0x14
   8a:	ce 01       	movw	r24, r28
   this->pca = pCA;
-  8c:	09 96       	adiw	r24, 0x09	; 9
-  8e:	9d 8f       	std	Y+29, r25	; 0x1d
-  90:	8c 8f       	std	Y+28, r24	; 0x1c
-  92:	df 01       	movw	r26, r30
+  8c:	03 96       	adiw	r24, 0x03	; 3
+  8e:	9f 8b       	std	Y+23, r25	; 0x17
+  90:	8e 8b       	std	Y+22, r24	; 0x16
+  92:	ce 01       	movw	r24, r28
 //            float finternal;                              // if value testing, pvalue should point to finternal, or to a sensor's float value, otherwise
 //            APD_CONTROL *pcontrol;                        // outcome - pointer to a control
 //            int cvalue;                                   // integer control value
 //            float *pcsensorvalue;                         // pointer to a sensor to take control value from
 //            void *pmetro;                                 // we might put a metro, or something else on it...
       this->finternal = this->config.rf_value;                                  // fill the internal float with the provided static test value
-  94:	20 e0       	ldi	r18, 0x00	; 0
-  96:	30 e0       	ldi	r19, 0x00	; 0
-  98:	be 01       	movw	r22, r28
-  9a:	62 5e       	subi	r22, 0xE2	; 226
-  9c:	7f 4f       	sbci	r23, 0xFF	; 255
-  9e:	00 c0       	rjmp	.+0      	; 0xa0 <_ZN7APDRule18apd_rule_scheduledEPS_+0xa0>
-  a0:	ca 01       	movw	r24, r20
-  a2:	82 0f       	add	r24, r18
-  a4:	93 1f       	adc	r25, r19
-  a6:	ed 91       	ld	r30, X+
+  94:	05 96       	adiw	r24, 0x05	; 5
+  96:	99 8f       	std	Y+25, r25	; 0x19
+  98:	88 8f       	std	Y+24, r24	; 0x18
+  9a:	ce 01       	movw	r24, r28
+  9c:	07 96       	adiw	r24, 0x07	; 7
+  9e:	9b 8f       	std	Y+27, r25	; 0x1b
+  a0:	8a 8f       	std	Y+26, r24	; 0x1a
+  a2:	ce 01       	movw	r24, r28
+  a4:	09 96       	adiw	r24, 0x09	; 9
+  a6:	9d 8f       	std	Y+29, r25	; 0x1d
 #ifdef VERBOSE
       SerPrintP("RULE: '"); Serial.print( this->config.label); SerPrintP("'");
 #endif
       this->pcsensorvalue = NULL;               // done in init
-  a8:	fc 91       	ld	r31, X
-  aa:	11 97       	sbiw	r26, 0x01	; 1
-  ac:	91 83       	std	Z+1, r25	; 0x01
+  a8:	8c 8f       	std	Y+28, r24	; 0x1c
+  aa:	df 01       	movw	r26, r30
+  ac:	20 e0       	ldi	r18, 0x00	; 0
       this->pmetro = NULL;                      // done in init
-  ae:	80 83       	st	Z, r24
-  b0:	fc 01       	movw	r30, r24
-  b2:	00 c0       	rjmp	.+0      	; 0xb4 <_ZN7APDRule18apd_rule_scheduledEPS_+0xb4>
-  b4:	2f 5f       	subi	r18, 0xFF	; 255
+  ae:	30 e0       	ldi	r19, 0x00	; 0
+  b0:	ae 01       	movw	r20, r28
+  b2:	42 5e       	subi	r20, 0xE2	; 226
+  b4:	5f 4f       	sbci	r21, 0xFF	; 255
       // set rule evaluation sensor / value
       if (this->config.rf_sensor_idx > -1 ) {              // TODO reimplement sensor indexing : && this->config.rf_sensor_idx < iSensorCount) {
-  b6:	3f 4f       	sbci	r19, 0xFF	; 255
-  b8:	80 81       	ld	r24, Z
-  ba:	8f 35       	cpi	r24, 0x5F	; 95
-  bc:	01 f0       	breq	.+0      	; 0xbe <_ZN7APDRule18apd_rule_scheduledEPS_+0xbe>
+  b6:	00 c0       	rjmp	.+0      	; 0xb8 <_ZN7APDRule18apd_rule_scheduledEPS_+0xb8>
+  b8:	c7 01       	movw	r24, r14
+  ba:	82 0f       	add	r24, r18
+  bc:	93 1f       	adc	r25, r19
         //Serial.print(pAPDSensors[this->config.rf_sensor_idx].config.label);
 #ifdef VERBOSE
         SerPrintP(") ");
 #endif
       } else {
         this->psensor = NULL;
-  be:	31 96       	adiw	r30, 0x01	; 1
-  c0:	20 17       	cp	r18, r16
-  c2:	31 07       	cpc	r19, r17
-  c4:	04 f0       	brlt	.+0      	; 0xc6 <_ZN7APDRule18apd_rule_scheduledEPS_+0xc6>
-  c6:	00 c0       	rjmp	.+0      	; 0xc8 <_ZN7APDRule18apd_rule_scheduledEPS_+0xc8>
-  c8:	10 82       	st	Z, r1
+  be:	ed 91       	ld	r30, X+
+  c0:	fc 91       	ld	r31, X
+  c2:	11 97       	sbiw	r26, 0x01	; 1
+  c4:	91 83       	std	Z+1, r25	; 0x01
+  c6:	80 83       	st	Z, r24
+  c8:	fc 01       	movw	r30, r24
         SerPrintP(" IS VIRTUAL");
 #endif
       }
 
       // test value is always the internal number, for now
       this->pvalue = &(this->finternal);      // use the provided static value
-  ca:	2f 5f       	subi	r18, 0xFF	; 255
-  cc:	3f 4f       	sbci	r19, 0xFF	; 255
-  ce:	12 96       	adiw	r26, 0x02	; 2
-  d0:	a6 17       	cp	r26, r22
-  d2:	b7 07       	cpc	r27, r23
+  ca:	00 c0       	rjmp	.+0      	; 0xcc <_ZN7APDRule18apd_rule_scheduledEPS_+0xcc>
+  cc:	2f 5f       	subi	r18, 0xFF	; 255
+  ce:	3f 4f       	sbci	r19, 0xFF	; 255
+  d0:	80 81       	ld	r24, Z
+  d2:	8f 35       	cpi	r24, 0x5F	; 95
   d4:	01 f0       	breq	.+0      	; 0xd6 <_ZN7APDRule18apd_rule_scheduledEPS_+0xd6>
-  d6:	20 17       	cp	r18, r16
-  d8:	31 07       	cpc	r19, r17
-  da:	04 f0       	brlt	.+0      	; 0xdc <_ZN7APDRule18apd_rule_scheduledEPS_+0xdc>
+  d6:	31 96       	adiw	r30, 0x01	; 1
+  d8:	20 17       	cp	r18, r16
+  da:	31 07       	cpc	r19, r17
 
       // set rule execution control / value
       // TODO - reimplement the following check somehow (ArrayWrapper?)
       if (this->config.rule_control_idx > -1 ) {//&& this->config.rule_control_idx < pAPD->iControlCount) {
-  dc:	80 e0       	ldi	r24, 0x00	; 0
-  de:	90 e0       	ldi	r25, 0x00	; 0
-  e0:	0e 94 00 00 	call	0	; 0x0 <_ZN7APDRule18apd_rule_scheduledEPS_>
+  dc:	04 f0       	brlt	.+0      	; 0xde <_ZN7APDRule18apd_rule_scheduledEPS_+0xde>
+  de:	00 c0       	rjmp	.+0      	; 0xe0 <_ZN7APDRule18apd_rule_scheduledEPS_+0xe0>
+  e0:	10 82       	st	Z, r1
+  e2:	2f 5f       	subi	r18, 0xFF	; 255
           // TODO THIS HAS TO BE SET ON APDUINO LEVEL
         //this->pcontrol = &(pAPDControls[this->config.rule_control_idx]);
 
           //TODO REIMPLEMENT CHECK
         if (this->config.ra_sensor_idx >= 0) {// && this->config.ra_sensor_idx < pAPD->iSensorCount) {
-  e4:	69 81       	ldd	r22, Y+1	; 0x01
-  e6:	7a 81       	ldd	r23, Y+2	; 0x02
-  e8:	80 e0       	ldi	r24, 0x00	; 0
-  ea:	90 e0       	ldi	r25, 0x00	; 0
+  e4:	3f 4f       	sbci	r19, 0xFF	; 255
+  e6:	12 96       	adiw	r26, 0x02	; 2
+  e8:	a4 17       	cp	r26, r20
+  ea:	b5 07       	cpc	r27, r21
             // THIS HAS TO BE SET ON THE APDUINO LEVEL
           //this->pcsensorvalue = &(pAPDSensors[this->config.ra_sensor_idx].fvalue);
 #ifdef VERBOSE
           SerPrintP(" SENSORVAL "); //Serial.print(pAPDSensors[this->config.ra_sensor_idx].config.label);
 #endif
           Serial.print(this->config.ra_sensor_idx,DEC);
-  ec:	0e 94 00 00 	call	0	; 0x0 <_ZN7APDRule18apd_rule_scheduledEPS_>
-  f0:	80 e0       	ldi	r24, 0x00	; 0
-  f2:	90 e0       	ldi	r25, 0x00	; 0
-  f4:	60 e0       	ldi	r22, 0x00	; 0
-  f6:	70 e0       	ldi	r23, 0x00	; 0
+  ec:	01 f0       	breq	.+0      	; 0xee <_ZN7APDRule18apd_rule_scheduledEPS_+0xee>
+  ee:	20 17       	cp	r18, r16
+  f0:	31 07       	cpc	r19, r17
+  f2:	04 f0       	brlt	.+0      	; 0xf4 <_ZN7APDRule18apd_rule_scheduledEPS_+0xf4>
+  f4:	80 e0       	ldi	r24, 0x00	; 0
+  f6:	90 e0       	ldi	r25, 0x00	; 0
   f8:	0e 94 00 00 	call	0	; 0x0 <_ZN7APDRule18apd_rule_scheduledEPS_>
         } else {
           // TODO check the config.value_mapping
@@ -12332,8 +12332,8 @@ APDRule::APDRule(RDCONF *rdc, APDSensorArray *pSA, APDControlArray *pCA) {
           SerPrintP(" STATIC VALUE ");
 #endif
           this->cvalue = this->config.ra_value;      // use the provided static value
-  fc:	6b 81       	ldd	r22, Y+3	; 0x03
-  fe:	7c 81       	ldd	r23, Y+4	; 0x04
+  fc:	69 81       	ldd	r22, Y+1	; 0x01
+  fe:	7a 81       	ldd	r23, Y+2	; 0x02
  100:	80 e0       	ldi	r24, 0x00	; 0
  102:	90 e0       	ldi	r25, 0x00	; 0
  104:	0e 94 00 00 	call	0	; 0x0 <_ZN7APDRule18apd_rule_scheduledEPS_>
@@ -12348,8 +12348,8 @@ APDRule::APDRule(RDCONF *rdc, APDSensorArray *pSA, APDControlArray *pCA) {
  10c:	60 e0       	ldi	r22, 0x00	; 0
  10e:	70 e0       	ldi	r23, 0x00	; 0
  110:	0e 94 00 00 	call	0	; 0x0 <_ZN7APDRule18apd_rule_scheduledEPS_>
- 114:	6d 81       	ldd	r22, Y+5	; 0x05
- 116:	7e 81       	ldd	r23, Y+6	; 0x06
+ 114:	6b 81       	ldd	r22, Y+3	; 0x03
+ 116:	7c 81       	ldd	r23, Y+4	; 0x04
 #ifdef VERBOSE
         SerPrintP(" NULL/INVALID CONTROL.");
 #endif
@@ -12371,8 +12371,8 @@ APDRule::APDRule(RDCONF *rdc, APDSensorArray *pSA, APDControlArray *pCA) {
 #endif
       this->ptcontrolfunc= get_rule_action_ptr(this->config.rule_true_action);
  128:	0e 94 00 00 	call	0	; 0x0 <_ZN7APDRule18apd_rule_scheduledEPS_>
- 12c:	6f 81       	ldd	r22, Y+7	; 0x07
- 12e:	78 85       	ldd	r23, Y+8	; 0x08
+ 12c:	6d 81       	ldd	r22, Y+5	; 0x05
+ 12e:	7e 81       	ldd	r23, Y+6	; 0x06
  130:	80 e0       	ldi	r24, 0x00	; 0
  132:	90 e0       	ldi	r25, 0x00	; 0
  134:	0e 94 00 00 	call	0	; 0x0 <_ZN7APDRule18apd_rule_scheduledEPS_>
@@ -12385,427 +12385,454 @@ APDRule::APDRule(RDCONF *rdc, APDSensorArray *pSA, APDControlArray *pCA) {
       this->pfcontrolfunc= get_rule_action_ptr(this->config.rule_false_action);
  13e:	70 e0       	ldi	r23, 0x00	; 0
  140:	0e 94 00 00 	call	0	; 0x0 <_ZN7APDRule18apd_rule_scheduledEPS_>
- 144:	69 85       	ldd	r22, Y+9	; 0x09
- 146:	7a 85       	ldd	r23, Y+10	; 0x0a
+ 144:	6f 81       	ldd	r22, Y+7	; 0x07
+ 146:	78 85       	ldd	r23, Y+8	; 0x08
  148:	80 e0       	ldi	r24, 0x00	; 0
  14a:	90 e0       	ldi	r25, 0x00	; 0
  14c:	0e 94 00 00 	call	0	; 0x0 <_ZN7APDRule18apd_rule_scheduledEPS_>
- 150:	0e 94 00 00 	call	0	; 0x0 <_ZN7APDRule18apd_rule_scheduledEPS_>
+ 150:	80 e0       	ldi	r24, 0x00	; 0
+ 152:	90 e0       	ldi	r25, 0x00	; 0
       // choose the evaluation function
 #ifdef VERBOSE
       SerPrintP(" depending on -");
 #endif
       /* link in the rule evaluation funtion */
       this->prulefunc = NULL;    // initialize as nullptr
- 154:	2e 8f       	std	Y+30, r18	; 0x1e
- 156:	3f 8f       	std	Y+31, r19	; 0x1f
- 158:	48 a3       	std	Y+32, r20	; 0x20
- 15a:	59 a3       	std	Y+33, r21	; 0x21
- 15c:	6a a3       	std	Y+34, r22	; 0x22
+ 154:	60 e0       	ldi	r22, 0x00	; 0
+ 156:	70 e0       	ldi	r23, 0x00	; 0
+ 158:	0e 94 00 00 	call	0	; 0x0 <_ZN7APDRule18apd_rule_scheduledEPS_>
+ 15c:	69 85       	ldd	r22, Y+9	; 0x09
       switch (this->config.rule_definition) {
- 15e:	7b a3       	std	Y+35, r23	; 0x23
- 160:	de 01       	movw	r26, r28
- 162:	1e 96       	adiw	r26, 0x0e	; 14
- 164:	fe 01       	movw	r30, r28
- 166:	7e 96       	adiw	r30, 0x1e	; 30
- 168:	86 e0       	ldi	r24, 0x06	; 6
- 16a:	01 90       	ld	r0, Z+
- 16c:	0d 92       	st	X+, r0
- 16e:	81 50       	subi	r24, 0x01	; 1
- 170:	01 f4       	brne	.+0      	; 0x172 <_ZN7APDRule18apd_rule_scheduledEPS_+0x172>
- 172:	80 91 00 00 	lds	r24, 0x0000
- 176:	8b 87       	std	Y+11, r24	; 0x0b
- 178:	1d 86       	std	Y+13, r1	; 0x0d
- 17a:	1c 86       	std	Y+12, r1	; 0x0c
- 17c:	00 d0       	rcall	.+0      	; 0x17e <_ZN7APDRule18apd_rule_scheduledEPS_+0x17e>
- 17e:	00 d0       	rcall	.+0      	; 0x180 <_ZN7APDRule18apd_rule_scheduledEPS_+0x180>
- 180:	ed b7       	in	r30, 0x3d	; 61
- 182:	fe b7       	in	r31, 0x3e	; 62
- 184:	31 96       	adiw	r30, 0x01	; 1
- 186:	5b e0       	ldi	r21, 0x0B	; 11
- 188:	e5 2e       	mov	r14, r21
- 18a:	f1 2c       	mov	r15, r1
- 18c:	ec 0e       	add	r14, r28
- 18e:	fd 1e       	adc	r15, r29
- 190:	ad b7       	in	r26, 0x3d	; 61
- 192:	be b7       	in	r27, 0x3e	; 62
- 194:	12 96       	adiw	r26, 0x02	; 2
- 196:	fc 92       	st	X, r15
- 198:	ee 92       	st	-X, r14
- 19a:	11 97       	sbiw	r26, 0x01	; 1
- 19c:	80 e0       	ldi	r24, 0x00	; 0
- 19e:	90 e0       	ldi	r25, 0x00	; 0
- 1a0:	93 83       	std	Z+3, r25	; 0x03
- 1a2:	82 83       	std	Z+2, r24	; 0x02
- 1a4:	8a 89       	ldd	r24, Y+18	; 0x12
- 1a6:	84 83       	std	Z+4, r24	; 0x04
- 1a8:	15 82       	std	Z+5, r1	; 0x05
- 1aa:	0e 94 00 00 	call	0	; 0x0 <_ZN7APDRule18apd_rule_scheduledEPS_>
- 1ae:	09 81       	ldd	r16, Y+1	; 0x01
- 1b0:	1a 81       	ldd	r17, Y+2	; 0x02
- 1b2:	ed b7       	in	r30, 0x3d	; 61
- 1b4:	fe b7       	in	r31, 0x3e	; 62
- 1b6:	36 96       	adiw	r30, 0x06	; 6
- 1b8:	0f b6       	in	r0, 0x3f	; 63
- 1ba:	f8 94       	cli
- 1bc:	fe bf       	out	0x3e, r31	; 62
- 1be:	0f be       	out	0x3f, r0	; 63
- 1c0:	ed bf       	out	0x3d, r30	; 61
- 1c2:	c8 01       	movw	r24, r16
- 1c4:	60 e0       	ldi	r22, 0x00	; 0
- 1c6:	70 e0       	ldi	r23, 0x00	; 0
- 1c8:	0e 94 00 00 	call	0	; 0x0 <_ZN7APDRule18apd_rule_scheduledEPS_>
- 1cc:	89 2b       	or	r24, r25
- 1ce:	01 f0       	breq	.+0      	; 0x1d0 <_ZN7APDRule18apd_rule_scheduledEPS_+0x1d0>
+ 15e:	7a 85       	ldd	r23, Y+10	; 0x0a
+ 160:	80 e0       	ldi	r24, 0x00	; 0
+ 162:	90 e0       	ldi	r25, 0x00	; 0
+ 164:	0e 94 00 00 	call	0	; 0x0 <_ZN7APDRule18apd_rule_scheduledEPS_>
+ 168:	0e 94 00 00 	call	0	; 0x0 <_ZN7APDRule18apd_rule_scheduledEPS_>
+ 16c:	2e 8f       	std	Y+30, r18	; 0x1e
+ 16e:	3f 8f       	std	Y+31, r19	; 0x1f
+ 170:	48 a3       	std	Y+32, r20	; 0x20
+ 172:	59 a3       	std	Y+33, r21	; 0x21
+ 174:	6a a3       	std	Y+34, r22	; 0x22
+ 176:	7b a3       	std	Y+35, r23	; 0x23
+ 178:	de 01       	movw	r26, r28
+ 17a:	1e 96       	adiw	r26, 0x0e	; 14
+ 17c:	fe 01       	movw	r30, r28
+ 17e:	7e 96       	adiw	r30, 0x1e	; 30
+ 180:	86 e0       	ldi	r24, 0x06	; 6
+ 182:	01 90       	ld	r0, Z+
+ 184:	0d 92       	st	X+, r0
+ 186:	81 50       	subi	r24, 0x01	; 1
+ 188:	01 f4       	brne	.+0      	; 0x18a <_ZN7APDRule18apd_rule_scheduledEPS_+0x18a>
+ 18a:	80 91 00 00 	lds	r24, 0x0000
+ 18e:	8b 87       	std	Y+11, r24	; 0x0b
+ 190:	1d 86       	std	Y+13, r1	; 0x0d
+ 192:	1c 86       	std	Y+12, r1	; 0x0c
+ 194:	00 d0       	rcall	.+0      	; 0x196 <_ZN7APDRule18apd_rule_scheduledEPS_+0x196>
+ 196:	00 d0       	rcall	.+0      	; 0x198 <_ZN7APDRule18apd_rule_scheduledEPS_+0x198>
+ 198:	ed b7       	in	r30, 0x3d	; 61
+ 19a:	fe b7       	in	r31, 0x3e	; 62
+ 19c:	31 96       	adiw	r30, 0x01	; 1
+ 19e:	5b e0       	ldi	r21, 0x0B	; 11
+ 1a0:	e5 2e       	mov	r14, r21
+ 1a2:	f1 2c       	mov	r15, r1
+ 1a4:	ec 0e       	add	r14, r28
+ 1a6:	fd 1e       	adc	r15, r29
+ 1a8:	ad b7       	in	r26, 0x3d	; 61
+ 1aa:	be b7       	in	r27, 0x3e	; 62
+ 1ac:	12 96       	adiw	r26, 0x02	; 2
+ 1ae:	fc 92       	st	X, r15
+ 1b0:	ee 92       	st	-X, r14
+ 1b2:	11 97       	sbiw	r26, 0x01	; 1
+ 1b4:	80 e0       	ldi	r24, 0x00	; 0
+ 1b6:	90 e0       	ldi	r25, 0x00	; 0
+ 1b8:	93 83       	std	Z+3, r25	; 0x03
+ 1ba:	82 83       	std	Z+2, r24	; 0x02
+ 1bc:	8a 89       	ldd	r24, Y+18	; 0x12
+ 1be:	84 83       	std	Z+4, r24	; 0x04
+ 1c0:	15 82       	std	Z+5, r1	; 0x05
+ 1c2:	0e 94 00 00 	call	0	; 0x0 <_ZN7APDRule18apd_rule_scheduledEPS_>
+ 1c6:	09 81       	ldd	r16, Y+1	; 0x01
+ 1c8:	1a 81       	ldd	r17, Y+2	; 0x02
+ 1ca:	ed b7       	in	r30, 0x3d	; 61
+ 1cc:	fe b7       	in	r31, 0x3e	; 62
+ 1ce:	36 96       	adiw	r30, 0x06	; 6
         case RF_FALSE:
 #ifdef VERBOSE
           SerPrintP("FALSE Rule");
 #endif
           this->prulefunc = (&apd_rule_false);
- 1d0:	c8 01       	movw	r24, r16
- 1d2:	b7 01       	movw	r22, r14
- 1d4:	0e 94 00 00 	call	0	; 0x0 <_ZN7APDRule18apd_rule_scheduledEPS_>
+ 1d0:	0f b6       	in	r0, 0x3f	; 63
+ 1d2:	f8 94       	cli
+ 1d4:	fe bf       	out	0x3e, r31	; 62
           break;
         case RF_TRUE:
 #ifdef VERBOSE
           SerPrintP("TRUE Rule");
 #endif
           this->prulefunc = (&apd_rule_true);
- 1d8:	00 97       	sbiw	r24, 0x00	; 0
- 1da:	01 f0       	breq	.+0      	; 0x1dc <_ZN7APDRule18apd_rule_scheduledEPS_+0x1dc>
+ 1d6:	0f be       	out	0x3f, r0	; 63
+ 1d8:	ed bf       	out	0x3d, r30	; 61
+ 1da:	c8 01       	movw	r24, r16
           break;
         case RF_METRO:
 #ifdef VERBOSE
           SerPrintP("METRO Rule");
 #endif
           this->prulefunc = (&apd_rule_metro);
- 1dc:	c8 01       	movw	r24, r16
- 1de:	b7 01       	movw	r22, r14
+ 1dc:	60 e0       	ldi	r22, 0x00	; 0
+ 1de:	70 e0       	ldi	r23, 0x00	; 0
  1e0:	0e 94 00 00 	call	0	; 0x0 <_ZN7APDRule18apd_rule_scheduledEPS_>
           if (this->pmetro = new Metro(this->config.rf_value)) {      // the correct metro value is the sensor's test val
  1e4:	89 2b       	or	r24, r25
- 1e6:	01 f4       	brne	.+0      	; 0x1e8 <_ZN7APDRule18apd_rule_scheduledEPS_+0x1e8>
- 1e8:	00 c0       	rjmp	.+0      	; 0x1ea <_ZN7APDRule18apd_rule_scheduledEPS_+0x1ea>
- 1ea:	c8 01       	movw	r24, r16
- 1ec:	6f e2       	ldi	r22, 0x2F	; 47
- 1ee:	70 e0       	ldi	r23, 0x00	; 0
- 1f0:	0e 94 00 00 	call	0	; 0x0 <_ZN7APDRule18apd_rule_scheduledEPS_>
- 1f4:	00 97       	sbiw	r24, 0x00	; 0
- 1f6:	01 f0       	breq	.+0      	; 0x1f8 <_ZN7APDRule18apd_rule_scheduledEPS_+0x1f8>
- 1f8:	00 c0       	rjmp	.+0      	; 0x1fa <_ZN7APDRule18apd_rule_scheduledEPS_+0x1fa>
- 1fa:	00 d0       	rcall	.+0      	; 0x1fc <_ZN7APDRule18apd_rule_scheduledEPS_+0x1fc>
- 1fc:	00 d0       	rcall	.+0      	; 0x1fe <_ZN7APDRule18apd_rule_scheduledEPS_+0x1fe>
- 1fe:	ed b7       	in	r30, 0x3d	; 61
- 200:	fe b7       	in	r31, 0x3e	; 62
- 202:	31 96       	adiw	r30, 0x01	; 1
- 204:	4b e0       	ldi	r20, 0x0B	; 11
- 206:	e4 2e       	mov	r14, r20
- 208:	f1 2c       	mov	r15, r1
- 20a:	ec 0e       	add	r14, r28
- 20c:	fd 1e       	adc	r15, r29
- 20e:	ad b7       	in	r26, 0x3d	; 61
+ 1e6:	01 f0       	breq	.+0      	; 0x1e8 <_ZN7APDRule18apd_rule_scheduledEPS_+0x1e8>
+ 1e8:	c8 01       	movw	r24, r16
+ 1ea:	b7 01       	movw	r22, r14
+ 1ec:	0e 94 00 00 	call	0	; 0x0 <_ZN7APDRule18apd_rule_scheduledEPS_>
+ 1f0:	00 97       	sbiw	r24, 0x00	; 0
+ 1f2:	01 f0       	breq	.+0      	; 0x1f4 <_ZN7APDRule18apd_rule_scheduledEPS_+0x1f4>
+ 1f4:	c8 01       	movw	r24, r16
+ 1f6:	b7 01       	movw	r22, r14
+ 1f8:	0e 94 00 00 	call	0	; 0x0 <_ZN7APDRule18apd_rule_scheduledEPS_>
+ 1fc:	89 2b       	or	r24, r25
+ 1fe:	01 f4       	brne	.+0      	; 0x200 <_ZN7APDRule18apd_rule_scheduledEPS_+0x200>
+ 200:	00 c0       	rjmp	.+0      	; 0x202 <_ZN7APDRule18apd_rule_scheduledEPS_+0x202>
+ 202:	c8 01       	movw	r24, r16
+ 204:	6f e2       	ldi	r22, 0x2F	; 47
+ 206:	70 e0       	ldi	r23, 0x00	; 0
+ 208:	0e 94 00 00 	call	0	; 0x0 <_ZN7APDRule18apd_rule_scheduledEPS_>
+ 20c:	00 97       	sbiw	r24, 0x00	; 0
+ 20e:	01 f0       	breq	.+0      	; 0x210 <_ZN7APDRule18apd_rule_scheduledEPS_+0x210>
 #ifdef VERBOSE
           	SerPrintP("Rule Metro allocated");
 #endif
           } else {
          Serial.println(APDUINO_ERROR_RMETROALLOCFAIL,HEX);
- 210:	be b7       	in	r27, 0x3e	; 62
- 212:	12 96       	adiw	r26, 0x02	; 2
- 214:	fc 92       	st	X, r15
- 216:	ee 92       	st	-X, r14
- 218:	11 97       	sbiw	r26, 0x01	; 1
+ 210:	00 c0       	rjmp	.+0      	; 0x212 <_ZN7APDRule18apd_rule_scheduledEPS_+0x212>
+ 212:	80 e0       	ldi	r24, 0x00	; 0
+ 214:	90 e0       	ldi	r25, 0x00	; 0
+ 216:	0e 94 00 00 	call	0	; 0x0 <_ZN7APDRule18apd_rule_scheduledEPS_>
           break;
         case RF_SCHEDULED:
 #ifdef VERBOSE
           SerPrintP("RTC Rule");
 #endif
           this->prulefunc = (&apd_rule_scheduled);
- 21a:	80 e0       	ldi	r24, 0x00	; 0
- 21c:	90 e0       	ldi	r25, 0x00	; 0
- 21e:	93 83       	std	Z+3, r25	; 0x03
+ 21a:	00 d0       	rcall	.+0      	; 0x21c <_ZN7APDRule18apd_rule_scheduledEPS_+0x21c>
+ 21c:	00 d0       	rcall	.+0      	; 0x21e <_ZN7APDRule18apd_rule_scheduledEPS_+0x21e>
+ 21e:	ed b7       	in	r30, 0x3d	; 61
           break;
         case RF_IDLE_CHECK:
 #ifdef VERBOSE
           SerPrintP("IDLE Rule");
 #endif
           this->prulefunc = (&apd_rule_idle_check);
- 220:	82 83       	std	Z+2, r24	; 0x02
- 222:	89 89       	ldd	r24, Y+17	; 0x11
- 224:	84 83       	std	Z+4, r24	; 0x04
+ 220:	fe b7       	in	r31, 0x3e	; 62
+ 222:	31 96       	adiw	r30, 0x01	; 1
+ 224:	4b e0       	ldi	r20, 0x0B	; 11
           break;
         case RF_RAM_CHECK:
 #ifdef VERBOSE
           SerPrintP("RAM Rule");
 #endif
           this->prulefunc = (&apd_rule_ram_check);
- 226:	15 82       	std	Z+5, r1	; 0x05
- 228:	0e 94 00 00 	call	0	; 0x0 <_ZN7APDRule18apd_rule_scheduledEPS_>
+ 226:	e4 2e       	mov	r14, r20
+ 228:	f1 2c       	mov	r15, r1
+ 22a:	ec 0e       	add	r14, r28
           break;
         case RF_SENSOR_GT:
 #ifdef VERBOSE
 			SerPrintP("SENSOR GT VAL Rule");
 #endif
 			this->prulefunc = (&apd_rule_sensor_gt);
- 22c:	0b 81       	ldd	r16, Y+3	; 0x03
- 22e:	1c 81       	ldd	r17, Y+4	; 0x04
- 230:	ed b7       	in	r30, 0x3d	; 61
+ 22c:	fd 1e       	adc	r15, r29
+ 22e:	ad b7       	in	r26, 0x3d	; 61
+ 230:	be b7       	in	r27, 0x3e	; 62
         	break;
         case RF_SENSOR_LT:
 #ifdef VERBOSE
             SerPrintP("SENSOR LT VAL Rule");
 #endif
             this->prulefunc = (&apd_rule_sensor_lt);
- 232:	fe b7       	in	r31, 0x3e	; 62
- 234:	36 96       	adiw	r30, 0x06	; 6
- 236:	0f b6       	in	r0, 0x3f	; 63
+ 232:	12 96       	adiw	r26, 0x02	; 2
+ 234:	fc 92       	st	X, r15
+ 236:	ee 92       	st	-X, r14
           break;
         case RF_SENSOR_EQ:
 #ifdef VERBOSE
             SerPrintP("SENSOR EQ VAL Rule");
 #endif
             this->prulefunc = (&apd_rule_sensor_equ);
- 238:	f8 94       	cli
- 23a:	fe bf       	out	0x3e, r31	; 62
- 23c:	0f be       	out	0x3f, r0	; 63
+ 238:	11 97       	sbiw	r26, 0x01	; 1
+ 23a:	80 e0       	ldi	r24, 0x00	; 0
+ 23c:	90 e0       	ldi	r25, 0x00	; 0
           break;
         case RF_EVALUATE:
 #ifdef VERBOSE
 					SerPrintP("EVALUATE CONDITIONS");
 #endif
 					this->prulefunc = (&apd_rule_eval_conditions);
- 23e:	ed bf       	out	0x3d, r30	; 61
- 240:	c8 01       	movw	r24, r16
- 242:	60 e0       	ldi	r22, 0x00	; 0
- 244:	70 e0       	ldi	r23, 0x00	; 0
- 246:	0e 94 00 00 	call	0	; 0x0 <_ZN7APDRule18apd_rule_scheduledEPS_>
+ 23e:	93 83       	std	Z+3, r25	; 0x03
+ 240:	82 83       	std	Z+2, r24	; 0x02
+ 242:	89 89       	ldd	r24, Y+17	; 0x11
+ 244:	84 83       	std	Z+4, r24	; 0x04
+ 246:	15 82       	std	Z+5, r1	; 0x05
 					break;
         default:
         	Serial.println(APDUINO_ERROR_RDEFINVALID,HEX);
- 24a:	89 2b       	or	r24, r25
- 24c:	01 f0       	breq	.+0      	; 0x24e <_ZN7APDRule18apd_rule_scheduledEPS_+0x24e>
- 24e:	c8 01       	movw	r24, r16
- 250:	b7 01       	movw	r22, r14
- 252:	0e 94 00 00 	call	0	; 0x0 <_ZN7APDRule18apd_rule_scheduledEPS_>
- 256:	00 97       	sbiw	r24, 0x00	; 0
- 258:	01 f0       	breq	.+0      	; 0x25a <_ZN7APDRule18apd_rule_scheduledEPS_+0x25a>
+ 248:	0e 94 00 00 	call	0	; 0x0 <_ZN7APDRule18apd_rule_scheduledEPS_>
+ 24c:	0b 81       	ldd	r16, Y+3	; 0x03
+ 24e:	1c 81       	ldd	r17, Y+4	; 0x04
+ 250:	ed b7       	in	r30, 0x3d	; 61
+ 252:	fe b7       	in	r31, 0x3e	; 62
+ 254:	36 96       	adiw	r30, 0x06	; 6
+ 256:	0f b6       	in	r0, 0x3f	; 63
+ 258:	f8 94       	cli
   		strcpy(this->config.pszcron, rdc->pszcron);
   	} else {
   		Serial.println(APDUINO_ERROR_RAOUTOFMEM,HEX);
   	}
   } else {
   	this->config.pszcron = NULL;
- 25a:	c8 01       	movw	r24, r16
- 25c:	b7 01       	movw	r22, r14
- 25e:	0e 94 00 00 	call	0	; 0x0 <_ZN7APDRule18apd_rule_scheduledEPS_>
+ 25a:	fe bf       	out	0x3e, r31	; 62
+ 25c:	0f be       	out	0x3f, r0	; 63
+ 25e:	ed bf       	out	0x3d, r30	; 61
         	Serial.println(APDUINO_ERROR_RDEFINVALID,HEX);
 #ifdef VERBOSE
           SerPrintP("Invalid rule definition."); Serial.print(this->config.rule_definition);
 #endif
       }
 }
- 262:	89 2b       	or	r24, r25
- 264:	01 f4       	brne	.+0      	; 0x266 <_ZN7APDRule18apd_rule_scheduledEPS_+0x266>
- 266:	00 c0       	rjmp	.+0      	; 0x268 <_ZN7APDRule18apd_rule_scheduledEPS_+0x268>
- 268:	c8 01       	movw	r24, r16
- 26a:	6f e2       	ldi	r22, 0x2F	; 47
- 26c:	70 e0       	ldi	r23, 0x00	; 0
- 26e:	0e 94 00 00 	call	0	; 0x0 <_ZN7APDRule18apd_rule_scheduledEPS_>
- 272:	00 97       	sbiw	r24, 0x00	; 0
- 274:	01 f0       	breq	.+0      	; 0x276 <_ZN7APDRule18apd_rule_scheduledEPS_+0x276>
- 276:	00 c0       	rjmp	.+0      	; 0x278 <_ZN7APDRule18apd_rule_scheduledEPS_+0x278>
- 278:	00 d0       	rcall	.+0      	; 0x27a <_ZN7APDRule18apd_rule_scheduledEPS_+0x27a>
- 27a:	00 d0       	rcall	.+0      	; 0x27c <_ZN7APDRule18apd_rule_scheduledEPS_+0x27c>
- 27c:	ed b7       	in	r30, 0x3d	; 61
- 27e:	fe b7       	in	r31, 0x3e	; 62
- 280:	31 96       	adiw	r30, 0x01	; 1
- 282:	3b e0       	ldi	r19, 0x0B	; 11
- 284:	e3 2e       	mov	r14, r19
- 286:	f1 2c       	mov	r15, r1
- 288:	ec 0e       	add	r14, r28
- 28a:	fd 1e       	adc	r15, r29
- 28c:	ad b7       	in	r26, 0x3d	; 61
- 28e:	be b7       	in	r27, 0x3e	; 62
- 290:	12 96       	adiw	r26, 0x02	; 2
- 292:	fc 92       	st	X, r15
- 294:	ee 92       	st	-X, r14
- 296:	11 97       	sbiw	r26, 0x01	; 1
+ 260:	c8 01       	movw	r24, r16
+ 262:	60 e0       	ldi	r22, 0x00	; 0
+ 264:	70 e0       	ldi	r23, 0x00	; 0
+ 266:	0e 94 00 00 	call	0	; 0x0 <_ZN7APDRule18apd_rule_scheduledEPS_>
+ 26a:	89 2b       	or	r24, r25
+ 26c:	01 f0       	breq	.+0      	; 0x26e <_ZN7APDRule18apd_rule_scheduledEPS_+0x26e>
+ 26e:	c8 01       	movw	r24, r16
+ 270:	b7 01       	movw	r22, r14
+ 272:	0e 94 00 00 	call	0	; 0x0 <_ZN7APDRule18apd_rule_scheduledEPS_>
+ 276:	00 97       	sbiw	r24, 0x00	; 0
+ 278:	01 f0       	breq	.+0      	; 0x27a <_ZN7APDRule18apd_rule_scheduledEPS_+0x27a>
+ 27a:	c8 01       	movw	r24, r16
+ 27c:	b7 01       	movw	r22, r14
+ 27e:	0e 94 00 00 	call	0	; 0x0 <_ZN7APDRule18apd_rule_scheduledEPS_>
+ 282:	89 2b       	or	r24, r25
+ 284:	01 f4       	brne	.+0      	; 0x286 <_ZN7APDRule18apd_rule_scheduledEPS_+0x286>
+ 286:	00 c0       	rjmp	.+0      	; 0x288 <_ZN7APDRule18apd_rule_scheduledEPS_+0x288>
+ 288:	c8 01       	movw	r24, r16
+ 28a:	6f e2       	ldi	r22, 0x2F	; 47
+ 28c:	70 e0       	ldi	r23, 0x00	; 0
+ 28e:	0e 94 00 00 	call	0	; 0x0 <_ZN7APDRule18apd_rule_scheduledEPS_>
+ 292:	00 97       	sbiw	r24, 0x00	; 0
+ 294:	01 f0       	breq	.+0      	; 0x296 <_ZN7APDRule18apd_rule_scheduledEPS_+0x296>
+ 296:	00 c0       	rjmp	.+0      	; 0x298 <_ZN7APDRule18apd_rule_scheduledEPS_+0x298>
  298:	80 e0       	ldi	r24, 0x00	; 0
  29a:	90 e0       	ldi	r25, 0x00	; 0
- 29c:	93 83       	std	Z+3, r25	; 0x03
- 29e:	82 83       	std	Z+2, r24	; 0x02
- 2a0:	88 89       	ldd	r24, Y+16	; 0x10
- 2a2:	84 83       	std	Z+4, r24	; 0x04
- 2a4:	15 82       	std	Z+5, r1	; 0x05
- 2a6:	0e 94 00 00 	call	0	; 0x0 <_ZN7APDRule18apd_rule_scheduledEPS_>
- 2aa:	0d 81       	ldd	r16, Y+5	; 0x05
- 2ac:	1e 81       	ldd	r17, Y+6	; 0x06
- 2ae:	ed b7       	in	r30, 0x3d	; 61
- 2b0:	fe b7       	in	r31, 0x3e	; 62
- 2b2:	36 96       	adiw	r30, 0x06	; 6
- 2b4:	0f b6       	in	r0, 0x3f	; 63
- 2b6:	f8 94       	cli
- 2b8:	fe bf       	out	0x3e, r31	; 62
- 2ba:	0f be       	out	0x3f, r0	; 63
- 2bc:	ed bf       	out	0x3d, r30	; 61
- 2be:	c8 01       	movw	r24, r16
- 2c0:	60 e0       	ldi	r22, 0x00	; 0
- 2c2:	70 e0       	ldi	r23, 0x00	; 0
- 2c4:	0e 94 00 00 	call	0	; 0x0 <_ZN7APDRule18apd_rule_scheduledEPS_>
- 2c8:	89 2b       	or	r24, r25
- 2ca:	01 f0       	breq	.+0      	; 0x2cc <_ZN7APDRule18apd_rule_scheduledEPS_+0x2cc>
- 2cc:	c8 01       	movw	r24, r16
- 2ce:	b7 01       	movw	r22, r14
- 2d0:	0e 94 00 00 	call	0	; 0x0 <_ZN7APDRule18apd_rule_scheduledEPS_>
- 2d4:	00 97       	sbiw	r24, 0x00	; 0
- 2d6:	01 f0       	breq	.+0      	; 0x2d8 <_ZN7APDRule18apd_rule_scheduledEPS_+0x2d8>
- 2d8:	c8 01       	movw	r24, r16
- 2da:	b7 01       	movw	r22, r14
- 2dc:	0e 94 00 00 	call	0	; 0x0 <_ZN7APDRule18apd_rule_scheduledEPS_>
- 2e0:	89 2b       	or	r24, r25
- 2e2:	01 f4       	brne	.+0      	; 0x2e4 <_ZN7APDRule18apd_rule_scheduledEPS_+0x2e4>
- 2e4:	00 c0       	rjmp	.+0      	; 0x2e6 <_ZN7APDRule18apd_rule_scheduledEPS_+0x2e6>
+ 29c:	0e 94 00 00 	call	0	; 0x0 <_ZN7APDRule18apd_rule_scheduledEPS_>
+ 2a0:	00 d0       	rcall	.+0      	; 0x2a2 <_ZN7APDRule18apd_rule_scheduledEPS_+0x2a2>
+ 2a2:	00 d0       	rcall	.+0      	; 0x2a4 <_ZN7APDRule18apd_rule_scheduledEPS_+0x2a4>
+ 2a4:	ed b7       	in	r30, 0x3d	; 61
+ 2a6:	fe b7       	in	r31, 0x3e	; 62
+ 2a8:	31 96       	adiw	r30, 0x01	; 1
+ 2aa:	3b e0       	ldi	r19, 0x0B	; 11
+ 2ac:	e3 2e       	mov	r14, r19
+ 2ae:	f1 2c       	mov	r15, r1
+ 2b0:	ec 0e       	add	r14, r28
+ 2b2:	fd 1e       	adc	r15, r29
+ 2b4:	ad b7       	in	r26, 0x3d	; 61
+ 2b6:	be b7       	in	r27, 0x3e	; 62
+ 2b8:	12 96       	adiw	r26, 0x02	; 2
+ 2ba:	fc 92       	st	X, r15
+ 2bc:	ee 92       	st	-X, r14
+ 2be:	11 97       	sbiw	r26, 0x01	; 1
+ 2c0:	80 e0       	ldi	r24, 0x00	; 0
+ 2c2:	90 e0       	ldi	r25, 0x00	; 0
+ 2c4:	93 83       	std	Z+3, r25	; 0x03
+ 2c6:	82 83       	std	Z+2, r24	; 0x02
+ 2c8:	88 89       	ldd	r24, Y+16	; 0x10
+ 2ca:	84 83       	std	Z+4, r24	; 0x04
+ 2cc:	15 82       	std	Z+5, r1	; 0x05
+ 2ce:	0e 94 00 00 	call	0	; 0x0 <_ZN7APDRule18apd_rule_scheduledEPS_>
+ 2d2:	0d 81       	ldd	r16, Y+5	; 0x05
+ 2d4:	1e 81       	ldd	r17, Y+6	; 0x06
+ 2d6:	ed b7       	in	r30, 0x3d	; 61
+ 2d8:	fe b7       	in	r31, 0x3e	; 62
+ 2da:	36 96       	adiw	r30, 0x06	; 6
+ 2dc:	0f b6       	in	r0, 0x3f	; 63
+ 2de:	f8 94       	cli
+ 2e0:	fe bf       	out	0x3e, r31	; 62
+ 2e2:	0f be       	out	0x3f, r0	; 63
+ 2e4:	ed bf       	out	0x3d, r30	; 61
  2e6:	c8 01       	movw	r24, r16
- 2e8:	6f e2       	ldi	r22, 0x2F	; 47
+ 2e8:	60 e0       	ldi	r22, 0x00	; 0
  2ea:	70 e0       	ldi	r23, 0x00	; 0
  2ec:	0e 94 00 00 	call	0	; 0x0 <_ZN7APDRule18apd_rule_scheduledEPS_>
- 2f0:	00 97       	sbiw	r24, 0x00	; 0
+ 2f0:	89 2b       	or	r24, r25
  2f2:	01 f0       	breq	.+0      	; 0x2f4 <_ZN7APDRule18apd_rule_scheduledEPS_+0x2f4>
- 2f4:	00 c0       	rjmp	.+0      	; 0x2f6 <_ZN7APDRule18apd_rule_scheduledEPS_+0x2f6>
- 2f6:	00 d0       	rcall	.+0      	; 0x2f8 <_ZN7APDRule18apd_rule_scheduledEPS_+0x2f8>
- 2f8:	00 d0       	rcall	.+0      	; 0x2fa <_ZN7APDRule18apd_rule_scheduledEPS_+0x2fa>
- 2fa:	ed b7       	in	r30, 0x3d	; 61
- 2fc:	fe b7       	in	r31, 0x3e	; 62
- 2fe:	31 96       	adiw	r30, 0x01	; 1
- 300:	2b e0       	ldi	r18, 0x0B	; 11
- 302:	e2 2e       	mov	r14, r18
- 304:	f1 2c       	mov	r15, r1
- 306:	ec 0e       	add	r14, r28
- 308:	fd 1e       	adc	r15, r29
- 30a:	ad b7       	in	r26, 0x3d	; 61
- 30c:	be b7       	in	r27, 0x3e	; 62
- 30e:	12 96       	adiw	r26, 0x02	; 2
- 310:	fc 92       	st	X, r15
- 312:	ee 92       	st	-X, r14
- 314:	11 97       	sbiw	r26, 0x01	; 1
- 316:	80 e0       	ldi	r24, 0x00	; 0
- 318:	90 e0       	ldi	r25, 0x00	; 0
- 31a:	93 83       	std	Z+3, r25	; 0x03
- 31c:	82 83       	std	Z+2, r24	; 0x02
- 31e:	8f 85       	ldd	r24, Y+15	; 0x0f
- 320:	84 83       	std	Z+4, r24	; 0x04
- 322:	15 82       	std	Z+5, r1	; 0x05
- 324:	0e 94 00 00 	call	0	; 0x0 <_ZN7APDRule18apd_rule_scheduledEPS_>
- 328:	0f 81       	ldd	r16, Y+7	; 0x07
- 32a:	18 85       	ldd	r17, Y+8	; 0x08
- 32c:	ed b7       	in	r30, 0x3d	; 61
- 32e:	fe b7       	in	r31, 0x3e	; 62
- 330:	36 96       	adiw	r30, 0x06	; 6
- 332:	0f b6       	in	r0, 0x3f	; 63
- 334:	f8 94       	cli
- 336:	fe bf       	out	0x3e, r31	; 62
- 338:	0f be       	out	0x3f, r0	; 63
- 33a:	ed bf       	out	0x3d, r30	; 61
- 33c:	c8 01       	movw	r24, r16
- 33e:	60 e0       	ldi	r22, 0x00	; 0
- 340:	70 e0       	ldi	r23, 0x00	; 0
- 342:	0e 94 00 00 	call	0	; 0x0 <_ZN7APDRule18apd_rule_scheduledEPS_>
- 346:	89 2b       	or	r24, r25
- 348:	01 f0       	breq	.+0      	; 0x34a <_ZN7APDRule18apd_rule_scheduledEPS_+0x34a>
- 34a:	c8 01       	movw	r24, r16
- 34c:	b7 01       	movw	r22, r14
- 34e:	0e 94 00 00 	call	0	; 0x0 <_ZN7APDRule18apd_rule_scheduledEPS_>
- 352:	00 97       	sbiw	r24, 0x00	; 0
- 354:	01 f0       	breq	.+0      	; 0x356 <_ZN7APDRule18apd_rule_scheduledEPS_+0x356>
- 356:	c8 01       	movw	r24, r16
- 358:	b7 01       	movw	r22, r14
- 35a:	0e 94 00 00 	call	0	; 0x0 <_ZN7APDRule18apd_rule_scheduledEPS_>
- 35e:	89 2b       	or	r24, r25
- 360:	01 f4       	brne	.+0      	; 0x362 <_ZN7APDRule18apd_rule_scheduledEPS_+0x362>
- 362:	00 c0       	rjmp	.+0      	; 0x364 <_ZN7APDRule18apd_rule_scheduledEPS_+0x364>
- 364:	c8 01       	movw	r24, r16
- 366:	6f e2       	ldi	r22, 0x2F	; 47
- 368:	70 e0       	ldi	r23, 0x00	; 0
- 36a:	0e 94 00 00 	call	0	; 0x0 <_ZN7APDRule18apd_rule_scheduledEPS_>
- 36e:	00 97       	sbiw	r24, 0x00	; 0
- 370:	01 f0       	breq	.+0      	; 0x372 <_ZN7APDRule18apd_rule_scheduledEPS_+0x372>
- 372:	00 c0       	rjmp	.+0      	; 0x374 <_ZN7APDRule18apd_rule_scheduledEPS_+0x374>
- 374:	ce 01       	movw	r24, r28
- 376:	0e 96       	adiw	r24, 0x0e	; 14
- 378:	0e 94 00 00 	call	0	; 0x0 <_ZN7APDRule18apd_rule_scheduledEPS_>
- 37c:	00 d0       	rcall	.+0      	; 0x37e <_ZN7APDRule18apd_rule_scheduledEPS_+0x37e>
- 37e:	00 d0       	rcall	.+0      	; 0x380 <_ZN7APDRule18apd_rule_scheduledEPS_+0x380>
- 380:	ed b7       	in	r30, 0x3d	; 61
- 382:	fe b7       	in	r31, 0x3e	; 62
- 384:	31 96       	adiw	r30, 0x01	; 1
- 386:	9b e0       	ldi	r25, 0x0B	; 11
- 388:	e9 2e       	mov	r14, r25
- 38a:	f1 2c       	mov	r15, r1
- 38c:	ec 0e       	add	r14, r28
- 38e:	fd 1e       	adc	r15, r29
- 390:	ad b7       	in	r26, 0x3d	; 61
- 392:	be b7       	in	r27, 0x3e	; 62
- 394:	12 96       	adiw	r26, 0x02	; 2
- 396:	fc 92       	st	X, r15
- 398:	ee 92       	st	-X, r14
- 39a:	11 97       	sbiw	r26, 0x01	; 1
- 39c:	20 e0       	ldi	r18, 0x00	; 0
- 39e:	30 e0       	ldi	r19, 0x00	; 0
- 3a0:	33 83       	std	Z+3, r19	; 0x03
- 3a2:	22 83       	std	Z+2, r18	; 0x02
- 3a4:	84 83       	std	Z+4, r24	; 0x04
- 3a6:	15 82       	std	Z+5, r1	; 0x05
+ 2f4:	c8 01       	movw	r24, r16
+ 2f6:	b7 01       	movw	r22, r14
+ 2f8:	0e 94 00 00 	call	0	; 0x0 <_ZN7APDRule18apd_rule_scheduledEPS_>
+ 2fc:	00 97       	sbiw	r24, 0x00	; 0
+ 2fe:	01 f0       	breq	.+0      	; 0x300 <_ZN7APDRule18apd_rule_scheduledEPS_+0x300>
+ 300:	c8 01       	movw	r24, r16
+ 302:	b7 01       	movw	r22, r14
+ 304:	0e 94 00 00 	call	0	; 0x0 <_ZN7APDRule18apd_rule_scheduledEPS_>
+ 308:	89 2b       	or	r24, r25
+ 30a:	01 f4       	brne	.+0      	; 0x30c <_ZN7APDRule18apd_rule_scheduledEPS_+0x30c>
+ 30c:	00 c0       	rjmp	.+0      	; 0x30e <_ZN7APDRule18apd_rule_scheduledEPS_+0x30e>
+ 30e:	c8 01       	movw	r24, r16
+ 310:	6f e2       	ldi	r22, 0x2F	; 47
+ 312:	70 e0       	ldi	r23, 0x00	; 0
+ 314:	0e 94 00 00 	call	0	; 0x0 <_ZN7APDRule18apd_rule_scheduledEPS_>
+ 318:	00 97       	sbiw	r24, 0x00	; 0
+ 31a:	01 f0       	breq	.+0      	; 0x31c <_ZN7APDRule18apd_rule_scheduledEPS_+0x31c>
+ 31c:	00 c0       	rjmp	.+0      	; 0x31e <_ZN7APDRule18apd_rule_scheduledEPS_+0x31e>
+ 31e:	80 e0       	ldi	r24, 0x00	; 0
+ 320:	90 e0       	ldi	r25, 0x00	; 0
+ 322:	0e 94 00 00 	call	0	; 0x0 <_ZN7APDRule18apd_rule_scheduledEPS_>
+ 326:	00 d0       	rcall	.+0      	; 0x328 <_ZN7APDRule18apd_rule_scheduledEPS_+0x328>
+ 328:	00 d0       	rcall	.+0      	; 0x32a <_ZN7APDRule18apd_rule_scheduledEPS_+0x32a>
+ 32a:	ed b7       	in	r30, 0x3d	; 61
+ 32c:	fe b7       	in	r31, 0x3e	; 62
+ 32e:	31 96       	adiw	r30, 0x01	; 1
+ 330:	2b e0       	ldi	r18, 0x0B	; 11
+ 332:	e2 2e       	mov	r14, r18
+ 334:	f1 2c       	mov	r15, r1
+ 336:	ec 0e       	add	r14, r28
+ 338:	fd 1e       	adc	r15, r29
+ 33a:	ad b7       	in	r26, 0x3d	; 61
+ 33c:	be b7       	in	r27, 0x3e	; 62
+ 33e:	12 96       	adiw	r26, 0x02	; 2
+ 340:	fc 92       	st	X, r15
+ 342:	ee 92       	st	-X, r14
+ 344:	11 97       	sbiw	r26, 0x01	; 1
+ 346:	80 e0       	ldi	r24, 0x00	; 0
+ 348:	90 e0       	ldi	r25, 0x00	; 0
+ 34a:	93 83       	std	Z+3, r25	; 0x03
+ 34c:	82 83       	std	Z+2, r24	; 0x02
+ 34e:	8f 85       	ldd	r24, Y+15	; 0x0f
+ 350:	84 83       	std	Z+4, r24	; 0x04
+ 352:	15 82       	std	Z+5, r1	; 0x05
+ 354:	0e 94 00 00 	call	0	; 0x0 <_ZN7APDRule18apd_rule_scheduledEPS_>
+ 358:	0f 81       	ldd	r16, Y+7	; 0x07
+ 35a:	18 85       	ldd	r17, Y+8	; 0x08
+ 35c:	ed b7       	in	r30, 0x3d	; 61
+ 35e:	fe b7       	in	r31, 0x3e	; 62
+ 360:	36 96       	adiw	r30, 0x06	; 6
+ 362:	0f b6       	in	r0, 0x3f	; 63
+ 364:	f8 94       	cli
+ 366:	fe bf       	out	0x3e, r31	; 62
+ 368:	0f be       	out	0x3f, r0	; 63
+ 36a:	ed bf       	out	0x3d, r30	; 61
+ 36c:	c8 01       	movw	r24, r16
+ 36e:	60 e0       	ldi	r22, 0x00	; 0
+ 370:	70 e0       	ldi	r23, 0x00	; 0
+ 372:	0e 94 00 00 	call	0	; 0x0 <_ZN7APDRule18apd_rule_scheduledEPS_>
+ 376:	89 2b       	or	r24, r25
+ 378:	01 f0       	breq	.+0      	; 0x37a <_ZN7APDRule18apd_rule_scheduledEPS_+0x37a>
+ 37a:	c8 01       	movw	r24, r16
+ 37c:	b7 01       	movw	r22, r14
+ 37e:	0e 94 00 00 	call	0	; 0x0 <_ZN7APDRule18apd_rule_scheduledEPS_>
+ 382:	00 97       	sbiw	r24, 0x00	; 0
+ 384:	01 f0       	breq	.+0      	; 0x386 <_ZN7APDRule18apd_rule_scheduledEPS_+0x386>
+ 386:	c8 01       	movw	r24, r16
+ 388:	b7 01       	movw	r22, r14
+ 38a:	0e 94 00 00 	call	0	; 0x0 <_ZN7APDRule18apd_rule_scheduledEPS_>
+ 38e:	89 2b       	or	r24, r25
+ 390:	01 f4       	brne	.+0      	; 0x392 <_ZN7APDRule18apd_rule_scheduledEPS_+0x392>
+ 392:	00 c0       	rjmp	.+0      	; 0x394 <_ZN7APDRule18apd_rule_scheduledEPS_+0x394>
+ 394:	c8 01       	movw	r24, r16
+ 396:	6f e2       	ldi	r22, 0x2F	; 47
+ 398:	70 e0       	ldi	r23, 0x00	; 0
+ 39a:	0e 94 00 00 	call	0	; 0x0 <_ZN7APDRule18apd_rule_scheduledEPS_>
+ 39e:	00 97       	sbiw	r24, 0x00	; 0
+ 3a0:	01 f0       	breq	.+0      	; 0x3a2 <_ZN7APDRule18apd_rule_scheduledEPS_+0x3a2>
+ 3a2:	00 c0       	rjmp	.+0      	; 0x3a4 <_ZN7APDRule18apd_rule_scheduledEPS_+0x3a4>
+ 3a4:	80 e0       	ldi	r24, 0x00	; 0
+ 3a6:	90 e0       	ldi	r25, 0x00	; 0
  3a8:	0e 94 00 00 	call	0	; 0x0 <_ZN7APDRule18apd_rule_scheduledEPS_>
- 3ac:	09 85       	ldd	r16, Y+9	; 0x09
- 3ae:	1a 85       	ldd	r17, Y+10	; 0x0a
- 3b0:	ed b7       	in	r30, 0x3d	; 61
- 3b2:	fe b7       	in	r31, 0x3e	; 62
- 3b4:	36 96       	adiw	r30, 0x06	; 6
- 3b6:	0f b6       	in	r0, 0x3f	; 63
- 3b8:	f8 94       	cli
- 3ba:	fe bf       	out	0x3e, r31	; 62
- 3bc:	0f be       	out	0x3f, r0	; 63
- 3be:	ed bf       	out	0x3d, r30	; 61
- 3c0:	c8 01       	movw	r24, r16
- 3c2:	60 e0       	ldi	r22, 0x00	; 0
- 3c4:	70 e0       	ldi	r23, 0x00	; 0
- 3c6:	0e 94 00 00 	call	0	; 0x0 <_ZN7APDRule18apd_rule_scheduledEPS_>
- 3ca:	89 2b       	or	r24, r25
- 3cc:	01 f0       	breq	.+0      	; 0x3ce <_ZN7APDRule18apd_rule_scheduledEPS_+0x3ce>
- 3ce:	c8 01       	movw	r24, r16
- 3d0:	b7 01       	movw	r22, r14
- 3d2:	0e 94 00 00 	call	0	; 0x0 <_ZN7APDRule18apd_rule_scheduledEPS_>
- 3d6:	00 97       	sbiw	r24, 0x00	; 0
- 3d8:	01 f0       	breq	.+0      	; 0x3da <_ZN7APDRule18apd_rule_scheduledEPS_+0x3da>
- 3da:	c8 01       	movw	r24, r16
- 3dc:	b7 01       	movw	r22, r14
- 3de:	0e 94 00 00 	call	0	; 0x0 <_ZN7APDRule18apd_rule_scheduledEPS_>
- 3e2:	89 2b       	or	r24, r25
- 3e4:	01 f0       	breq	.+0      	; 0x3e6 <_ZN7APDRule18apd_rule_scheduledEPS_+0x3e6>
- 3e6:	c8 01       	movw	r24, r16
- 3e8:	6f e2       	ldi	r22, 0x2F	; 47
- 3ea:	70 e0       	ldi	r23, 0x00	; 0
- 3ec:	0e 94 00 00 	call	0	; 0x0 <_ZN7APDRule18apd_rule_scheduledEPS_>
- 3f0:	9c 01       	movw	r18, r24
- 3f2:	80 e0       	ldi	r24, 0x00	; 0
- 3f4:	23 2b       	or	r18, r19
- 3f6:	01 f4       	brne	.+0      	; 0x3f8 <_ZN7APDRule18apd_rule_scheduledEPS_+0x3f8>
- 3f8:	00 c0       	rjmp	.+0      	; 0x3fa <_ZN7APDRule18apd_rule_scheduledEPS_+0x3fa>
- 3fa:	80 e0       	ldi	r24, 0x00	; 0
- 3fc:	00 c0       	rjmp	.+0      	; 0x3fe <_ZN7APDRule18apd_rule_scheduledEPS_+0x3fe>
- 3fe:	81 e0       	ldi	r24, 0x01	; 1
- 400:	a3 96       	adiw	r28, 0x23	; 35
- 402:	0f b6       	in	r0, 0x3f	; 63
- 404:	f8 94       	cli
- 406:	de bf       	out	0x3e, r29	; 62
- 408:	0f be       	out	0x3f, r0	; 63
- 40a:	cd bf       	out	0x3d, r28	; 61
- 40c:	cf 91       	pop	r28
- 40e:	df 91       	pop	r29
- 410:	1f 91       	pop	r17
- 412:	0f 91       	pop	r16
- 414:	ff 90       	pop	r15
- 416:	ef 90       	pop	r14
- 418:	08 95       	ret
+ 3ac:	ce 01       	movw	r24, r28
+ 3ae:	0e 96       	adiw	r24, 0x0e	; 14
+ 3b0:	0e 94 00 00 	call	0	; 0x0 <_ZN7APDRule18apd_rule_scheduledEPS_>
+ 3b4:	00 d0       	rcall	.+0      	; 0x3b6 <_ZN7APDRule18apd_rule_scheduledEPS_+0x3b6>
+ 3b6:	00 d0       	rcall	.+0      	; 0x3b8 <_ZN7APDRule18apd_rule_scheduledEPS_+0x3b8>
+ 3b8:	ed b7       	in	r30, 0x3d	; 61
+ 3ba:	fe b7       	in	r31, 0x3e	; 62
+ 3bc:	31 96       	adiw	r30, 0x01	; 1
+ 3be:	9b e0       	ldi	r25, 0x0B	; 11
+ 3c0:	e9 2e       	mov	r14, r25
+ 3c2:	f1 2c       	mov	r15, r1
+ 3c4:	ec 0e       	add	r14, r28
+ 3c6:	fd 1e       	adc	r15, r29
+ 3c8:	ad b7       	in	r26, 0x3d	; 61
+ 3ca:	be b7       	in	r27, 0x3e	; 62
+ 3cc:	12 96       	adiw	r26, 0x02	; 2
+ 3ce:	fc 92       	st	X, r15
+ 3d0:	ee 92       	st	-X, r14
+ 3d2:	11 97       	sbiw	r26, 0x01	; 1
+ 3d4:	20 e0       	ldi	r18, 0x00	; 0
+ 3d6:	30 e0       	ldi	r19, 0x00	; 0
+ 3d8:	33 83       	std	Z+3, r19	; 0x03
+ 3da:	22 83       	std	Z+2, r18	; 0x02
+ 3dc:	84 83       	std	Z+4, r24	; 0x04
+ 3de:	15 82       	std	Z+5, r1	; 0x05
+ 3e0:	0e 94 00 00 	call	0	; 0x0 <_ZN7APDRule18apd_rule_scheduledEPS_>
+ 3e4:	09 85       	ldd	r16, Y+9	; 0x09
+ 3e6:	1a 85       	ldd	r17, Y+10	; 0x0a
+ 3e8:	ed b7       	in	r30, 0x3d	; 61
+ 3ea:	fe b7       	in	r31, 0x3e	; 62
+ 3ec:	36 96       	adiw	r30, 0x06	; 6
+ 3ee:	0f b6       	in	r0, 0x3f	; 63
+ 3f0:	f8 94       	cli
+ 3f2:	fe bf       	out	0x3e, r31	; 62
+ 3f4:	0f be       	out	0x3f, r0	; 63
+ 3f6:	ed bf       	out	0x3d, r30	; 61
+ 3f8:	c8 01       	movw	r24, r16
+ 3fa:	60 e0       	ldi	r22, 0x00	; 0
+ 3fc:	70 e0       	ldi	r23, 0x00	; 0
+ 3fe:	0e 94 00 00 	call	0	; 0x0 <_ZN7APDRule18apd_rule_scheduledEPS_>
+ 402:	89 2b       	or	r24, r25
+ 404:	01 f0       	breq	.+0      	; 0x406 <_ZN7APDRule18apd_rule_scheduledEPS_+0x406>
+ 406:	c8 01       	movw	r24, r16
+ 408:	b7 01       	movw	r22, r14
+ 40a:	0e 94 00 00 	call	0	; 0x0 <_ZN7APDRule18apd_rule_scheduledEPS_>
+ 40e:	00 97       	sbiw	r24, 0x00	; 0
+ 410:	01 f0       	breq	.+0      	; 0x412 <_ZN7APDRule18apd_rule_scheduledEPS_+0x412>
+ 412:	c8 01       	movw	r24, r16
+ 414:	b7 01       	movw	r22, r14
+ 416:	0e 94 00 00 	call	0	; 0x0 <_ZN7APDRule18apd_rule_scheduledEPS_>
+ 41a:	89 2b       	or	r24, r25
+ 41c:	01 f0       	breq	.+0      	; 0x41e <_ZN7APDRule18apd_rule_scheduledEPS_+0x41e>
+ 41e:	c8 01       	movw	r24, r16
+ 420:	6f e2       	ldi	r22, 0x2F	; 47
+ 422:	70 e0       	ldi	r23, 0x00	; 0
+ 424:	0e 94 00 00 	call	0	; 0x0 <_ZN7APDRule18apd_rule_scheduledEPS_>
+ 428:	00 97       	sbiw	r24, 0x00	; 0
+ 42a:	01 f4       	brne	.+0      	; 0x42c <_ZN7APDRule18apd_rule_scheduledEPS_+0x42c>
+ 42c:	80 e0       	ldi	r24, 0x00	; 0
+ 42e:	90 e0       	ldi	r25, 0x00	; 0
+ 430:	0e 94 00 00 	call	0	; 0x0 <_ZN7APDRule18apd_rule_scheduledEPS_>
+ 434:	81 e0       	ldi	r24, 0x01	; 1
+ 436:	00 c0       	rjmp	.+0      	; 0x438 <_ZN7APDRule18apd_rule_scheduledEPS_+0x438>
+ 438:	80 e0       	ldi	r24, 0x00	; 0
+ 43a:	90 e0       	ldi	r25, 0x00	; 0
+ 43c:	0e 94 00 00 	call	0	; 0x0 <_ZN7APDRule18apd_rule_scheduledEPS_>
+ 440:	80 e0       	ldi	r24, 0x00	; 0
+ 442:	a3 96       	adiw	r28, 0x23	; 35
+ 444:	0f b6       	in	r0, 0x3f	; 63
+ 446:	f8 94       	cli
+ 448:	de bf       	out	0x3e, r29	; 62
+ 44a:	0f be       	out	0x3f, r0	; 63
+ 44c:	cd bf       	out	0x3d, r28	; 61
+ 44e:	cf 91       	pop	r28
+ 450:	df 91       	pop	r29
+ 452:	1f 91       	pop	r17
+ 454:	0f 91       	pop	r16
+ 456:	ff 90       	pop	r15
+ 458:	ef 90       	pop	r14
+ 45a:	df 90       	pop	r13
+ 45c:	cf 90       	pop	r12
+ 45e:	08 95       	ret
 
 Disassembly of section .text._ZN7APDRule14apd_rule_metroEPS_:
 

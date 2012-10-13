@@ -497,11 +497,13 @@ boolean APDRule::apd_rule_metro(APDRule *pRule) {
 
 // processes a cron-like time specification and returns true if job has to run
 boolean APDRule::apd_rule_scheduled(APDRule *pRule) {
+	SerPrintP("SCHEDULE CHECK IN RULE");
   //TODO: implement checking the cvalue as time against rtc - use UNIX time
   boolean bret = false;
   if (pRule->config.pszcron) {		// if a cron timing is specified
   	int ilen = strlen(pRule->config.pszcron);
   	char *psztemp = (char *)malloc(sizeof(char)*(ilen+1));
+  	strcpy(psztemp,pRule->config.pszcron);
   	char *pmins=0,*phours=0,*pdays=0,*pmonths=0,*pweekdays=0;
   	char **ppcronstrs[5] = { &pmins, &phours, &pdays, &pmonths, &pweekdays };	// put the pointers to an array
   	int i=0;
@@ -522,21 +524,27 @@ boolean APDRule::apd_rule_scheduled(APDRule *pRule) {
   	if (!strcmp_P(pmins,PSTR("*")) || !strcmp(pmins,cnow) ||
   			(strstr_P(pmins,cnow) && !strchr(pmins,'/'))) {		// should handle "*", "10", "10,20" type inputs on minute
   		// if minute was matching
+  		SerPrintP(".minmatch.");
   		sprintf_P(cnow,PSTR("%02d"),now.hour());
     	if (!strcmp_P(phours,PSTR("*")) || !strcmp(phours,cnow) ||
     			(strstr_P(phours,cnow) && !strchr(phours,'/'))) {
     			// if hour was matching
+    		SerPrintP(".hourmatch.");
     			sprintf_P(cnow,PSTR("%02d"),now.day());
 					if (!strcmp_P(pdays,PSTR("*")) || !strcmp(pdays,cnow) ||
 							(strstr_P(pdays,cnow) && !strchr(pdays,'/'))) {
 						// if day was matching
+						SerPrintP(".daymatch.");
 						sprintf_P(cnow,PSTR("%02d"),now.month());
 						if (!strcmp_P(pmonths,PSTR("*")) || !strcmp(pmonths,cnow) ||
 								(strstr_P(pmonths,cnow) && !strchr(pmonths,'/'))) {
 							// if month was matching
+							SerPrintP(".monthmatch.");
 							sprintf_P(cnow,PSTR("%d"),now.dayOfWeek());
 							if (!strcmp_P(pweekdays,PSTR("*")) || !strcmp(pweekdays,cnow) ||
 									(strstr_P(pweekdays,cnow) && !strchr(pweekdays,'/'))) {
+
+								SerPrintP("CRON IS TRUE -> RUN\n");
 								bret = true;
 								// todo store cron evaluation timestamp to avoid reeval?
 							}  // weekday
@@ -545,6 +553,8 @@ boolean APDRule::apd_rule_scheduled(APDRule *pRule) {
     	}  // hour
   	}	// minute
 
+  } else {
+  	SerPrintP("ERR: NO CRONSPEC");
   }
   return bret;
 }
