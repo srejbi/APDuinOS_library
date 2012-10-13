@@ -522,29 +522,29 @@ boolean APDRule::apd_rule_scheduled(APDRule *pRule) {
   	sprintf_P(cnow,PSTR("%02d"),now.minute());
   	// check if minute is *, equal to value or list containing value
   	if (!strcmp_P(pmins,PSTR("*")) || !strcmp(pmins,cnow) ||
-  			(strstr_P(pmins,cnow) && !strchr(pmins,'/'))) {		// should handle "*", "10", "10,20" type inputs on minute
+  			(strstr(pmins,cnow) && !strchr(pmins,'/'))) {		// should handle "*", "10", "10,20" type inputs on minute
   		// if minute was matching
   		SerPrintP(".minmatch.");
   		sprintf_P(cnow,PSTR("%02d"),now.hour());
     	if (!strcmp_P(phours,PSTR("*")) || !strcmp(phours,cnow) ||
-    			(strstr_P(phours,cnow) && !strchr(phours,'/'))) {
+    			(strstr(phours,cnow) && !strchr(phours,'/'))) {
     			// if hour was matching
     		SerPrintP(".hourmatch.");
     			sprintf_P(cnow,PSTR("%02d"),now.day());
 					if (!strcmp_P(pdays,PSTR("*")) || !strcmp(pdays,cnow) ||
-							(strstr_P(pdays,cnow) && !strchr(pdays,'/'))) {
+							(strstr(pdays,cnow) && !strchr(pdays,'/'))) {
 						// if day was matching
 						SerPrintP(".daymatch.");
 						sprintf_P(cnow,PSTR("%02d"),now.month());
 						if (!strcmp_P(pmonths,PSTR("*")) || !strcmp(pmonths,cnow) ||
-								(strstr_P(pmonths,cnow) && !strchr(pmonths,'/'))) {
+								(strstr(pmonths,cnow) && !strchr(pmonths,'/'))) {
 							// if month was matching
 							SerPrintP(".monthmatch.");
 							sprintf_P(cnow,PSTR("%d"),now.dayOfWeek());
 							if (!strcmp_P(pweekdays,PSTR("*")) || !strcmp(pweekdays,cnow) ||
-									(strstr_P(pweekdays,cnow) && !strchr(pweekdays,'/'))) {
+									(strstr(pweekdays,cnow) && !strchr(pweekdays,'/'))) {
 
-								SerPrintP("CRON IS TRUE -> RUN\n");
+								SerPrintP("CRON -> RUN\n");
 								bret = true;
 								// todo store cron evaluation timestamp to avoid reeval?
 							}  // weekday

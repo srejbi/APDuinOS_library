@@ -327,24 +327,24 @@ void APDRuleArray::loopRules() {
 void APDRuleArray::adjustnextcronminute() {
 	DateTime now = APDTime::now();
 	this->lastCronMin = now.minute();
-	SerPrintP("RESCHEDULE CRON EVAL IN"); Serial.print(60-now.second()); SerPrintP("seconds\n");
+	//SerPrintP("RESCHEDULE CRON EVAL IN"); Serial.print(60-now.second()); SerPrintP("seconds\n");
 	this->nextrunmillis = millis();
 	this->nextrunmillis += ((unsigned long)(60 - now.second())*1000);
-	Serial.print(this->nextrunmillis); SerPrintP("("); Serial.print(millis()); SerPrintP(")\n");
+	//Serial.print(this->nextrunmillis); SerPrintP("("); Serial.print(millis()); SerPrintP(")\n");
 }
 
 void APDRuleArray::evaluateScheduledRules() {
 	if (this->nextrunmillis < millis()) {
 		if (this->lastCronMin == -1) {		// if cron has been just started, we evaluate next 00:00
 			adjustnextcronminute();
-			SerPrintP("CRONADJUSTED\n");
+			//SerPrintP("CRONADJUSTED\n");
 			return;
 		}
-		SerPrintP("PMETROUP\n");
+		//SerPrintP("PMETROUP\n");
 		DateTime now = APDTime::now();
 		if (now.minute() != this->lastCronMin) {
-			SerPrintP("OTHERMINUTE");
-			this->lastCronMin = now.minute();
+			//SerPrintP("OTHERMINUTE");
+			//this->lastCronMin = now.minute();
 			for (int i=0; i < this->iRuleCount; i++) {      // loop through rules
 				if (this->pAPDRules[i]->config.rule_definition == RF_SCHEDULED) {	// only check scheduled
 					this->pAPDRules[i]->evaluateRule();
