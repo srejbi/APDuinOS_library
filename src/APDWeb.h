@@ -84,8 +84,8 @@ struct NETCONF {
 class APDWeb
 {
 public:
-  APDWeb(APDTime *pTime);
-  APDWeb(NETCONF *pnc, APDTime *pTime);
+  APDWeb();
+  APDWeb(NETCONF *pnc);
   virtual
   ~APDWeb();
 
@@ -117,7 +117,7 @@ private:
 
   boolean bEthConfigured;                   // will be true if we have an eth connection (DHCP or static)
 
-  APDTime *pAPDTime;                        // timekeeping; will receive ptr. no need to free
+  //APDTime *pAPDTime;                        // timekeeping; will receive ptr. no need to free
   APDStorage *pAPDStorage;									// pointer to storage
 
   APDSensor **pAPDSensors;
@@ -179,7 +179,7 @@ private:
   void get_thingspeaklog_string(char *szLogBuf);
 
   // initialization
-  void initBlank(APDTime *pTime);
+  void initBlank();
   boolean start();
   boolean restart();
 
@@ -218,7 +218,7 @@ private:
   static void web_notfound(EthernetClient *pClient);
   void ListFiles(EthernetClient client, const char *szPath, uint8_t flags);
   bool ServeFile(EthernetClient client, const char *szPath);
-  void processProvisioningRequest(EthernetClient *pclient);
+  void processProvisioningRequest(EthernetClient *pclient, boolean brespond);
   void claim_device_link(EthernetClient *pClient);
 
   static void json_array_item(EthernetClient *pClient, const int index, const char *name, const char *value, const char *logged );

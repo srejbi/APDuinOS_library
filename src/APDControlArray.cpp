@@ -134,26 +134,26 @@ int APDControlArray::loadControls(APDStorage *pAPDStorage) {
 #endif
                 pc->pcustfunc = (void (*)())this->pcustfuncs[pc->config.control_pin];      // cvalue must hold the cfunc idx
               } else {
-              	Serial.println(APDUINO_ERROR_CAMISSINGCUSTFUNC);
+              	Serial.println(APDUINO_ERROR_CAMISSINGCUSTFUNC,HEX);
                   //SerPrintP("E406");	// CA: missing custom function.
               }
             } else {
-            	Serial.println(APDUINO_ERROR_CAINVALIDCUSTFUNC);
+            	Serial.println(APDUINO_ERROR_CAINVALIDCUSTFUNC,HEX);
               //SerPrintP("E405");		// CA: invalid custom function.
             }
           }
         }
 
       } else {
-      	Serial.println(APDUINO_ERROR_CAALLOCFAIL);
+      	Serial.println(APDUINO_ERROR_CAALLOCFAIL,HEX);
         //SerPrintP("E403\n");	//CA alloc failed.
       }
     } else {
-    	Serial.println(APDUINO_ERROR_CANOCONTROLS);
+    	Serial.println(APDUINO_ERROR_CANOCONTROLS,HEX);
       //SerPrintP("W402\n");	//No controls defined.
     }
   } else {
-  	Serial.println(APDUINO_ERROR_CAALREADYALLOC);
+  	Serial.println(APDUINO_ERROR_CAALREADYALLOC,HEX);
     //SerPrintP("E401\n");		//CA already allocated.
     // TODO should implement cleanup and reload
   }
@@ -187,7 +187,7 @@ int APDControlArray::dumpToFile(APDStorage *pAPDStorage, char *pszFileName) {
   }
   else {
       // TODO add an error macro in storage, replace all error opening stuff with reference to that
-  	Serial.println(APDUINO_ERROR_CADUMPOPENFAIL);
+  	Serial.println(APDUINO_ERROR_CADUMPOPENFAIL,HEX);
     //SerPrintP("E429('"); Serial.print(pszFileName); SerPrintP("')\n");	// error opening dumpfile
   }
 

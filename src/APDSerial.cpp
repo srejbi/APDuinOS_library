@@ -28,7 +28,7 @@
 APDSerial::APDSerial(long baudrate) {
 	// TODO Auto-generated constructor stub
 	Serial.begin(baudrate);
-	Serial.println(APDUINO_MSG_SERIAL_INIT);			// todo replace this with future msg handler
+	Serial.println(APDUINO_MSG_SERIAL_INIT,HEX);			// todo replace this with future msg handler
 	Serial.print(baudrate); SerPrintP(" bauds.\n");
 }
 

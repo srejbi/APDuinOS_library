@@ -49,36 +49,34 @@ const int NTP_PACKET_SIZE= 48;                   // NTP time stamp is in the fir
 
 class APDTime {
 public:
-	APDTime();
-	APDTime(boolean bRTC);
-	virtual ~APDTime();
+	static void begin();
+	static int begin(boolean bRTC);
 
-	void initBlank();
+	static boolean started();
+	static DateTime now();
+	static char *nowS(char *strbuf);
+	static void adjust(DateTime dt);
+	static unsigned long getUpTime();
+	static char *getUpTimeS(char *psz_uptime);
 
-	DateTime now();
-	char *nowS(char *strbuf);
-	void adjust(DateTime dt);
-	unsigned long getUpTime();
-	char *getUpTimeS(char *psz_uptime);
+	static void PrintDateTime(DateTime t);
 
-	void PrintDateTime(DateTime t);
+	static void ntpSync();
+	static void setupNTPSync(int UDPPort, byte *TimeServer, int iTZ, int iDST );
+	static unsigned long sendNTPpacket(byte *address);
 
-	void ntpSync();
-	void setupNTPSync(int UDPPort, byte *TimeServer, int iTZ, int iDST );
-	unsigned long sendNTPpacket(byte *address);
-
-	int time_zone;
-	int dst;
-	byte timeServer[4];
-	int localPort;
+	static int time_zone;
+	static int dst;
+	static byte timeServer[4];
+	static int localPort;
 
 private:
-	EthernetUDP *pUdp;                        // todo, make this a pointer
-	byte pb[NTP_PACKET_SIZE];                 // buffer to hold incoming and outgoing NTP packets
-	RTC_DS1307 *pRTC;                         // RTC
-	RTC_Millis *pRTCm;                        // RTC for sw timekeeping
-	unsigned long start_time;
-	unsigned long rollovers;                  // TODO calc rollovers
+	static EthernetUDP *pUdp;                        // todo, make this a pointer
+	static byte pb[NTP_PACKET_SIZE];                 // buffer to hold incoming and outgoing NTP packets
+	static RTC_DS1307 *pRTC;                         // RTC
+	static RTC_Millis *pRTCm;                        // RTC for sw timekeeping
+	static unsigned long start_time;
+	static unsigned long rollovers;                  // TODO calc rollovers
 };
 
 #endif /* APDTIME_H_ */

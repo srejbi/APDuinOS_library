@@ -35,6 +35,7 @@
 
 APDEvaluator::APDEvaluator(APDSensorArray *pSA, APDControlArray *pCA) {
 	this->G_STRING_ITERATOR = 0;
+	this->iError = 0;
 	this->pSensors = pSA;
 	this->pControls = pCA;
 	// TODO Auto-generated constructor stub
@@ -61,7 +62,8 @@ void APDEvaluator::parse_error(const char* string) {
     SerPrintP(" ");
   }
   SerPrintP("^\n");
-  while (true) ;; // exit 1
+  iError++;
+  //while (true) ;; // exit 1
 }
 
 /* Will "consume" a character from the input,
@@ -73,8 +75,9 @@ void APDEvaluator::parse_error(const char* string) {
 char APDEvaluator::proc_c(const char* string, char c) {
   if(string[G_STRING_ITERATOR] != c) {
     parse_error(string);
+  } else {
+    ++G_STRING_ITERATOR;
   }
-  ++G_STRING_ITERATOR;
   return c;
 }
 
@@ -85,15 +88,16 @@ int APDEvaluator::proc_i(const char* string) {
 
   if(!isdigit(string[G_STRING_ITERATOR])) {
     parse_error(string);
-  }
+  } else {
 
-  /* I don't have to pass in the start of the string
-   * into atoi, but only where I want it to start
-   * scanning for an integer.
-   */
-  i = atoi(string + G_STRING_ITERATOR);
-  while(isdigit(string[G_STRING_ITERATOR])) {
-    ++G_STRING_ITERATOR;
+    /* I don't have to pass in the start of the string
+     * into atoi, but only where I want it to start
+     * scanning for an integer.
+     */
+    i = atoi(string + G_STRING_ITERATOR);
+    while(isdigit(string[G_STRING_ITERATOR])) {
+      ++G_STRING_ITERATOR;
+    }
   }
   return i;
 }
@@ -101,20 +105,21 @@ int APDEvaluator::proc_i(const char* string) {
 /* Same as consume_int, except for floats.
  */
 float APDEvaluator::proc_f(const char* string) {
-  float f;
+  float f=0;
 
   if(!isdigit(string[G_STRING_ITERATOR])) {
     parse_error(string);
-  }
+  } else {
 
-  /* I don't have to pass in the start of the string
-   * into atoi, but only where I want it to start
-   * scanning for an integer.
-   */
-  //f = atof(string + G_STRING_ITERATOR);
-  sscanf(string+G_STRING_ITERATOR,"%f",&f);
-  while(isdigit(string[G_STRING_ITERATOR])||string[G_STRING_ITERATOR]=='.') {
-    ++G_STRING_ITERATOR;
+    /* I don't have to pass in the start of the string
+     * into atoi, but only where I want it to start
+     * scanning for an integer.
+     */
+    //f = atof(string + G_STRING_ITERATOR);
+    sscanf(string+G_STRING_ITERATOR,"%f",&f);
+    while(isdigit(string[G_STRING_ITERATOR])||string[G_STRING_ITERATOR]=='.') { // TODO what about end of string??
+      ++G_STRING_ITERATOR;
+    }
   }
   return f;
 }
@@ -134,7 +139,7 @@ Expr* APDEvaluator::factor(const char* string, Expr* expr) {
 			expr->data.term = pC->iValue;
 			//expr->data.terminal = consume_int(string);
 		} else {
-			parse_error(string);
+			parse_error(string);		// TODO parse_error must return
 			expr->data.term = 0;
 		}
   } else if(string[G_STRING_ITERATOR] == 's') {		//sensor
@@ -244,7 +249,7 @@ Expr* APDEvaluator::expression(const char* string) {
 
   if(string[G_STRING_ITERATOR] == '(' || isdigit(string[G_STRING_ITERATOR])|| string[G_STRING_ITERATOR]=='c'|| string[G_STRING_ITERATOR]=='s') {
     if(NULL == (expr = (Expr*)malloc(sizeof(Expr)))) {
-      exit(1);
+      exit(1);			// TODO this is not the way to handle this
     }
 
     expr = term(string, expr);

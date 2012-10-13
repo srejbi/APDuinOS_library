@@ -35,9 +35,18 @@ APDRule::APDRule()
 // initialize with RDCONF
 APDRule::APDRule(RDCONF *rdc, APDSensorArray *pSA, APDControlArray *pCA) {
   initBlank();
+  int l = 0;
 
   memcpy((void*)&(this->config),(void*)rdc,sizeof(RDCONF));       // copy the structure to config
-
+  if (rdc->pszcron && (l = strlen(rdc->pszcron)) > 0 ) {
+  	if (this->config.pszcron = (char *)malloc(sizeof(char)*(l+1))) {
+  		strcpy(this->config.pszcron, rdc->pszcron);
+  	} else {
+  		Serial.println(APDUINO_ERROR_RAOUTOFMEM,HEX);
+  	}
+  } else {
+  	this->config.pszcron = NULL;
+  }
   this->psa = pSA;
   this->pca = pCA;
 
@@ -117,7 +126,7 @@ APDRule::APDRule(RDCONF *rdc, APDSensorArray *pSA, APDControlArray *pCA) {
 #endif
         //; Serial.print(this->pcontrol->config.label);SerPrintP("\" ");                // TODO dont access pcontrol, ptr not set!
       } else {
-      	Serial.println(APDUINO_WARN_RULEINVALIDCONTROL);
+      	Serial.println(APDUINO_WARN_RULEINVALIDCONTROL,HEX);
 #ifdef VERBOSE
         SerPrintP(" NULL/INVALID CONTROL.");
 #endif
@@ -172,17 +181,17 @@ APDRule::APDRule(RDCONF *rdc, APDSensorArray *pSA, APDControlArray *pCA) {
           	SerPrintP("Rule Metro allocated");
 #endif
           } else {
-         Serial.println(APDUINO_ERROR_RMETROALLOCFAIL);
+         Serial.println(APDUINO_ERROR_RMETROALLOCFAIL,HEX);
 #ifdef VERBOSE
           	SerPrintP("Failed to allocate rule metro.");
 #endif
           }
           break;
-        case RF_RTC_PASSED:
+        case RF_SCHEDULED:
 #ifdef VERBOSE
           SerPrintP("RTC Rule");
 #endif
-          this->prulefunc = (&apd_rule_rtc_passed);
+          this->prulefunc = (&apd_rule_scheduled);
           break;
         case RF_IDLE_CHECK:
 #ifdef VERBOSE
@@ -237,7 +246,7 @@ APDRule::APDRule(RDCONF *rdc, APDSensorArray *pSA, APDControlArray *pCA) {
 					this->prulefunc = (&apd_rule_eval_conditions);
 					break;
         default:
-        	Serial.println(APDUINO_ERROR_RDEFINVALID);
+        	Serial.println(APDUINO_ERROR_RDEFINVALID,HEX);
 #ifdef VERBOSE
           SerPrintP("Invalid rule definition."); Serial.print(this->config.rule_definition);
 #endif
@@ -258,6 +267,7 @@ APDRule::~APDRule()
 {
   // TODO Auto-generated destructor stub
 	if (this->pmetro) delete(this->pmetro);		// delete metro if any
+	free(this->config.pszcron);									// free up any dynamically allocated cron string
 	initBlank();
 }
 
@@ -285,10 +295,10 @@ void APDRule::evaluateRule() {
     SerPrintP("EVAL RULE "); Serial.print(this->config.label); //delay(10);
 #endif
     boolean bRuleOn = (*(this->prulefunc))(this);
-    if (bRuleOn != this->bLastState ||
+    if ((bRuleOn != this->bLastState ||
     		(bRuleOn && (this->config.reexec & REEXEC_TRUE)) ||
     		(!bRuleOn && (this->config.reexec & REEXEC_FALSE))
-    		) {
+    		) || (bRuleOn && this->config.rule_definition == RF_SCHEDULED )) {
     	this->bLastState = bRuleOn;
 		  int iControlValue = 0;
 		  if (bRuleOn) {                           // if the rule evaluated as TRUE
@@ -440,7 +450,7 @@ void (*APDRule::get_rule_action_ptr(int rule_action))(APDControl *,int) {
       pfunc= (&APDControl::apd_action_noop);
       break;
     default:
-    	Serial.println(APDUINO_ERROR_RACTIONINVALID);
+    	Serial.println(APDUINO_ERROR_RACTIONINVALID,HEX);
 #ifdef VERBOSE
       SerPrintP("Invalid Control Action definition."); Serial.print(rule_action);
 #endif
@@ -485,9 +495,68 @@ boolean APDRule::apd_rule_metro(APDRule *pRule) {
   return retcode;
 }
 
-boolean APDRule::apd_rule_rtc_passed(APDRule *pRule) {
+// processes a cron-like time specification and returns true if job has to run
+boolean APDRule::apd_rule_scheduled(APDRule *pRule) {
+	SerPrintP("SCHEDULE CHECK IN RULE");
   //TODO: implement checking the cvalue as time against rtc - use UNIX time
-  return false;
+  boolean bret = false;
+  if (pRule->config.pszcron) {		// if a cron timing is specified
+  	int ilen = strlen(pRule->config.pszcron);
+  	char *psztemp = (char *)malloc(sizeof(char)*(ilen+1));
+  	strcpy(psztemp,pRule->config.pszcron);
+  	char *pmins=0,*phours=0,*pdays=0,*pmonths=0,*pweekdays=0;
+  	char **ppcronstrs[5] = { &pmins, &phours, &pdays, &pmonths, &pweekdays };	// put the pointers to an array
+  	int i=0;
+  	for (int j=0; j < 5 && i < ilen; j++) {	// iterate the positions
+  		*(ppcronstrs[j]) = &psztemp[i];					// store the starting pointer to mins, hours, days, months, weekdays as we iterate through the string
+  		while (psztemp[i] != '_' && i < ilen) { i++; }		// skip to the next underscore
+  		if (psztemp[i] == '_') { psztemp[i] = 0; i++; }	// terminate substring (staring address just saved to a position)
+  	}
+  	// now we should have substrings
+  	SerPrintP("CRON STRING: "); Serial.print(pmins);
+  	Serial.print(","); Serial.print(phours); Serial.print(","); Serial.print(pdays); Serial.print(",");  Serial.print(pmonths); Serial.print(","); Serial.println(pweekdays);
+
+  	// TODO evaluate compared to current time
+  	DateTime now = APDTime::now();
+  	char cnow[3]="";
+  	sprintf_P(cnow,PSTR("%02d"),now.minute());
+  	// check if minute is *, equal to value or list containing value
+  	if (!strcmp_P(pmins,PSTR("*")) || !strcmp(pmins,cnow) ||
+  			(strstr(pmins,cnow) && !strchr(pmins,'/'))) {		// should handle "*", "10", "10,20" type inputs on minute
+  		// if minute was matching
+  		SerPrintP(".minmatch.");
+  		sprintf_P(cnow,PSTR("%02d"),now.hour());
+    	if (!strcmp_P(phours,PSTR("*")) || !strcmp(phours,cnow) ||
+    			(strstr(phours,cnow) && !strchr(phours,'/'))) {
+    			// if hour was matching
+    		SerPrintP(".hourmatch.");
+    			sprintf_P(cnow,PSTR("%02d"),now.day());
+					if (!strcmp_P(pdays,PSTR("*")) || !strcmp(pdays,cnow) ||
+							(strstr(pdays,cnow) && !strchr(pdays,'/'))) {
+						// if day was matching
+						SerPrintP(".daymatch.");
+						sprintf_P(cnow,PSTR("%02d"),now.month());
+						if (!strcmp_P(pmonths,PSTR("*")) || !strcmp(pmonths,cnow) ||
+								(strstr(pmonths,cnow) && !strchr(pmonths,'/'))) {
+							// if month was matching
+							SerPrintP(".monthmatch.");
+							sprintf_P(cnow,PSTR("%d"),now.dayOfWeek());
+							if (!strcmp_P(pweekdays,PSTR("*")) || !strcmp(pweekdays,cnow) ||
+									(strstr(pweekdays,cnow) && !strchr(pweekdays,'/'))) {
+
+								SerPrintP("CRON -> RUN\n");
+								bret = true;
+								// todo store cron evaluation timestamp to avoid reeval?
+							}  // weekday
+						}  // month
+					}  // day
+    	}  // hour
+  	}	// minute
+
+  } else {
+  	SerPrintP("ERR: NO CRONSPEC");
+  }
+  return bret;
 }
 
 //boolean apd_rule_rtc_metro(void *pRule) {
@@ -582,7 +651,7 @@ boolean APDRule::apd_rule_sensor_gt(APDRule *pRule) {
 
 boolean APDRule::apd_rule_eval_conditions(APDRule *pRule){
 #ifdef DEBUG
-  SerPrintP("EVALUATE CONDITIONS);
+  SerPrintP("EVALUATE CONDITIONS");
 #endif
   APDRule *pr = (APDRule*)pRule;
   APDEvaluator *ape = new APDEvaluator(pr->psa, pr->pca);

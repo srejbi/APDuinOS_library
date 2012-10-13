@@ -80,6 +80,7 @@ public:
 
 	int dothatstuff(char *str);
 	float feval(char *str);
+	int iError;
 
 private:
   unsigned int G_STRING_ITERATOR;
