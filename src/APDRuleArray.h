@@ -58,12 +58,14 @@ public:
   void evaluateScheduledRules();
 
 private:
+  void adjustnextcronminute();
+
   APDSensorArray *pSA;
   APDControlArray *pCA;
   APDRule** pAPDRules;
   int iRuleCount;
   float *bfIdle;
-  Metro *pcronMetro;
+  unsigned long nextrunmillis;
   int lastCronMin;
   friend class APDuino;         //FIXME if needed
   friend class APDSensorArray;

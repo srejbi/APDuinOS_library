@@ -33,7 +33,7 @@ APDRuleArray::APDRuleArray()
   this->iRuleCount=0;
   this->bfIdle=NULL;
   this->lastCronMin = -1;
-  this->pcronMetro = NULL;
+  this->nextrunmillis = millis() + 1000;
 }
 
 APDRuleArray::APDRuleArray(APDSensorArray *psa, APDControlArray *pca, float *bfidle)
@@ -44,7 +44,7 @@ APDRuleArray::APDRuleArray(APDSensorArray *psa, APDControlArray *pca, float *bfi
   this->iRuleCount=0;
   this->bfIdle=bfidle;
   this->lastCronMin = -1;
-  this->pcronMetro = NULL;
+  this->nextrunmillis = millis() + 1000;
 }
 
 APDRuleArray::~APDRuleArray()
@@ -61,7 +61,7 @@ APDRuleArray::~APDRuleArray()
       this->pAPDRules = NULL;
       this->iRuleCount=0;
   }
-  delete(this->pcronMetro);
+  //delete(this->pcronMetro);
 }
 
 
@@ -212,7 +212,8 @@ int APDRuleArray::loadRules(APDStorage *pAPDStorage) {
           }       // end enumerating rules
 
           //SerPrintP("Rules ok.\n");
-          if (this->pcronMetro) this->pcronMetro->reset();
+
+          this->nextrunmillis += 1000;
         } else {
         	Serial.println(APDUINO_ERROR_RAALLOCFAIL,HEX);
         	//SerPrintP("E503\n");
@@ -283,7 +284,7 @@ void APDRuleArray::evaluateSensorRules(void *pra, APDSensor *pSensor) {
 		if (iSensorIndex >= 0) {
 			for (int i=0; i < pRA->iRuleCount; i++) {      // loop through rules
 				if (pRA->pAPDRules[i]->config.rf_sensor_idx == iSensorIndex || pRA->pAPDRules[i]->config.ra_sensor_idx == iSensorIndex) {    // if rule is bound to the sensor either as trigger or input value for control
-				pRA->pAPDRules[i]->evaluateRule();
+					if (pRA->pAPDRules[i]->config.rule_definition != RF_SCHEDULED) pRA->pAPDRules[i]->evaluateRule();	// evaluate but scheduled rules
 				}  // evaluate if rule is for sensor
 			}  // loop rules
 		}
@@ -302,7 +303,7 @@ void APDRuleArray::evaluateSensorRulesByIdx(int iSensorIndex) {
     SerPrintP("RULE_EVAL:"); Serial.print(this->pAPDRules[i]->config.label);
     delay(10);
 #endif
-    this->pAPDRules[i]->evaluateRule();
+    	if (this->pAPDRules[i]->config.rule_definition != RF_SCHEDULED) this->pAPDRules[i]->evaluateRule(); // evaluate but scheduled rules
     }  // evaluate if rule is for sensor
   }  // loop rules
   //this->pRuleMetro->reset();    // restart the metro
@@ -313,39 +314,43 @@ void APDRuleArray::loopRules() {
 #ifdef DEBUG
 	SerPrintP("loop rules\n");
 #endif
+	evaluateScheduledRules();
   for (int i=0; i < this->iRuleCount; i++) {      // loop through rules
   	if (this->pAPDRules[i]->config.rule_definition != RF_SCHEDULED) {	// except scheduled rules
   		this->pAPDRules[i]->evaluateRule();
   	}
   }
-  evaluateScheduledRules();
+
   //pRuleMetro->reset();    // restart the metro
 }
 
+void APDRuleArray::adjustnextcronminute() {
+	DateTime now = APDTime::now();
+	this->lastCronMin = now.minute();
+	SerPrintP("RESCHEDULE CRON EVAL IN"); Serial.print(60-now.second()); SerPrintP("seconds\n");
+	this->nextrunmillis = millis();
+	this->nextrunmillis += ((unsigned long)(60 - now.second())*1000);
+	Serial.print(this->nextrunmillis); SerPrintP("("); Serial.print(millis()); SerPrintP(")\n");
+}
+
 void APDRuleArray::evaluateScheduledRules() {
-	//SerPrintP("loop rules\n");
-	if (this->pcronMetro == NULL) {
-		this->pcronMetro = new Metro(1,false);
-		SerPrintP("CREATED METRO");
-		//return;
-	}
-	if (this->pcronMetro->check()) {
-		SerPrintP("PMETROUP");
+	if (this->nextrunmillis < millis()) {
+		if (this->lastCronMin == -1) {		// if cron has been just started, we evaluate next 00:00
+			adjustnextcronminute();
+			SerPrintP("CRONADJUSTED\n");
+			return;
+		}
+		SerPrintP("PMETROUP\n");
 		DateTime now = APDTime::now();
-		if (now.minute() != lastCronMin) {
+		if (now.minute() != this->lastCronMin) {
 			SerPrintP("OTHERMINUTE");
-			lastCronMin = now.minute();
+			this->lastCronMin = now.minute();
 			for (int i=0; i < this->iRuleCount; i++) {      // loop through rules
 				if (this->pAPDRules[i]->config.rule_definition == RF_SCHEDULED) {	// only check scheduled
 					this->pAPDRules[i]->evaluateRule();
 				}
 			}
-			now = APDTime::now();
-			this->pcronMetro->interval( (60 - now.second())*1000 );
-		} else {
-			this->pcronMetro->interval( 60000 );
 		}
-		this->pcronMetro->reset();
-    //pRuleMetro->reset();    // restart the metro
+		adjustnextcronminute();
 	}
 }

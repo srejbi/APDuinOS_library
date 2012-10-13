@@ -295,10 +295,10 @@ void APDRule::evaluateRule() {
     SerPrintP("EVAL RULE "); Serial.print(this->config.label); //delay(10);
 #endif
     boolean bRuleOn = (*(this->prulefunc))(this);
-    if (bRuleOn != this->bLastState ||
+    if ((bRuleOn != this->bLastState ||
     		(bRuleOn && (this->config.reexec & REEXEC_TRUE)) ||
     		(!bRuleOn && (this->config.reexec & REEXEC_FALSE))
-    		) {
+    		) || (bRuleOn && this->config.rule_definition == RF_SCHEDULED )) {
     	this->bLastState = bRuleOn;
 		  int iControlValue = 0;
 		  if (bRuleOn) {                           // if the rule evaluated as TRUE
