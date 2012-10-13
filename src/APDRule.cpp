@@ -42,7 +42,7 @@ APDRule::APDRule(RDCONF *rdc, APDSensorArray *pSA, APDControlArray *pCA) {
   	if (this->config.pszcron = (char *)malloc(sizeof(char)*(l+1))) {
   		strcpy(this->config.pszcron, rdc->pszcron);
   	} else {
-  		Serial.println(APDUINO_ERROR_RAOUTOFMEM);
+  		Serial.println(APDUINO_ERROR_RAOUTOFMEM,HEX);
   	}
   } else {
   	this->config.pszcron = NULL;
@@ -126,7 +126,7 @@ APDRule::APDRule(RDCONF *rdc, APDSensorArray *pSA, APDControlArray *pCA) {
 #endif
         //; Serial.print(this->pcontrol->config.label);SerPrintP("\" ");                // TODO dont access pcontrol, ptr not set!
       } else {
-      	Serial.println(APDUINO_WARN_RULEINVALIDCONTROL);
+      	Serial.println(APDUINO_WARN_RULEINVALIDCONTROL,HEX);
 #ifdef VERBOSE
         SerPrintP(" NULL/INVALID CONTROL.");
 #endif
@@ -181,7 +181,7 @@ APDRule::APDRule(RDCONF *rdc, APDSensorArray *pSA, APDControlArray *pCA) {
           	SerPrintP("Rule Metro allocated");
 #endif
           } else {
-         Serial.println(APDUINO_ERROR_RMETROALLOCFAIL);
+         Serial.println(APDUINO_ERROR_RMETROALLOCFAIL,HEX);
 #ifdef VERBOSE
           	SerPrintP("Failed to allocate rule metro.");
 #endif
@@ -246,7 +246,7 @@ APDRule::APDRule(RDCONF *rdc, APDSensorArray *pSA, APDControlArray *pCA) {
 					this->prulefunc = (&apd_rule_eval_conditions);
 					break;
         default:
-        	Serial.println(APDUINO_ERROR_RDEFINVALID);
+        	Serial.println(APDUINO_ERROR_RDEFINVALID,HEX);
 #ifdef VERBOSE
           SerPrintP("Invalid rule definition."); Serial.print(this->config.rule_definition);
 #endif
@@ -450,7 +450,7 @@ void (*APDRule::get_rule_action_ptr(int rule_action))(APDControl *,int) {
       pfunc= (&APDControl::apd_action_noop);
       break;
     default:
-    	Serial.println(APDUINO_ERROR_RACTIONINVALID);
+    	Serial.println(APDUINO_ERROR_RACTIONINVALID,HEX);
 #ifdef VERBOSE
       SerPrintP("Invalid Control Action definition."); Serial.print(rule_action);
 #endif

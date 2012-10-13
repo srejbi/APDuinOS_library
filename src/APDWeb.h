@@ -218,7 +218,7 @@ private:
   static void web_notfound(EthernetClient *pClient);
   void ListFiles(EthernetClient client, const char *szPath, uint8_t flags);
   bool ServeFile(EthernetClient client, const char *szPath);
-  void processProvisioningRequest(EthernetClient *pclient);
+  void processProvisioningRequest(EthernetClient *pclient, boolean brespond);
   void claim_device_link(EthernetClient *pClient);
 
   static void json_array_item(EthernetClient *pClient, const int index, const char *name, const char *value, const char *logged );

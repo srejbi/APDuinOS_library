@@ -65,7 +65,7 @@ int APDTime::begin(boolean bRTC) {
         pRTC->begin();
 
         if (! pRTC->isrunning()) {
-        	Serial.println(APDUINO_MSG_RTCNOTRUNNING);
+        	Serial.println(APDUINO_MSG_RTCNOTRUNNING,HEX);
 #ifdef VERBOSE
           SerPrintP("RTC is NOT running (no hw?)...");
 #endif
@@ -75,20 +75,20 @@ int APDTime::begin(boolean bRTC) {
           //RTC.adjust(DateTime(__DATE__, __TIME__));
         } else {
           // we have RTC
-        	Serial.println(APDUINO_MSG_HWRTCOK);
+        	Serial.println(APDUINO_MSG_HWRTCOK,HEX);
 #ifdef VERBOSE
           SerPrintP("HW RTC OK..."); //pRTC->now());
 #endif
         }
       } else {
-      	Serial.println(APDUINO_ERROR_RTCALLOCFAIL);
+      	Serial.println(APDUINO_ERROR_RTCALLOCFAIL,HEX);
 #ifdef VERBOSE
           SerPrintP("RTC alloc fail...");
 #endif
           pRTC = NULL;
       }
     }else{
-    	Serial.println(APDUINO_ERROR_RTCALREADYINIT);
+    	Serial.println(APDUINO_ERROR_RTCALREADYINIT,HEX);
 #ifdef VERBOSE
         SerPrintP("RTC already init...");
 #endif
@@ -96,7 +96,7 @@ int APDTime::begin(boolean bRTC) {
   } else {
       // millis based already by default
       if (pRTCm == NULL) {
-      	Serial.println(APDUINO_ERROR_SWRTCFAIL);
+      	Serial.println(APDUINO_ERROR_SWRTCFAIL,HEX);
 #ifdef VERBOSE
       	SerPrintP("ERROR - SW clock should be running!\n");
 #endif
@@ -118,7 +118,7 @@ void APDTime::begin() {
   pRTC = NULL;
   pRTCm = new RTC_Millis();
   if (pRTCm) {
-  	Serial.println(APDUINO_MSG_SWRTCSTART);
+  	Serial.println(APDUINO_MSG_SWRTCSTART,HEX);
 #ifdef VERBOSE
   	SerPrintP("Starting SW clock...");
 #endif
@@ -127,7 +127,7 @@ void APDTime::begin() {
       PrintDateTime(pRTCm->now());
       SerPrintP("\n");
   } else {
-  	Serial.println(APDUINO_ERROR_SWRTCSETUPFAIL);
+  	Serial.println(APDUINO_ERROR_SWRTCSETUPFAIL,HEX);
 #ifdef VERBOSE
       SerPrintP("Seems SW clock setup failed. :(\n");
 #endif
@@ -176,7 +176,7 @@ char *APDTime::getUpTimeS(char *psz_uptime) {
 // TODO return whatever udp would return
 void APDTime::setupNTPSync(int UDPPort, byte *TimeServer, int iTZ, int iDST ) {
   // check if not in use...
-	Serial.println(APDUINO_MSG_SETUPUDPFORNTP);
+	Serial.println(APDUINO_MSG_SETUPUDPFORNTP,HEX);
 #ifdef VERBOSE
   SerPrintP("SETUP UDP 4 NTP\n");
 #endif
@@ -189,12 +189,12 @@ void APDTime::setupNTPSync(int UDPPort, byte *TimeServer, int iTZ, int iDST ) {
     pUdp = new EthernetUDP;
     if (pUdp != NULL) {
       if (pUdp->begin(localPort)) {
-      	Serial.println(APDUINO_MSG_UDPFORNTPOK);
+      	Serial.println(APDUINO_MSG_UDPFORNTPOK,HEX);
 #ifdef VERBOSE
           SerPrintP("UDP networking prepared for NTP.\n");
 #endif
       } else {
-      	Serial.println(APDUINO_WARN_NOUDPFORNTP);
+      	Serial.println(APDUINO_WARN_NOUDPFORNTP,HEX);
 #ifdef VERBOSE
           SerPrintP("UDP network setup for NTP FAILED.\n");
 #endif
@@ -202,7 +202,7 @@ void APDTime::setupNTPSync(int UDPPort, byte *TimeServer, int iTZ, int iDST ) {
           pUdp = NULL;
       }
     }else{
-    	Serial.println(APDUINO_ERR_UDPNETINITFAIL);
+    	Serial.println(APDUINO_ERR_UDPNETINITFAIL,HEX);
 #ifdef VERBOSE
         SerPrintP("UDP Networking initialization failed.\n");
 #endif
@@ -236,7 +236,7 @@ unsigned long APDTime::sendNTPpacket(byte *address)
 {
   unsigned long ulret = 0;
   if (pUdp != NULL) {
-  	Serial.println(APDUINO_MSG_NTPUDPPACKPREP);
+  	Serial.println(APDUINO_MSG_NTPUDPPACKPREP,HEX);
 #ifdef VERBOSE
     SerPrintP("PREPARING NTP PACKET...\n");
 #endif
@@ -252,7 +252,7 @@ unsigned long APDTime::sendNTPpacket(byte *address)
     pb[13]  = 0x4E;
     pb[14]  = 49;
     pb[15]  = 52;
-    Serial.println(APDUINO_MSG_NTPUDPPACKSEND);
+    Serial.println(APDUINO_MSG_NTPUDPPACKSEND,HEX);
 #ifdef VERBOSE
     SerPrintP("SENDING NTP PACKET...\n");
 #endif
@@ -264,7 +264,7 @@ unsigned long APDTime::sendNTPpacket(byte *address)
     	pUdp->write(pb,NTP_PACKET_SIZE);
     	pUdp->endPacket();
     } else {
-    	Serial.println(APDUINO_ERROR_NTPUDPSTARTFAIL);
+    	Serial.println(APDUINO_ERROR_NTPUDPSTARTFAIL,HEX);
 #ifdef VERBOSE
     	SerPrintP("ERR STARTING UDP.\n");
 #endif
@@ -273,7 +273,7 @@ unsigned long APDTime::sendNTPpacket(byte *address)
     pUdp->sendPacket( pb,NTP_PACKET_SIZE,  address, 123); //NTP requests are to port 123
   #endif
   } else {
-  	Serial.println(APDUINO_ERROR_NTPNOUDP);
+  	Serial.println(APDUINO_ERROR_NTPNOUDP,HEX);
 #ifdef VERBOSE
       SerPrintP("NO UDP\n");
 #endif
@@ -315,7 +315,7 @@ void APDTime::adjust(DateTime dt) {
 void APDTime::ntpSync()
 {
 	if (pUdp == NULL) {
-		Serial.println(APDUINO_ERROR_NTPNOUDP);
+		Serial.println(APDUINO_ERROR_NTPNOUDP,HEX);
 #ifdef VERBOSE
 		SerPrintP("\nNO UDP OBJ!");
 #endif
@@ -447,13 +447,13 @@ void APDTime::ntpSync()
     }
     else
     {
-    	Serial.println(APDUINO_ERROR_NTPNOUDP);
+    	Serial.println(APDUINO_ERROR_NTPNOUDP,HEX);
 #ifdef VERBOSE
       SerPrintP("No UDP available ...");
 #endif
     }
   } else {
-  	Serial.println(APDUINO_ERROR_NTPNORTC);
+  	Serial.println(APDUINO_ERROR_NTPNORTC,HEX);
 #ifdef VERBOSE
       Serial.println("No RTC. Sorry.");
 #endif

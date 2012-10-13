@@ -32,12 +32,12 @@ APDWeb::APDWeb()
 	// TODO Auto-generated constructor stub
 	initBlank();
 	if (start()) {
-		Serial.println(APDUINO_MSG_ETHSTARTED);
+		Serial.println(APDUINO_MSG_ETHSTARTED,HEX);
 #ifdef VERBOSE
 		SerPrintP("Eth started.\n");
 #endif
 	} else {
-		Serial.println(APDUINO_ERROR_ETHCONF);
+		Serial.println(APDUINO_ERROR_ETHCONF,HEX);
 #ifdef VERBOSE
 		SerPrintP("Failed to configure Ethernet. Fix DHCP on your LAN or provide a valid static config on SD and reset.\n");
 #endif
@@ -59,23 +59,23 @@ APDWeb::APDWeb(NETCONF *pnc)
 	initBlank();
 	memcpy(&net,pnc,sizeof(NETCONF));             // copy the provided config
 	if (start()) {
-		Serial.println(APDUINO_MSG_CONFETHSTARTED);
+		Serial.println(APDUINO_MSG_CONFETHSTARTED,HEX);
 #ifdef VERBOSE
 		SerPrintP("Eth started with conf provided.\n");
 #endif
 	} else {
-		Serial.println(APDUINO_WARN_NETCONFDHCPFALLBACK);
+		Serial.println(APDUINO_WARN_NETCONFDHCPFALLBACK,HEX);
 #ifdef VERBOSE
 		SerPrintP("Failed to start Ethernet with static configuration. Fallback to DHCP.\n");
 #endif
 		initBlank();
 		if (start()) {
-			Serial.println(APDUINO_MSG_NETOK);
+			Serial.println(APDUINO_MSG_NETOK,HEX);
 #ifdef VERBOSE
 			SerPrintP("Ethernet should be ok.\n");
 #endif
 		} else {
-			Serial.println(APDUINO_ERROR_DHCPFAILED);
+			Serial.println(APDUINO_ERROR_DHCPFAILED,HEX);
 #ifdef VERBOSE
 			SerPrintP("Fix DHCP on your LAN or provide a valid static config on SD and reset.\n");
 #endif
@@ -165,7 +165,7 @@ boolean APDWeb::start() {
 
 	//net.ip[0] = 0;
 	if ((bRestart && !this->bDHCP) || (!bRestart && net.ip[0] != 0)) {                 // if an IP seems to be provided
-		Serial.println(APDUINO_MSG_TRYINGSTATICIP);
+		Serial.println(APDUINO_MSG_TRYINGSTATICIP,HEX);
 #ifdef VERBOSE
 		SerPrintP("Trying static IP...\n");
 		SerPrintP("IP: ");
@@ -187,12 +187,12 @@ boolean APDWeb::start() {
 		this->bDHCP = false;
 		// todo read on howto check state
 	} else {                              // go for DHCP
-		Serial.println(APDUINO_MSG_TRYINGDHCPIP);
+		Serial.println(APDUINO_MSG_TRYINGDHCPIP,HEX);
 #ifdef DEBUG
 		SerPrintP("Trying DHCP...");
 #endif
 		if (Ethernet.begin(net.mac) == 0) {
-			Serial.println(APDUINO_ERROR_DHCPSTARTFAIL);
+			Serial.println(APDUINO_ERROR_DHCPSTARTFAIL,HEX);
 #ifdef VERBOSE
 			SerPrintP("Error.");
 #endif
@@ -200,7 +200,7 @@ boolean APDWeb::start() {
 			return false;
 		}
 		// we should have a lease now
-		Serial.println(APDUINO_MSG_DHCPLEASED);
+		Serial.println(APDUINO_MSG_DHCPLEASED,HEX);
 #ifdef VERBOSE
 		SerPrintP("DHCP DONE.\nIP: ");
 #endif
@@ -275,7 +275,7 @@ void APDWeb::failure() {
 #endif
 		this->bRestart = true;		// request a restart (will be done in loop)
 
-		Serial.println(APDUINO_MSG_NETFAILSRESTART);
+		Serial.println(APDUINO_MSG_NETFAILSRESTART,HEX);
 #ifdef VERBOSE
 		SerPrintP(" -> restart req.\n");
 #endif
@@ -342,13 +342,13 @@ boolean APDWeb::setupAPDuinoOnline() {
 			startWebLogging(apduino_logging_freq);
 			retcode = true;
 		} else {
-			Serial.println(APDUINO_ERROR_APDUINOONLINEIP);
+			Serial.println(APDUINO_ERROR_APDUINOONLINEIP,HEX);
 			//SerPrintP("E21.\n");
 		}
 
 		retcode = true;
 	} else {
-		Serial.println(APDUINO_ERROR_STORAGEERRORAO);
+		Serial.println(APDUINO_ERROR_STORAGEERRORAO,HEX);
 		//SerPrintP("E20.\n");
 	}
 	return retcode;
@@ -389,13 +389,13 @@ void APDWeb::saveAPIkey(char *szAPIKey, char *szAPIFile)
 			dataFile.println(szAPIKey);
 			dataFile.close();
 		} else {
-			Serial.println(APDUINO_ERROR_AKSAVEIOERR);
+			Serial.println(APDUINO_ERROR_AKSAVEIOERR,HEX);
 #ifdef VERBOSE
 			SerPrintP("IO ERR.");		// TODO add error codes
 #endif
 		}
 	} else {
-		Serial.println(APDUINO_ERROR_AKSAVESTORAGE);
+		Serial.println(APDUINO_ERROR_AKSAVESTORAGE,HEX);
 #ifdef VERBOSE
 		SerPrintP("NO STORAGE.");
 #endif
@@ -426,9 +426,9 @@ boolean APDWeb::startWebLogging(unsigned long uWWWLoggingFreq) {
 
 boolean APDWeb::setupCosmLogging() {
 	boolean retcode = false;
-
+#ifdef VERBOSE
 	SerPrintP("COSM...");
-
+#endif
 	szCOSM_API_KEY[0] = 0;
 	if (bEthConfigured && pAPDStorage != NULL && pAPDStorage->ready() && this->phmetro == NULL) {
 		if (pAPDStorage->readFileWithParser("PACHUBE.CFG",&new_cosmconf_parser,(void*)this) > 0) {
@@ -860,7 +860,7 @@ void APDWeb::ListFiles(EthernetClient client, const char *szPath, uint8_t flags)
 		}
 		WCPrintP(&client,"</ul>\n</div>\n");
 	} else {
-		Serial.println(APDUINO_ERROR_WWWFSNOSTORAGE);
+		Serial.println(APDUINO_ERROR_WWWFSNOSTORAGE,HEX);
 		//todo redirect this error also to www client
 		//SerPrintP("W03");
 		//WCPrintP(&client,"W03\n");		//NO STORAGE ERROR
@@ -965,7 +965,7 @@ void APDWeb::loop_server()
 						Reset_AVR();*/
 					} else if (strstr_P(clientline, PSTR("POST /provisioning")) != 0) {
 						if (!(this->operational_state & OPSTATE_PAUSED)) {
-							this->processProvisioningRequest(&client);
+							this->processProvisioningRequest(&client, true);
 						} else {
 							web_maintenance(&client);
 						}
@@ -1020,21 +1020,21 @@ void APDWeb::forwardToMarker(EthernetClient *pclient, char *szBuf, char *szMarke
 }
 
 
-void APDWeb::processProvisioningRequest(EthernetClient *pclient) {
+void APDWeb::processProvisioningRequest(EthernetClient *pclient, boolean brespond) {
 	uint8_t uProv=0;
 	unsigned int bytesProv = 0;
 	unsigned int bytesProvSaved = 0;
-	if (pclient != NULL) {
-#ifdef DEBUG
+	if (pclient != NULL && pclient->available()) {
+//#ifdef DEBUG
 		SerPrintP("PROVISIONING.");
-#endif
+//#endif
 		char clientline[BUFSIZ];
 		char destfile[14]="";
 		int index = 0;
 		clientline[index]=0;
 		clientline[BUFSIZ-1]=0;
 
-		web_startpage(pclient,"provisioning");
+		if (brespond) web_startpage(pclient,"provisioning");
 #ifdef DEBUG
 		if (pAPDStorage != NULL) {
 			SerPrintP("STORAGE AVAILABLE");
@@ -1043,10 +1043,12 @@ void APDWeb::processProvisioningRequest(EthernetClient *pclient) {
 		}
 #endif
 #ifdef DEBUG
-		// send back what we received - for debug
-		WCPrintP(pclient, "<hr />\n");
-		client.println(clientline);
-		WCPrintP(pclient, "<hr />\n");
+		if (brespond) {
+			// send back what we received - for debug
+			WCPrintP(pclient, "<hr />\n");
+			client.println(clientline);
+			WCPrintP(pclient, "<hr />\n");
+		}
 #endif
 
 		while (pclient->available()) {
@@ -1059,12 +1061,14 @@ void APDWeb::processProvisioningRequest(EthernetClient *pclient) {
 				if (strstr(clientline, "&")) {
 					*strstr(clientline, "&") = 0;
 #ifdef DEBUG_LOG
-					WCPrintP(pclient, "<hr/><b>DESTINATION</b>=\n");
-					pclient->println(clientline);
+					if (brespond) {
+						WCPrintP(pclient, "<hr/><b>DESTINATION</b>=\n");
+						pclient->println(clientline);
+					}
 #endif
 					strcpy(destfile,clientline);										// save the dest file name
 #ifdef DEBUG_LOG
-					WCPrintP(pclient, "<hr/>\n");
+					if (brespond) WCPrintP(pclient, "<hr/>\n");
 #endif
 				}
 
@@ -1109,7 +1113,7 @@ void APDWeb::processProvisioningRequest(EthernetClient *pclient) {
 									}
 #ifdef DEBUG_INFO
 									Serial.print(c);
-									pclient->print(c);
+									if (brespond) pclient->print(c);
 #endif
 
 									newc = 1;      // hack / & would stop the checks/
@@ -1145,20 +1149,20 @@ void APDWeb::processProvisioningRequest(EthernetClient *pclient) {
 #ifdef DEBUG
 						// continue to read more data!
 						Serial.print(c);
-						pclient->print(c);
+						if (brespond) pclient->print(c);
 						//continue;
 #endif
 					}
 
 					if (tempFile.isOpen()) tempFile.close(); // either no more bytes or & reached, anyways, file is to be closed at this point
 					if (strlen(destfile) > 0) {
-#ifdef DEBUG_LOG
+//#ifdef DEBUG_LOG
 						SerPrintP("renaming file to "); Serial.println(destfile);
-#endif
+//#endif
 						if (pAPDStorage->p_sd->exists(destfile)) pAPDStorage->p_sd->remove(destfile);      // TODO add backup
 						pAPDStorage->p_sd->rename("PROV.TMP",destfile);
 #ifdef DEBUG_LOG
-						WCPrintP(pclient, "<b>OK</b>");
+						if (brespond) WCPrintP(pclient, "<b>OK</b>");
 #endif
 						uProv++;
 					}
@@ -1166,9 +1170,11 @@ void APDWeb::processProvisioningRequest(EthernetClient *pclient) {
 					if (strstr(clientline, "&")) {
 						*strstr(clientline, "&") = 0;
 #ifdef DEBUG_LOG
-						WCPrintP(pclient, "<hr/><b>DATA</b>=");
-						pclient->print(clientline);
-						WCPrintP(pclient, "<hr/>\n");
+						if (brespond) {
+							WCPrintP(pclient, "<hr/><b>DATA</b>=");
+							pclient->print(clientline);
+							WCPrintP(pclient, "<hr/>\n");
+						}
 #endif
 #ifdef DEBUG
 						SerPrintP("DATA:"); Serial.println(clientline);
@@ -1177,26 +1183,35 @@ void APDWeb::processProvisioningRequest(EthernetClient *pclient) {
 				}
 
 			} else {	// invalid request or end of provisioning
-				if (uProv<1) WCPrintP(pclient, "INVALID REQUEST\n");
+				if (uProv<1) { if (brespond)  WCPrintP(pclient, "INVALID REQUEST\n"); }
+				// TODO ADD ERROR LOG HERE
 			}
 
 		} 	// while client has available bytes
 
-		WCPrintP(pclient, "<hr />\n"
-											"Received "); pclient->print(bytesProv);
-		WCPrintP(pclient, " bytes, provisioned "); pclient->print(bytesProv);
-		WCPrintP(pclient," bytes into "); pclient->print(uProv); WCPrintP(pclient," files.\n");
+		if (brespond) {
+			WCPrintP(pclient, "<hr />\n"
+												"Received "); pclient->print(bytesProv);
+			WCPrintP(pclient, " bytes, provisioned "); pclient->print(bytesProv);
+			WCPrintP(pclient," bytes into "); pclient->print(uProv); WCPrintP(pclient," files.\n");
+		}
 		if (bytesProv != bytesProvSaved) {
-			WCPrintP(pclient, "<div class=\"error\">Corrupted provisioning!?</div>");
+			if (brespond) WCPrintP(pclient, "<div class=\"error\">Corrupted provisioning!?</div>");
+			// TODO ADD ERRPR LOGGING HERE
 		}
 		// TODO a callback to apduino online would be nice
 		// TODO or a redirect
-		web_endpage(pclient);
+		if (brespond) web_endpage(pclient);
 	}
 }
 
 
-
+// process APDuino Online server response in return to a registration request
+// possible scenarios:
+// * response for new registration -> we receive an API_KEY, we must store and repeat the request with the new key
+// * response for confirmed registration -> we receive confirmation
+//
+// TODO: server might send auto-configuration data (eg. when a firmware upgrade is detected and the new firmware requires updated configuration files) - in this case this data should be processed and stored
 void APDWeb::registration_response(APDWeb *pAPDWeb){
 	bool bReReg = false;
 	delay(500);    // debug
@@ -1207,10 +1222,6 @@ void APDWeb::registration_response(APDWeb *pAPDWeb){
 		SerPrintP("SR: Processing server response...");
 #endif
 		while (pAPDWeb->pwwwclient->available()) {    // with bytes to read
-			//      char c = pAPDWeb->pwwwclient->read();        // then read a byte
-			//#ifdef DEBUG
-			//      Serial.print(c);
-			//#endif
 			char www_respline[BUFSIZ] ="";
 			int index = 0;
 			boolean bProcessingBody = false;
@@ -1250,30 +1261,41 @@ void APDWeb::registration_response(APDWeb *pAPDWeb){
 #ifdef DEBUG
 						SerPrintP("content_length:"); Serial.println(content_length);
 #endif
-					} else if (new_api_key[0]==0) {
-						if (sscanf(www_respline,"REG_API_KEY=%s",new_api_key)) {
-							if (pAPDWeb->szAPDUINO_API_KEY[0]==0) {
-								strcpy(pAPDWeb->szAPDUINO_API_KEY,new_api_key);
+					} else { 									// we are in the body somewhere
+						if (new_api_key[0]==0) {	// no api key found yet (in the server response body)
+							if (sscanf(www_respline,"REG_API_KEY=%s",new_api_key)) {	// scan if the line specifies api key, scan it in
+								if (pAPDWeb->szAPDUINO_API_KEY[0]==0) {										// if we have no API key stored locally
+									strcpy(pAPDWeb->szAPDUINO_API_KEY,new_api_key);						// copy the scanned key to the local API key
 
-								// TODO save API key for host!
-								pAPDWeb->saveAPIkey(pAPDWeb->szAPDUINO_API_KEY, "APIKEY.CFG");
-							  bReReg = true;
-#ifdef VERBOSE
-							  SerPrintP("Registered device on APDuino Online.\nClaim your device at: http://");
-								Serial.print(pAPDWeb->apduino_server_name);
-								SerPrintP("/devices/claim_device?api_key=");
-								Serial.println(pAPDWeb->szAPDUINO_API_KEY);
-#endif
+									pAPDWeb->saveAPIkey(pAPDWeb->szAPDUINO_API_KEY, "APIKEY.CFG");	// store the new key on SD
+									bReReg = true;					// signal internally for repeating registration (to confirm new API KEY)
+
+									// done with reception of a new api key
+	//#ifdef VERBOSE
+									SerPrintP("Registered device on APDuino Online.\nClaim your device at: http://");
+									Serial.print(pAPDWeb->apduino_server_name);
+									SerPrintP("/devices/claim_device?api_key=");
+									Serial.println(pAPDWeb->szAPDUINO_API_KEY);
+	//#endif
+								} // end if no local API KEY
+	#ifdef DEBUG
+								else {
+									SerPrintP("API key present already.\n");
+								}
+	#endif
+							} else {
+									// the response line does not contain API KEY - skip
 							}
-#ifdef DEBUG
-							else {
-								SerPrintP("API key present already.\n");
-							}
-#endif
 						} else {
-
+								//
 						}
-					} else {
+					}
+					// in any case (whether we had or not an API key) we just passed api key in response
+				  // TODO process any provisioning data
+					if (pAPDWeb->pwwwclient->available() && pAPDWeb->szAPDUINO_API_KEY[0]!=0) {
+						Serial.println(pAPDWeb->pwwwclient->available()); SerPrintP("bytes left. Looking for provisioning data...");
+						pAPDWeb->processProvisioningRequest(pAPDWeb->pwwwclient, false);  // process any provisioning data without rendering a response
+						SerPrintP("Should be done");
 					}
 				}
 				// reset for the next line
@@ -1285,7 +1307,7 @@ void APDWeb::registration_response(APDWeb *pAPDWeb){
 		pAPDWeb->pwwwclient->stop();
 
 		pAPDWeb->pwwwcp = NULL;			// reset the www parser callback
-		if (bReReg) {
+		if (bReReg) {				// if it was detected as a response to a new registration, we must confirm
 #ifdef VERBOSE
 			SerPrintP("Confirming registration.\n");
 #endif
@@ -1297,7 +1319,10 @@ void APDWeb::registration_response(APDWeb *pAPDWeb){
 // TODO  add 'claim device' functionality:
 // -> once registerdevice but no deviceid, offer link with API_KEY to claim device. it should result a deviceid
 
-
+// register to APDuino Online
+// send API KEY if present; if not, a new one will be received in the server response, store and repeat request to confirm key
+// tell LAN IP and APDuinOS version in the request
+// SERVER RESPONSE IS PROCESSED BY CALLBACK: registration_response
 boolean APDWeb::self_register() {
 	char www_postdata[96];
 	if ( pwwwclient!=NULL ) {
@@ -1333,7 +1358,7 @@ boolean APDWeb::self_register() {
 				if (pwwwcp ==NULL)
 					pwwwcp = (&registration_response);      // set reader 'callback'
 				else {
-					Serial.println(APDUINO_ERROR_WWWCLIENTOCCUPIED);
+					Serial.println(APDUINO_ERROR_WWWCLIENTOCCUPIED,HEX);
 					//SerPrintP("E23");
 				}
 			} else {
@@ -1343,7 +1368,7 @@ boolean APDWeb::self_register() {
 			}
 		} else {
 			//#ifdef DEBUG
-			Serial.println(APDUINO_ERROR_WWWCLIENTBUSY);
+			Serial.println(APDUINO_ERROR_WWWCLIENTBUSY,HEX);
 			//SerPrintP("E25");
 			this->wc_busy();
 			//#endif
@@ -1354,7 +1379,7 @@ boolean APDWeb::self_register() {
 #endif
 	} else {
 		//#ifdef DEBUG
-		Serial.println(APDUINO_ERROR_AONOWEBCLIENT);
+		Serial.println(APDUINO_ERROR_AONOWEBCLIENT,HEX);
 		//SerPrintP("E26");
 		this->failure();
 		//#endif
@@ -1578,7 +1603,7 @@ void APDWeb::web_logging() {
 			}
 		}
 	}	else {
-		Serial.println(APDUINO_ERROR_AOLOGNOWEBCLIENT);
+		Serial.println(APDUINO_ERROR_AOLOGNOWEBCLIENT,HEX);
 		//SerPrintP("E27");
 		this->failure();
 	}
@@ -1628,14 +1653,14 @@ void APDWeb::pachube_logging() {
 				SerPrintP("OK.\n");
 #endif
 			} else {
-				Serial.println(APDUINO_ERROR_CLOGCONNFAIL);
+				Serial.println(APDUINO_ERROR_CLOGCONNFAIL,HEX);
 				//SerPrintP("E29");
 				pwwwclient->stop();          // stop client now
 				this->failure();
 			}
 		}
 	}	else {
-		Serial.println(APDUINO_ERROR_CLOGNOWEBCLIENT);
+		Serial.println(APDUINO_ERROR_CLOGNOWEBCLIENT,HEX);
 		//SerPrintP("E28");
 		this->failure();
 	}
@@ -1680,7 +1705,7 @@ void APDWeb::thingspeak_logging() {
 				SerPrintP("done.\n");
 #endif
 			} else {
-				Serial.println(APDUINO_ERROR_TSLOGCONNFAIL);
+				Serial.println(APDUINO_ERROR_TSLOGCONNFAIL,HEX);
 				//SerPrintP("E291.\n");
 				pwwwclient->stop();          // stop client now
 				this->failure();
@@ -1753,7 +1778,7 @@ void APDWeb::myCPrintP(EthernetClient *pClient, void *Pstring) {
 			pClient->print(psob);
 			free(psob);
 		} else {
-			Serial.println(APDUINO_ERROR_PRINTCLIENTOUTOFMEM);
+			Serial.println(APDUINO_ERROR_PRINTCLIENTOUTOFMEM,HEX);
 			//SerPrintP("E201("); Serial.print(ilen,DEC); SerPrintP(")");
 		}
 	}
@@ -1920,7 +1945,7 @@ void APDWeb::json_status(EthernetClient *pClient) {
 		SerPrintP("JSONDONE.");
 #endif
 	} else {
-		Serial.println(APDUINO_ERROR_JSNOCLIENT);
+		Serial.println(APDUINO_ERROR_JSNOCLIENT,HEX);
 		//SerPrintP("W02");
 	}
 }

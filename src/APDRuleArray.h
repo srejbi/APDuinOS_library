@@ -34,6 +34,7 @@
 #include "APDControlArray.h"
 #include "APDStorage.h"
 #include "APDRule.h"
+
 //#include "APDControl.h"
 
 class APDRuleArray
@@ -54,6 +55,7 @@ public:
   void evaluateSensorRulesByIdx(int iSensorIndex);
   static void evaluateSensorRules(void *pra, APDSensor *pSensor);
   void loopRules();
+  void evaluateScheduledRules();
 
 private:
   APDSensorArray *pSA;
@@ -61,7 +63,8 @@ private:
   APDRule** pAPDRules;
   int iRuleCount;
   float *bfIdle;
-
+  Metro *pcronMetro;
+  int lastCronMin;
   friend class APDuino;         //FIXME if needed
   friend class APDSensorArray;
 };

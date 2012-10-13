@@ -48,7 +48,7 @@ APDStorage::APDStorage(int iSS, int iChip, int iSpeed = SPI_HALF_SPEED ) {
 #endif
   pinMode(iSS, OUTPUT);        // set SS PIN as output -- see SD readings
   digitalWrite(iSS, HIGH);     // turn off the W5100 chip -- see SD readings
-  Serial.println(APDUINO_MSG_SSPINPREPARED);
+  Serial.println(APDUINO_MSG_SSPINPREPARED,HEX);
 #ifdef DEBUG
   SerPrintP(" - prepared...");
 #endif
@@ -67,20 +67,20 @@ APDStorage::~APDStorage() {
  *
  */
 boolean APDStorage::start() {
-	Serial.println(APDUINO_MSG_STORAGEINIT);
+	Serial.println(APDUINO_MSG_STORAGEINIT,HEX);
 #ifdef VERBOSE
   SerPrintP("Storage ");
 #endif
   if (this->p_sd == NULL ) { // && !bReady
       this->bReady = false;
-      Serial.println(APDUINO_MSG_STORAGESTART);
+      Serial.println(APDUINO_MSG_STORAGESTART,HEX);
 #ifdef VERBOSE
       SerPrintP(" starting.");
 #endif
       this->p_sd = new SdFat();
       //SerPrintP("..");
       if (p_sd) {
-      	Serial.println(APDUINO_MSG_SDFATINIT);
+      	Serial.println(APDUINO_MSG_SDFATINIT,HEX);
 #ifdef VERBOSE
           SerPrintP("SdFat init("); Serial.print(iSDSpeed, DEC); SerPrintP(","); Serial.print(sdChipSelect,DEC);SerPrintP(")...");
 #endif
@@ -92,11 +92,11 @@ boolean APDStorage::start() {
 #ifdef VERBOSE
               SerPrintP("OK.\n");
 #endif
-              Serial.println(APDUINO_MSG_SDFATSTARTED);
+              Serial.println(APDUINO_MSG_SDFATSTARTED,HEX);
               bReady = true;
           } else {
               p_root = NULL;
-              Serial.println(APDUINO_ERROR_SDFATSTARTERR);
+              Serial.println(APDUINO_ERROR_SDFATSTARTERR,HEX);
 #ifdef VERBOSE
               SerPrintP("ERR.\n");
 #endif
@@ -133,7 +133,7 @@ int APDStorage::logrotate() {
       char ofname[13] = "";
       strcpy_P(fname,PSTR("APDLOG.TXT"));
       if (p_sd->exists(fname)) {
-      	Serial.println(APDUINO_MSG_LOGCHECK);
+      	Serial.println(APDUINO_MSG_LOGCHECK,HEX);
 #ifdef VERBOSE
           SerPrintP("APDLOG.TXT -- Log existst, checking size - \n");		// TODO remove these, do messaging via APDSerial
 #endif
@@ -147,7 +147,7 @@ int APDStorage::logrotate() {
 #endif
           // 1M size check
           if (fSize >= 1048576) {											// TODO move max size to param
-          	Serial.println(APDUINO_MSG_LOGROTATENEEDED);
+          	Serial.println(APDUINO_MSG_LOGROTATENEEDED,HEX);
 #ifdef VERBOSE
               SerPrintP(" -- Too big, rotate needed.");					// TODO remove debug
 #endif
@@ -162,7 +162,7 @@ int APDStorage::logrotate() {
 #ifdef VERBOSE
               Serial.print(fname); SerPrintP("should be the last log file. Rotating...\n");
 #endif
-              Serial.println(APDUINO_MSG_LOGROTATE);
+              Serial.println(APDUINO_MSG_LOGROTATE,HEX);
               if (p_sd->exists(fname)) {
                   p_sd->remove(fname);
               }
@@ -182,7 +182,7 @@ int APDStorage::logrotate() {
               strcpy_P(fname,PSTR("APDLOG.000"));
               p_sd->rename(ofname,fname);
               iRetCode++;				//+1
-              Serial.println(APDUINO_MSG_LOGROTATED);
+              Serial.println(APDUINO_MSG_LOGROTATED,HEX);
 #ifdef VERBOSE
               Serial.print(iRetCode);SerPrintP("\n logs rotated.");
 #endif
@@ -248,7 +248,7 @@ int APDStorage::readFileWithParser(char *szFile, void (*pParserFunc)(void *, int
 void APDStorage::write_log_line(char *szLogLine) {
   if (bReady) {
     // make a string for assembling the data to log:
-  	Serial.println(APDUINO_MSG_SDLOGGING);
+  	Serial.println(APDUINO_MSG_SDLOGGING,HEX);
 #ifdef VERBOSE
     SerPrintP("\nLogging to SD...\n");
 #endif
@@ -260,11 +260,11 @@ void APDStorage::write_log_line(char *szLogLine) {
     }
     // if the file isn't open, pop up an error:
     else {
-    	Serial.println(APDUINO_ERROR_LOGOPENERR);
+    	Serial.println(APDUINO_ERROR_LOGOPENERR,HEX);
         //SerPrintP("E220\n");			// could not open log file
     }
   } else {
-  		Serial.println(APDUINO_ERROR_LOGSDERR);
+  		Serial.println(APDUINO_ERROR_LOGSDERR,HEX);
       //SerPrintP("E201\n");			// storage not ready
   }
   // return nothing

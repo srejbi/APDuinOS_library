@@ -27,22 +27,24 @@
 
 APDRuleArray::APDRuleArray()
 {
-  // TODO Auto-generated constructor stub
   this->pSA=NULL;
   this->pCA=NULL;
   this->pAPDRules=NULL;
   this->iRuleCount=0;
   this->bfIdle=NULL;
+  this->lastCronMin = -1;
+  this->pcronMetro = NULL;
 }
 
 APDRuleArray::APDRuleArray(APDSensorArray *psa, APDControlArray *pca, float *bfidle)
 {
-  // TODO Auto-generated constructor stub
   this->pSA=psa;
   this->pCA=pca;
   this->pAPDRules=NULL;
   this->iRuleCount=0;
-  this->bfIdle = bfidle;
+  this->bfIdle=bfidle;
+  this->lastCronMin = -1;
+  this->pcronMetro = NULL;
 }
 
 APDRuleArray::~APDRuleArray()
@@ -59,6 +61,7 @@ APDRuleArray::~APDRuleArray()
       this->pAPDRules = NULL;
       this->iRuleCount=0;
   }
+  delete(this->pcronMetro);
 }
 
 
@@ -69,8 +72,10 @@ void APDRuleArray::new_rule_parser(void *pRA, int iline, char *psz) {
 #ifdef DEBUG
   Serial.print("RULE READ: "); Serial.print(psz);
 #endif
+  rdc.pszcron[0] = 0;
+  rdc.conditions[0] = 0;
   //TODO add counter & checks on scanned parameters
-  sscanf_P( psz, PSTR("%s %d,%d,%f,%d,%d,%d,%d,%d,%d,%d '%s' %s"),
+  int iscand = sscanf_P( psz, PSTR("%s %d,%d,%f,%d,%d,%d,%d,%d,%d,%d %s @%s"),
       (rdc.label),
       &(rdc.rule_definition),
       &(rdc.rf_sensor_idx),
@@ -82,14 +87,31 @@ void APDRuleArray::new_rule_parser(void *pRA, int iline, char *psz) {
       &(rdc.ra_value),
       &(rdc.ra_sensor_idx),
       &(rdc.reexec),
-      rdc.pszcron,
-      (rdc.conditions));
+      (rdc.conditions),
+      (rdc.pszcron));
 
-  if (strlen(rdc.pszcron)) {		// TODO think about this; it will probably never be empty as it's followed by conditions(possibly). we likely have to enclose this...
-  	for (int i=0; i<strlen(rdc.pszcron); i++) {
-  		if (rdc.pszcron[i] == '_') rdc.pszcron[i] = ' ';		// "split" on underscores
-  	}
-  }
+if (iscand<13) {
+	// we have failed to scan some params; candidates: conditions, pszcron
+	// check if cron is in conditions (if config did not '_' empty strings)
+	if (rdc.conditions[0]=='@') {		// if conditions start with '@' then '_' for empty conditions was omitted
+		strcpy(rdc.pszcron, (const char *)(&rdc.conditions[1]));		// copy conditions after '@' to cron
+		rdc.conditions[0]=0; // blank conditions
+	}
+}
+  	// nice config should set '_' for empty strings
+  	if (rdc.conditions[0]=='_'&&rdc.conditions[0]==0) rdc.conditions[0]=0;
+    if (rdc.pszcron[0]=='_'&&rdc.pszcron[0]==0) rdc.pszcron[0]=0;
+
+	  Serial.print(iscand); SerPrintP(" parameters parsed\n");
+	  Serial.print(rdc.label); SerPrintP(" -> cron:"); Serial.print(rdc.pszcron); SerPrintP(", conditions:'");Serial.print(rdc.conditions);SerPrintP("'\n");
+// }
+
+//  if (strlen(rdc.pszcron)) {		// TODO think about this; it will probably never be empty as it's followed by conditions(possibly). we likely have to enclose this...
+//  	for (int i=0; i<strlen(rdc.pszcron); i++) {
+//  		if (rdc.pszcron[i] == '_') rdc.pszcron[i] = ' ';		// "split" on underscores
+//  	}
+//  }
+
   ((APDRuleArray*)pRA)->pAPDRules[iline] = new APDRule(&rdc,((APDRuleArray*)pRA)->pSA, ((APDRuleArray*)pRA)->pCA);
   free(rdc.pszcron);			// no longer need the string buffer
   //TODO check for errors and use an internal (class) index to keep track of the next rule to be populated
@@ -99,14 +121,14 @@ void APDRuleArray::new_rule_parser(void *pRA, int iline, char *psz) {
 
 int APDRuleArray::loadRules(APDStorage *pAPDStorage) {
   if (!this->pAPDRules) {    // if no sensor array
-#ifdef DEBUG_INFO
+//#ifdef DEBUG_INFO
       SerPrintP("Counting rules...");
-#endif
+//#endif
       // TODO check if SD is available!
       iRuleCount = get_line_count_from_file("RULES.CFG");
-#ifdef DEBUG_INFO
+//#ifdef DEBUG_INFO
       Serial.print(iRuleCount); SerPrintP(" rules seem to be defined...");
-#endif
+//#endif
       if (iRuleCount > 0) {
 #ifdef DEBUG_INFO
         SerPrintP("Rule Array: allocating "); Serial.print(sizeof(APDRule*)*iRuleCount,DEC); SerPrintP(" bytes of RAM\n");
@@ -190,16 +212,17 @@ int APDRuleArray::loadRules(APDStorage *pAPDStorage) {
           }       // end enumerating rules
 
           //SerPrintP("Rules ok.\n");
+          if (this->pcronMetro) this->pcronMetro->reset();
         } else {
-        	Serial.println(APDUINO_ERROR_RAALLOCFAIL);
+        	Serial.println(APDUINO_ERROR_RAALLOCFAIL,HEX);
         	//SerPrintP("E503\n");
         }
       } else {
-      	Serial.println(APDUINO_ERROR_RANORULES);
+      	Serial.println(APDUINO_ERROR_RANORULES,HEX);
         //SerPrintP("E502\n");
       }
     } else {
-    	Serial.println(APDUINO_ERROR_RAALREADYALLOC);
+    	Serial.println(APDUINO_ERROR_RAALREADYALLOC,HEX);
       //SerPrintP("E501\n");
     }
 }
@@ -238,7 +261,7 @@ void APDRuleArray::dumpToFile(APDStorage *pAPDStorage, char *pszFileName) {
   }
   else {
       // TODO add an error macro in storage, replace all error opening stuff with reference to that
-  	Serial.println(APDUINO_ERROR_RADUMPOPENFAIL);
+  	Serial.println(APDUINO_ERROR_RADUMPOPENFAIL,HEX);
     //SerPrintP("E505('"); Serial.print(pszFileName); SerPrintP("')\n");
   }
 }
@@ -287,9 +310,42 @@ void APDRuleArray::evaluateSensorRulesByIdx(int iSensorIndex) {
 
 
 void APDRuleArray::loopRules() {
-	//SerPrintP("loop rules\n");
+#ifdef DEBUG
+	SerPrintP("loop rules\n");
+#endif
   for (int i=0; i < this->iRuleCount; i++) {      // loop through rules
-  	this->pAPDRules[i]->evaluateRule();
+  	if (this->pAPDRules[i]->config.rule_definition != RF_SCHEDULED) {	// except scheduled rules
+  		this->pAPDRules[i]->evaluateRule();
+  	}
   }
+  evaluateScheduledRules();
   //pRuleMetro->reset();    // restart the metro
+}
+
+void APDRuleArray::evaluateScheduledRules() {
+	//SerPrintP("loop rules\n");
+	if (this->pcronMetro == NULL) {
+		this->pcronMetro = new Metro(1,false);
+		SerPrintP("CREATED METRO");
+		//return;
+	}
+	if (this->pcronMetro->check()) {
+		SerPrintP("PMETROUP");
+		DateTime now = APDTime::now();
+		if (now.minute() != lastCronMin) {
+			SerPrintP("OTHERMINUTE");
+			lastCronMin = now.minute();
+			for (int i=0; i < this->iRuleCount; i++) {      // loop through rules
+				if (this->pAPDRules[i]->config.rule_definition == RF_SCHEDULED) {	// only check scheduled
+					this->pAPDRules[i]->evaluateRule();
+				}
+			}
+			now = APDTime::now();
+			this->pcronMetro->interval( (60 - now.second())*1000 );
+		} else {
+			this->pcronMetro->interval( 60000 );
+		}
+		this->pcronMetro->reset();
+    //pRuleMetro->reset();    // restart the metro
+	}
 }

@@ -188,7 +188,7 @@ void APDSensorArray::new_sensor_parser(void *pSA, int iline, char *psz) {
       newsensor = new AtlasScientificSensor(&sdc, reusablesensor);
       break;
   default:
-  	Serial.println(APDUINO_ERROR_UNKNOWNSENSORTYPE);
+  	Serial.println(APDUINO_ERROR_UNKNOWNSENSORTYPE,HEX);
     //SerPrintP("E310");			// E310 - unknown sensor type
   }
   ((APDSensorArray*)pSA)->pAPDSensors[iline] = newsensor;
@@ -294,15 +294,15 @@ int APDSensorArray::loadSensors(APDStorage *pAPDStorage) {
 
         iNextSensor = 0;                // first sensor to read
       } else {
-      	Serial.println(APDUINO_ERROR_SAALLOCFAIL);
+      	Serial.println(APDUINO_ERROR_SAALLOCFAIL,HEX);
         //SerPrintP("E303\n");					// failed to allocate array
       }
     } else {
-    	Serial.println(APDUINO_ERROR_SAEMPTY);
+    	Serial.println(APDUINO_ERROR_SAEMPTY,HEX);
       //  SerPrintP("E302\n");					// no sensors
     }
   } else {
-  	Serial.println(APDUINO_ERROR_SAALREADYALLOC);
+  	Serial.println(APDUINO_ERROR_SAALREADYALLOC,HEX);
     //SerPrintP("E301\n");							// already there
   }
   return iSensorCount;
