@@ -67,13 +67,14 @@ APDRuleArray::~APDRuleArray()
 
 void APDRuleArray::new_rule_parser(void *pRA, int iline, char *psz) {
   RDCONF rdc;
-  // TODO check malloc results
+  // TODO check malloc results 2x
   rdc.pszcron = (char *)malloc(sizeof(char)*(MAX_CRON_EXPR_LEN+1));		// we might need this buffer for cron expr. if not, it will be freed
+  rdc.pszconditions = (char *)malloc(sizeof(char)*(MAX_CRON_EXPR_LEN+1));		// we might need this buffer for cron expr. if not, it will be freed
 #ifdef DEBUG
   Serial.print("RULE READ: "); Serial.print(psz);
 #endif
   rdc.pszcron[0] = 0;
-  rdc.conditions[0] = 0;
+  rdc.pszconditions[0] = 0;
   //TODO add counter & checks on scanned parameters
   int iscand = sscanf_P( psz, PSTR("%s %d,%d,%f,%d,%d,%d,%d,%d,%d,%d %s @%s"),
       (rdc.label),
@@ -87,23 +88,25 @@ void APDRuleArray::new_rule_parser(void *pRA, int iline, char *psz) {
       &(rdc.ra_value),
       &(rdc.ra_sensor_idx),
       &(rdc.reexec),
-      (rdc.conditions),
+      (rdc.pszconditions),
       (rdc.pszcron));
 
 if (iscand<13) {
 	// we have failed to scan some params; candidates: conditions, pszcron
 	// check if cron is in conditions (if config did not '_' empty strings)
-	if (rdc.conditions[0]=='@') {		// if conditions start with '@' then '_' for empty conditions was omitted
-		strcpy(rdc.pszcron, (const char *)(&rdc.conditions[1]));		// copy conditions after '@' to cron
-		rdc.conditions[0]=0; // blank conditions
+	if (rdc.pszconditions[0]=='@') {		// if conditions start with '@' then '_' for empty conditions was omitted
+		strcpy(rdc.pszcron, (const char *)(&rdc.pszconditions[1]));		// copy conditions after '@' to cron
+		rdc.pszconditions[0]=0; // blank conditions
 	}
 }
   	// nice config should set '_' for empty strings
-  	if (rdc.conditions[0]=='_'&&rdc.conditions[0]==0) rdc.conditions[0]=0;
+  	if (rdc.pszconditions[0]=='_'&&rdc.pszconditions[0]==0) rdc.pszconditions[0]=0;
     if (rdc.pszcron[0]=='_'&&rdc.pszcron[0]==0) rdc.pszcron[0]=0;
 
+#ifdef DEBUG_INFO
 	  Serial.print(iscand); SerPrintP(" parameters parsed\n");
-	  Serial.print(rdc.label); SerPrintP(" -> cron:"); Serial.print(rdc.pszcron); SerPrintP(", conditions:'");Serial.print(rdc.conditions);SerPrintP("'\n");
+	  Serial.print(rdc.label); SerPrintP(" -> cron:"); Serial.print(rdc.pszcron); SerPrintP(", conditions:'");Serial.print(rdc.pszconditions);SerPrintP("'\n");
+#endif
 // }
 
 //  if (strlen(rdc.pszcron)) {		// TODO think about this; it will probably never be empty as it's followed by conditions(possibly). we likely have to enclose this...
@@ -113,7 +116,8 @@ if (iscand<13) {
 //  }
 
   ((APDRuleArray*)pRA)->pAPDRules[iline] = new APDRule(&rdc,((APDRuleArray*)pRA)->pSA, ((APDRuleArray*)pRA)->pCA);
-  free(rdc.pszcron);			// no longer need the string buffer
+  free(rdc.pszcron);						// no longer need the string buffer
+  free(rdc.pszconditions);			// no longer need the string buffer
   //TODO check for errors and use an internal (class) index to keep track of the next rule to be populated
 
   // now do something with the values parsed...
@@ -121,14 +125,12 @@ if (iscand<13) {
 
 int APDRuleArray::loadRules(APDStorage *pAPDStorage) {
   if (!this->pAPDRules) {    // if no sensor array
-//#ifdef DEBUG_INFO
-      SerPrintP("Counting rules...");
-//#endif
+  	Serial.println(APDUINO_MSG_LOADINGRULES,HEX);
       // TODO check if SD is available!
       iRuleCount = get_line_count_from_file("RULES.CFG");
-//#ifdef DEBUG_INFO
+#ifdef DEBUG_INFO
       Serial.print(iRuleCount); SerPrintP(" rules seem to be defined...");
-//#endif
+#endif
       if (iRuleCount > 0) {
 #ifdef DEBUG_INFO
         SerPrintP("Rule Array: allocating "); Serial.print(sizeof(APDRule*)*iRuleCount,DEC); SerPrintP(" bytes of RAM\n");
@@ -324,27 +326,26 @@ void APDRuleArray::loopRules() {
   //pRuleMetro->reset();    // restart the metro
 }
 
+// sets the nextrunmillis to the millis remaining till the next minute 0s
 void APDRuleArray::adjustnextcronminute() {
 	DateTime now = APDTime::now();
 	this->lastCronMin = now.minute();
-	//SerPrintP("RESCHEDULE CRON EVAL IN"); Serial.print(60-now.second()); SerPrintP("seconds\n");
 	this->nextrunmillis = millis();
 	this->nextrunmillis += ((unsigned long)(60 - now.second())*1000);
-	//Serial.print(this->nextrunmillis); SerPrintP("("); Serial.print(millis()); SerPrintP(")\n");
 }
 
+// iterate through RF_SCHEDULED rules and execute the scheduler evaluation
+// as this should be done 1x a minute, nextrunmillis is checked against millis
+// (and readjusted to next run if we did a check)
 void APDRuleArray::evaluateScheduledRules() {
-	if (this->nextrunmillis < millis()) {
-		if (this->lastCronMin == -1) {		// if cron has been just started, we evaluate next 00:00
-			adjustnextcronminute();
-			//SerPrintP("CRONADJUSTED\n");
+	if (this->nextrunmillis < millis()) {		// check if time's up
+		if (this->lastCronMin == -1) {					// if cron has been just started, we evaluate next 00:00
+			adjustnextcronminute();								// push nextrunmillis to next 0s
 			return;
 		}
-		//SerPrintP("PMETROUP\n");
+
 		DateTime now = APDTime::now();
 		if (now.minute() != this->lastCronMin) {
-			//SerPrintP("OTHERMINUTE");
-			//this->lastCronMin = now.minute();
 			for (int i=0; i < this->iRuleCount; i++) {      // loop through rules
 				if (this->pAPDRules[i]->config.rule_definition == RF_SCHEDULED) {	// only check scheduled
 					this->pAPDRules[i]->evaluateRule();

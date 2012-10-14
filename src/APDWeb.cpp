@@ -1563,7 +1563,7 @@ void APDWeb::get_thingspeaklog_string(char *szLogBuf) {
 
 // requires Ethernet connection to be started already
 void APDWeb::web_logging() {
-	char www_logdata[512];
+	char www_logdata[256];
 	if ( pwwwclient ) {           // TODO check if we're registered
 		if ( !pwwwclient->connected() ) {
 			get_lastlog_string(www_logdata);
@@ -1615,7 +1615,7 @@ void APDWeb::pachube_logging() {
 	if ( pwwwclient ) {           // TODO check if we're registered
 		if ( !pwwwclient->connected() ) {
 			char feedUrl[64] = "";
-			char www_logdata[512];
+			char www_logdata[256];
 #ifdef DEBUG
 			SerPrintP("ASSEMBLING PH LOG\n");
 #endif
@@ -1673,7 +1673,7 @@ void APDWeb::thingspeak_logging() {
 	if ( pwwwclient ) {           // TODO check if we're registered
 		if ( !pwwwclient->connected() ) {
 			char feedUrl[64] = "";
-			char www_logdata[512];
+			char www_logdata[256];
 			get_thingspeaklog_string(www_logdata);
 
 			Serial.println(www_logdata);

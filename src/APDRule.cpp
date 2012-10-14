@@ -47,6 +47,15 @@ APDRule::APDRule(RDCONF *rdc, APDSensorArray *pSA, APDControlArray *pCA) {
   } else {
   	this->config.pszcron = NULL;
   }
+  if (rdc->pszconditions && (l = strlen(rdc->pszconditions)) > 0 ) {
+  	if (this->config.pszconditions = (char *)malloc(sizeof(char)*(l+1))) {
+  		strcpy(this->config.pszconditions, rdc->pszconditions);
+  	} else {
+  		Serial.println(APDUINO_ERROR_RAOUTOFMEM,HEX);
+  	}
+  } else {
+  	this->config.pszconditions = NULL;
+  }
   this->psa = pSA;
   this->pca = pCA;
 
@@ -136,9 +145,9 @@ APDRule::APDRule(RDCONF *rdc, APDSensorArray *pSA, APDControlArray *pCA) {
         this->cvalue = 0;      // use the provided static value
         //this->cvalue = this->config.ra_value;      // use the provided static value
       }
-      if (this->config.conditions[0]!=0) {
+      if (this->config.pszconditions[0]!=0) {
 #ifdef VERBOSE
-      	SerPrintP(" EVALS: \"");Serial.print(this->config.conditions);SerPrintP("\" --");
+      	SerPrintP(" EVALS: \"");Serial.print(this->config.pszconditions);SerPrintP("\" --");
 #endif
       }
 
@@ -254,25 +263,17 @@ APDRule::APDRule(RDCONF *rdc, APDSensorArray *pSA, APDControlArray *pCA) {
 }
 
 
-
-
-
-// initialize with string containing RDCONF
-APDRule::APDRule(char *psz_rdc) {
-  // TODO implement this
-  initBlank();
-}
-
 APDRule::~APDRule()
 {
   // TODO Auto-generated destructor stub
 	if (this->pmetro) delete(this->pmetro);		// delete metro if any
 	free(this->config.pszcron);									// free up any dynamically allocated cron string
+	free(this->config.pszconditions);					  // free up any dynamically allocated conditions string
 	initBlank();
 }
 
 void APDRule::initBlank() {
-  memset(&config,0,sizeof(RDCONF));
+  memset(&config,0,sizeof(RDCONF));		// this NULLs the cron and conditions string ptrs too
   prulefunc = NULL;
   ptcontrolfunc = NULL;
   pfcontrolfunc = NULL;
@@ -495,66 +496,84 @@ boolean APDRule::apd_rule_metro(APDRule *pRule) {
   return retcode;
 }
 
+boolean APDRule::cronposeval(int curval,const char*pcpos) {
+	char cnow[3]="";
+	sprintf_P(cnow,PSTR("%02d"),curval);
+#ifdef DEBUG
+	SerPrintP(">:"); Serial.print(cnow);
+#endif
+	int di = 0;			// used for extracting dividers
+	// check if minute is *, equal to value or list containing value
+	return (!strcmp_P(pcpos,PSTR("*")) || !strcmp(pcpos,cnow) ||
+			(strstr(pcpos,cnow) && !strchr(pcpos,'/')) ||
+			(strchr(pcpos,'/') && ((di=atoi(strchr(pcpos,'/')+1)) && (curval-(di*(curval/di)))==0 ) ) ) ;
+}
+
 // processes a cron-like time specification and returns true if job has to run
 boolean APDRule::apd_rule_scheduled(APDRule *pRule) {
-	SerPrintP("SCHEDULE CHECK IN RULE");
-  //TODO: implement checking the cvalue as time against rtc - use UNIX time
-  boolean bret = false;
+  boolean bret = false;						// return true if job should run, false otherwise
   if (pRule->config.pszcron) {		// if a cron timing is specified
+  	// copy the cron definition to a temporary buffer for in-place splitting to mins/hrs/days/months/weekdays substrings
   	int ilen = strlen(pRule->config.pszcron);
   	char *psztemp = (char *)malloc(sizeof(char)*(ilen+1));
-  	strcpy(psztemp,pRule->config.pszcron);
-  	char *pmins=0,*phours=0,*pdays=0,*pmonths=0,*pweekdays=0;
-  	char **ppcronstrs[5] = { &pmins, &phours, &pdays, &pmonths, &pweekdays };	// put the pointers to an array
-  	int i=0;
-  	for (int j=0; j < 5 && i < ilen; j++) {	// iterate the positions
-  		*(ppcronstrs[j]) = &psztemp[i];					// store the starting pointer to mins, hours, days, months, weekdays as we iterate through the string
-  		while (psztemp[i] != '_' && i < ilen) { i++; }		// skip to the next underscore
-  		if (psztemp[i] == '_') { psztemp[i] = 0; i++; }	// terminate substring (staring address just saved to a position)
+  	if (psztemp) {
+			strcpy(psztemp,pRule->config.pszcron);
+			// alloc pointers for substrings (will be set to point to locations "within" psztemp pointed string)
+			char *pmins=0,*phours=0,*pdays=0,*pmonths=0,*pweekdays=0;
+			// set up an array containing pointers to the chararray pointers
+			char **ppcronstrs[5] = { &pmins, &phours, &pdays, &pmonths, &pweekdays };	// put the pointers to an array
+			int i=0;	// will point to a position in psztemp
+			// split string: replace '_' separators by \0's to produce smaller strings, store them to the pointers in the positions array
+			for (int j=0; j < 5 && i < ilen; j++) {	// iterate the positions
+				*(ppcronstrs[j]) = &psztemp[i];					// store the starting pointer to mins, hours, days, months, weekdays as we iterate through the string
+				while (psztemp[i] != '_' && i < ilen) { i++; }		// skip to the next underscore
+				if (psztemp[i] == '_') { psztemp[i] = 0; i++; }	// terminate substring (staring address just saved to a position)
+			}
+			// now we should have substrings
+	#ifdef DEBUG
+			SerPrintP("CRON STRING: "); Serial.print(pmins);
+			Serial.print(","); Serial.print(phours); Serial.print(","); Serial.print(pdays); Serial.print(",");  Serial.print(pmonths); Serial.print(","); Serial.println(pweekdays);
+	#endif
+
+			DateTime now = APDTime::now();
+			// check if minute is *, equal to value or list containing value
+			if (cronposeval(now.minute(),pmins) ) {		// should handle "*", "10", "10,20" type inputs on minute
+				// if minute was matching
+	#ifdef DEBUG
+				SerPrintP(".min.");
+	#endif
+				if (cronposeval(now.hour(),phours)) {
+						// if hour was matching
+	#ifdef DEBUG
+					SerPrintP(".hour.");
+	#endif
+						if (cronposeval(now.day(),pdays)) {
+							// if day was matching
+	#ifdef DEBUG
+							SerPrintP(".day.");
+	#endif
+							if (cronposeval(now.month(),pmonths)) {
+								// if month was matching
+	#ifdef DEBUG
+								SerPrintP(".month.");
+	#endif
+								if (cronposeval(now.dayOfWeek(),pweekdays)) {		// should be also 2-digits! (or change cronposeval)
+
+									Serial.println(APDUINO_MSG_CRONRUN,HEX);
+									bret = true;
+									// todo store cron evaluation timestamp to avoid reeval?
+								}  // weekday
+							}  // month
+						}  // day
+				}  // hour
+			}	// minute
+
+			free(psztemp);	// release temp str buf
+  	} else {
+  		Serial.println(APDUINO_ERROR_CRONOUTOFRAM,HEX);
   	}
-  	// now we should have substrings
-  	SerPrintP("CRON STRING: "); Serial.print(pmins);
-  	Serial.print(","); Serial.print(phours); Serial.print(","); Serial.print(pdays); Serial.print(",");  Serial.print(pmonths); Serial.print(","); Serial.println(pweekdays);
-
-  	// TODO evaluate compared to current time
-  	DateTime now = APDTime::now();
-  	char cnow[3]="";
-  	sprintf_P(cnow,PSTR("%02d"),now.minute());
-  	// check if minute is *, equal to value or list containing value
-  	if (!strcmp_P(pmins,PSTR("*")) || !strcmp(pmins,cnow) ||
-  			(strstr(pmins,cnow) && !strchr(pmins,'/'))) {		// should handle "*", "10", "10,20" type inputs on minute
-  		// if minute was matching
-  		SerPrintP(".minmatch.");
-  		sprintf_P(cnow,PSTR("%02d"),now.hour());
-    	if (!strcmp_P(phours,PSTR("*")) || !strcmp(phours,cnow) ||
-    			(strstr(phours,cnow) && !strchr(phours,'/'))) {
-    			// if hour was matching
-    		SerPrintP(".hourmatch.");
-    			sprintf_P(cnow,PSTR("%02d"),now.day());
-					if (!strcmp_P(pdays,PSTR("*")) || !strcmp(pdays,cnow) ||
-							(strstr(pdays,cnow) && !strchr(pdays,'/'))) {
-						// if day was matching
-						SerPrintP(".daymatch.");
-						sprintf_P(cnow,PSTR("%02d"),now.month());
-						if (!strcmp_P(pmonths,PSTR("*")) || !strcmp(pmonths,cnow) ||
-								(strstr(pmonths,cnow) && !strchr(pmonths,'/'))) {
-							// if month was matching
-							SerPrintP(".monthmatch.");
-							sprintf_P(cnow,PSTR("%d"),now.dayOfWeek());
-							if (!strcmp_P(pweekdays,PSTR("*")) || !strcmp(pweekdays,cnow) ||
-									(strstr(pweekdays,cnow) && !strchr(pweekdays,'/'))) {
-
-								SerPrintP("CRON -> RUN\n");
-								bret = true;
-								// todo store cron evaluation timestamp to avoid reeval?
-							}  // weekday
-						}  // month
-					}  // day
-    	}  // hour
-  	}	// minute
-    free(psztemp);	// release temp str buf
   } else {
-  	SerPrintP("ERR: NO CRONSPEC");
+  	Serial.println(APDUINO_ERROR_NOCRONSPEC,HEX);
   }
   return bret;
 }
@@ -655,7 +674,7 @@ boolean APDRule::apd_rule_eval_conditions(APDRule *pRule){
 #endif
   APDRule *pr = (APDRule*)pRule;
   APDEvaluator *ape = new APDEvaluator(pr->psa, pr->pca);
-  float fres = ape->feval(pr->config.conditions);
+  float fres = ape->feval(pr->config.pszconditions);
   free(ape);
 #ifdef DEBUG
   SerPrintP("ram free:");  Serial.print(freeMemory()); SerPrintP("\n");

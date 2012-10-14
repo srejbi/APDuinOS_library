@@ -78,8 +78,8 @@ public:
 	 */
 	float evaluate(Expr* expr);
 
-	int dothatstuff(char *str);
-	float feval(char *str);
+	int dothatstuff(const char *str);
+	float feval(const char *str);
 	int iError;
 
 private:

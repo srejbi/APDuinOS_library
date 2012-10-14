@@ -398,7 +398,7 @@ float APDEvaluator::evaluate(Expr* expr) {
   return ret;
 }
 
-int APDEvaluator::dothatstuff(char *str) {
+int APDEvaluator::dothatstuff(const char *str) {
   Expr* expr = NULL;
 
   if(str != NULL) {
@@ -412,7 +412,7 @@ int APDEvaluator::dothatstuff(char *str) {
   return 0;
 }
 
-float APDEvaluator::feval(char *str) {
+float APDEvaluator::feval(const char *str) {
   Expr* expr = NULL;
   float fret;
 

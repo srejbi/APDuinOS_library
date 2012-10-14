@@ -90,7 +90,7 @@ struct RDCONF {
   int ra_sensor_idx;          // -1 if ignored, sensor index if value from sensor
   int reexec;									// 0 - only exec if changed, 1 - reexec TRUE, 2 - reexec FALSE, 3 - REEXEC
   char *pszcron;							// pointer to a cron expression string (if specified); will be allocated dynamically
-  char conditions[33];				// conditional expression to be evaluated
+  char *pszconditions;				// conditional expression to be evaluated
 };
 
 
@@ -99,7 +99,6 @@ class APDRule
 public:
   APDRule();
   APDRule(RDCONF *rdc,APDSensorArray *pSA,APDControlArray *pca);      // initialize with RDCONF
-  APDRule(char *psz_rdc);                       // initialize with a string containing RDCONF
   void evaluateRule();
   virtual
   ~APDRule();
@@ -135,6 +134,8 @@ public:
   static boolean apd_rule_sensor_lt(APDRule *pRule);
   static boolean apd_rule_sensor_gt(APDRule *pRule);
   static boolean apd_rule_eval_conditions(APDRule *pRule);
+
+  static boolean cronposeval(int curval,const char*pcpos);
 
 private:
   void initBlank();
