@@ -805,7 +805,8 @@ void APDuino::log_data() {
 #ifdef DEBUG
   SerPrintP("Assembling log...");
 #endif
-  char ts[] = "1970/01/01 00:00:00";        // string used for timestamp
+  char ts[20] = "";        // string used for timestamp
+  strcpy_P(ts,PSTR("1970/01/01 00:00:00"));
   //if (this->pAPDTime != NULL) {
     //this->pAPDTime->nowS(ts);
     APDTime::nowS(ts);
