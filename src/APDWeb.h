@@ -175,7 +175,7 @@ private:
 
   // log string generators
   void get_lastlog_string(char *szLogBuf);
-  void get_pachubelog_string(char *szLogBuf);
+  void get_cosmlog_string(char *szLogBuf);
   void get_thingspeaklog_string(char *szLogBuf);
 
   // initialization
@@ -184,9 +184,9 @@ private:
   boolean restart();
 
   // configuration
-  void web_logging();
-  void pachube_logging();
-  void thingspeak_logging();
+  void log_to_ApduinoOnline();
+  void log_to_Cosm();
+  void log_to_ThingSpeak();
 
   boolean self_register();
   boolean setup_webclient();

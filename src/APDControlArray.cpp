@@ -95,14 +95,10 @@ void APDControlArray::new_control_parser(void *pCA, int iline, char *psz) {
 
 int APDControlArray::loadControls(APDStorage *pAPDStorage) {
   if (!this->pAPDControls) {    // if no sensor array
-#ifdef DEBUG
-    SerPrintP("Counting controls...");
-#endif
+  	Serial.println(APDUINO_MSG_LOADINGCONTROLS,HEX);						// debug
     // TODO check if SD is available!
     iControlCount = get_line_count_from_file("CONTROLS.CFG");
-#ifdef DEBUG
-    Serial.print(iControlCount); SerPrintP(" controls seem to be defined...");
-#endif
+    Serial.print(APDUINO_MSG_CONTROLCOUNT,HEX); SerPrintP(":"); Serial.println(iControlCount);
     if (iControlCount > -1) {
 #ifdef DEBUG
       SerPrintP("Control Array: allocating "); Serial.print(sizeof(APDControl*)*iControlCount,DEC); SerPrintP(" bytes of RAM\n");
@@ -118,9 +114,9 @@ int APDControlArray::loadControls(APDStorage *pAPDStorage) {
   #endif
 
         pAPDStorage->readFileWithParser("CONTROLS.CFG",&new_control_parser,(void*)this);
-#ifdef DEBUG
-        SerPrintP("CA Done.\n");
-#endif
+
+        Serial.println(APDUINO_MSG_CONTROLSLOADED,HEX);
+
         // TODO add any postprocessing
         for (int i=0; i<iControlCount; i++) {
             APDControl *pc = pAPDControls[i];
@@ -143,6 +139,8 @@ int APDControlArray::loadControls(APDStorage *pAPDStorage) {
             }
           }
         }
+
+        Serial.println(APDUINO_MSG_CONTROLSPOSTPROCESSED,HEX);
 
       } else {
       	Serial.println(APDUINO_ERROR_CAALLOCFAIL,HEX);

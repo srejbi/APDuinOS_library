@@ -125,79 +125,122 @@ boolean APDStorage::ready() {
  *
  * \return the number of files rotated
  */
-int APDStorage::logrotate() {
+int APDStorage::logrotate(const char *szLogFile, unsigned long maxsize) {
   int iRetCode = -1;	// something wrong
   if (bReady) {
       // rename any old log file(s) -- logrotate
-      char fname[13] = "";
-      char ofname[13] = "";
-      strcpy_P(fname,PSTR("APDLOG.TXT"));
-      if (p_sd->exists(fname)) {
-      	Serial.println(APDUINO_MSG_LOGCHECK,HEX);
-#ifdef VERBOSE
-          SerPrintP("APDLOG.TXT -- Log existst, checking size - \n");		// TODO remove these, do messaging via APDSerial
-#endif
-          // check file size
-          SdFile logFile(fname, O_RDONLY);
-          unsigned long fSize = logFile.fileSize();
-          logFile.close();
-          // File size check
-#ifdef VERBOSE
-          Serial.print(fSize); SerPrintP(" bytes...\n");				// TODO remove debug
-#endif
-          // 1M size check
-          if (fSize >= 1048576) {											// TODO move max size to param
-          	Serial.println(APDUINO_MSG_LOGROTATENEEDED,HEX);
-#ifdef VERBOSE
-              SerPrintP(" -- Too big, rotate needed.");					// TODO remove debug
-#endif
-              int ibak = 0;
-              sprintf_P(fname, PSTR("APDLOG.%03d"), ibak);
-              // do check for the last backup
-              for (ibak = 0; ibak < 999 && p_sd->exists(fname); sprintf_P(fname, PSTR("APDLOG.%03d"), ++ibak)) {
-#ifdef VERBOSE
-                  Serial.print(fname); SerPrintP("\n exists already.");
-#endif
-              }
-#ifdef VERBOSE
-              Serial.print(fname); SerPrintP("should be the last log file. Rotating...\n");
-#endif
-              Serial.println(APDUINO_MSG_LOGROTATE,HEX);
-              if (p_sd->exists(fname)) {
-                  p_sd->remove(fname);
-              }
+				//strcpy_P(fname,PSTR("APDLOG.TXT"));
+				if (p_sd->exists(szLogFile)) {
+					Serial.println(APDUINO_MSG_LOGCHECK,HEX);
+//#ifdef VERBOSE
+					Serial.print(szLogFile); SerPrintP(" -- Log existst, checking size - \n");		// TODO remove these, do messaging via APDSerial
+//#endif
+					// check file size
+					SdFile logFile(szLogFile, O_RDONLY);
+					unsigned long fSize = logFile.fileSize();
+					logFile.close();
 
-              while (ibak > 0) {
-                  sprintf_P(ofname,PSTR("APDLOG.%03d"),ibak-1);
-                  sprintf_P(fname,PSTR("APDLOG.%03d"),ibak);
+//#ifdef VERBOSE
+					Serial.print(fSize); SerPrintP(" bytes...\n");				// TODO remove debug
+//#endif
+					// size check
+					if (fSize >= maxsize ) {											// TODO move max size to param
+						Serial.println(APDUINO_MSG_LOGROTATENEEDED,HEX);
+
+						char *fname = (char *)malloc(sizeof(char)*strlen(szLogFile)+5);		// +5 to support appending if stg. like 'a' is sent, where we'll want to append ext
+						char *ofname = (char *)malloc(sizeof(char)*strlen(szLogFile)+5);	// +5 to support appending if stg. like 'a' is sent, where we'll want to append ext
+						if (fname != NULL && ofname != NULL) {
+							//char ofname[13] = "";
+							strcpy(fname,szLogFile);			// start with the file name provided
+							strcpy(ofname,szLogFile);			// start with the file name provided
+
+							char *pszext = strrchr(fname,'.');			// points to the rightmost '.', extension (routine will change this part)
+							SerPrintP("PSZEXT relative to fname:");
+							Serial.println((int)(pszext-fname),DEC);
+
+							if (pszext==NULL) {								// if no rightmost '.' find a suitable place for ext.
+								SerPrintP("No extension found in "); Serial.println(fname);
+								if (strlen(szLogFile) < 9) {
+									pszext = (char *)(fname+strlen(fname));		// append the string
+								} else {
+									pszext = (char *)(fname+(strlen(fname)-5));		// overwrite the last part of the filename
+								}
+							}
+
+							SerPrintP("PSZEXT relative to fname:");
+							Serial.println(pszext-fname,DEC);
+
+							int ibak = 0;
+							//sprintf_P(fname, PSTR("APDLOG.%03d"), ibak);
+							sprintf_P(pszext, PSTR(".%03d"), ibak);
+
+							// do check for the last backup
+							//for (ibak = 0; ibak < 999 && p_sd->exists(fname); sprintf_P(fname, PSTR("APDLOG.%03d"), ++ibak)) {
+							for (ibak = 0; ibak < 999 && p_sd->exists(fname); sprintf(pszext, PSTR(".%03d"), ++ibak)) {
+//#ifdef VERBOSE
+								Serial.println();
+									Serial.print(fname); SerPrintP(" exists already.\n");
+//#endif
+							}
 #ifdef VERBOSE
-                  SerPrintP("Renaming "); Serial.print(ofname); SerPrintP(" to "); Serial.print(fname); SerPrintP(".\n");
+							Serial.print(fname);
+							SerPrintP("should be the last log file. Rotating...\n");
 #endif
-                  p_sd->rename(ofname,fname);
-                  ibak--;
-                  iRetCode++;			// number of logs that will be rotated
-              }
-              // rename APDLOG.TXT to APDLOG.000 using PSTRINGS for filenames to save on RAM
-              strcpy_P(ofname,PSTR("APDLOG.TXT"));
-              strcpy_P(fname,PSTR("APDLOG.000"));
-              p_sd->rename(ofname,fname);
-              iRetCode++;				//+1
-              Serial.println(APDUINO_MSG_LOGROTATED,HEX);
+							Serial.println(APDUINO_MSG_LOGROTATE,HEX);
+
+
+
+
+
+
+
+
+
+							if (p_sd->exists(fname)) {
+									p_sd->remove(fname);
+							}
+
+							while (ibak > 0) {
+										sprintf_P((char*)(ofname+(int)(pszext-fname)),PSTR(".%03d"),ibak-1);
+										sprintf_P(pszext,PSTR(".%03d"),ibak);
+//									sprintf_P(ofname,PSTR("APDLOG.%03d"),ibak-1);
+//									sprintf_P(fname,PSTR("APDLOG.%03d"),ibak);
+//#ifdef VERBOSE
+									SerPrintP("Renaming "); Serial.print(ofname); SerPrintP(" to "); Serial.print(fname); SerPrintP(".\n");
+//#endif
+									p_sd->rename(ofname,fname);
+									ibak--;
+									iRetCode++;			// number of logs that will be rotated
+							}
+							// rename APDLOG.TXT to APDLOG.000 using PSTRINGS for filenames to save on RAM
+							strcpy(ofname,szLogFile);								// move the original file
+							strcpy_P(pszext,PSTR(".000"));					// to original.000
+							//strcpy_P(ofname,PSTR("APDLOG.TXT"));
+							//strcpy_P(fname,PSTR("APDLOG.000"));
+							p_sd->rename(ofname,fname);							// make the move
+							iRetCode++;				//+1
+							Serial.println(APDUINO_MSG_LOGROTATED,HEX);
+						} else {
+							Serial.println(APDUINO_ERROR_LOGROTATEOUTOFMEM,HEX);
+						}
+						// release any memory allocated
+						free(fname);
+						free(ofname);
 #ifdef VERBOSE
-              Serial.print(iRetCode);SerPrintP("\n logs rotated.");
+							Serial.print(iRetCode);SerPrintP("\n logs rotated.");
 #endif
-          } else {
-              iRetCode = 0;		// no logs rotated
+					} else {
+							iRetCode = 0;		// no logs rotated
 #ifdef VERBOSE
-              SerPrintP("\n -- less than 1M in size, appending.");
+							SerPrintP("\n -- less than 1M in size, appending.");
 #endif
-          }
-      } else {
-          iRetCode = 0;		// no logs rotated
+					}
+			} else {
+					iRetCode = 0;		// no logs rotated
 #ifdef VERBOSE
-          SerPrintP("\nNo previous log.");
+					SerPrintP("\nNo previous log.");
 #endif
-      }
+			}
 #ifdef VERBOSE
       SerPrintP("\nShould be ok to open new log or append to the previous one.");
 #endif
@@ -237,35 +280,29 @@ int APDStorage::readFileWithParser(char *szFile, void (*pParserFunc)(void *, int
     dataFile.close();
     retcode = i;
   } else {
-  	Serial.print(APDUINO_ERROR_FILEOPEN);SerPrintP(":");Serial.println(szFile);
-      //SerPrintP("E219 ("); Serial.print(szFile); Serial.println(")");     // error opening file
+  	// error opening file
+  	Serial.print(APDUINO_ERROR_FILEOPEN,HEX); SerPrintP(":");Serial.println(szFile);
   }
   return retcode;
 }
 
 
 
-void APDStorage::write_log_line(char *szLogLine) {
+void APDStorage::write_log_line(const char *szLogLine) {
   if (bReady) {
     // make a string for assembling the data to log:
-  	Serial.println(APDUINO_MSG_SDLOGGING,HEX);
-#ifdef VERBOSE
-    SerPrintP("\nLogging to SD...\n");
-#endif
+  	Serial.print(APDUINO_MSG_SDLOGGING,HEX);					// debug
+  	SerPrintP(":");Serial.println(szLogLine);					// debug
 
     SdFile dataFile("APDLOG.TXT", O_WRITE | O_CREAT | O_APPEND);
     if (dataFile.isOpen()) {
         dataFile.println(szLogLine);
         dataFile.close();
-    }
-    // if the file isn't open, pop up an error:
-    else {
+        Serial.println(APDUINO_MSG_SDLOGGINGOK,HEX);					// debug
+    } else {
     	Serial.println(APDUINO_ERROR_LOGOPENERR,HEX);
-        //SerPrintP("E220\n");			// could not open log file
     }
   } else {
   		Serial.println(APDUINO_ERROR_LOGSDERR,HEX);
-      //SerPrintP("E201\n");			// storage not ready
   }
-  // return nothing
 }

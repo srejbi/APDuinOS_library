@@ -128,9 +128,8 @@ int APDRuleArray::loadRules(APDStorage *pAPDStorage) {
   	Serial.println(APDUINO_MSG_LOADINGRULES,HEX);
       // TODO check if SD is available!
       iRuleCount = get_line_count_from_file("RULES.CFG");
-#ifdef DEBUG_INFO
-      Serial.print(iRuleCount); SerPrintP(" rules seem to be defined...");
-#endif
+      // TODO should log this
+      Serial.print(APDUINO_MSG_RULECOUNT,HEX); SerPrintP(":"); Serial.println(iRuleCount);
       if (iRuleCount > 0) {
 #ifdef DEBUG_INFO
         SerPrintP("Rule Array: allocating "); Serial.print(sizeof(APDRule*)*iRuleCount,DEC); SerPrintP(" bytes of RAM\n");
@@ -145,9 +144,9 @@ int APDRuleArray::loadRules(APDStorage *pAPDStorage) {
 #endif
 
           pAPDStorage->readFileWithParser("RULES.CFG",&new_rule_parser,(void*)this);
-#ifdef DEBUG
-          SerPrintP("We should be done with the rules.\n");
-#endif
+
+          Serial.println(APDUINO_MSG_RULESLOADED,HEX);
+
           // postprocessing of sensor & control pointers
 #ifdef DEBUG
           SerPrintP("Rules postprocessing.\n");
@@ -213,7 +212,7 @@ int APDRuleArray::loadRules(APDStorage *pAPDStorage) {
   //          }
           }       // end enumerating rules
 
-          //SerPrintP("Rules ok.\n");
+          Serial.println(APDUINO_MSG_RULESPOSTPROCESSED,HEX);
 
           this->nextrunmillis += 1000;
         } else {
@@ -341,11 +340,13 @@ void APDRuleArray::evaluateScheduledRules() {
 	if (this->nextrunmillis < millis()) {		// check if time's up
 		if (this->lastCronMin == -1) {					// if cron has been just started, we evaluate next 00:00
 			adjustnextcronminute();								// push nextrunmillis to next 0s
+			Serial.print(APDUINO_MSG_CRONLAUNCHED,HEX); SerPrintP(":"); Serial.println(nextrunmillis);
 			return;
 		}
 
 		DateTime now = APDTime::now();
 		if (now.minute() != this->lastCronMin) {
+			Serial.println(APDUINO_MSG_CRONCHECK,HEX);
 			for (int i=0; i < this->iRuleCount; i++) {      // loop through rules
 				if (this->pAPDRules[i]->config.rule_definition == RF_SCHEDULED) {	// only check scheduled
 					this->pAPDRules[i]->evaluateRule();

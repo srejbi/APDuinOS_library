@@ -59,7 +59,9 @@ boolean SonarSensor::perform_check()
 }
 
 float SonarSensor::read_sonar() {
+#ifdef DEBUG
   SerPrintP("SRF05 READING");
+#endif
   const int numOfReadings = 10;                   // number of readings to take/ items in the array
   int readings[numOfReadings];                    // stores the distance readings in an array
   int arrayIndex = 0;                             // arrayIndex of the current item in the array

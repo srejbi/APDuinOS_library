@@ -39,7 +39,11 @@
 #include "apd_utils.h"
 #include "SdFat.h"               // SD card
 
+// TODO enclose hardware specific parts in the appropriate defines
 #define SS_PIN		SS			// SS should be defined in SdFatLib
+
+#define MAX_PATH_LEN		64		// the max length for path entries
+#define MAX_LOG_SIZE    1048576		// 1M
 
 class APDStorage {
 public:
@@ -49,8 +53,8 @@ public:
 	boolean start();
 	boolean ready();
 
-	int logrotate();
-	void write_log_line(char *szLogLine);
+	int logrotate(const char *szLogFile, unsigned long maxsize);
+	void write_log_line(const char *szLogLine);
 
 	int readFileWithParser(char *szFile, void (*pParserFunc)(void*, int, char*), void *pAPD  );
 

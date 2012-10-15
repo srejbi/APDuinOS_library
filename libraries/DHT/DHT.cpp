@@ -45,7 +45,7 @@ float DHT::readTemperature(bool S) {
       return f;
     }
   }
-  Serial.print("Read fail");
+  //Serial.print("Read fail");		// commented out by Gy.Schreiber 2012-10-15
   return NAN;
 }
 

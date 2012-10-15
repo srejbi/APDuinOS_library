@@ -263,14 +263,11 @@ APDSensor *APDSensorArray::byIndex(int idx) {
 
 int APDSensorArray::loadSensors(APDStorage *pAPDStorage) {
   if (pAPDSensors == NULL) {    // if no sensor array
-#ifdef DEBUG
-    SerPrintP("Counting sensors...");
-#endif
+  	Serial.println(APDUINO_MSG_LOADINGSENSORS,HEX);						// debug
     // TODO check if SD is available!
     iSensorCount =  get_line_count_from_file("SENSORS.CFG");
-#ifdef VERBOSE
-    Serial.print(iSensorCount); SerPrintP(" sensors seem to be defined...");
-#endif
+
+    Serial.print(APDUINO_MSG_SENSORCOUNT,HEX); SerPrintP(":"); Serial.println(iSensorCount);
 
     if (iSensorCount > -1) {
 #ifdef VERBOSE
@@ -287,9 +284,8 @@ int APDSensorArray::loadSensors(APDStorage *pAPDStorage) {
 #endif
 
         pAPDStorage->readFileWithParser((char *)"SENSORS.CFG",&new_sensor_parser, (void*)this);
-#ifdef DEBUG
-        SerPrintP("We should be done with the sensors.\n");
-#endif
+
+        Serial.println(APDUINO_MSG_SENSORSLOADED,HEX);
         // TODO add any postprocessing
 
         iNextSensor = 0;                // first sensor to read

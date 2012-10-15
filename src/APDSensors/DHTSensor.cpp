@@ -92,6 +92,7 @@ boolean DHTSensor::perform_check()
 //#endif
       break;
   }
+  // if (value == NAN) { this-> status |= }
 
   return (this->fvalue = value);
 }

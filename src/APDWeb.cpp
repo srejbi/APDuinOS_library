@@ -1216,6 +1216,7 @@ void APDWeb::registration_response(APDWeb *pAPDWeb){
 	bool bReReg = false;
 	delay(500);    // debug
 	int content_length = -1;
+	boolean apikeyconfirmed=false;
 	char new_api_key[65]="";
 	if (pAPDWeb->pwwwclient != NULL && pAPDWeb->pwwwclient->available()) {
 #ifdef DEBUG
@@ -1293,9 +1294,14 @@ void APDWeb::registration_response(APDWeb *pAPDWeb){
 					// in any case (whether we had or not an API key) we just passed api key in response
 				  // TODO process any provisioning data
 					if (pAPDWeb->pwwwclient->available() && pAPDWeb->szAPDUINO_API_KEY[0]!=0) {
-						Serial.println(pAPDWeb->pwwwclient->available()); SerPrintP("bytes left. Looking for provisioning data...");
-						pAPDWeb->processProvisioningRequest(pAPDWeb->pwwwclient, false);  // process any provisioning data without rendering a response
-						SerPrintP("Should be done");
+						if (strstr(www_respline,pAPDWeb->szAPDUINO_API_KEY)) {	// check for api key
+							apikeyconfirmed = true;
+							SerPrintP("APDuino Online confirms device.\n");
+						} else if(apikeyconfirmed) {		// only accept provisioning if API key was confirmed
+							Serial.println(pAPDWeb->pwwwclient->available()); SerPrintP("bytes left. Looking for provisioning data...");
+							pAPDWeb->processProvisioningRequest(pAPDWeb->pwwwclient, false);  // process any provisioning data without rendering a response
+							SerPrintP("Should be done");
+						}
 					}
 				}
 				// reset for the next line
@@ -1412,19 +1418,19 @@ void APDWeb::loop() {
 #ifdef VERBOSE
 						SerPrintP("\nWEBLOG\n");
 #endif
-						this->web_logging();
+						this->log_to_ApduinoOnline();
 						this->pmetro->reset();
 					} else if ( this->phmetro != NULL && this->phmetro->check()) {
 #ifdef VERBOSE
 						SerPrintP("\nCOSMLOG\n");
 #endif
-						this->pachube_logging();
+						this->log_to_Cosm();
 						this->phmetro->reset();
 					} else if ( this->tsmetro != NULL && this->tsmetro->check()) {
 #ifdef VERBOSE
 						SerPrintP("\nTSLOG\n");
 #endif
-						this->thingspeak_logging();
+						this->log_to_ThingSpeak();
 						this->tsmetro->reset();
 					}
 				}
@@ -1502,7 +1508,7 @@ void APDWeb::get_lastlog_string(char *szLogBuf) {
 
 
 // TODO: add size control, avoid writing to random places
-void APDWeb::get_pachubelog_string(char *szLogBuf) {
+void APDWeb::get_cosmlog_string(char *szLogBuf) {
 	char *pcLog = szLogBuf;
 	char dataString[16]="";                // make a string for assembling the data to log:
 
@@ -1562,11 +1568,14 @@ void APDWeb::get_thingspeaklog_string(char *szLogBuf) {
 
 
 // requires Ethernet connection to be started already
-void APDWeb::web_logging() {
+void APDWeb::log_to_ApduinoOnline() {
+	Serial.println(APDUINO_MSG_AOLOGCALLED,HEX);
 	char www_logdata[256];
 	if ( pwwwclient ) {           // TODO check if we're registered
 		if ( !pwwwclient->connected() ) {
 			get_lastlog_string(www_logdata);
+
+			Serial.print(APDUINO_MSG_AOLOGGING,HEX); SerPrintP(":"); Serial.print(www_logdata);		// logdata has \n
 #ifdef DEBUG
 			SerPrintP("WL: "); Serial.print(this->pstr_APDUINO_API_KEY); SerPrintP(" - "); Serial.print(www_logdata); SerPrintP(" ...");
 #endif
@@ -1593,33 +1602,29 @@ void APDWeb::web_logging() {
 
 				// here's the actual content of the PUT request:
 				pwwwclient->println(www_logdata);
-
+				Serial.println(APDUINO_MSG_AOLOGDONE,HEX);		// debug
 			} else {
-#ifdef DEBUG
-				SerPrintP("SR: failed to connect.\n");
-#endif
+				Serial.println(APDUINO_ERROR_WWWCANTCONNECTAO,HEX);		// debug
+
 				pwwwclient->stop();          // stop client now
 				this->failure();
 			}
 		}
 	}	else {
 		Serial.println(APDUINO_ERROR_AOLOGNOWEBCLIENT,HEX);
-		//SerPrintP("E27");
 		this->failure();
 	}
 
 	bWebClient = (pwwwclient!=0) && pwwwclient->connected();
 }
 
-void APDWeb::pachube_logging() {
+void APDWeb::log_to_Cosm() {
+	Serial.println(APDUINO_MSG_COSMLOGCALLED,HEX);
 	if ( pwwwclient ) {           // TODO check if we're registered
 		if ( !pwwwclient->connected() ) {
 			char feedUrl[64] = "";
 			char www_logdata[256];
-#ifdef DEBUG
-			SerPrintP("ASSEMBLING PH LOG\n");
-#endif
-			get_pachubelog_string(www_logdata);
+			get_cosmlog_string(www_logdata);
 
 			sprintf_P(feedUrl,PSTR("/v2/feeds/%lu.csv"),cosm_feed_id);
 #ifdef VERBOSE
@@ -1627,7 +1632,6 @@ void APDWeb::pachube_logging() {
 			SerPrintP("\n\nconn:"); Serial.print(cosm_server_name); Serial.println(feedUrl);
 #endif
 			if( pwwwclient->connect(cosm_server_ip, cosm_server_port) ) {
-	//			SerPrintP("connected. sending...");
 
 				// send the HTTP PUT request:
 				WCPrintP(pwwwclient,"PUT "); pwwwclient->print(feedUrl); WCPrintP(pwwwclient," HTTP/1.1\n");
@@ -1649,19 +1653,16 @@ void APDWeb::pachube_logging() {
 
 				// here's the actual content of the PUT request:
 				pwwwclient->println(www_logdata);
-#ifdef VERBOSE
-				SerPrintP("OK.\n");
-#endif
+
+				Serial.println(APDUINO_MSG_COSMLOGDONE,HEX);		// debug
 			} else {
 				Serial.println(APDUINO_ERROR_CLOGCONNFAIL,HEX);
-				//SerPrintP("E29");
 				pwwwclient->stop();          // stop client now
 				this->failure();
 			}
 		}
 	}	else {
 		Serial.println(APDUINO_ERROR_CLOGNOWEBCLIENT,HEX);
-		//SerPrintP("E28");
 		this->failure();
 	}
 
@@ -1669,7 +1670,7 @@ void APDWeb::pachube_logging() {
 }
 
 
-void APDWeb::thingspeak_logging() {
+void APDWeb::log_to_ThingSpeak() {
 	if ( pwwwclient ) {           // TODO check if we're registered
 		if ( !pwwwclient->connected() ) {
 			char feedUrl[64] = "";

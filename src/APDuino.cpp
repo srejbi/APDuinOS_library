@@ -84,8 +84,6 @@ void APDuino::init(long baudrate) {
 
   pAPDStorage = NULL;          // will be the storage
 
- // pAPDTime = NULL;
-
   pAPDWeb = NULL;
 
   pIdleMetro = NULL;
@@ -506,23 +504,15 @@ APDStorage *APDuino::setupStorage(int iSS, int iChip, int iSpeed) {
   return this->pAPDStorage;
 }
 
-//boolean APDuino::startWebLogging(unsigned long ulWebLoggingFreq) {
-//  boolean bLogging = false;
-//  if (bAPDuinoConfigured && pAPDWeb != NULL && pAPDWeb->bEthConfigured ) {    // check registration status
-//      bLogging = pAPDWeb->startWebLogging(ulWebLoggingFreq);
-//  }
-//  return bLogging;
-//}
 
 boolean APDuino::startLogging(unsigned long ulLoggingFreq) {
   boolean bLogging = false;
   if (bAPDuinoConfigured && pAPDStorage != NULL && pAPDStorage->ready() ) {    // check storage status
-      if (pAPDStorage->logrotate() >= 0) {
+
+  	if (pAPDStorage->logrotate("APDLOG.TXT", MAX_LOG_SIZE) >= 0) {
       	Serial.println(APDUINO_MSG_SDLOGOK,HEX);
-          //SerPrintP("Log2SD ok.\n");
       } else {
       	Serial.println(APDUINO_ERROR_LOGUNKNOWN,HEX);
-          //SerPrintP("ERR: L01\n");			// L01 - Unknown error related to SD logrotate
       }
       if (this->pLoggingMetro == NULL) {
          this->pLoggingMetro = new Metro(ulLoggingFreq,true);           // ignore missed events
@@ -537,6 +527,8 @@ boolean APDuino::startLogging(unsigned long ulLoggingFreq) {
   }
   return bLogging;
 }
+
+
 
 void APDuino::startIdling(unsigned long uIdleDuration) {
   if (this->pIdleMetro == NULL) {

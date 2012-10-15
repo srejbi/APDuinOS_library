@@ -28,6 +28,6 @@
 
 #include "apd_msg_codes.h"
 #define APDUINO_VERSION    "0.64"
-#define APDUINO_BUILD      "2012101407"
+#define APDUINO_BUILD      "2012101533"
 
 #endif /* APD_VERSION_H_ */

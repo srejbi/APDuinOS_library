@@ -88,9 +88,6 @@ void APDSensor::initSensor(SDCONF *sdc) {
 
 
 char *APDSensor::getValueS(char *strdest) {
-#ifdef DEBUG
-  SerPrintP("getValueS running\n");
-#endif
   char *retstr = NULL;
   sprintf(strdest,"%3.1f",this->fvalue);
   retstr=strdest;
