@@ -214,7 +214,7 @@ void APDStorage::stop() {
  *
  * \return the number of files rotated
  */
-int APDStorage::logrotate(const char *szLogFile, unsigned long maxsize) {
+int APDStorage::rotate_file(const char *szLogFile, unsigned long maxsize) {
   int iRetCode = -1;	// something wrong
   if (bReady) {
       // rename any old log file(s) -- logrotate
@@ -377,13 +377,13 @@ int APDStorage::readFileWithParser(char *szFile, void (*pParserFunc)(void *, int
 
 
 
-void APDStorage::write_log_line(const char *szLogLine) {
+void APDStorage::write_log_line(const char *szLogFile, const char *szLogLine) {
   if (bReady) {
     // make a string for assembling the data to log:
   	Serial.print(APDUINO_MSG_SDLOGGING,HEX);					// debug
   	SerPrintP(":");Serial.println(szLogLine);					// debug
 
-    SdFile dataFile("APDLOG.TXT", O_WRITE | O_CREAT | O_APPEND);
+    SdFile dataFile(szLogFile, O_WRITE | O_CREAT | O_APPEND);
     if (dataFile.isOpen()) {
         dataFile.println(szLogLine);
         dataFile.close();

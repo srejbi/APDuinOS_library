@@ -47,7 +47,6 @@ public:
   int iSensorCount;
 
   APDSensorArray();
-  //int dumpToFile(APDStorage *pAPDStorage, char *pszFileName);
   int dumpToFile(char *pszFileName);
   virtual
   ~APDSensorArray();
@@ -59,8 +58,7 @@ public:
   APDSensor *byIndex(int idx);
 
   static void new_sensor_parser(void *pSA, int iline, char *psz);
-  //int loadSensors(APDStorage *pAPDStorage);
-  int loadSensors(void);
+  int loadSensors();
   void pollSensors(boolean bProcessRules);
   void diagnostics();
 

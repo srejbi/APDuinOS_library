@@ -123,7 +123,6 @@ if (iscand<13) {
   // now do something with the values parsed...
 }
 
-//int APDRuleArray::loadRules(APDStorage *pAPDStorage) {
 int APDRuleArray::loadRules() {
   if (!this->pAPDRules) {    // if no sensor array
   	Serial.println(APDUINO_MSG_LOADINGRULES,HEX);
@@ -231,7 +230,6 @@ int APDRuleArray::loadRules() {
 }
 
 // TODO this function is out of structure-sync...
-//void APDRuleArray::dumpToFile(APDStorage *pAPDStorage, char *pszFileName) {
 void APDRuleArray::dumpToFile(char *pszFileName) {
   // make a string for assembling the data to log:
 #ifdef DEBUG

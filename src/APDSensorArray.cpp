@@ -65,7 +65,6 @@ void APDSensorArray::enableRuleEvaluation(void (*pfunc)(void*, APDSensor *),void
 }
 
 
-//int APDSensorArray::dumpToFile(APDStorage *pAPDStorage, char * pszFileName) {
 int APDSensorArray::dumpToFile(char * pszFileName) {
   // make a string for assembling the data to log:
 #ifdef DEBUG
@@ -261,9 +260,7 @@ APDSensor *APDSensorArray::byIndex(int idx) {
 
 
 
-
-//int APDSensorArray::loadSensors(APDStorage *pAPDStorage) {
-int APDSensorArray::loadSensors(void) {
+int APDSensorArray::loadSensors() {
   if (pAPDSensors == NULL) {    // if no sensor array
   	Serial.println(APDUINO_MSG_LOADINGSENSORS,HEX);						// debug
     // TODO check if SD is available!
@@ -285,7 +282,6 @@ int APDSensorArray::loadSensors(void) {
         SerPrintP("Sensor Array allocated. Populating from SENSORS.CFG...");
 #endif
 
-        //pAPDStorage->readFileWithParser((char *)"SENSORS.CFG",&new_sensor_parser, (void*)this);
         APDStorage::readFileWithParser((char *)"SENSORS.CFG",&new_sensor_parser, (void*)this);
 
         Serial.println(APDUINO_MSG_SENSORSLOADED,HEX);

@@ -43,7 +43,6 @@ public:
   ~APDControlArray();
 
   static void new_control_parser(void *pCA, int iline, char *psz);
-  //int loadControls(APDStorage *pAPDStorage);
   int loadControls();
   int dumpToFile(char *pszFileName);
 

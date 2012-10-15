@@ -93,7 +93,6 @@ void APDControlArray::new_control_parser(void *pCA, int iline, char *psz) {
   // now do something with the values parsed...
 }
 
-//int APDControlArray::loadControls(APDStorage *pAPDStorage) {
 int APDControlArray::loadControls() {
   if (!this->pAPDControls) {    // if no sensor array
   	Serial.println(APDUINO_MSG_LOADINGCONTROLS,HEX);						// debug
@@ -158,7 +157,6 @@ int APDControlArray::loadControls() {
   }
 }
 
-//int APDControlArray::dumpToFile(APDStorage *pAPDStorage, char *pszFileName) {
 int APDControlArray::dumpToFile(char *pszFileName) {
   // make a string for assembling the data to log:
 #ifdef DEBUG

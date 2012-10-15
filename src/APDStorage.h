@@ -54,8 +54,8 @@ public:
 	static boolean ready();
 	static void stop();
 
-	static int logrotate(const char *szLogFile, unsigned long maxsize);
-	static void write_log_line(const char *szLogLine);
+	static int rotate_file(const char *szLogFile, unsigned long maxsize);
+	static void write_log_line(const char *szLogFile, const char *szLogLine);
 
 	static int readFileWithParser(char *szFile, void (*pParserFunc)(void*, int, char*), void *pAPD  );
 

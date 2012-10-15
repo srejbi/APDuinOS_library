@@ -49,9 +49,6 @@ APDuino::~APDuino() {
   free(this->psa);
 
   free(this->pAPDWeb);
-  //free(this->pAPDStorage);
-  //free(this->pAPDTime);	// being made static
-
   free(pAPDSerial);
   // TODO Auto-generated destructor stub
 }
@@ -81,8 +78,6 @@ void APDuino::init(long baudrate) {
   psa = new APDSensorArray();
   pca = new APDControlArray(&pcustfuncs);
   pra = new APDRuleArray(psa,pca,&(this->bfIdle));
-
-  //pAPDStorage = NULL;          // will be the storage
 
   pAPDWeb = NULL;
 
@@ -125,7 +120,6 @@ void APDuino::init(long baudrate) {
 
 boolean APDuino::initApplication() {
 	// we need storage!
-	//if (this->pAPDStorage != NULL && this->pAPDStorage->ready()) {
 	if (APDStorage::ready()) {
 		this->setupTimeKeeping();
 		delay(50);
@@ -146,7 +140,6 @@ boolean APDuino::initApplication() {
 		SerPrintP("\ninit sensors\n");
 	#endif
 		//this->setupSensors();
-		//this->psa->loadSensors(this->pAPDStorage);
 		this->psa->loadSensors();
 		//SerPrintP("APD Sensors - ok.\n");
 		//GLCD.Puts(".");
@@ -155,7 +148,6 @@ boolean APDuino::initApplication() {
 		SerPrintP("\ninit controls\n");
 	#endif
 		//this->setupControls();
-		//this->pca->loadControls(this->pAPDStorage);
 		this->pca->loadControls();
 		//SerPrintP("APD Controls - ok.\n");
 		//GLCD.Puts(".");
@@ -165,7 +157,6 @@ boolean APDuino::initApplication() {
 	#endif
 		//this->setupRules();
 		this->pra->loadRules();
-		//this->pra->loadRules(this->pAPDStorage);
 		//SerPrintP("APD Rules - ok.\n");
 
 		// enable "real-time" rule evaluation
@@ -173,7 +164,6 @@ boolean APDuino::initApplication() {
 
 		// FIXME check if we are initialized, set it in bConfigured
 		// TODO revise what is obligatory. for now, 1 sensor or control is enough to be considered as configured
-		//this->bAPDuinoConfigured =  this->pAPDStorage->ready() && (this->psa->iSensorCount > 0  || this->pca->iControlCount > 0); // && this->pra->iRuleCount > 0;
 		this->bAPDuinoConfigured =  APDStorage::ready() && (this->psa->iSensorCount > 0  || this->pca->iControlCount > 0); // && this->pra->iRuleCount > 0;
 		//(this->iRuleCount > 0 && this->iSensorCount > 0 && this->iControlCount > 0 && this->pAPDStorage->ready());       // TODO
 
@@ -239,37 +229,9 @@ boolean APDuino::initApplication() {
 }
 
 void APDuino::setupWithStorage(int iChip, int iSpeed) {
-  delay(250);                                   // give the hw some time, we're probably just powering on
-#ifdef DEBUG
-  // debugging initialization
-  if (this->pAPDStorage == NULL) {
-  	SerPrintP("no storage yet...");
-  }else{
-  	SerPrintP("already have storage?");
-  }
-  // end debugging initialization
-
-  if (setupStorage(SS_PIN,iChip,iSpeed) != NULL) {
-  	// debugging initialization
-  	SerPrintP("Seems storage was started...");
-  }else {
-  	SerPrintP("Seems could not start storage...");
-  	// end debugging initialization
-  }
-
-  // we should now have storage
-  if (this->pAPDStorage == NULL) {
-  	// debugging initialization
-    	SerPrintP("still no storage!");
-    }else{
-    	SerPrintP("have storage.");
-    	// end debugging initialization
-    }
-#endif
-
+  delay(250);    // give the hw some time, we're probably just powering on
   // check if storage was initialized with success
   // check we have APDWeb allocated
-  //if (setupStorage(SS_PIN,iChip,iSpeed) != NULL && this->pAPDStorage != NULL) {
   if (setupStorage(SS_PIN,iChip,iSpeed)) {
 			initApplication();
   } else {
@@ -289,7 +251,6 @@ char *APDuino::getUpTimeS(char *psz_uptime) {
 }
 
 boolean APDuino::storage_ready() {
-	//return (this->pAPDStorage!=NULL ? this->pAPDStorage->ready() : false);
 	APDStorage::ready();
 }
 
@@ -478,41 +439,22 @@ void APDuino::loop_operations() {
 
 //APDStorage *APDuino::setupStorage(int iSS, int iChip, int iSpeed) {
 bool APDuino::setupStorage(int iSS, int iChip, int iSpeed) {
-//  if (this->pAPDStorage == NULL) {
-//      this->pAPDStorage = new APDStorage(iSS,iChip,iSpeed);
-//      if (this->pAPDStorage != NULL) {
-//#ifdef DEBUG
-      	SerPrintP("ATTEMPTING TO START STORAGE...\n");
-//#endif
-          //pAPDStorage->start();
-          APDStorage::begin(iSS,iChip,iSpeed);
-          SerPrintP("Storage ");
-  //        if (pAPDStorage->ready()) {
-          if (APDStorage::ready()) {
-              ;
-          } else {
-              SerPrintP("Not ");
-          }
-          SerPrintP("Ready.\n");
-//      } else {
-//      	Serial.println(APDUINO_ERROR_STORAGEALLOC,HEX);
-//          //SerPrintP("ERR: S02\n");		//S02 - Storage allocation error
-//      }
-//  } else {
-//  	Serial.println(APDUINO_ERROR_STORAGEALLOCALREADY,HEX);
-//      //SerPrintP("ERR: S01.\n");				// S01 - Storage already allocated
-//  }
-  //return this->pAPDStorage;
-	return APDStorage::ready();
+	boolean bret = false;
+	SerPrintP("Storage ");
+	if (bret = APDStorage::begin(iSS,iChip,iSpeed)) {
+			;
+	} else {
+			SerPrintP("Not ");
+	}
+	SerPrintP("Ready.\n");
+	return bret;
 }
 
 
 boolean APDuino::startLogging(unsigned long ulLoggingFreq) {
   boolean bLogging = false;
-  //if (bAPDuinoConfigured && pAPDStorage != NULL && pAPDStorage->ready() ) {    // check storage status
   if (bAPDuinoConfigured && APDStorage::ready() ) {    // check storage status
-  	//if (pAPDStorage->logrotate("APDLOG.TXT", MAX_LOG_SIZE) >= 0) {
-  	if (APDStorage::logrotate("APDLOG.TXT", MAX_LOG_SIZE) >= 0) {
+  	if (APDStorage::rotate_file("APDLOG.TXT", MAX_LOG_SIZE) >= 0) {
       	Serial.println(APDUINO_MSG_SDLOGOK,HEX);
       } else {
       	Serial.println(APDUINO_ERROR_LOGUNKNOWN,HEX);
@@ -654,7 +596,6 @@ boolean APDuino::reconfigure() {
 
   	SerPrintP("\ninit sensors\n"); delay(10);
 #endif
-		//this->psa->loadSensors(this->pAPDStorage);
   	this->psa->loadSensors();
 		//SerPrintP("APD Sensors - ok.\n");
 		//GLCD.Puts(".");
@@ -662,7 +603,7 @@ boolean APDuino::reconfigure() {
 #ifdef DEBUG
 		SerPrintP("\ninit controls\n"); delay(10);
 #endif
-		//this->pca->loadControls(this->pAPDStorage);
+
 		this->pca->loadControls();
 		//SerPrintP("APD Controls - ok.\n");
 		//GLCD.Puts(".");
@@ -670,7 +611,7 @@ boolean APDuino::reconfigure() {
 #ifdef DEBUG
 			SerPrintP("init rules\n"); delay(10);
 #endif
-		//this->pra->loadRules(this->pAPDStorage);
+
 	  this->pra->loadRules();
 		//SerPrintP("APD Rules - ok.\n");
 
@@ -698,7 +639,6 @@ boolean APDuino::reconfigure() {
 
 		// FIXME check if we are initialized, set it in bConfigured
 		// TODO revise what is obligatory. for now, 1 sensor or control is enough to be considered as configured
-		//this->bAPDuinoConfigured =  this->pAPDStorage->ready() && (this->psa->iSensorCount > 0  || this->pca->iControlCount > 0); // && this->pra->iRuleCount > 0;
 		this->bAPDuinoConfigured =  APDStorage::ready() && (this->psa->iSensorCount > 0  || this->pca->iControlCount > 0); // && this->pra->iRuleCount > 0;
 
 		this->bFirstLoopDone = false;									// we have not yet looped with the new config (no sensor values)
@@ -781,7 +721,6 @@ void APDuino::setupNetworking() {
 #ifdef DEBUG
     SerPrintP("trying to load config...");
 #endif
-    //if (pAPDStorage != NULL) {
     if (APDStorage::ready()) {
         if (APDStorage::readFileWithParser("ETHERNET.CFG",&new_ethconf_parser,(void*)this) > 0) {;
 #ifdef DEBUG
@@ -816,7 +755,6 @@ boolean APDuino::startWebServer() {
 #ifdef DEBUG
       SerPrintP("starting ...");
 #endif
-      //pAPDWeb->startWebServer(this->psa->pAPDSensors,this->psa->iSensorCount,this->pca->pAPDControls,this->pca->iControlCount,this->pra->pAPDRules,this->pra->iRuleCount,pAPDStorage);
       pAPDWeb->startWebServer(this->psa->pAPDSensors,this->psa->iSensorCount,this->pca->pAPDControls,this->pca->iControlCount,this->pra->pAPDRules,this->pra->iRuleCount);
       retcode = (pAPDWeb != NULL && pAPDWeb->pwwwserver != NULL && pAPDWeb->pwwwclient !=NULL);
   } else {
@@ -861,7 +799,6 @@ void APDuino::log_data() {
   char logString[128]="";
   char *plog = logString;
   char dataString[16]="";                // make a string for assembling the data to log:
-  //if (!pAPDStorage->p_sd->exists("APDLOG.TXT")) {        // if new file
   if (APDStorage::p_sd->exists("APDLOG.TXT")) {        // if new file
     // FIXME reimplement log_header();                          // start with column names
   }
@@ -892,6 +829,5 @@ void APDuino::log_data() {
   Serial.print(logString);
   SerPrintP("--------------------\n");
 #endif
-  //pAPDStorage->write_log_line(logString);
-  APDStorage::write_log_line(logString);
+  APDStorage::write_log_line("APDLOG.TXT",logString);
 }
