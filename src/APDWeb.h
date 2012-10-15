@@ -89,7 +89,8 @@ public:
   virtual
   ~APDWeb();
 
-  void startWebServer(APDSensor **pSensors, int iSensorCount, APDControl **pControls, int iControlCount, APDRule **pRules, int iRuleCount, APDStorage *pAPDStorage);
+  //void startWebServer(APDSensor **pSensors, int iSensorCount, APDControl **pControls, int iControlCount, APDRule **pRules, int iRuleCount, APDStorage *pAPDStorage);
+  void startWebServer(APDSensor **pSensors, int iSensorCount, APDControl **pControls, int iControlCount, APDRule **pRules, int iRuleCount);
   void loop();
 
   bool pause_service();
@@ -118,7 +119,7 @@ private:
   boolean bEthConfigured;                   // will be true if we have an eth connection (DHCP or static)
 
   //APDTime *pAPDTime;                        // timekeeping; will receive ptr. no need to free
-  APDStorage *pAPDStorage;									// pointer to storage
+  //APDStorage *pAPDStorage;									// pointer to storage
 
   APDSensor **pAPDSensors;
   int iSensorCount;

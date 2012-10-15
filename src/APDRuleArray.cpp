@@ -123,7 +123,8 @@ if (iscand<13) {
   // now do something with the values parsed...
 }
 
-int APDRuleArray::loadRules(APDStorage *pAPDStorage) {
+//int APDRuleArray::loadRules(APDStorage *pAPDStorage) {
+int APDRuleArray::loadRules() {
   if (!this->pAPDRules) {    // if no sensor array
   	Serial.println(APDUINO_MSG_LOADINGRULES,HEX);
       // TODO check if SD is available!
@@ -143,7 +144,7 @@ int APDRuleArray::loadRules(APDStorage *pAPDStorage) {
           SerPrintP("Rule Array allocated. Populating from RULES.CFG...\n");
 #endif
 
-          pAPDStorage->readFileWithParser("RULES.CFG",&new_rule_parser,(void*)this);
+          APDStorage::readFileWithParser("RULES.CFG",&new_rule_parser,(void*)this);
 
           Serial.println(APDUINO_MSG_RULESLOADED,HEX);
 
@@ -230,13 +231,14 @@ int APDRuleArray::loadRules(APDStorage *pAPDStorage) {
 }
 
 // TODO this function is out of structure-sync...
-void APDRuleArray::dumpToFile(APDStorage *pAPDStorage, char *pszFileName) {
+//void APDRuleArray::dumpToFile(APDStorage *pAPDStorage, char *pszFileName) {
+void APDRuleArray::dumpToFile(char *pszFileName) {
   // make a string for assembling the data to log:
 #ifdef DEBUG
   SerPrintP("Dumping Rule Array Config...");
 #endif
-    if (pAPDStorage->p_sd->exists(pszFileName)) {
-          pAPDStorage->p_sd->remove(pszFileName);
+    if (APDStorage::p_sd->exists(pszFileName)) {
+          APDStorage::p_sd->remove(pszFileName);
         }
   SdFile dataFile(pszFileName, O_WRITE | O_CREAT );
   if (dataFile.isOpen()) {

@@ -43,8 +43,9 @@ public:
   ~APDControlArray();
 
   static void new_control_parser(void *pCA, int iline, char *psz);
-  int loadControls(APDStorage *pAPDStorage);
-  int dumpToFile(APDStorage *pAPDStorage, char *pszFileName);
+  //int loadControls(APDStorage *pAPDStorage);
+  int loadControls();
+  int dumpToFile(char *pszFileName);
 
   APDControl *firstControlByPin(int iPin, int iType);
   APDControl *findReusableControl(CDCONF *cdc);

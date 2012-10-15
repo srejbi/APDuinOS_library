@@ -118,7 +118,7 @@ public:
 	boolean reconfigure();						// reset application (reload configs)
 
 	APDSerial *pAPDSerial;
-	APDStorage *pAPDStorage;
+	//APDStorage *pAPDStorage;
 	APDWeb *pAPDWeb;
 
 	int iDebugLevel;
@@ -142,7 +142,8 @@ private:
 	float bfIdle;                     // idle bit as float (it will be passed to rules as a sensor value)
 	void init(long baudrate);
 
-	APDStorage *setupStorage(int iSS, int iChip, int iSpeed);
+	//APDStorage *setupStorage(int iSS, int iChip, int iSpeed);
+	bool setupStorage(int iSS, int iChip, int iSpeed);
 	boolean initApplication();
 
 	boolean bInitialized;

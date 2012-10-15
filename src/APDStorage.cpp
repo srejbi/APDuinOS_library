@@ -35,8 +35,49 @@
 #include "APDStorage.h"
 #include "APDSerial.h"
 
-APDStorage::APDStorage(int iSS, int iChip, int iSpeed = SPI_HALF_SPEED ) {
-  // TODO Auto-generated constructor stub
+// initialize variables
+int APDStorage::sdChipSelect = -1;
+int APDStorage::iSSPin = -1;
+int APDStorage::iSDSpeed = SPI_HALF_SPEED;
+
+SdFat *APDStorage::p_sd = NULL;                                 // SD fat used for file IO
+SdFile *APDStorage::p_root = NULL;                              // fileserver /webserver use
+boolean APDStorage::bReady = false;
+// end init variables
+
+//APDStorage::APDStorage(int iSS, int iChip, int iSpeed = SPI_HALF_SPEED ) {
+//  // TODO Auto-generated constructor stub
+//  sdChipSelect = iChip;
+//  iSSPin = iSS;		// SS_PIN
+//  iSDSpeed =  (iSpeed == SPI_HALF_SPEED || iSpeed == SPI_FULL_SPEED) ? iSpeed : SPI_HALF_SPEED;
+//
+//  // make sure that the default chip select pin is set to
+//  // output, even if you don't use it:
+//#ifdef DEBUG
+//  SerPrintP("SS PIN: ") Serial.print(iSS,DEC); SerPrintP("(OUT+HIGH)");
+//#endif
+//  pinMode(iSS, OUTPUT);        // set SS PIN as output -- see SD readings
+//  digitalWrite(iSS, HIGH);     // turn off the W5100 chip -- see SD readings
+//  Serial.println(APDUINO_MSG_SSPINPREPARED,HEX);
+//#ifdef DEBUG
+//  SerPrintP(" - prepared...");
+//#endif
+//  p_sd = NULL;
+//  p_root = NULL;
+//  bReady = false;
+//}
+
+//APDStorage::~APDStorage() {
+//  // TODO Auto-generated destructor stub
+//  free(p_root);
+//  free(p_sd);
+//}
+
+/** Attempts to start the storage with SdFat
+ *
+ */
+boolean APDStorage::begin(int iSS, int iChip, int iSpeed = SPI_HALF_SPEED) {
+
   sdChipSelect = iChip;
   iSSPin = iSS;		// SS_PIN
   iSDSpeed =  (iSpeed == SPI_HALF_SPEED || iSpeed == SPI_FULL_SPEED) ? iSpeed : SPI_HALF_SPEED;
@@ -55,29 +96,20 @@ APDStorage::APDStorage(int iSS, int iChip, int iSpeed = SPI_HALF_SPEED ) {
   p_sd = NULL;
   p_root = NULL;
   bReady = false;
-}
 
-APDStorage::~APDStorage() {
-  // TODO Auto-generated destructor stub
-  free(p_root);
-  free(p_sd);
-}
 
-/** Attempts to start the storage with SdFat
- *
- */
-boolean APDStorage::start() {
+
 	Serial.println(APDUINO_MSG_STORAGEINIT,HEX);
 #ifdef VERBOSE
   SerPrintP("Storage ");
 #endif
-  if (this->p_sd == NULL ) { // && !bReady
-      this->bReady = false;
+  if (p_sd == NULL ) { // && !bReady
+      bReady = false;
       Serial.println(APDUINO_MSG_STORAGESTART,HEX);
 #ifdef VERBOSE
       SerPrintP(" starting.");
 #endif
-      this->p_sd = new SdFat();
+      p_sd = new SdFat();
       //SerPrintP("..");
       if (p_sd) {
       	Serial.println(APDUINO_MSG_SDFATINIT,HEX);
@@ -112,12 +144,69 @@ boolean APDStorage::start() {
   return bReady;
 }
 
+
+
+
+
+
+//boolean APDStorage::begin(int iSS, int iChip, int iSpeed = SPI_HALF_SPEED) {
+//	Serial.println(APDUINO_MSG_STORAGEINIT,HEX);
+//#ifdef VERBOSE
+//  SerPrintP("Storage ");
+//#endif
+//  if (this->p_sd == NULL ) { // && !bReady
+//      this->bReady = false;
+//      Serial.println(APDUINO_MSG_STORAGESTART,HEX);
+//#ifdef VERBOSE
+//      SerPrintP(" starting.");
+//#endif
+//      this->p_sd = new SdFat();
+//      //SerPrintP("..");
+//      if (p_sd) {
+//      	Serial.println(APDUINO_MSG_SDFATINIT,HEX);
+//#ifdef VERBOSE
+//          SerPrintP("SdFat init("); Serial.print(iSDSpeed, DEC); SerPrintP(","); Serial.print(sdChipSelect,DEC);SerPrintP(")...");
+//#endif
+//          if (p_sd->init(iSDSpeed, sdChipSelect)) {
+//              // should be initialized
+//              p_root = new SdFile();
+//              p_root->openRoot(p_sd->vol());
+//              //root.openRoot(sd.vol());
+//#ifdef VERBOSE
+//              SerPrintP("OK.\n");
+//#endif
+//              Serial.println(APDUINO_MSG_SDFATSTARTED,HEX);
+//              bReady = true;
+//          } else {
+//              p_root = NULL;
+//              Serial.println(APDUINO_ERROR_SDFATSTARTERR,HEX);
+//#ifdef VERBOSE
+//              SerPrintP("ERR.\n");
+//#endif
+//              bReady = false;
+//          }
+//      }
+//  }
+//#ifdef DEBUG
+//  SerPrintP("APDStorage is");
+//  if (!bReady) SerPrintP(" Not");
+//  SerPrintP(" Ready.\n");
+//#endif
+//  return bReady;
+//}
+
 /** Tell if storage is ready or not.
  *
  * \return true if storage is ready to use, false if not.
  */
 boolean APDStorage::ready() {
   return bReady;
+}
+
+
+void APDStorage::stop() {
+  free(p_root);
+  free(p_sd);
 }
 
 /** Rotate log files.

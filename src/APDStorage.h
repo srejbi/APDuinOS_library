@@ -47,26 +47,27 @@
 
 class APDStorage {
 public:
-	APDStorage(int iSS, int iChip, int iSpeed);
-	virtual ~APDStorage();
+	//APDStorage(int iSS, int iChip, int iSpeed);
+	//virtual ~APDStorage();
 
-	boolean start();
-	boolean ready();
+	static boolean begin(int iSS, int iChip, int iSpeed);
+	static boolean ready();
+	static void stop();
 
-	int logrotate(const char *szLogFile, unsigned long maxsize);
-	void write_log_line(const char *szLogLine);
+	static int logrotate(const char *szLogFile, unsigned long maxsize);
+	static void write_log_line(const char *szLogLine);
 
-	int readFileWithParser(char *szFile, void (*pParserFunc)(void*, int, char*), void *pAPD  );
+	static int readFileWithParser(char *szFile, void (*pParserFunc)(void*, int, char*), void *pAPD  );
 
-	int sdChipSelect;
-	int iSSPin;
-	int iSDSpeed;
+	static int sdChipSelect;
+	static int iSSPin;
+	static int iSDSpeed;
 
-	SdFat *p_sd;                                 // SD fat used for file IO
-	SdFile *p_root;                              // fileserver /webserver use
+	static SdFat *p_sd;                                 // SD fat used for file IO
+	static SdFile *p_root;                              // fileserver /webserver use
 
 private:
-	boolean bReady;
+	static boolean bReady;
 };
 
 #endif /* APDSTORAGE_H_ */

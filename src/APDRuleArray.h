@@ -46,8 +46,10 @@ public:
   ~APDRuleArray();
 
   static void new_rule_parser(void *pRA, int iline, char *psz);
-  int loadRules(APDStorage *pAPDStorage);
-  void dumpToFile(APDStorage *pAPDStorage, char *pszFileName);
+  //int loadRules(APDStorage *pAPDStorage);
+  int loadRules();
+  //void dumpToFile(APDStorage *pAPDStorage, char *pszFileName);
+  void dumpToFile(char *pszFileName);
 
   APDRule *firstRuleBySensorIdx(int iSensorIdx);
   APDRule *firstRuleByControlIdx(int iControlIdx);

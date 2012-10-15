@@ -134,7 +134,7 @@ void APDWeb::initBlank()
 	iSensorCount = -1;
 	iControlCount = -1;
 	iRuleCount = -1;
-	pAPDStorage = NULL;
+	//pAPDStorage = NULL;
 	memset(szAPDUINO_API_KEY, 0, sizeof(szAPDUINO_API_KEY) );
 	memset(szCOSM_API_KEY, 0, sizeof(szCOSM_API_KEY) );
 	memset(szTHINGSPEAK_API_KEY, 0, sizeof(szTHINGSPEAK_API_KEY) );
@@ -308,12 +308,14 @@ boolean APDWeb::setupAPDuinoOnline() {
 	SerPrintP("WILL SETUP APDUINO ONLINE...\n");
 #endif
 	szAPDUINO_API_KEY[0] = 0;
-	if (bEthConfigured && pAPDStorage != NULL && pAPDStorage->ready()) {
+	//if (bEthConfigured && pAPDStorage != NULL && pAPDStorage->ready()) {
+	if (bEthConfigured && APDStorage::ready()) {
 #ifdef DEBUG
 		SerPrintP("WE HAVE NET\n");
 #endif
 
-		if (pAPDStorage->readFileWithParser("ONLINE.CFG",&new_apduinoconf_parser,(void*)this) > 0) {
+		//if (pAPDStorage->readFileWithParser("ONLINE.CFG",&new_apduinoconf_parser,(void*)this) > 0) {
+		if (APDStorage::readFileWithParser("ONLINE.CFG",&new_apduinoconf_parser,(void*)this) > 0) {
 		} else {
 			// use defaults
 			memcpy(&apduino_server_ip,APDUINO_SERVER_IP,4*sizeof(byte));           // apduino.localhost -- test server on LAN
@@ -357,7 +359,8 @@ boolean APDWeb::setupAPDuinoOnline() {
 
 boolean APDWeb::loadAPIkey(char *szAPIKey, char *szAPIFile) {
 	//SerPrintP("LOADING API KEY...");
-	if (pAPDStorage!=NULL && pAPDStorage->ready()) {
+	//if (pAPDStorage!=NULL && pAPDStorage->ready()) {
+	if (APDStorage::ready()) {
 		int i=0;
 		char line[BUFSIZ]="";
 		int bread=0;
@@ -383,7 +386,8 @@ boolean APDWeb::loadAPIkey(char *szAPIKey, char *szAPIFile) {
 
 void APDWeb::saveAPIkey(char *szAPIKey, char *szAPIFile)
 {
-	if (pAPDStorage!=NULL && pAPDStorage->ready()) {
+	//if (pAPDStorage!=NULL && pAPDStorage->ready()) {
+	if (APDStorage::ready()) {
 		SdFile dataFile(szAPIFile, O_WRITE | O_CREAT);
 		if (dataFile.isOpen()) {
 			dataFile.println(szAPIKey);
@@ -430,8 +434,10 @@ boolean APDWeb::setupCosmLogging() {
 	SerPrintP("COSM...");
 #endif
 	szCOSM_API_KEY[0] = 0;
-	if (bEthConfigured && pAPDStorage != NULL && pAPDStorage->ready() && this->phmetro == NULL) {
-		if (pAPDStorage->readFileWithParser("PACHUBE.CFG",&new_cosmconf_parser,(void*)this) > 0) {
+	//if (bEthConfigured && pAPDStorage != NULL && pAPDStorage->ready() && this->phmetro == NULL) {
+	if (bEthConfigured && APDStorage::ready() && this->phmetro == NULL) {
+		//if (pAPDStorage->readFileWithParser("PACHUBE.CFG",&new_cosmconf_parser,(void*)this) > 0) {
+		if (APDStorage::readFileWithParser("PACHUBE.CFG",&new_cosmconf_parser,(void*)this) > 0) {
 #ifdef VERBOSE
 			SerPrintP("server:"); Serial.println(cosm_server_name);
 			SerPrintP("@");
@@ -475,8 +481,10 @@ boolean APDWeb::setupThingSpeakLogging() {
 	SerPrintP("THINGSPEAK...");
 #endif
 	szTHINGSPEAK_API_KEY[0] = 0;
-	if (bEthConfigured && pAPDStorage != NULL && pAPDStorage->ready() && this->tsmetro == NULL) {
-		if (pAPDStorage->readFileWithParser("THINGSPK.CFG",&new_thingspeakconf_parser,(void*)this) > 0) {
+	//if (bEthConfigured && pAPDStorage != NULL && pAPDStorage->ready() && this->tsmetro == NULL) {
+	if (bEthConfigured && APDStorage::ready() && this->tsmetro == NULL) {
+		//if (pAPDStorage->readFileWithParser("THINGSPK.CFG",&new_thingspeakconf_parser,(void*)this) > 0) {
+		if (APDStorage::readFileWithParser("THINGSPK.CFG",&new_thingspeakconf_parser,(void*)this) > 0) {
 #ifdef VERBOSE
 			SerPrintP("server:"); Serial.println(thingspeak_server_name);
 			SerPrintP("@");
@@ -516,7 +524,8 @@ boolean APDWeb::setupThingSpeakLogging() {
 }
 
 
-void APDWeb::startWebServer(APDSensor **pSensors, int iSensorCount, APDControl **pControls, int iControlCount, APDRule **pRules, int iRuleCount, APDStorage *pAPDStorage)
+//void APDWeb::startWebServer(APDSensor **pSensors, int iSensorCount, APDControl **pControls, int iControlCount, APDRule **pRules, int iRuleCount, APDStorage *pAPDStorage)
+void APDWeb::startWebServer(APDSensor **pSensors, int iSensorCount, APDControl **pControls, int iControlCount, APDRule **pRules, int iRuleCount)
 {
 #ifdef VERBOSE
 	SerPrintP("WS");
@@ -533,7 +542,7 @@ void APDWeb::startWebServer(APDSensor **pSensors, int iSensorCount, APDControl *
 		this->iSensorCount = iSensorCount;
 		this->iControlCount = iControlCount;
 		this->iRuleCount = iRuleCount;
-		this->pAPDStorage = pAPDStorage;
+		//this->pAPDStorage = pAPDStorage;
 		this->setup_webclient();
 	} else {
 #ifdef VERBOSE
@@ -729,7 +738,8 @@ bool APDWeb::ServeFile(EthernetClient client, const char *szPath) {
 #ifdef DEBUG
 	SerPrintP("file server\n");
 #endif
-	if (file.open(this->pAPDStorage->p_root, szPath, O_READ)) {
+	//if (file.open(this->pAPDStorage->p_root, szPath, O_READ)) {
+	if (file.open(APDStorage::p_root, szPath, O_READ)) {
 	#ifdef DEBUG
 		SerPrintP("Opened!");
 	#endif
@@ -773,9 +783,11 @@ bool APDWeb::ServeFile(EthernetClient client, const char *szPath) {
 void APDWeb::ListFiles(EthernetClient client, const char *szPath, uint8_t flags) {
 	// This code is just copied from SdFile.cpp in the SDFat library
 	// and tweaked to print to the client output in html!
-	SdFile *proot = this->pAPDStorage->p_root;
+	//SdFile *proot = this->pAPDStorage->p_root;
+	SdFile *proot = APDStorage::p_root;
 	dir_t p;
-	if (this->pAPDStorage != NULL && this->pAPDStorage->ready() == true && this->pAPDStorage->p_root != NULL ) {
+	//if (this->pAPDStorage != NULL && this->pAPDStorage->ready() == true && this->pAPDStorage->p_root != NULL ) {
+	if (APDStorage::ready() && APDStorage::p_root ) {
 #ifdef DEBUG
 		SerPrintP("REWIND ROOT");
 #endif
@@ -789,7 +801,8 @@ void APDWeb::ListFiles(EthernetClient client, const char *szPath, uint8_t flags)
 		SerPrintP("LIST FILES...");
 #endif
 		// link to upper level if not at root
-		if (proot != this->pAPDStorage->p_root) {
+		//if (proot != this->pAPDStorage->p_root) {
+		if (proot != APDStorage::p_root) {
 			WCPrintP(&client,"<li><a href=\"../\">..</a></li>\n");
 		}
 		while (proot->readDir(&p) > 0 && p.name[0] != DIR_NAME_FREE) {
@@ -865,7 +878,8 @@ void APDWeb::ListFiles(EthernetClient client, const char *szPath, uint8_t flags)
 		//SerPrintP("W03");
 		//WCPrintP(&client,"W03\n");		//NO STORAGE ERROR
 	}
-	if (proot != this->pAPDStorage->p_root) {
+//	if (proot != this->pAPDStorage->p_root) {
+	if (proot != APDStorage::p_root) {
 		free(proot);
 	}
 }
@@ -1080,7 +1094,8 @@ void APDWeb::processProvisioningRequest(EthernetClient *pclient, boolean brespon
 					SerPrintP("Processing Data");
 #endif
 					// remove temp file if exists
-					if (pAPDStorage->p_sd->exists("PROV.TMP")) pAPDStorage->p_sd->remove("PROV.TMP");
+					//if (pAPDStorage->p_sd->exists("PROV.TMP")) pAPDStorage->p_sd->remove("PROV.TMP");
+					if (APDStorage::p_sd->exists("PROV.TMP")) APDStorage::p_sd->remove("PROV.TMP");
 					SdFile tempFile("PROV.TMP", O_WRITE | O_CREAT );
 
 					clientline[0]=0;
@@ -1159,8 +1174,13 @@ void APDWeb::processProvisioningRequest(EthernetClient *pclient, boolean brespon
 //#ifdef DEBUG_LOG
 						SerPrintP("renaming file to "); Serial.println(destfile);
 //#endif
-						if (pAPDStorage->p_sd->exists(destfile)) pAPDStorage->p_sd->remove(destfile);      // TODO add backup
-						pAPDStorage->p_sd->rename("PROV.TMP",destfile);
+						//if (pAPDStorage->p_sd->exists(destfile)) pAPDStorage->p_sd->remove(destfile);      // TODO add backup
+						if (APDStorage::p_sd->exists(destfile)) {
+							APDStorage::logrotate(destfile,0);		// make backup
+							APDStorage::p_sd->remove(destfile);
+						}
+						//pAPDStorage->p_sd->rename("PROV.TMP",destfile);
+						APDStorage::p_sd->rename("PROV.TMP",destfile);
 #ifdef DEBUG_LOG
 						if (brespond) WCPrintP(pclient, "<b>OK</b>");
 #endif
@@ -1854,8 +1874,9 @@ void APDWeb::new_thingspeakconf_parser(void *pAPDWeb, int iline, char *psz) {
 void APDWeb::dumpPachube() {
 	char conffile[14]="";
 	strcpy_P(conffile,PSTR("PACHUBE.CFG"));
-	if (pAPDStorage->p_sd->exists(conffile)) {
-		pAPDStorage->p_sd->remove(conffile);
+	//if (pAPDStorage->p_sd->exists(conffile)) {
+	if (APDStorage::p_sd->exists(conffile)) {
+		APDStorage::p_sd->remove(conffile);
 	}
 	SdFile dataFile(conffile, O_WRITE | O_CREAT );
 	if (dataFile.isOpen()) {

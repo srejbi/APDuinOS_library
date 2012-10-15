@@ -93,7 +93,8 @@ void APDControlArray::new_control_parser(void *pCA, int iline, char *psz) {
   // now do something with the values parsed...
 }
 
-int APDControlArray::loadControls(APDStorage *pAPDStorage) {
+//int APDControlArray::loadControls(APDStorage *pAPDStorage) {
+int APDControlArray::loadControls() {
   if (!this->pAPDControls) {    // if no sensor array
   	Serial.println(APDUINO_MSG_LOADINGCONTROLS,HEX);						// debug
     // TODO check if SD is available!
@@ -113,7 +114,7 @@ int APDControlArray::loadControls(APDStorage *pAPDStorage) {
         SerPrintP("CA Allocated. Parsing CONTROLS.CFG...\n");
   #endif
 
-        pAPDStorage->readFileWithParser("CONTROLS.CFG",&new_control_parser,(void*)this);
+        APDStorage::readFileWithParser("CONTROLS.CFG",&new_control_parser,(void*)this);
 
         Serial.println(APDUINO_MSG_CONTROLSLOADED,HEX);
 
@@ -157,13 +158,14 @@ int APDControlArray::loadControls(APDStorage *pAPDStorage) {
   }
 }
 
-int APDControlArray::dumpToFile(APDStorage *pAPDStorage, char *pszFileName) {
+//int APDControlArray::dumpToFile(APDStorage *pAPDStorage, char *pszFileName) {
+int APDControlArray::dumpToFile(char *pszFileName) {
   // make a string for assembling the data to log:
 #ifdef DEBUG
   SerPrintP("Dumping CA Config...");
 #endif
-    if (pAPDStorage->p_sd->exists(pszFileName)) {
-          pAPDStorage->p_sd->remove(pszFileName);
+    if (APDStorage::p_sd->exists(pszFileName)) {
+          APDStorage::p_sd->remove(pszFileName);
         }
   SdFile dataFile(pszFileName, O_WRITE | O_CREAT );
   if (dataFile.isOpen()) {
