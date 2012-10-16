@@ -95,10 +95,13 @@ void APDControlArray::new_control_parser(void *pCA, int iline, char *psz) {
 
 int APDControlArray::loadControls() {
   if (!this->pAPDControls) {    // if no sensor array
-  	Serial.println(APDUINO_MSG_LOADINGCONTROLS,HEX);						// debug
+  	//Serial.println(APDUINO_MSG_LOADINGCONTROLS,HEX);						// debug
+  	APDDebugLog::log(APDUINO_MSG_LOADINGCONTROLS,NULL);						// debug
     // TODO check if SD is available!
     iControlCount = get_line_count_from_file("CONTROLS.CFG");
-    Serial.print(APDUINO_MSG_CONTROLCOUNT,HEX); SerPrintP(":"); Serial.println(iControlCount);
+    //Serial.print(APDUINO_MSG_CONTROLCOUNT,HEX); SerPrintP(":"); Serial.println(iControlCount);
+    char sztemp[11]="";
+    APDDebugLog::log(APDUINO_MSG_CONTROLCOUNT,itoa(iControlCount,sztemp,10));
     if (iControlCount > -1) {
 #ifdef DEBUG
       SerPrintP("Control Array: allocating "); Serial.print(sizeof(APDControl*)*iControlCount,DEC); SerPrintP(" bytes of RAM\n");
@@ -115,7 +118,8 @@ int APDControlArray::loadControls() {
 
         APDStorage::readFileWithParser("CONTROLS.CFG",&new_control_parser,(void*)this);
 
-        Serial.println(APDUINO_MSG_CONTROLSLOADED,HEX);
+        //Serial.println(APDUINO_MSG_CONTROLSLOADED,HEX);
+        APDDebugLog::log(APDUINO_MSG_CONTROLSLOADED,NULL);
 
         // TODO add any postprocessing
         for (int i=0; i<iControlCount; i++) {
@@ -130,30 +134,31 @@ int APDControlArray::loadControls() {
 #endif
                 pc->pcustfunc = (void (*)())this->pcustfuncs[pc->config.control_pin];      // cvalue must hold the cfunc idx
               } else {
-              	Serial.println(APDUINO_ERROR_CAMISSINGCUSTFUNC,HEX);
-                  //SerPrintP("E406");	// CA: missing custom function.
+              	//Serial.println(APDUINO_ERROR_CAMISSINGCUSTFUNC,HEX);
+              	APDDebugLog::log(APDUINO_ERROR_CAMISSINGCUSTFUNC,NULL);
               }
             } else {
-            	Serial.println(APDUINO_ERROR_CAINVALIDCUSTFUNC,HEX);
-              //SerPrintP("E405");		// CA: invalid custom function.
+            	//Serial.println(APDUINO_ERROR_CAINVALIDCUSTFUNC,HEX);
+            	APDDebugLog::log(APDUINO_ERROR_CAINVALIDCUSTFUNC,NULL);
             }
           }
         }
 
-        Serial.println(APDUINO_MSG_CONTROLSPOSTPROCESSED,HEX);
+        //Serial.println(APDUINO_MSG_CONTROLSPOSTPROCESSED,HEX);
+        APDDebugLog::log(APDUINO_MSG_CONTROLSPOSTPROCESSED,NULL);
 
       } else {
-      	Serial.println(APDUINO_ERROR_CAALLOCFAIL,HEX);
-        //SerPrintP("E403\n");	//CA alloc failed.
+      	//Serial.println(APDUINO_ERROR_CAALLOCFAIL,HEX);
+      	APDDebugLog::log(APDUINO_ERROR_CAALLOCFAIL,NULL);
       }
     } else {
-    	Serial.println(APDUINO_ERROR_CANOCONTROLS,HEX);
-      //SerPrintP("W402\n");	//No controls defined.
+    	//Serial.println(APDUINO_ERROR_CANOCONTROLS,HEX);
+    	APDDebugLog::log(APDUINO_ERROR_CANOCONTROLS,NULL);
     }
   } else {
-  	Serial.println(APDUINO_ERROR_CAALREADYALLOC,HEX);
-    //SerPrintP("E401\n");		//CA already allocated.
-    // TODO should implement cleanup and reload
+  	//Serial.println(APDUINO_ERROR_CAALREADYALLOC,HEX);
+  	APDDebugLog::log(APDUINO_ERROR_CAALREADYALLOC,NULL);
+    // TODO should implement cleanup and reload (?)
   }
 }
 
@@ -185,8 +190,8 @@ int APDControlArray::dumpToFile(char *pszFileName) {
   }
   else {
       // TODO add an error macro in storage, replace all error opening stuff with reference to that
-  	Serial.println(APDUINO_ERROR_CADUMPOPENFAIL,HEX);
-    //SerPrintP("E429('"); Serial.print(pszFileName); SerPrintP("')\n");	// error opening dumpfile
+  	//Serial.println(APDUINO_ERROR_CADUMPOPENFAIL,HEX);
+  	APDDebugLog::log(APDUINO_ERROR_CADUMPOPENFAIL,pszFileName);
   }
 
 }

@@ -41,6 +41,7 @@
 #include "APDStorage.h"
 #include "APDSerial.h"
 #include "APDTime.h"
+#include "APDLogWriter.h"
 
 const char USERAGENT[] = "APDuinOS";
 const char WEBLOG_URI[]="/devices/lastlog";      // see apduino online specs.

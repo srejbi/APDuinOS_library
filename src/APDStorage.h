@@ -38,6 +38,7 @@
 #include <Arduino.h>
 #include "apd_utils.h"
 #include "SdFat.h"               // SD card
+#include "APDDebugLog.h"				// buffered logging
 
 // TODO enclose hardware specific parts in the appropriate defines
 #define SS_PIN		SS			// SS should be defined in SdFatLib

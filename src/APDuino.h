@@ -32,6 +32,7 @@
 #include <stdlib.h>
 #include <avr/pgmspace.h>
 
+#include "APDLogWriter.h"
 #include "APDSensorArray.h"
 #include "APDControlArray.h"
 #include "APDRuleArray.h"
@@ -60,6 +61,7 @@ public:
 	void loop();
 	void loop_operations();
 	void loop_core();
+	void write_debug_log();
 
   boolean storage_ready();
 

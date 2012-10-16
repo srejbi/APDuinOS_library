@@ -17,17 +17,30 @@
  * along with the APDuinOS Library.  If not, see
  * <http://www.gnu.org/licenses/>.
  *
- * apd_version.h
+ * APDLogWriter.h
  *
- *  Created on: Mar 28, 2012
+ *  Created on: Oct 15, 2012
  *      Author: George Schreiber
  */
 
-#ifndef APD_VERSION_H_
-#define APD_VERSION_H_
 
-#include "apd_msg_codes.h"
-#define APDUINO_VERSION    "0.66"
-#define APDUINO_BUILD      "2012101634"
+#ifndef APDLOGWRITER_H_
+#define APDLOGWRITER_H_
 
-#endif /* APD_VERSION_H_ */
+#include <Arduino.h>
+#include "APDDebugLog.h"
+#include "APDStorage.h"
+#include "apd_utils.h"
+
+class APDLogWriter {
+public:
+	static char szlogfname[13];
+
+	static void begin();				// TODO add begin with filename
+	static void enable_sync_writes();
+	static void disable_sync_writes();
+	static void log_writer_function(const char *pszLog);
+	static void write_debug_log();
+};
+
+#endif /* APDLOGWRITER_H_ */

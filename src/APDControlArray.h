@@ -31,6 +31,7 @@
 #include "apd_utils.h"
 #include "APDStorage.h"
 #include "APDControl.h"
+#include "APDLogWriter.h"
 
 //void (*pcustfuncs[10])();
 

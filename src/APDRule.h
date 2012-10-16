@@ -33,6 +33,7 @@
 #include <MemoryFree.h>          // checking free ram
 #include "APDEvaluator.h"
 #include "APDTime.h"
+#include "APDDebugLog.h"
 
 // rule definitions
 #define RF_FALSE              0

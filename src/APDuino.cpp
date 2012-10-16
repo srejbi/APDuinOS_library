@@ -97,7 +97,8 @@ void APDuino::init(long baudrate) {
 
   // TODO we should store the results and switch to an alternative sprintf/printf (once implemented)
   if (!testprintf() || !testscanf()) {
-  	Serial.println(APDUINO_ERROR_SSCANF,HEX);				// TODO replace this with future error handler
+  	//Serial.println(APDUINO_ERROR_SSCANF,HEX);				// TODO replace this with future error handler
+  	APDDebugLog::log(APDUINO_ERROR_SSCANF,NULL);
   } else {
 
   }
@@ -121,6 +122,10 @@ void APDuino::init(long baudrate) {
 boolean APDuino::initApplication() {
 	// we need storage!
 	if (APDStorage::ready()) {
+		// enable sending debug log to SD card
+		APDLogWriter::begin();							// this starts the DEBUG log writer (not the data log!)
+		APDLogWriter::write_debug_log();		// write any buffered messages
+
 		this->setupTimeKeeping();
 		delay(50);
 
@@ -235,8 +240,9 @@ void APDuino::setupWithStorage(int iChip, int iSpeed) {
   if (setupStorage(SS_PIN,iChip,iSpeed)) {
 			initApplication();
   } else {
-		Serial.println(APDUINO_ERROR_STORAGENOTREADY,HEX);
-    Serial.println(APDUINO_ERROR_STORAGENOTSETUP,HEX);
+		//Serial.println(APDUINO_ERROR_STORAGENOTREADY,HEX);
+    //Serial.println(APDUINO_ERROR_STORAGENOTSETUP,HEX);
+  	APDDebugLog::log(APDUINO_ERROR_STORAGENOTSETUP,NULL);
 	}
 }
 
@@ -267,7 +273,8 @@ void APDuino::setupTimeKeeping() {
 
 //#ifdef DEBUG
   else {
-  	Serial.println(APDUINO_WARNING_TIMEALREADYSETUP,HEX);
+  	//Serial.println(APDUINO_WARNING_TIMEALREADYSETUP,HEX);
+  	APDDebugLog::log(APDUINO_WARNING_TIMEALREADYSETUP,NULL);
       //SerPrintP("already done.\n");
   }
 //#endif
@@ -285,7 +292,8 @@ void APDuino::checkTimeKeeping() {
       char tbuf[20] = "1970/01/01 00:00:00";
       SerPrintP("now: "); Serial.print(APDTime::nowS(tbuf)); SerPrintP("...");
   } else {
-  	Serial.println(APDUINO_ERROR_NOTIMEOBJECT,HEX);		// TODO deprecate
+  	//Serial.println(APDUINO_ERROR_NOTIMEOBJECT,HEX);		// TODO deprecate
+  	APDDebugLog::log(APDUINO_ERROR_NOTIMEOBJECT,NULL);
       //SerPrintP("Nothing to check?");
   }
 }
@@ -335,8 +343,9 @@ void APDuino::loop() {
 
     // this following hack is to enable rules only after we should have read sensors
     if (this->bFirstLoopDone == false ) { //&& bProcessRules == false) {
-    	Serial.println(APDUINO_MSG_ENABLERULEPROC,HEX);		// TODO replace with future message handler
-    	//SerPrintP("Enabling Rule Processing...\n");
+    	//Serial.println(APDUINO_MSG_ENABLERULEPROC,HEX);		// TODO replace with future message handler
+    	APDDebugLog::log(APDUINO_MSG_ENABLERULEPROC,NULL);
+
     	this->bFirstLoopDone = true;
     	this->bProcessRules = true;
     } //else {
@@ -364,21 +373,32 @@ void APDuino::loop() {
 
 void APDuino::loop_core() {
 //  sercom();           // loop serial control
+	APDLogWriter::write_debug_log();			// write out any messages
+	// TODO : periodically rotate log files if size exceeded max
+	// APDStorage::rotate_file(APDLogWriter::szlogfname,MAX_LOG_SIZE);		// rotate debug log if needed
+	// APDStorage::rotate_file("APDUINO.LOG",MAX_LOG_SIZE);		// rotate debug log if needed
+
+
   if (pAPDWeb != NULL) {
+
     pAPDWeb->loop();          // loop www services
+
     if (pAPDWeb->dispatched_requests) {					// process dispatched request buffer
     	int request = pAPDWeb->dispatched_requests;			// copy the request from the buffer
     	pAPDWeb->dispatched_requests = DREQ_NOOP;				// reset the buffer to avoid reexec (by any mistake later)
 
     	switch (request) {												// execute the request
     	case DREQ_RECONF:														// reload configuration
+    		APDLogWriter::write_debug_log();			// write out any messages
     		this->reconfigure();
     		break;
     	case DREQ_RESET:
+    		APDLogWriter::write_debug_log();			// write out any messages
     		soft_reset();														// soft-reset is an improper way to restart (does not reset hardware)
     		break;
     	default:
-    		Serial.println(APDUINO_WARN_UNKNOWNREQUEST,HEX);
+    		//Serial.println(APDUINO_WARN_UNKNOWNREQUEST,HEX);
+    		APDDebugLog::log(APDUINO_WARN_UNKNOWNREQUEST,NULL);
     		//SerPrintP("W");														// WARNING unknown request, ignoring
     	}
     }
@@ -454,10 +474,13 @@ bool APDuino::setupStorage(int iSS, int iChip, int iSpeed) {
 boolean APDuino::startLogging(unsigned long ulLoggingFreq) {
   boolean bLogging = false;
   if (bAPDuinoConfigured && APDStorage::ready() ) {    // check storage status
+  	// APDLogWriter::enable_sync_writes(); // enabled by begin(), just to remember enable/disable after/before SD ops
   	if (APDStorage::rotate_file("APDLOG.TXT", MAX_LOG_SIZE) >= 0) {
-      	Serial.println(APDUINO_MSG_SDLOGOK,HEX);
+      	//Serial.println(APDUINO_MSG_SDLOGOK,HEX);
+  			APDDebugLog::log(APDUINO_MSG_SDLOGOK,NULL);
       } else {
-      	Serial.println(APDUINO_ERROR_LOGUNKNOWN,HEX);
+      	//Serial.println(APDUINO_ERROR_LOGUNKNOWN,HEX);
+      	APDDebugLog::log(APDUINO_ERROR_LOGUNKNOWN,NULL);
       }
       if (this->pLoggingMetro == NULL) {
          this->pLoggingMetro = new Metro(ulLoggingFreq,true);           // ignore missed events
@@ -514,16 +537,12 @@ int APDuino::AddCustomFunction(int iPos, void (*pcf)()){
 #endif
               pc->pcustfunc = this->pcustfuncs[pc->config.control_pin];      // cvalue must hold the cfunc idx
             } else {
-            	Serial.println(APDUINO_WARN_NOCUSTFUNCATIDX,HEX);
-#ifdef DEBUG
-                SerPrintP("NO CUSTFUNCPTR @ SPEC IDX!\n");
-#endif
+            	//Serial.println(APDUINO_WARN_NOCUSTFUNCATIDX,HEX);
+            	APDDebugLog::log(APDUINO_WARN_NOCUSTFUNCATIDX,NULL);
             }
           } else {
-          	Serial.println(APDUINO_WARN_CUSTFUNCMISMATCH,HEX);
-#ifdef DEBUG
-              SerPrintP("CTRL NOT REFERRING TO THIS CUSTFUNC, SKIP.\n")
-#endif
+          	//Serial.println(APDUINO_WARN_CUSTFUNCMISMATCH,HEX);
+          	APDDebugLog::log(APDUINO_WARN_CUSTFUNCMISMATCH,NULL);
           }
         }
       }
@@ -645,7 +664,8 @@ boolean APDuino::reconfigure() {
 		bProcessRules = bProcRulesOld;								// restore old rule processing state
 		retcode = this->pAPDWeb->continue_service();	// return if web server continues processing
   } else {
-  	Serial.println(APDUINO_ERROR_COULDNOTPAUSEWWW,HEX);
+  	//Serial.println(APDUINO_ERROR_COULDNOTPAUSEWWW,HEX);
+  	APDDebugLog::log(APDUINO_ERROR_COULDNOTPAUSEWWW,NULL);
   	//SerPrintP("E");					// ERROR could not pause web service
   }
 
@@ -689,7 +709,8 @@ void APDuino::new_ethconf_parser(void *pAPD, int iline, char *psz) {
 	Serial.println(nc.wwwPort);
 #endif
   if (ips < 24) {
-  	Serial.println(APDUINO_ERROR_BADNETCONFIG,HEX);
+  	//Serial.println(APDUINO_ERROR_BADNETCONFIG,HEX);
+  	APDDebugLog::log(APDUINO_ERROR_BADNETCONFIG,NULL);
       //SerPrintP("\nBad config. Please reprovision from APDuino Online.\n");
   }
 #ifdef DEBUG
@@ -697,7 +718,8 @@ void APDuino::new_ethconf_parser(void *pAPD, int iline, char *psz) {
 #endif
   //TODO add compatibility code (so other options can follow, even if not parsed)
   if (((APDuino *)pAPD)->pAPDWeb == NULL ) {
-  	Serial.println(APDUINO_MSG_ETHERNETFROMCONF,HEX);
+  	//Serial.println(APDUINO_MSG_ETHERNETFROMCONF,HEX);
+  	APDDebugLog::log(APDUINO_MSG_ETHERNETFROMCONF,NULL);
 #ifdef DEBUG
       SerPrintP("Init net with loaded config... \n");
 #endif
@@ -714,7 +736,8 @@ void APDuino::new_ethconf_parser(void *pAPD, int iline, char *psz) {
 
 
 void APDuino::setupNetworking() {
-	Serial.println(APDUINO_MSG_NETINIT,HEX);
+	//Serial.println(APDUINO_MSG_NETINIT,HEX);
+	APDDebugLog::log(APDUINO_MSG_NETINIT,NULL);
   //SerPrintP("Net init...");
   delay(250);                   // probably just starting up, adding a little delay, 1/4s
   if (pAPDWeb == NULL) {      // replace with check if IP config is present
@@ -727,21 +750,25 @@ void APDuino::setupNetworking() {
           SerPrintP("done.\n");
 #endif
         } else {
-        	Serial.println(APDUINO_ERROR_BADNETCONFIG,HEX);
+        	//Serial.println(APDUINO_ERROR_BADNETCONFIG,HEX);
+        	APDDebugLog::log(APDUINO_ERROR_BADNETCONFIG,NULL);
             //SerPrintP("No/Bad netconfig.\n");
         }
     } else {
-    	Serial.println(APDUINO_ERROR_SUSPECTSTORAGEERR,HEX);
+    	//Serial.println(APDUINO_ERROR_SUSPECTSTORAGEERR,HEX);
+    	APDDebugLog::log(APDUINO_ERROR_SUSPECTSTORAGEERR,NULL);
        //SerPrintP("STORAGE ERR?\n");
     }
     if (pAPDWeb == NULL) {
-    		Serial.println(APDUINO_MSG_DHCPFALLBACK,HEX);
+    		//Serial.println(APDUINO_MSG_DHCPFALLBACK,HEX);
+    		APDDebugLog::log(APDUINO_MSG_DHCPFALLBACK,NULL);
         //SerPrintP("DHCP fallback...\n");
         //pAPDWeb = new APDWeb(this->pAPDTime);
     		pAPDWeb = new APDWeb();
     }
   } else {
-  	Serial.println(APDUINO_ERROR_NETALREADYSTARTED,HEX);
+  	//Serial.println(APDUINO_ERROR_NETALREADYSTARTED,HEX);
+  	APDDebugLog::log(APDUINO_ERROR_NETALREADYSTARTED,NULL);
       //SerPrintP("Net already started?\n");
   }
 }
@@ -758,7 +785,8 @@ boolean APDuino::startWebServer() {
       pAPDWeb->startWebServer(this->psa->pAPDSensors,this->psa->iSensorCount,this->pca->pAPDControls,this->pca->iControlCount,this->pra->pAPDRules,this->pra->iRuleCount);
       retcode = (pAPDWeb != NULL && pAPDWeb->pwwwserver != NULL && pAPDWeb->pwwwclient !=NULL);
   } else {
-  	Serial.println(APDUINO_ERROR_NONETFORWWW,HEX);
+  	//Serial.println(APDUINO_ERROR_NONETFORWWW,HEX);
+  	APDDebugLog::log(APDUINO_ERROR_NONETFORWWW,NULL);
       //SerPrintP("NONET\n");
   }
   return retcode;
@@ -826,9 +854,8 @@ void APDuino::log_data() {
     }
   }
   *plog = 0;  // terminating 0
-#ifdef DEBUG
-  Serial.print(logString);
-  SerPrintP("--------------------\n");
-#endif
+
+  APDDebugLog::log(APDUINO_MSG_SDLOGGING,ultoa(strlen(logString),ts,10));					// debug
   APDStorage::write_log_line("APDLOG.TXT",logString);
+  APDDebugLog::log(APDUINO_MSG_SDLOGGINGOK,NULL);					// debug
 }

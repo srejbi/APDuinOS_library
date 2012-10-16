@@ -31,6 +31,7 @@
 
 #include "apd_utils.h"
 #include "APDSerial.h"
+#include "APDDebugLog.h"
 
 // APDuino sensor types
 #define ANALOG_SENSOR  0

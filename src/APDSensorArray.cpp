@@ -188,8 +188,8 @@ void APDSensorArray::new_sensor_parser(void *pSA, int iline, char *psz) {
       newsensor = new AtlasScientificSensor(&sdc, reusablesensor);
       break;
   default:
-  	Serial.println(APDUINO_ERROR_UNKNOWNSENSORTYPE,HEX);
-    //SerPrintP("E310");			// E310 - unknown sensor type
+  	//Serial.println(APDUINO_ERROR_UNKNOWNSENSORTYPE,HEX);
+  	APDDebugLog::log(APDUINO_ERROR_UNKNOWNSENSORTYPE,NULL);
   }
   ((APDSensorArray*)pSA)->pAPDSensors[iline] = newsensor;
   // done with sensor definition line
@@ -262,11 +262,12 @@ APDSensor *APDSensorArray::byIndex(int idx) {
 
 int APDSensorArray::loadSensors() {
   if (pAPDSensors == NULL) {    // if no sensor array
-  	Serial.println(APDUINO_MSG_LOADINGSENSORS,HEX);						// debug
+  	APDDebugLog::log(APDUINO_MSG_LOADINGSENSORS,NULL);						// debug
     // TODO check if SD is available!
     iSensorCount =  get_line_count_from_file("SENSORS.CFG");
 
-    Serial.print(APDUINO_MSG_SENSORCOUNT,HEX); SerPrintP(":"); Serial.println(iSensorCount);
+    char sztemp[11]="";		// supports unsigned longs
+    APDDebugLog::log(APDUINO_MSG_SENSORCOUNT,itoa(iSensorCount,sztemp,10));
 
     if (iSensorCount > -1) {
 #ifdef VERBOSE
@@ -284,21 +285,22 @@ int APDSensorArray::loadSensors() {
 
         APDStorage::readFileWithParser((char *)"SENSORS.CFG",&new_sensor_parser, (void*)this);
 
-        Serial.println(APDUINO_MSG_SENSORSLOADED,HEX);
+        //Serial.println(APDUINO_MSG_SENSORSLOADED,HEX);
+        APDDebugLog::log(APDUINO_MSG_SENSORSLOADED,NULL);
         // TODO add any postprocessing
 
         iNextSensor = 0;                // first sensor to read
       } else {
-      	Serial.println(APDUINO_ERROR_SAALLOCFAIL,HEX);
-        //SerPrintP("E303\n");					// failed to allocate array
+      	//Serial.println(APDUINO_ERROR_SAALLOCFAIL,HEX);
+      	APDDebugLog::log(APDUINO_ERROR_SAALLOCFAIL,NULL);
       }
     } else {
-    	Serial.println(APDUINO_ERROR_SAEMPTY,HEX);
-      //  SerPrintP("E302\n");					// no sensors
+    	//Serial.println(APDUINO_ERROR_SAEMPTY,HEX);
+    	APDDebugLog::log(APDUINO_ERROR_SAEMPTY,NULL);
     }
   } else {
-  	Serial.println(APDUINO_ERROR_SAALREADYALLOC,HEX);
-    //SerPrintP("E301\n");							// already there
+  	//Serial.println(APDUINO_ERROR_SAALREADYALLOC,HEX);
+  	APDDebugLog::log(APDUINO_ERROR_SAALREADYALLOC,NULL);
   }
   return iSensorCount;
 }

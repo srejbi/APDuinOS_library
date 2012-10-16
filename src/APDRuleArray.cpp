@@ -125,11 +125,14 @@ if (iscand<13) {
 
 int APDRuleArray::loadRules() {
   if (!this->pAPDRules) {    // if no sensor array
-  	Serial.println(APDUINO_MSG_LOADINGRULES,HEX);
+  	//Serial.println(APDUINO_MSG_LOADINGRULES,HEX);
+  	APDDebugLog::log(APDUINO_MSG_LOADINGRULES,NULL);
       // TODO check if SD is available!
       iRuleCount = get_line_count_from_file("RULES.CFG");
       // TODO should log this
-      Serial.print(APDUINO_MSG_RULECOUNT,HEX); SerPrintP(":"); Serial.println(iRuleCount);
+      char sztemp[10]="";
+      //Serial.print(APDUINO_MSG_RULECOUNT,HEX); SerPrintP(":"); Serial.println(iRuleCount);
+      APDDebugLog::log(APDUINO_MSG_RULECOUNT,itoa(iRuleCount,sztemp,10));
       if (iRuleCount > 0) {
 #ifdef DEBUG_INFO
         SerPrintP("Rule Array: allocating "); Serial.print(sizeof(APDRule*)*iRuleCount,DEC); SerPrintP(" bytes of RAM\n");
@@ -145,7 +148,8 @@ int APDRuleArray::loadRules() {
 
           APDStorage::readFileWithParser("RULES.CFG",&new_rule_parser,(void*)this);
 
-          Serial.println(APDUINO_MSG_RULESLOADED,HEX);
+          //Serial.println(APDUINO_MSG_RULESLOADED,HEX);
+          APDDebugLog::log(APDUINO_MSG_RULESLOADED,NULL);
 
           // postprocessing of sensor & control pointers
 #ifdef DEBUG
@@ -212,20 +216,21 @@ int APDRuleArray::loadRules() {
   //          }
           }       // end enumerating rules
 
-          Serial.println(APDUINO_MSG_RULESPOSTPROCESSED,HEX);
+          //Serial.println(APDUINO_MSG_RULESPOSTPROCESSED,HEX);
+          APDDebugLog::log(APDUINO_MSG_RULESPOSTPROCESSED,NULL);
 
           this->nextrunmillis += 1000;
         } else {
-        	Serial.println(APDUINO_ERROR_RAALLOCFAIL,HEX);
-        	//SerPrintP("E503\n");
+        	//Serial.println(APDUINO_ERROR_RAALLOCFAIL,HEX);
+        	APDDebugLog::log(APDUINO_ERROR_RAALLOCFAIL,NULL);
         }
       } else {
-      	Serial.println(APDUINO_ERROR_RANORULES,HEX);
-        //SerPrintP("E502\n");
+      	//Serial.println(APDUINO_ERROR_RANORULES,HEX);
+      	APDDebugLog::log(APDUINO_ERROR_RANORULES,NULL);
       }
     } else {
-    	Serial.println(APDUINO_ERROR_RAALREADYALLOC,HEX);
-      //SerPrintP("E501\n");
+    	//Serial.println(APDUINO_ERROR_RAALREADYALLOC,HEX);
+    	APDDebugLog::log(APDUINO_ERROR_RAALREADYALLOC,NULL);
     }
 }
 
@@ -262,9 +267,8 @@ void APDRuleArray::dumpToFile(char *pszFileName) {
 #endif
   }
   else {
-      // TODO add an error macro in storage, replace all error opening stuff with reference to that
-  	Serial.println(APDUINO_ERROR_RADUMPOPENFAIL,HEX);
-    //SerPrintP("E505('"); Serial.print(pszFileName); SerPrintP("')\n");
+  	//Serial.println(APDUINO_ERROR_RADUMPOPENFAIL,HEX);
+  	APDDebugLog::log(APDUINO_ERROR_RADUMPOPENFAIL,NULL);
   }
 }
 
@@ -340,13 +344,16 @@ void APDRuleArray::evaluateScheduledRules() {
 	if (this->nextrunmillis < millis()) {		// check if time's up
 		if (this->lastCronMin == -1) {					// if cron has been just started, we evaluate next 00:00
 			adjustnextcronminute();								// push nextrunmillis to next 0s
-			Serial.print(APDUINO_MSG_CRONLAUNCHED,HEX); SerPrintP(":"); Serial.println(nextrunmillis);
+			//Serial.print(APDUINO_MSG_CRONLAUNCHED,HEX); SerPrintP(":"); Serial.println(nextrunmillis);
+			char sztmp[10] = "";
+			APDDebugLog::log(APDUINO_MSG_CRONLAUNCHED,ultoa(nextrunmillis,sztmp,10));
 			return;
 		}
 
 		DateTime now = APDTime::now();
 		if (now.minute() != this->lastCronMin) {
-			Serial.println(APDUINO_MSG_CRONCHECK,HEX);
+			//Serial.println(APDUINO_MSG_CRONCHECK,HEX);
+			APDDebugLog::log(APDUINO_MSG_CRONCHECK,NULL);
 			for (int i=0; i < this->iRuleCount; i++) {      // loop through rules
 				if (this->pAPDRules[i]->config.rule_definition == RF_SCHEDULED) {	// only check scheduled
 					this->pAPDRules[i]->evaluateRule();

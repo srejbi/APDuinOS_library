@@ -218,12 +218,14 @@ float OneWireSensor::ow_temperature_read()
   if (this->config.sensor_type != ONEWIRE_SENSOR || this->config.sensor_class != SENSE_TEMP)
     return -98;                 // NOT 1WIRE
   if (memcmp(this->sensor->address, &nulladdr,sizeof(byte)*8) == 0) {
-  	Serial.println(APDUINO_ERROR_OWNOADDR,HEX);
+  	//Serial.println(APDUINO_ERROR_OWNOADDR,HEX);
+  	APDDebugLog::log(APDUINO_ERROR_OWNOADDR,NULL);
   	return -99;
   }
 
    if (this->sensor->owenc == NULL || this->sensor->owenc->ow == NULL ) {
-  	Serial.println(APDUINO_ERROR_OWNOOBJ,HEX);
+  	//Serial.println(APDUINO_ERROR_OWNOOBJ,HEX);
+  	 APDDebugLog::log(APDUINO_ERROR_OWNOOBJ,NULL);
 		return -999;
 	 }
 

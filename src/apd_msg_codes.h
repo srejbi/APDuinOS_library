@@ -30,6 +30,8 @@
 #define APDUINO_MSG_SERIAL_INIT		        0x0101	// Serial port initialized
 #define APDUINO_MSG_ENABLERULEPROC        0x0102	// Enabled rule processing
 #define APDUINO_MSG_SDLOGOK					      0x0103	// Logging to SD prepared
+#define APDUINO_MSG_TIMESTAMP		        	0x0104	// Current system timestamp: %s
+#define APDUINO_MSG_SDLOGGING             0x0105	// Logging to SD card %d chars
 
 #define APDUINO_MSG_ETHERNETFROMCONF      0x0105	// Initializing ethernet with configuration from file
 #define APDUINO_MSG_NETINIT               0x0106	// Initializing ethernet
@@ -43,8 +45,7 @@
 #define APDUINO_MSG_LOGCHECK	            0x0115	// Checking existing log file
 #define APDUINO_MSG_LOGROTATENEEDED       0x0116	// Logrotate needed
 #define APDUINO_MSG_LOGROTATE             0x0117	// Logrotate needed
-#define APDUINO_MSG_LOGROTATED            0x0118	// Logrotate performed
-#define APDUINO_MSG_SDLOGGING             0x0119	// Logging to SD card
+#define APDUINO_MSG_LOGROTATED            0x0118	// Logrotate performed on %d files
 #define APDUINO_MSG_SDLOGGINGOK           0x011A	// Logging to SD card ok
 
 #define APDUINO_MSG_RTCNOTRUNNING         0x0120  // RTC is not running (maybe no hardware?)
@@ -63,10 +64,14 @@
 #define APDUINO_MSG_DHCPLEASED            0x0134	// DHCP Lease obtained
 #define APDUINO_MSG_NETFAILSRESTART       0x0135	// Network failure count triggers attempt to restart net
 #define APDUINO_MSG_AOLOGCALLED           0x0136	// APDuino Online logging started
-#define APDUINO_MSG_AOLOGGING             0x0137	// APDuino Online logging '%s'
+#define APDUINO_MSG_AOLOGGING             0x0137	// APDuino Online logging %d chars.
 #define APDUINO_MSG_AOLOGDONE             0x0138	// APDuino Online logging done
 #define APDUINO_MSG_COSMLOGCALLED         0x0139	// Cosm logging started
-#define APDUINO_MSG_COSMLOGDONE           0x0140	// Cosm logging done
+#define APDUINO_MSG_COSMLOGGING           0x0140	// Cosm logging %d chars.
+#define APDUINO_MSG_COSMLOGDONE           0x0141	// Cosm logging done
+#define APDUINO_MSG_TSLOGCALLED           0x0142	// ThingSpeak logging started
+#define APDUINO_MSG_TSLOGGING             0x0143	// ThingSpeak logging %d chars.
+#define APDUINO_MSG_TSLOGDONE             0x0144	// ThingSpeak logging done
 
 #define APDUINO_MSG_LOADINGSENSORS        0x0150	// Sensor Array loading Sensors from config
 #define APDUINO_MSG_SENSORCOUNT 	        0x0151	// Sensor Array counted %d lines in SENSORS.CFG
@@ -107,13 +112,15 @@
 #define APDUINO_ERROR_FILEOPEN            0x0211	// Error opening file '%s'
 #define APDUINO_ERROR_LOGOPENERR          0x0212	// Error opening log file
 #define APDUINO_ERROR_LOGSDERR            0x0213	// SD Error when opening log file
-#define APDUINO_ERROR_LOGROTATEOUTOFMEM   0x214		// Logrotate failed to allocate RAM
+#define APDUINO_ERROR_LOGROTATEOUTOFMEM   0x0214	// Logrotate failed to allocate RAM
+#define APDUINO_ERROR_LOGMSGOUTOFMEM      0x0215	// Debug logger failed to allocate RAM for message string
+#define APDUINO_ERROR_LOGITEMOUTOFMEM     0x0216	// Logrotate failed to allocate RAM for log item
 
 #define APDUINO_ERROR_RTCALLOCFAIL        0x0220	// Failed to allocate RTC
 #define APDUINO_ERROR_RTCALREADYINIT      0x0221	// RTC already initialized
 #define APDUINO_ERROR_SWRTCFAIL           0x0222	// SW RTC error
 #define APDUINO_ERROR_SWRTCSETUPFAIL      0x0223	// SW RTC setup failure
-#define APDUINO_ERR_UDPNETINITFAIL        0x0224	// UDP Networking initialization failed
+#define APDUINO_ERROR_UDPNETINITFAIL      0x0224	// UDP Networking initialization failed
 #define APDUINO_ERROR_NTPUDPSTARTFAIL     0x0225	// UDP Networking start failed
 #define APDUINO_ERROR_NTPNOUDP            0x0226	// No UDP for NTP
 #define APDUINO_ERROR_NTPNORTC            0x0227	// No RTC object for NTP sync
@@ -169,6 +176,7 @@
 #define APDUINO_WARN_UNKNOWNREQUEST	      0x0301	// Unknown distributed request
 #define APDUINO_WARN_CUSTFUNCMISMATCH     0x0302	// Control is not referencing this custom function
 #define APDUINO_WARN_NOCUSTFUNCATIDX      0x0303	// No custom function pointer at specified index
+#define APDUINO_WARN_MESSAGESFLUSHED      0x0304	// %d debug messages has been suppressed to save RAM
 
 #define APDUINO_WARN_NOUDPFORNTP          0x0320	// No UDP for NTP
 #define APDUINO_WARN_NETCONFDHCPFALLBACK  0x0321	// Failed to start Ethernet with static configuration. Fallback to DHCP.

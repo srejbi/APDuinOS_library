@@ -34,6 +34,7 @@
 #include "APDControlArray.h"
 #include "APDStorage.h"
 #include "APDRule.h"
+#include "APDLogWriter.h"
 
 //#include "APDControl.h"
 

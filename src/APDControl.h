@@ -37,6 +37,7 @@
 #include <Metro.h>
 #include <RCSwitch.h>
 #include "APDSerial.h"
+#include "APDDebugLog.h"
 
 // Control Definition Configuration ("record")
 struct CDCONF {

@@ -72,8 +72,7 @@ void APDSerial::myPrintP(void *Pstring,boolean bLn) {
       Serial.print(psob);
       free(psob);
     } else {
-    	Serial.print(APDUINO_ERROR_OUTOFRAM);		// todo replace this with the future error handler
-//      Serial.print("OUT OF RAM. ("); Serial.print(ilen,DEC); Serial.println(")");
+    	Serial.println(APDUINO_ERROR_OUTOFRAM,HEX);		// todo replace this with the future error handler
     }
   }
 }

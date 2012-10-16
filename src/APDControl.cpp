@@ -111,10 +111,8 @@ APDControl::APDControl(CDCONF *cdc, APDControl *preusablecontrol) {
       //apd_action_set_value(this,this->config.initial_value);
       break;
     default:
-    	Serial.println(APDUINO_WARN_CTYPEINVALID,HEX);
-#ifdef VERBOSE
-      SerPrintP("Invalid control type.");
-#endif
+    	//Serial.println(APDUINO_WARN_CTYPEINVALID,HEX);
+    	APDDebugLog::log(APDUINO_WARN_CTYPEINVALID,NULL);
   }
   // we should have now a pointer to the APDSensor
 }

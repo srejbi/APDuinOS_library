@@ -31,6 +31,7 @@
 #include "apd_utils.h"
 #include "APDSensor.h"
 #include "APDStorage.h"
+#include "APDLogWriter.h"
 #include "APDSensors/AnalogSensor.h"
 #include "APDSensors/DigitalSensor.h"
 #include "APDSensors/DHTSensor.h"

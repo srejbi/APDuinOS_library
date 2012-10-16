@@ -32,12 +32,14 @@ APDWeb::APDWeb()
 	// TODO Auto-generated constructor stub
 	initBlank();
 	if (start()) {
-		Serial.println(APDUINO_MSG_ETHSTARTED,HEX);
+		//Serial.println(APDUINO_MSG_ETHSTARTED,HEX);
+		APDDebugLog::log(APDUINO_MSG_ETHSTARTED,NULL);
 #ifdef VERBOSE
 		SerPrintP("Eth started.\n");
 #endif
 	} else {
-		Serial.println(APDUINO_ERROR_ETHCONF,HEX);
+		//Serial.println(APDUINO_ERROR_ETHCONF,HEX);
+		APDDebugLog::log(APDUINO_ERROR_ETHCONF,NULL);
 #ifdef VERBOSE
 		SerPrintP("Failed to configure Ethernet. Fix DHCP on your LAN or provide a valid static config on SD and reset.\n");
 #endif
@@ -59,26 +61,19 @@ APDWeb::APDWeb(NETCONF *pnc)
 	initBlank();
 	memcpy(&net,pnc,sizeof(NETCONF));             // copy the provided config
 	if (start()) {
-		Serial.println(APDUINO_MSG_CONFETHSTARTED,HEX);
-#ifdef VERBOSE
-		SerPrintP("Eth started with conf provided.\n");
-#endif
+		//Serial.println(APDUINO_MSG_CONFETHSTARTED,HEX);
+		APDDebugLog::log(APDUINO_MSG_CONFETHSTARTED,NULL);
 	} else {
-		Serial.println(APDUINO_WARN_NETCONFDHCPFALLBACK,HEX);
-#ifdef VERBOSE
-		SerPrintP("Failed to start Ethernet with static configuration. Fallback to DHCP.\n");
-#endif
+		//Serial.println(APDUINO_WARN_NETCONFDHCPFALLBACK,HEX);
+		APDDebugLog::log(APDUINO_WARN_NETCONFDHCPFALLBACK,NULL);
+
 		initBlank();
 		if (start()) {
-			Serial.println(APDUINO_MSG_NETOK,HEX);
-#ifdef VERBOSE
-			SerPrintP("Ethernet should be ok.\n");
-#endif
+			//Serial.println(APDUINO_MSG_NETOK,HEX);
+			APDDebugLog::log(APDUINO_MSG_NETOK,NULL);
 		} else {
-			Serial.println(APDUINO_ERROR_DHCPFAILED,HEX);
-#ifdef VERBOSE
-			SerPrintP("Fix DHCP on your LAN or provide a valid static config on SD and reset.\n");
-#endif
+			//Serial.println(APDUINO_ERROR_DHCPFAILED,HEX);
+			APDDebugLog::log(APDUINO_ERROR_DHCPFAILED,NULL);
 		}
 	}
 }
@@ -165,7 +160,8 @@ boolean APDWeb::start() {
 
 	//net.ip[0] = 0;
 	if ((bRestart && !this->bDHCP) || (!bRestart && net.ip[0] != 0)) {                 // if an IP seems to be provided
-		Serial.println(APDUINO_MSG_TRYINGSTATICIP,HEX);
+		//Serial.println(APDUINO_MSG_TRYINGSTATICIP,HEX);
+		APDDebugLog::log(APDUINO_MSG_TRYINGSTATICIP,NULL);			// TODO print IP in string and push to debug log
 #ifdef VERBOSE
 		SerPrintP("Trying static IP...\n");
 		SerPrintP("IP: ");
@@ -187,20 +183,19 @@ boolean APDWeb::start() {
 		this->bDHCP = false;
 		// todo read on howto check state
 	} else {                              // go for DHCP
-		Serial.println(APDUINO_MSG_TRYINGDHCPIP,HEX);
-#ifdef DEBUG
-		SerPrintP("Trying DHCP...");
-#endif
+		//Serial.println(APDUINO_MSG_TRYINGDHCPIP,HEX);
+		APDDebugLog::log(APDUINO_MSG_TRYINGDHCPIP,NULL);
+
+		// trying DHCP
 		if (Ethernet.begin(net.mac) == 0) {
-			Serial.println(APDUINO_ERROR_DHCPSTARTFAIL,HEX);
-#ifdef VERBOSE
-			SerPrintP("Error.");
-#endif
+			//Serial.println(APDUINO_ERROR_DHCPSTARTFAIL,HEX);
+			APDDebugLog::log(APDUINO_ERROR_DHCPSTARTFAIL,NULL);
 			operational_state = OPSTATE_BLANK | OPSTATE_ERROR;
 			return false;
 		}
 		// we should have a lease now
-		Serial.println(APDUINO_MSG_DHCPLEASED,HEX);
+		//Serial.println(APDUINO_MSG_DHCPLEASED,HEX);
+		APDDebugLog::log(APDUINO_MSG_DHCPLEASED,NULL);			// TODO print IP to string and put to log message
 #ifdef VERBOSE
 		SerPrintP("DHCP DONE.\nIP: ");
 #endif
@@ -275,10 +270,8 @@ void APDWeb::failure() {
 #endif
 		this->bRestart = true;		// request a restart (will be done in loop)
 
-		Serial.println(APDUINO_MSG_NETFAILSRESTART,HEX);
-#ifdef VERBOSE
-		SerPrintP(" -> restart req.\n");
-#endif
+		//Serial.println(APDUINO_MSG_NETFAILSRESTART,HEX);
+		APDDebugLog::log(APDUINO_MSG_NETFAILSRESTART,NULL);
 	}
 }
 
@@ -342,14 +335,14 @@ boolean APDWeb::setupAPDuinoOnline() {
 			startWebLogging(apduino_logging_freq);
 			retcode = true;
 		} else {
-			Serial.println(APDUINO_ERROR_APDUINOONLINEIP,HEX);
-			//SerPrintP("E21.\n");
+			//Serial.println(APDUINO_ERROR_APDUINOONLINEIP,HEX);
+			APDDebugLog::log(APDUINO_ERROR_APDUINOONLINEIP,NULL);
 		}
 
 		retcode = true;
 	} else {
-		Serial.println(APDUINO_ERROR_STORAGEERRORAO,HEX);
-		//SerPrintP("E20.\n");
+		//Serial.println(APDUINO_ERROR_STORAGEERRORAO,HEX);
+		APDDebugLog::log(APDUINO_ERROR_STORAGEERRORAO,NULL);
 	}
 	return retcode;
 }
@@ -389,16 +382,12 @@ void APDWeb::saveAPIkey(char *szAPIKey, char *szAPIFile)
 			dataFile.println(szAPIKey);
 			dataFile.close();
 		} else {
-			Serial.println(APDUINO_ERROR_AKSAVEIOERR,HEX);
-#ifdef VERBOSE
-			SerPrintP("IO ERR.");		// TODO add error codes
-#endif
+			//Serial.println(APDUINO_ERROR_AKSAVEIOERR,HEX);
+			APDDebugLog::log(APDUINO_ERROR_AKSAVEIOERR,NULL);
 		}
 	} else {
-		Serial.println(APDUINO_ERROR_AKSAVESTORAGE,HEX);
-#ifdef VERBOSE
-		SerPrintP("NO STORAGE.");
-#endif
+		//Serial.println(APDUINO_ERROR_AKSAVESTORAGE,HEX);
+		APDDebugLog::log(APDUINO_ERROR_AKSAVESTORAGE,NULL);
 	}
 }
 
@@ -770,8 +759,7 @@ bool APDWeb::ServeFile(EthernetClient client, const char *szPath) {
 
 
 void APDWeb::ListFiles(EthernetClient client, const char *szPath, uint8_t flags) {
-	// This code is just copied from SdFile.cpp in the SDFat library
-	// and tweaked to print to the client output in html!
+	// File copied from SdFile.cpp in the SDFat library
 	SdFile *proot = APDStorage::p_root;
 	dir_t p;
 	if (APDStorage::ready() && APDStorage::p_root ) {
@@ -844,9 +832,10 @@ void APDWeb::ListFiles(EthernetClient client, const char *szPath, uint8_t flags)
 
 				// print modify date/time if requested
 				if (flags & LS_DATE) {
-					proot->printFatDate(p.lastWriteDate);
-					client.print(' ');
-					proot->printFatTime(p.lastWriteTime);
+					// TODO write dates to the client
+					//proot->printFatDate(p.lastWriteDate);
+					//client.print(' ');
+					//proot->printFatTime(p.lastWriteTime);
 				}
 				// print size if requested
 				if (!DIR_IS_SUBDIR(&p) && (flags & LS_SIZE)) {
@@ -858,9 +847,9 @@ void APDWeb::ListFiles(EthernetClient client, const char *szPath, uint8_t flags)
 		}
 		WCPrintP(&client,"</ul>\n</div>\n");
 	} else {
-		Serial.println(APDUINO_ERROR_WWWFSNOSTORAGE,HEX);
+		//Serial.println(APDUINO_ERROR_WWWFSNOSTORAGE,HEX);
+		APDDebugLog::log(APDUINO_ERROR_WWWFSNOSTORAGE,NULL);
 		//todo redirect this error also to www client
-		//SerPrintP("W03");
 		//WCPrintP(&client,"W03\n");		//NO STORAGE ERROR
 	}
 	if (proot != APDStorage::p_root) {
@@ -1365,31 +1354,26 @@ boolean APDWeb::self_register() {
 				if (pwwwcp ==NULL)
 					pwwwcp = (&registration_response);      // set reader 'callback'
 				else {
-					Serial.println(APDUINO_ERROR_WWWCLIENTOCCUPIED,HEX);
-					//SerPrintP("E23");
+					APDDebugLog::log(APDUINO_ERROR_WWWCLIENTOCCUPIED,NULL);
 				}
 			} else {
 				Serial.println();
+				// TODO check this out
 				//SerPrintP("E24");
 				pwwwclient->stop();
 			}
 		} else {
-			//#ifdef DEBUG
-			Serial.println(APDUINO_ERROR_WWWCLIENTBUSY,HEX);
-			//SerPrintP("E25");
+			APDDebugLog::log(APDUINO_ERROR_WWWCLIENTBUSY,NULL);
 			this->wc_busy();
-			//#endif
 		}
 		bWebClient = (pwwwclient!=0) && pwwwclient->connected();
 #ifdef DEBUG
 		SerPrintP("WWWCLI: "); Serial.println(bWebClient,DEC); SerPrintP("WWCLI?"); Serial.println((int)pwwwclient,DEC);
 #endif
 	} else {
-		//#ifdef DEBUG
-		Serial.println(APDUINO_ERROR_AONOWEBCLIENT,HEX);
-		//SerPrintP("E26");
+		//Serial.println(APDUINO_ERROR_AONOWEBCLIENT,HEX);
+		APDDebugLog::log(APDUINO_ERROR_AONOWEBCLIENT,NULL);
 		this->failure();
-		//#endif
 	}
 }
 
@@ -1416,21 +1400,13 @@ void APDWeb::loop() {
 				iBusyCounter = 0;
 				if (this->iSensorCount>0 || this->iControlCount>0) {	// TODO fix this quick hack to see properly if there is anything to log
 					if (this->pmetro != NULL && this->pmetro->check()) {
-#ifdef VERBOSE
-						SerPrintP("\nWEBLOG\n");
-#endif
 						this->log_to_ApduinoOnline();
 						this->pmetro->reset();
 					} else if ( this->phmetro != NULL && this->phmetro->check()) {
-#ifdef VERBOSE
-						SerPrintP("\nCOSMLOG\n");
-#endif
 						this->log_to_Cosm();
+						delay(10);
 						this->phmetro->reset();
 					} else if ( this->tsmetro != NULL && this->tsmetro->check()) {
-#ifdef VERBOSE
-						SerPrintP("\nTSLOG\n");
-#endif
 						this->log_to_ThingSpeak();
 						this->tsmetro->reset();
 					}
@@ -1570,13 +1546,15 @@ void APDWeb::get_thingspeaklog_string(char *szLogBuf) {
 
 // requires Ethernet connection to be started already
 void APDWeb::log_to_ApduinoOnline() {
-	Serial.println(APDUINO_MSG_AOLOGCALLED,HEX);
+	APDDebugLog::log(APDUINO_MSG_AOLOGCALLED,NULL);
+	//APDDebugLog::disable_sync_writes();
 	char www_logdata[256];
 	if ( pwwwclient ) {           // TODO check if we're registered
 		if ( !pwwwclient->connected() ) {
 			get_lastlog_string(www_logdata);
 
-			Serial.print(APDUINO_MSG_AOLOGGING,HEX); SerPrintP(":"); Serial.print(www_logdata);		// logdata has \n
+			char sztmp[11] = "";
+			APDDebugLog::log(APDUINO_MSG_AOLOGGING,ultoa(strlen(www_logdata),sztmp,10));		// logdata has \n
 #ifdef DEBUG
 			SerPrintP("WL: "); Serial.print(this->pstr_APDUINO_API_KEY); SerPrintP(" - "); Serial.print(www_logdata); SerPrintP(" ...");
 #endif
@@ -1595,7 +1573,7 @@ void APDWeb::log_to_ApduinoOnline() {
 
 				// calculate the length of the sensor reading in bytes:
 				// 8 bytes for "sensor1," + number of digits of the data:
-				int thisLength = strlen(www_logdata);
+				unsigned long thisLength = strlen(www_logdata);
 				pwwwclient->println(thisLength);
 
 				// last pieces of the HTTP PUT request:
@@ -1603,29 +1581,36 @@ void APDWeb::log_to_ApduinoOnline() {
 
 				// here's the actual content of the PUT request:
 				pwwwclient->println(www_logdata);
-				Serial.println(APDUINO_MSG_AOLOGDONE,HEX);		// debug
+				//Serial.println(APDUINO_MSG_AOLOGDONE,HEX);		// debug
+				APDDebugLog::log(APDUINO_MSG_AOLOGDONE,NULL);		// debug
 			} else {
-				Serial.println(APDUINO_ERROR_WWWCANTCONNECTAO,HEX);		// debug
+				//Serial.println(APDUINO_ERROR_WWWCANTCONNECTAO,HEX);		// debug
+				APDDebugLog::log(APDUINO_ERROR_WWWCANTCONNECTAO,NULL);		// debug
 
 				pwwwclient->stop();          // stop client now
 				this->failure();
 			}
 		}
 	}	else {
-		Serial.println(APDUINO_ERROR_AOLOGNOWEBCLIENT,HEX);
+		//Serial.println(APDUINO_ERROR_AOLOGNOWEBCLIENT,HEX);
+		APDDebugLog::log(APDUINO_ERROR_AOLOGNOWEBCLIENT,NULL);
 		this->failure();
 	}
-
+	//APDDebugLog::enable_sync_writes();
 	bWebClient = (pwwwclient!=0) && pwwwclient->connected();
 }
 
 void APDWeb::log_to_Cosm() {
-	Serial.println(APDUINO_MSG_COSMLOGCALLED,HEX);
+	APDDebugLog::log(APDUINO_MSG_COSMLOGCALLED,NULL);
+	//APDDebugLog::disable_sync_writes();
 	if ( pwwwclient ) {           // TODO check if we're registered
 		if ( !pwwwclient->connected() ) {
 			char feedUrl[64] = "";
-			char www_logdata[256];
+			char www_logdata[512];
 			get_cosmlog_string(www_logdata);
+
+			char sztmp[11] = "";
+			APDDebugLog::log(APDUINO_MSG_COSMLOGGING,ultoa(strlen(www_logdata),sztmp,10));		// logdata has \n
 
 			sprintf_P(feedUrl,PSTR("/v2/feeds/%lu.csv"),cosm_feed_id);
 #ifdef VERBOSE
@@ -1638,7 +1623,8 @@ void APDWeb::log_to_Cosm() {
 				WCPrintP(pwwwclient,"PUT "); pwwwclient->print(feedUrl); WCPrintP(pwwwclient," HTTP/1.1\n");
 				WCPrintP(pwwwclient,"Host: ");    pwwwclient->println(cosm_server_name);
 				// TODO fix api key
-				WCPrintP(pwwwclient,"X-PachubeApiKey: ");   pwwwclient->println(szCOSM_API_KEY);
+				//WCPrintP(pwwwclient,"X-PachubeApiKey: ");   pwwwclient->println(szCOSM_API_KEY);
+				WCPrintP(pwwwclient,"X-ApiKey: ");   pwwwclient->println(szCOSM_API_KEY);
 				WCPrintP(pwwwclient,"User-Agent: "); pwwwclient->println(USERAGENT);
 				//pwwwclient->println("Content-Type: application/x-www-form-urlencoded");
 				WCPrintP(pwwwclient,"Content-Type: text/csv\n");
@@ -1646,7 +1632,7 @@ void APDWeb::log_to_Cosm() {
 
 				// calculate the length of the sensor reading in bytes:
 				// 8 bytes for "sensor1," + number of digits of the data:
-				int thisLength = strlen(www_logdata);
+				unsigned long thisLength = strlen(www_logdata);
 				pwwwclient->println(thisLength);
 
 				// last pieces of the HTTP PUT request:
@@ -1655,31 +1641,35 @@ void APDWeb::log_to_Cosm() {
 				// here's the actual content of the PUT request:
 				pwwwclient->println(www_logdata);
 
-				Serial.println(APDUINO_MSG_COSMLOGDONE,HEX);		// debug
+				APDDebugLog::log(APDUINO_MSG_COSMLOGDONE,NULL);		// debug
 			} else {
-				Serial.println(APDUINO_ERROR_CLOGCONNFAIL,HEX);
+				APDDebugLog::log(APDUINO_ERROR_CLOGCONNFAIL,NULL);
 				pwwwclient->stop();          // stop client now
 				this->failure();
 			}
 		}
 	}	else {
-		Serial.println(APDUINO_ERROR_CLOGNOWEBCLIENT,HEX);
+		APDDebugLog::log(APDUINO_ERROR_CLOGNOWEBCLIENT,NULL);
 		this->failure();
 	}
 
+	//APDDebugLog::enable_sync_writes();
 	bWebClient = (pwwwclient!=0) && pwwwclient->connected();
 }
 
 
 void APDWeb::log_to_ThingSpeak() {
+	APDDebugLog::log(APDUINO_MSG_TSLOGCALLED,NULL);
 	if ( pwwwclient ) {           // TODO check if we're registered
 		if ( !pwwwclient->connected() ) {
 			char feedUrl[64] = "";
 			char www_logdata[256];
 			get_thingspeaklog_string(www_logdata);
 
-			Serial.println(www_logdata);
+			char sztmp[11] = "";
+			APDDebugLog::log(APDUINO_MSG_TSLOGGING,ultoa(strlen(www_logdata),sztmp,10));
 #ifdef DEBUG
+			Serial.println(www_logdata);
 			SerPrintP("\n\nconn:"); Serial.print(thingspeak_server_name); //Serial.println(feedUrl);
 #endif
 			if( pwwwclient->connect(thingspeak_server_ip, thingspeak_server_port) ) {
@@ -1703,12 +1693,9 @@ void APDWeb::log_to_ThingSpeak() {
 
 				// here's the actual content of the PUT request:
 				pwwwclient->println(www_logdata);
-#ifdef VERBOSE
-				SerPrintP("done.\n");
-#endif
+				APDDebugLog::log(APDUINO_MSG_TSLOGDONE,NULL);		// debug
 			} else {
-				Serial.println(APDUINO_ERROR_TSLOGCONNFAIL,HEX);
-				//SerPrintP("E291.\n");
+				APDDebugLog::log(APDUINO_ERROR_TSLOGCONNFAIL,NULL);
 				pwwwclient->stop();          // stop client now
 				this->failure();
 			}
@@ -1780,8 +1767,7 @@ void APDWeb::myCPrintP(EthernetClient *pClient, void *Pstring) {
 			pClient->print(psob);
 			free(psob);
 		} else {
-			Serial.println(APDUINO_ERROR_PRINTCLIENTOUTOFMEM,HEX);
-			//SerPrintP("E201("); Serial.print(ilen,DEC); SerPrintP(")");
+			APDDebugLog::log(APDUINO_ERROR_PRINTCLIENTOUTOFMEM,NULL);
 		}
 	}
 }
@@ -1947,7 +1933,6 @@ void APDWeb::json_status(EthernetClient *pClient) {
 		SerPrintP("JSONDONE.");
 #endif
 	} else {
-		Serial.println(APDUINO_ERROR_JSNOCLIENT,HEX);
-		//SerPrintP("W02");
+		APDDebugLog::log(APDUINO_ERROR_JSNOCLIENT,NULL);
 	}
 }
