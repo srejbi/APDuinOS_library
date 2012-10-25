@@ -40,6 +40,12 @@
 // maintain the supported classes in it
 #define DHT_SENSOR_CLASSES [SENSE_TEMP,SENSE_HUMIDITY]
 
+// The following lines indicate to APDuino Online that this sensor supports subtypes
+// and presents subtypes in a programmatically parseable format
+#define DHT_SENSOR_SUBTYPE_DHT11       11
+#define DHT_SENSOR_SUBTYPE_DHT21       21
+#define DHT_SENSOR_SUBTYPE_DHT22       22
+
 struct DHTSENS {
   int type;
   DHT *dht;
