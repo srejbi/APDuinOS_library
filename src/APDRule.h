@@ -35,41 +35,58 @@
 #include "APDTime.h"
 #include "APDDebugLog.h"
 
-// rule definitions
-#define RF_FALSE              0
-#define RF_TRUE               1
-#define RF_METRO              3
-#define RF_SCHEDULED          4
-#define RF_IDLE_CHECK         5
-#define RF_RAM_CHECK          6
-#define RF_SENSOR_GT          64
-#define RF_SENSOR_GTE         65
-#define RF_SENSOR_LT          66
-#define RF_SENSOR_LTE         67
-#define RF_SENSOR_EQ          68
-#define RF_SENSOR_GT_SENSOR   128
-#define RF_SENSOR_GTE_SENSOR  129
-#define RF_SENSOR_LT_SENSOR   130
-#define RF_SENSOR_LTE_SENSOR  131
-#define RF_SENSOR_EQ_SENSOR   132
-#define RF_EVALUATE						127
+// Rule Evaluation Definitions
+// Each signifying a method how the rule is to be evaluated in the first place
+// (in the second place expression will be evaluated if provided)
+#define RF_FALSE              0				// Rule will go on false branch
+#define RF_TRUE               1				// Rule will go on true branch
+#define RF_METRO              3				// Rule will go on true branch (unless expression evaluates false) every N milliseconds
+#define RF_SCHEDULED          4				// Rule will go on true branch (unless expression evaluates false) as per cron-like time specification, false every other minute
+#define RF_IDLE_CHECK         5				// Rule will go on true if device is idle, false if not (used for hardware UI)
+#define RF_RAM_CHECK          6				// Rule not implemented
+#define RF_SENSOR_GT          64			// Rule will go on true if sensor value is greater than test value, false otherwise
+#define RF_SENSOR_GTE         65			// Rule will go on true if sensor value is greater than or equal to test value, false otherwise
+#define RF_SENSOR_LT          66			// Rule will go on true if sensor value is less than test value, false otherwise
+#define RF_SENSOR_LTE         67			// Rule will go on true if sensor value is less than or equal to test value, false otherwise
+#define RF_SENSOR_EQ          68			// Rule will go on true if sensor value is equal to the test value, false otherwise
+#define RF_SENSOR_GT_SENSOR   128			// Rule will go on true if sensor value is greater than the reference sensor value, false otherwise
+#define RF_SENSOR_GTE_SENSOR  129			// Rule will go on true if sensor value is greater than or equal to the reference sensor value, false otherwise
+#define RF_SENSOR_LT_SENSOR   130			// Rule will go on true if sensor value is less than the reference sensor value, false otherwise
+#define RF_SENSOR_LTE_SENSOR  131			// Rule will go on true if sensor value is less than or equal to the reference sensor value, false otherwise
+#define RF_SENSOR_EQ_SENSOR   132			// Rule will go on true if sensor value is equal to the reference sensor value, false otherwise
+#define RF_EVALUATE						127			// Rule will evaluate expression and go to the true/false action accordingly
 
 //APDuino Rule Actions
-#define APDRA_SET_OFF           0
-#define APDRA_SET_ON            1
-#define APDRA_SWITCH_VALUE      2
-#define APDRA_SET_VALUE         3
-#define APDRA_RCSWITCH_ON       16
-#define APDRA_RCSWITCH_OFF      17
-#define APDRA_RCPLUG_SET_VALUE  18
-#define APDRA_RCPLUG_ON         19
-#define APDRA_RCPLUG_OFF			  20
-#define APDRA_VIRT_CUST_FUNC    128
-#define APDRA_VIRT_SCREEN_NEXT  129
-#define APDRA_VIRT_SYNCNTP      130
-#define APDRA_NOOP              255
+#define APDRA_SET_OFF           0			// Turn off control (value 0 written to pin)
+#define APDRA_SET_ON            1			// Turn on control (depending on type value 1/255 written to pin)
+#define APDRA_SWITCH_VALUE      2			// Invert the value of the control pin (according to type)
+#define APDRA_SET_VALUE         3			// Write a specific value to the pin (according to type, conversion might occur)
+#define APDRA_RCSWITCH_ON       16		// Turn on an RCSwitch control (send on to the address)
+#define APDRA_RCSWITCH_OFF      17		// Turn off an RCSwitch control (send off to the address)
+#define APDRA_RCPLUG_SET_VALUE  18		// Write 0/1 to an RCPlug control (set on or off)
+#define APDRA_RCPLUG_ON         19		// Turn RCPlug control ON
+#define APDRA_RCPLUG_OFF			  20		// Turn RCPlug control OFF
+#define APDRA_VIRT_CUST_FUNC    128		// reserved
+#define APDRA_VIRT_SCREEN_NEXT  129		// reserved for hardware display paging
+#define APDRA_VIRT_SYNCNTP      130		// reserved for NTP syncing
+#define APDRA_NOOP              255		// Do nothing (can't hurt :))
 
+// The following ControlActionMatrix definition is to support APDuino Online
+// building up a Hash of Controls and Actions supported
+// (could be used by APDuinOS too for validations, but concept is to provide
+// valid configurations and spare validation cycles & code)
+// CONTROL_ACTIONS_MATRIX = {  0 => [ 0, 1, 2, 3, 255 ],  #"ANALOG_CONTROL"
+// 													   1 => [ 0, 1, 2, 3, 255 ],  #"DIGITAL_CONTROL",
+//													   2 => [ 0, 1, 2, 3, 255 ],  #"RCSWITCH_CONTROL"
+// 													   3 => [ 19, 20, 255 ],      #"RCPLUG_CONTROL"
+// 												   127 => [ 255 ] 							#"SOFTWARE_CONTROL"
+//  }
+// furthermore: as Controls/Rules sources most likely will be reorganized in a
+// Sensors-like fashion APDuino Online should always check versions and be prepared
+// that from version X the extraction of this information must be based on other source files
+#define CONTROL_ACTIONS_MATRIX = [ANALOG_CONTROL,[APDRA_SET_OFF,APDRA_SET_ON,APDRA_SWITCH_VALUE,APDRA_SET_VALUE,APDRA_NOOP],DIGITAL_CONTROL,[APDRA_SET_OFF,APDRA_SET_ON,APDRA_SWITCH_VALUE,APDRA_SET_VALUE,APDRA_NOOP],RCSWITCH_CONTROL,[APDRA_SET_OFF,APDRA_SET_ON,APDRA_SWITCH_VALUE,APDRA_SET_VALUE,APDRA_NOOP],RCPLUG_CONTROL,[APDRA_RCPLUG_ON,APDRA_RCPLUG_OFF,APDRA_NOOP],SOFTWARE_CONTROL,[APDRA_NOOP]]
 
+// reexecute constants
 #define REEXEC_NONE								0
 #define REEXEC_TRUE								1
 #define REEXEC_FALSE							2
