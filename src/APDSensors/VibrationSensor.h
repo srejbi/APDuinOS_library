@@ -28,6 +28,10 @@
 
 #include "APDSensor.h"
 
+// The following define is for APDuino Online compatibility
+// maintain the supported classes in it
+#define VIBRATION_SENSOR_CLASSES [SENSE_VOLTS]
+
 struct VIBSENS {
   int value;
   int readings;

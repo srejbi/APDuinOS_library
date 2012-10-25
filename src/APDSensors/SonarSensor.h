@@ -28,6 +28,9 @@
 
 #include "APDSensor.h"
 
+// The following define is for APDuino Online compatibility
+// maintain the supported classes in it
+#define SONAR_SENSOR_CLASSES [SENSE_DISTANCE]
 
 struct SONSENS {
   int value;

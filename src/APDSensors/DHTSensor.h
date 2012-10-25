@@ -36,6 +36,10 @@
 #include "APDSensor.h"
 #include "DHT.h"
 
+// The following define is for APDuino Online compatibility
+// maintain the supported classes in it
+#define DHT_SENSOR_CLASSES [SENSE_TEMP,SENSE_HUMIDITY]
+
 struct DHTSENS {
   int type;
   DHT *dht;

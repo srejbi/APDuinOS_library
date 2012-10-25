@@ -99,6 +99,11 @@ struct SDCONF {
 // note: things like networking could interfere with these metros. #todo consider setting up interrupt for critical timers
 
 
+// The following define is a stub for APDuino Online compatibility
+// include it in every sensor type implementation header and
+// maintain the supported classes in it (it is not used by the code, so don't worry about overdeclarations)
+#define _SENSORNAME_CLASSES [SENSE_VOLTS]
+
 class APDSensor
 {
 public:

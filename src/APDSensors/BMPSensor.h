@@ -37,6 +37,10 @@
 #include <Wire.h>
 #include <Adafruit_BMP085.h>				// TODO
 
+// The following define is for APDuino Online compatibility
+// maintain the supported classes in it
+#define BMP085_SENSOR_CLASSES [SENSE_TEMP,SENSE_PRESSURE,SENSE_ALTITUDE]
+
 struct BMPSENS {
   Adafruit_BMP085 *pbmp;
   float value;

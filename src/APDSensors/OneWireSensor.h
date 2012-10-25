@@ -40,6 +40,10 @@
 #include "APDSensor.h"
 #include <OneWire.h>
 
+// The following define is for APDuino Online compatibility
+// maintain the supported classes in it
+#define ONEWIRE_SENSOR_CLASSES [SENSE_TEMP]
+
 struct OWENC {	// OneWire encapsulation
 	OneWire *ow;		// the shared object
 	byte state;			// state of the shared object (OneWire)

@@ -29,6 +29,10 @@
 #include "APDSensor.h"
 #include <SoftwareSerial.h>
 
+// The following define is for APDuino Online compatibility
+// maintain the supported classes in it
+#define ATLASSCIENTIFIC_SENSOR_CLASSES [SENSE_PH,SENSE_DO,SENSE_EC,SENSE_ORP]
+
 // serial/softserial indicator
 // mask the encapsulation struct state with it
 #define AS_SERIAL			0x00			// 0000 0000 - using serial
