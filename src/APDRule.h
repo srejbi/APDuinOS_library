@@ -94,6 +94,13 @@ struct RDCONF {
   char *pszconditions;				// conditional expression to be evaluated
 };
 
+// The RULE_PARSERSTRING is used for parsing controls config files by new_control_parser
+#define RULE_PARSERSTRING PSTR("%s %d,%d,%f,%d,%d,%d,%d,%d,%d,%d %s @%s")
+// The following line needed for APDuino Online integration
+// it should define valid Ruby code that will be executed
+// in the context of the DeviceControl (self) when packaging configuration items
+// The code must be inline with RULE_PARSERSTRING and new_rule_parser (APDRuleArray)
+#define AO_RULE_PACKSTRING "\"#{self.label.gsub(/[ ]/,\"_\")[0..11]} #{self.evaluation_function_id},#{self.sensor.nil? ? -1 : self.sensor.sd_position},#{self.test_value},#{self.true_action_id},#{self.false_action_id},#{self.control.nil? ? -1 : self.control.control_index},#{self.control_value_mapping},#{self.control_value},#{self.control_sensor.nil? ? -1 : self.control_sensor.sd_position},#{self.reexec} #{self.conditions||'_'} @#{self.getcronspec||'_'}\""
 
 class APDRule
 {

@@ -73,6 +73,14 @@ struct SDCONF {
   char extra_data[24];
 };
 
+// The SENSOR_PARSERSTRING is used for parsing controls config files by new_control_parser
+#define SENSOR_PARSERSTRING PSTR("%s %d,%d,%d,%d,%d,%d,%d,%s")
+// The following line needed for APDuino Online integration
+// it should define valid Ruby code that will be executed
+// in the context of the DeviceControl (self) when packaging configuration items
+// The code must be inline with SENSOR_PARSERSTRING and new_sensor_parser (APDSensorArray)
+#define AO_SENSOR_PACKSTRING "\"#{self.apduinos_label} #{self.sd_type},#{self.sd_class},#{self.sd_subtype||\"0\"},#{self.sd_pin.blank? ? \"-1\" : self.sd_pin},#{self.sd_secondary_pin.blank? ? \"-1\" : self.sd_secondary_pin},#{self.sd_poll_freq.blank? ? \"5000\" : self.sd_poll_freq},#{self.sd_logging.blank? ? \"0\" : self.sd_logging},#{self.sd_extra_data}\""
+
 
 // sensor states; not really in use yet (1-wire & Atlas uses it)... #todo widespread the use of state
 #define STATE_READY         0x00             // 0000

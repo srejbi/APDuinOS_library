@@ -103,7 +103,7 @@ void APDSensorArray::new_sensor_parser(void *pSA, int iline, char *psz) {
 #ifdef DEBUG
   SerPrintP("\nSDCONF READS: \""); Serial.print(psz); SerPrintP("\"");
 #endif
-  int iscand = sscanf_P( psz, PSTR("%s %d,%d,%d,%d,%d,%d,%d,%s"),
+  int iscand = sscanf_P( psz, SENSOR_PARSERSTRING,
       (sdc.label),
       &(sdc.sensor_type),
       &(sdc.sensor_class),

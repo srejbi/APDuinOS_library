@@ -62,7 +62,7 @@ void APDControlArray::new_control_parser(void *pCA, int iline, char *psz) {
 #ifdef VERBOSE
   Serial.print("CONTROL READ: "); Serial.print(psz);
 #endif
-  int iscand = sscanf_P( psz, PSTR("%s %d,%d,%d,%d,%s"),
+  int iscand = sscanf_P( psz, CONTROL_PARSERSTRING,
       (cdc.label),
       &(cdc.control_type),
       &(cdc.control_pin),

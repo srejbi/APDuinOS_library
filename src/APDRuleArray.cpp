@@ -76,7 +76,7 @@ void APDRuleArray::new_rule_parser(void *pRA, int iline, char *psz) {
   rdc.pszcron[0] = 0;
   rdc.pszconditions[0] = 0;
   //TODO add counter & checks on scanned parameters
-  int iscand = sscanf_P( psz, PSTR("%s %d,%d,%f,%d,%d,%d,%d,%d,%d,%d %s @%s"),
+  int iscand = sscanf_P( psz, RULE_PARSERSTRING,
       (rdc.label),
       &(rdc.rule_definition),
       &(rdc.rf_sensor_idx),

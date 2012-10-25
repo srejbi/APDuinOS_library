@@ -49,6 +49,14 @@ struct CDCONF {
   char extra_data[24];
 };
 
+// The CONTROL_PARSERSTRING is used for parsing controls config files by new_control_parser
+#define CONTROL_PARSERSTRING PSTR("%s %d,%d,%d,%d,%s")
+// The following line needed for APDuino Online integration
+// it should define valid Ruby code that will be executed
+// in the context of the DeviceControl (self) when packaging configuration items
+// The code must be inline with the CONTROL_PARSERSTRING and new_contol_parser (APDControlArray)
+#define AO_CONTROL_PACKSTRING "\"#{self.label.gsub(/[ ]/,\"_\")[0..11]} #{self.control_type},#{self.control_pin},#{self.initial_value},#{self.cd_logging},#{self.cd_extra_data}\""
+
 class APDControl {
 public:
 	APDControl();
