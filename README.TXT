@@ -1,7 +1,7 @@
 APDuinOS Library
 http://apduino.org
 
-Copyright (C) György Schreiber 2012.
+Copyright (C) Gyorgy Schreiber 2012.
 
 This Library is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by

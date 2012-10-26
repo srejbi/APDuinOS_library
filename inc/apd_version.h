@@ -1,5 +1,5 @@
 /* APDuinOS Library
- * Copyright (C) 2012 by György Schreiber
+ * Copyright (C) 2012 by Gyorgy Schreiber
  *
  * This file is part of the APDuinOS Library
  *
@@ -28,6 +28,6 @@
 
 #include "apd_msg_codes.h"
 #define APDUINO_VERSION    "0.66"
-#define APDUINO_BUILD      "2012102601"
+#define APDUINO_BUILD      "2012102602"
 
 #endif /* APD_VERSION_H_ */

@@ -1,5 +1,5 @@
 /* APDuinOS Library
- * Copyright (C) 2012 by György Schreiber
+ * Copyright (C) 2012 by Gyorgy Schreiber
  *
  * This file is part of the APDuinOS Library
  *
