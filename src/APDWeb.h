@@ -71,6 +71,7 @@ const char WEBLOG_URI[]="/devices/lastlog";      // see apduino online specs.
 #define DREQ_NOOP					0
 #define DREQ_RECONF				1
 #define DREQ_RESET				2
+#define DREQ_RELOADRULES  3
 
 struct NETCONF {
   byte mac[6];            //TODO generate random mac, more than 1 APDuino can have collisions

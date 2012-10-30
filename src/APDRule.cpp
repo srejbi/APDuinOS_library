@@ -297,6 +297,11 @@ void APDRule::evaluateRule() {
 #ifdef DEBUG
     SerPrintP("EVAL RULE "); Serial.print(this->config.label); //delay(10);
 #endif
+    if (this->pcsensorvalue && *(this->pcsensorvalue) == NAN) {
+    	return;			// bail out if rule sensor is NAN
+    }
+    // todo expression should be pre-scanned or evaluator should be rewritten to do nothing on NAN's
+
     boolean bRuleOn = (*(this->prulefunc))(this);
     if ((bRuleOn != this->bLastState ||
     		(bRuleOn && (this->config.reexec & REEXEC_TRUE)) ||
@@ -333,7 +338,6 @@ void APDRule::evaluateRule() {
 #ifdef DEBUG
 			  SerPrintP(" sensorval ");
 #endif
-			  //iControlValue = *((float*)(this->pcsensorvalue));
 			  iControlValue = map(*((float*)(this->pcsensorvalue)), 0, 1024, 0, 255);
 			} else {
 #ifdef DEBUG

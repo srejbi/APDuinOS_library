@@ -39,8 +39,8 @@ SonarSensor::SonarSensor(SDCONF *sdc)
       SerPrintP("SONAR: CALIBRATIONDATA:"); Serial.println(this->sensor->calibration_value);
   }
 #endif
-  this->sensor->value = 0;
-  this->fvalue = 0;
+  this->sensor->value = NAN;
+  this->fvalue = NAN;
 }
 
 SonarSensor::~SonarSensor()
@@ -110,9 +110,7 @@ float SonarSensor::read_sonar() {
       if (arrayIndex >= numOfReadings)  {
           arrayIndex = 0;
         }
-
     } else {    // wait for silence
-
         iDelay += 5;
     }
     delay(iDelay);
@@ -120,7 +118,6 @@ float SonarSensor::read_sonar() {
      SerPrintP(" reading cycle done.\n");
 #endif
    }
-    //averageDistance = total / numOfReadings;      // calculate the average distance
      averageDistance = total / numValidReadings;      // calculate the average distance
 #ifdef DEBUG
     SerPrintP("Average distance measured: "); Serial.println(averageDistance, DEC);         // print out the average distance to the debugger

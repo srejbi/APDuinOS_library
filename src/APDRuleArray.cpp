@@ -282,7 +282,7 @@ APDRule *APDRuleArray::firstRuleByControlIdx(int iControlIdx) {
 }
 
 void APDRuleArray::evaluateSensorRules(void *pra, APDSensor *pSensor) {
-	if (pra != NULL) {
+	if (pra != NULL && pSensor->fvalue != NAN) {			// todo add switch on nan?
 		APDRuleArray *pRA = (APDRuleArray *)pra;
 
 		int iSensorIndex = pRA->pSA->indexBySensor(pSensor);
@@ -294,6 +294,8 @@ void APDRuleArray::evaluateSensorRules(void *pra, APDSensor *pSensor) {
 			}  // loop rules
 		}
 		//this->pRuleMetro->reset();    // restart the metro
+	} else {
+		// do nothing on NAN
 	}
 }
 
@@ -302,16 +304,20 @@ void APDRuleArray::evaluateSensorRulesByIdx(int iSensorIndex) {
   SerPrintP("RULEEVAL!");
   delay(10);
 #endif
-  for (int i=0; i < this->iRuleCount; i++) {      // loop through rules
-    if (this->pAPDRules[i]->config.rf_sensor_idx == iSensorIndex || this->pAPDRules[i]->config.ra_sensor_idx == iSensorIndex) {    // if rule is bound to the sensor either as trigger or input value for control
-#ifdef DEBUG
-    SerPrintP("RULE_EVAL:"); Serial.print(this->pAPDRules[i]->config.label);
-    delay(10);
-#endif
-    	if (this->pAPDRules[i]->config.rule_definition != RF_SCHEDULED) this->pAPDRules[i]->evaluateRule(); // evaluate but scheduled rules
-    }  // evaluate if rule is for sensor
-  }  // loop rules
-  //this->pRuleMetro->reset();    // restart the metro
+  if (this->pSA->pAPDSensors[iSensorIndex]->fvalue != NAN) {
+		for (int i=0; i < this->iRuleCount; i++) {      // loop through rules
+			if (this->pAPDRules[i]->config.rf_sensor_idx == iSensorIndex || this->pAPDRules[i]->config.ra_sensor_idx == iSensorIndex) {    // if rule is bound to the sensor either as trigger or input value for control
+	#ifdef DEBUG
+			SerPrintP("RULE_EVAL:"); Serial.print(this->pAPDRules[i]->config.label);
+			delay(10);
+	#endif
+				if (this->pAPDRules[i]->config.rule_definition != RF_SCHEDULED) this->pAPDRules[i]->evaluateRule(); // evaluate but scheduled rules
+			}  // evaluate if rule is for sensor
+		}  // loop rules
+		//this->pRuleMetro->reset();    // restart the metro
+  } else {
+  	// do nothing if sensor value is NAN
+  }
 }
 
 

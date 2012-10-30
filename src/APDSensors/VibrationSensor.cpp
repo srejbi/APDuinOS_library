@@ -49,7 +49,7 @@ VibrationSensor::VibrationSensor(SDCONF *sdc)
   this->lastreading = 0;
   this->ltotal = 0;
   this->boverflow = false;
-  this->sensor->value = 0;
+  this->sensor->value = NAN;
 #ifdef DEBUG
   SerPrintP("VIBRATION SENSOR INIT DONE");
 #endif

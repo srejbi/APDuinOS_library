@@ -937,6 +937,12 @@ void APDWeb::loop_server()
 						WCPrintP(&client,"Request acknowledged.");
 						web_endpage(&client);
 						this->dispatched_requests = DREQ_RESET;		// APDuino should read it
+					} else if (strstr_P(clientline,PSTR("GET /reloadrules")) != 0) {
+						web_header(&client);
+						web_startpage(&client,"reload_rules",0);
+						WCPrintP(&client,"Request acknowledged.");
+						web_endpage(&client);
+						this->dispatched_requests = DREQ_RELOADRULES;		// APDuino should read it
 					}  else if (strstr_P(clientline, PSTR("GET /status.json")) != 0) {
 						// send a standard http response header
 						json_header(&client);
@@ -1471,7 +1477,7 @@ void APDWeb::get_lastlog_string(char *szLogBuf) {
 	strcpy(pcLog,ts);
 	pcLog+=strlen(ts);
 	for (int i=0;i<iSensorCount;i++) {
-		if (pAPDSensors[i]->config.sensor_log) {          // if sensor to be logged
+		if (pAPDSensors[i]->config.sensor_log && pAPDSensors[i]->fvalue != NAN) {          // if sensor to be logged
 			//strcpy(pcLog,pAPDSensors[i]->config.label);
 			//pcLog+=strlen(pAPDSensors[i]->config.label);
 			*pcLog=','; pcLog++;// *pcLog = '\0';
@@ -1490,7 +1496,7 @@ void APDWeb::get_cosmlog_string(char *szLogBuf) {
 	char dataString[16]="";                // make a string for assembling the data to log:
 
 	for (int i=0;i<iSensorCount;i++) {
-		if (pAPDSensors[i]->config.sensor_log) {          // if sensor to be logged
+		if (pAPDSensors[i]->config.sensor_log && pAPDSensors[i]->fvalue != NAN) {          // if sensor to be logged & has a valid value (todo use sensor states)
 			strcpy(pcLog,pAPDSensors[i]->config.label);
 			pcLog+=strlen(pAPDSensors[i]->config.label);
 			*pcLog=','; pcLog++;// *pcLog = '\0';
@@ -1522,15 +1528,14 @@ void APDWeb::get_thingspeaklog_string(char *szLogBuf) {
 	char dataString[16]="";                // make a string for assembling the data to log:
 
 	for (int i=0;i<iSensorCount;i++) {
-		if (pAPDSensors[i]->config.sensor_log) {          // if sensor to be logged
+		if (pAPDSensors[i]->config.sensor_log && pAPDSensors[i]->fvalue != NAN) {          // if sensor to be logged
 			char szFN[16]="";
 			uSens++;
 			sprintf_P(szFN,PSTR("field%d"),uSens);
 			if (pcLog > szLogBuf) {
 				*pcLog='&'; pcLog++;
 			}
-			//strcpy(pcLog,pAPDSensors[i]->config.label);
-			//pcLog+=strlen(pAPDSensors[i]->config.label);
+
 			strcpy(pcLog,szFN);
 		  pcLog+=strlen(szFN);
 			*pcLog='='; pcLog++;// *pcLog = '\0';

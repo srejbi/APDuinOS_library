@@ -132,6 +132,7 @@ protected:
   void initSensor();
   void initSensor(SDCONF *sdc);
 
+  friend class APDSensorArray;
   friend class APDRule;
   friend class APDRuleArray;
   friend class APDWeb;

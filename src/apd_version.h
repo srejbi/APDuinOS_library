@@ -27,7 +27,7 @@
 #define APD_VERSION_H_
 
 #include "apd_msg_codes.h"
-#define APDUINO_VERSION    "0.66"
-#define APDUINO_BUILD      "2012102602"
+#define APDUINO_VERSION    "0.67"
+#define APDUINO_BUILD      "2012103005"
 
 #endif /* APD_VERSION_H_ */

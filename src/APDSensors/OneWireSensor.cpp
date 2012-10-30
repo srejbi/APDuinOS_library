@@ -61,8 +61,8 @@ OneWireSensor::OneWireSensor(SDCONF *sdc, void *owsensor)
       } else {
       	memset(&(this->sensor->address),0,sizeof(this->sensor->address));
       }
-      this->sensor->value = 0;
-      this->fvalue = 0;
+      this->sensor->value = NAN;
+      this->fvalue = NAN;
 
       SerPrintP("ADDR: ");
       for(byte i = 0; i < 8; i++) {
@@ -206,200 +206,94 @@ void OneWireSensor::verify_address()
 boolean OneWireSensor::perform_check()
 {
   float nv = this->ow_temperature_read();
-  if (this->_state == STATE_READY && nv > -50) this->fvalue = nv;
-  return (nv > -100);
+  if (this->_state == STATE_READY && nv != NAN) this->fvalue = nv;
+  return (nv != NAN);
 }
 
 
 float OneWireSensor::ow_temperature_read()
 {
 	byte nulladdr[8] = {0,0,0,0,0,0,0,0};
-  float celsius = -120;
-  if (this->config.sensor_type != ONEWIRE_SENSOR || this->config.sensor_class != SENSE_TEMP)
-    return -98;                 // NOT 1WIRE
-  if (memcmp(this->sensor->address, &nulladdr,sizeof(byte)*8) == 0) {
-  	//Serial.println(APDUINO_ERROR_OWNOADDR,HEX);
-  	APDDebugLog::log(APDUINO_ERROR_OWNOADDR,NULL);
-  	return -99;
+  float celsius = NAN;
+  if (this->config.sensor_type == ONEWIRE_SENSOR && this->config.sensor_class == SENSE_TEMP) {
+		if (memcmp(this->sensor->address, &nulladdr, sizeof(byte)*8)) {		// if not null address
+			 if (this->sensor->owenc != NULL && this->sensor->owenc->ow != NULL ) {		// the shared config & onewire object must exist
+				 OneWire *dsp = ((OWSENS*)(this->sensor))->owenc->ow;
+
+				 if (this->_state == STATE_READY) {			// attempt to trigger reading if ready
+					 if (this->sensor->owenc->state == STATE_READY) {		// if sensor class is ready
+						 //SerPrintP("OW "); Serial.print(this->config.label); SerPrintP(" POLL ON PIN "); Serial.print(this->config.sensor_pin,DEC); SerPrintP("...");
+						 this->sensor->owenc->state = STATE_BUSY;						// set the 1-wire sensor class as busy (reused on the same pin)
+						 this->_state = STATE_WRITE;												// set this class state as write
+						 dsp->reset();
+						 dsp->select(this->sensor->address);
+						 dsp->write(0x44,1);         // start conversion, with parasite power on at the end
+
+						 this->pmetro->interval(1000);							// reschedule checking this sensor in 750 ms (will go to the STATE_WRITE branch)
+						 this->_lm = millis();
+
+					 } else {																						// the shared sensor class is not ready
+						 this->pmetro->interval(10);												// set a short interval so we time out quickly for retry
+					 }
+				 } else if (this->_state == STATE_WRITE) {		// if ready to fetch data
+					 // we assume nobody else is using the shared object in this state, should be STATE_BUSY (by this sensor)
+
+					 //SerPrintP("OW "); Serial.print(this->config.label); SerPrintP(" FETCH PIN "); Serial.print(this->config.sensor_pin,DEC); SerPrintP("...");
+					 //Serial.print(millis() - this->_lm);
+					 this->_lm = millis();
+					 byte i;
+						byte present = 0;
+						byte data[12];
+						byte addr[8];
+						memcpy(addr,this->sensor->address,sizeof(byte)*8);
+
+						// we might do a ds.depower() here, but the reset will take care of it.
+						present = dsp->reset();
+						dsp->select(addr);
+						dsp->write(0xBE);         // Read Scratchpad
+
+						for ( i = 0; i < 9; i++) {           // we need 9 bytes
+							data[i] = dsp->read();
+						}
+						// convert the data to actual temperature
+
+						//The DS18x20_Temperature has a known bug. Remove "unsigned" from the raw variable on line 88, for correct results below zero degrees Celsius!
+						//unsigned
+						int raw = (data[1] << 8) | data[0];
+						if (this->_type_s) {
+							raw = raw << 3; // 9 bit resolution default
+							if (data[7] == 0x10) {
+								// count remain gives full 12 bit resolution
+								raw = (raw & 0xFFF0) + 12 - data[6];
+							}
+						} else {
+							byte cfg = (data[4] & 0x60);
+							if (cfg == 0x00) raw = raw << 3;  // 9 bit resolution, 93.75 ms
+							else if (cfg == 0x20) raw = raw << 2; // 10 bit res, 187.5 ms
+							else if (cfg == 0x40) raw = raw << 1; // 11 bit res, 375 ms
+							// default is 12 bit resolution, 750 ms conversion time
+						}
+						celsius = (float)raw / 16.0;
+						// todo the following should be potentially added as an expression (by enduser) to convert sensor value
+						//fahrenheit = celsius * 1.8 + 32.0;
+
+						// set ready states
+						this->_state = STATE_READY;
+						this->sensor->owenc->state = STATE_READY;
+						this->pmetro->interval(this->config.sensor_freq);						// reset normal poll time
+				 } else {
+					 SerPrintP("Unknown state. Slowing sensor.\n");
+					 this->pmetro->interval(this->config.sensor_freq*10);
+				 }
+			 } else {		// no onewire object
+				 APDDebugLog::log(APDUINO_ERROR_OWNOOBJ,NULL);
+			 }
+		} else {			// if sensor has nulladdress
+			APDDebugLog::log(APDUINO_ERROR_OWNOADDR,NULL);
+		}
   }
-
-   if (this->sensor->owenc == NULL || this->sensor->owenc->ow == NULL ) {
-  	//Serial.println(APDUINO_ERROR_OWNOOBJ,HEX);
-  	 APDDebugLog::log(APDUINO_ERROR_OWNOOBJ,NULL);
-		return -999;
-	 }
-
-   OneWire *dsp = ((OWSENS*)(this->sensor))->owenc->ow;
-
-   if (this->_state == STATE_READY) {			// attempt to trigger reading if ready
-  	 if (this->sensor->owenc->state == STATE_READY) {		// if sensor class is ready
-  		 //SerPrintP("OW "); Serial.print(this->config.label); SerPrintP(" POLL ON PIN "); Serial.print(this->config.sensor_pin,DEC); SerPrintP("...");
-  		 this->sensor->owenc->state = STATE_BUSY;						// set the 1-wire sensor class as busy (reused on the same pin)
-  		 this->_state = STATE_WRITE;												// set this class state as write
-       dsp->reset();
-  		 dsp->select(this->sensor->address);
-  		 dsp->write(0x44,1);         // start conversion, with parasite power on at the end
-
-  		 //  delay(1000);     // maybe 750ms is enough, maybe not
-  		// experimental!
-  		// if we need a delay here, something else should be done (like a timed callback)
-//  		      delay(800);     // maybe 750ms is enough, maybe not
-  		 this->pmetro->interval(1000);							// reschedule checking this sensor in 750 ms (will go to the STATE_WRITE branch)
-  		 //SerPrintP("COMMANDSENT:");Serial.print(millis() - this->_lm);
-  		 this->_lm = millis();
-
-  	 } else {																						// the shared sensor class is not ready
-  		 //SerPrintP(".");
-  		 this->pmetro->interval(10);												// set a short interval so we time out quickly for retry
-  	 }
-   } else if (this->_state == STATE_WRITE) {		// if ready to fetch data
-  	 // we assume nobody else is using the shared object in this state, should be STATE_BUSY (by this sensor)
-
-  	 //SerPrintP("OW "); Serial.print(this->config.label); SerPrintP(" FETCH PIN "); Serial.print(this->config.sensor_pin,DEC); SerPrintP("...");
-  	 //Serial.print(millis() - this->_lm);
-  	 this->_lm = millis();
-     byte i;
-			byte present = 0;
-			byte data[12];
-			byte addr[8];
-  	  memcpy(addr,this->sensor->address,sizeof(byte)*8);
-
-      // we might do a ds.depower() here, but the reset will take care of it.
-      present = dsp->reset();
-      dsp->select(addr);
-      dsp->write(0xBE);         // Read Scratchpad
-
-      for ( i = 0; i < 9; i++) {           // we need 9 bytes
-        data[i] = dsp->read();
-      }
-      // convert the data to actual temperature
-
-      //The DS18x20_Temperature has a known bug. Remove "unsigned" from the raw variable on line 88, for correct results below zero degrees Celsius!
-      //unsigned
-      int raw = (data[1] << 8) | data[0];
-      if (this->_type_s) {
-        raw = raw << 3; // 9 bit resolution default
-        if (data[7] == 0x10) {
-          // count remain gives full 12 bit resolution
-          raw = (raw & 0xFFF0) + 12 - data[6];
-        }
-      } else {
-        byte cfg = (data[4] & 0x60);
-        if (cfg == 0x00) raw = raw << 3;  // 9 bit resolution, 93.75 ms
-        else if (cfg == 0x20) raw = raw << 2; // 10 bit res, 187.5 ms
-        else if (cfg == 0x40) raw = raw << 1; // 11 bit res, 375 ms
-        // default is 12 bit resolution, 750 ms conversion time
-      }
-      celsius = (float)raw / 16.0;
-      //fahrenheit = celsius * 1.8 + 32.0;
-
-      // set ready states
-      this->_state = STATE_READY;
-      this->sensor->owenc->state = STATE_READY;
-      this->pmetro->interval(this->config.sensor_freq);						// reset normal poll time
-   } else {
-  	 SerPrintP("Unknown state. Slowing sensor.\n");
-  	 this->pmetro->interval(this->config.sensor_freq*10);
-   }
   return celsius;
 }
-
-
-
-/*
-float OneWireSensor::ow_temperature_read()
-{
-  if (this->config.sensor_type != ONEWIRE_SENSOR || this->config.sensor_class != SENSE_TEMP)
-    return -98;                 // NOT 1WIRE
-  OneWire *dsp = ((OWSENS*)(this->sensor))->ow;
-  unsigned long ms=millis();
-//#ifdef DEBUG
-  SerPrintP("1WIRE POLL ON PIN "); Serial.print(this->config.sensor_pin,DEC); SerPrintP("...");
-//#endif
-  byte i;
-  byte present = 0;
-  byte type_s;
-  byte data[12];
-  byte addr[8];
-  float celsius;
-
-  if ( !dsp->search(addr)) {
-//#ifdef DEBUG
-    SerPrintP("No more addresses.");
-//#endif
-    dsp->reset_search();
-    //delay(250);     // why??
-    celsius = -999;
-  } else {
-
-    // print address
-        for(byte i = 0; i < 8; i++) {
-          Serial.write(' ');
-          Serial.print(addr[i], HEX);
-        }
-   // end print address
-
-      if (OneWire::crc8(addr, 7) != addr[7]) {
-//#ifdef DEBUG
-          SerPrintP("CRC is not valid!");
-//#endif
-          celsius = -888;
-      } else {
-
-      dsp->reset();
-      dsp->select(addr);
-      dsp->write(0x44,1);         // start conversion, with parasite power on at the end
-
-    //  delay(1000);     // maybe 750ms is enough, maybe not
-
-
-// experimental!
-
-// if we need a delay here, something else should be done (like a timed callback)
-
-      delay(800);     // maybe 750ms is enough, maybe not
-
-      // we might do a ds.depower() here, but the reset will take care of it.
-
-      present = dsp->reset();
-      dsp->select(addr);
-      dsp->write(0xBE);         // Read Scratchpad
-
-      for ( i = 0; i < 9; i++) {           // we need 9 bytes
-        data[i] = dsp->read();
-      }
-      // convert the data to actual temperature
-
-      //The DS18x20_Temperature has a known bug. Remove "unsigned" from the raw variable on line 88, for correct results below zero degrees Celsius!
-      //unsigned
-      int raw = (data[1] << 8) | data[0];
-      if (type_s) {
-        raw = raw << 3; // 9 bit resolution default
-        if (data[7] == 0x10) {
-          // count remain gives full 12 bit resolution
-          raw = (raw & 0xFFF0) + 12 - data[6];
-        }
-      } else {
-        byte cfg = (data[4] & 0x60);
-        if (cfg == 0x00) raw = raw << 3;  // 9 bit resolution, 93.75 ms
-        else if (cfg == 0x20) raw = raw << 2; // 10 bit res, 187.5 ms
-        else if (cfg == 0x40) raw = raw << 1; // 11 bit res, 375 ms
-        // default is 12 bit resolution, 750 ms conversion time
-      }
-      celsius = (float)raw / 16.0;
-    //  fahrenheit = celsius * 1.8 + 32.0;
-    }
-  }
-//#ifdef DEBUG
-  SerPrintP("1WIRE TEMP SENSOR POLL DURATION: "); Serial.println(millis()-ms);
-//#endif
-  return celsius;
-}
-
-*/
-
-
-
 
 
 void OneWireSensor::diagnostics()

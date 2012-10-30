@@ -386,20 +386,18 @@ void APDuino::loop_core() {
     if (pAPDWeb->dispatched_requests) {					// process dispatched request buffer
     	int request = pAPDWeb->dispatched_requests;			// copy the request from the buffer
     	pAPDWeb->dispatched_requests = DREQ_NOOP;				// reset the buffer to avoid reexec (by any mistake later)
-
     	switch (request) {												// execute the request
     	case DREQ_RECONF:														// reload configuration
-    		APDLogWriter::write_debug_log();			// write out any messages
     		this->reconfigure();
     		break;
     	case DREQ_RESET:
-    		APDLogWriter::write_debug_log();			// write out any messages
     		soft_reset();														// soft-reset is an improper way to restart (does not reset hardware)
     		break;
+    	case DREQ_RELOADRULES:
+    		this->reload_rules();
+    		break;
     	default:
-    		//Serial.println(APDUINO_WARN_UNKNOWNREQUEST,HEX);
     		APDDebugLog::log(APDUINO_WARN_UNKNOWNREQUEST,NULL);
-    		//SerPrintP("W");														// WARNING unknown request, ignoring
     	}
     }
   }
@@ -671,6 +669,66 @@ boolean APDuino::reconfigure() {
 
   return retcode;
 }
+
+boolean APDuino::reload_rules() {
+	boolean retcode = false;
+#ifdef DEBUG
+  SerPrintP("\nRECONREQ...\n");
+#endif
+  delay(100);
+
+  // put APDWeb in maintenance mode to PREVENT ACCESS TO sensors, controls, rules
+  if (this->pAPDWeb->pause_service()) {
+  	boolean bProcRulesOld = bProcessRules;			// store old rule processing state
+    bProcessRules = false;
+    unsigned long ulRam = freeMemory();
+
+#ifdef DEBUG
+  	SerPrintP("Reconfiguring Arrays!\n");
+  	delay(10);
+  	Serial.print( ulRam, DEC); SerPrintP(" RAM free.\n");
+  	delay(100);
+#endif
+
+		this->iNextSensor = -1;				// invalidate next sensor index
+
+		delete(this->pra);
+		pra = new APDRuleArray(psa,pca,&(this->bfIdle));
+	  this->pra->loadRules();
+		//SerPrintP("APD Rules - ok.\n");
+
+		// Update pointers in APDWeb
+		this->pAPDWeb->pAPDRules = this->pra->pAPDRules;
+		this->pAPDWeb->iRuleCount = this->pra->iRuleCount;
+
+#ifdef DEBUG
+	  	SerPrintP("Reconfigured Arrays!\n");
+	  	Serial.print( freeMemory(), DEC); SerPrintP(" RAM free.\n");
+	  	delay(10);
+
+	  	if (ulRam == freeMemory()) {
+	  		SerPrintP("No memory leak detected.\n");
+	  	} else {
+	  		SerPrintP("\nMEMORY LEAK DETECTED!\n");
+	  	}
+#endif
+		// enable "real-time" rule evaluation
+		this->psa->enableRuleEvaluation(&(APDRuleArray::evaluateSensorRules),(void *)this->pra);
+
+		// FIXME check if we are initialized, set it in bConfigured
+		// TODO revise what is obligatory. for now, 1 sensor or control is enough to be considered as configured
+		this->bAPDuinoConfigured =  APDStorage::ready() && (this->psa->iSensorCount > 0  || this->pca->iControlCount > 0); // && this->pra->iRuleCount > 0;
+
+		this->bFirstLoopDone = false;									// we have not yet looped with the new config (no sensor values)
+		bProcessRules = bProcRulesOld;								// restore old rule processing state
+		retcode = this->pAPDWeb->continue_service();	// return if web server continues processing
+  } else {
+  	APDDebugLog::log(APDUINO_ERROR_COULDNOTPAUSEWWW,NULL);
+  }
+
+  return retcode;
+}
+
 
 void APDuino::new_ethconf_parser(void *pAPD, int iline, char *psz) {
   NETCONF nc;

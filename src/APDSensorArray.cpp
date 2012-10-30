@@ -358,7 +358,11 @@ void APDSensorArray::pollSensors(boolean bProcessRules) {
 #ifdef DEBUG
     		SerPrintP("early eval");
 #endif
-    		(*this->pfruleeval)(this->pRA,pAPDSensors[iNextSensor]);
+    	  if (pAPDSensors[iNextSensor]->fvalue != NAN) {	// todo add an option to run rules on NAN?
+    	  	(*this->pfruleeval)(this->pRA,pAPDSensors[iNextSensor]);
+    	  } else {
+    	  	// no valid value, don't evaluate rules
+    	  }
       }
     }
   iNextSensor = iNextSensor + 1 < this->iSensorCount ? iNextSensor + 1 : 0;    // set next sensor

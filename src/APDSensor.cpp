@@ -71,7 +71,7 @@ void APDSensor::initSensor() {
   sensor = NULL;
   pmetro = NULL;
 
-  fvalue = 0;
+  fvalue = NAN;
 
   _state = STATE_BUSY;
 }

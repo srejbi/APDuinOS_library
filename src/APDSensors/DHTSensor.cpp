@@ -50,7 +50,7 @@ DHTSensor::DHTSensor(SDCONF *sdc, void *dhtsensor)
           }
       }
   }
-  this->fvalue = 0;
+  this->fvalue = NAN;
   this->_state = STATE_READY;
 }
 

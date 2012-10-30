@@ -30,7 +30,7 @@ AnalogSensor::AnalogSensor(SDCONF *sdc)
   this->initSensor(sdc);
   // TODO Auto-generated constructor stub
   this->sensor = (ANASENS*)malloc(sizeof(ANASENS));
-  this->sensor->value = 0;
+  this->sensor->value = NAN;
   this->_state = STATE_READY;
 }
 

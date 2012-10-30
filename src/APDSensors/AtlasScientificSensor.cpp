@@ -112,8 +112,8 @@ AtlasScientificSensor::AtlasScientificSensor(SDCONF *sdc, void *assensor)
           }
       }
 
-      this->sensor->value = 0;
-      this->fvalue = 0;
+      this->sensor->value = NAN;
+      this->fvalue = NAN;
 
   }
 
@@ -261,8 +261,8 @@ boolean AtlasScientificSensor::perform_check()
 {
   float nv = this->as_sensor_read();
   // todo revise the special values (-50,-100) below and change sensors to hold validity bit in _state (indicating if reading was valid) instead of altering value with custom "invalid values"
-  if (this->_state == STATE_READY && nv > -50) this->fvalue = nv;
-  return (nv > -100);
+  if (this->_state == STATE_READY && nv != NAN) this->fvalue = nv;
+  return (nv != NAN);
 }
 
 

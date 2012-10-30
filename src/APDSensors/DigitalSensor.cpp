@@ -31,7 +31,7 @@ DigitalSensor::DigitalSensor(SDCONF *sdc)
   // TODO Auto-generated constructor stub
   this->sensor = (DIGISENS*)malloc(sizeof(DIGISENS));
   this->_state = STATE_READY;
-  this->sensor->value = 0;
+  this->sensor->value = NAN;
 }
 
 DigitalSensor::~DigitalSensor()

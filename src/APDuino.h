@@ -118,6 +118,7 @@ public:
 	boolean disableRuleProcessing();
 
 	boolean reconfigure();						// reset application (reload configs)
+	boolean reload_rules();						// reload rules
 
 	APDSerial *pAPDSerial;
 	//APDStorage *pAPDStorage;
