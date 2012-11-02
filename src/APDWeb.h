@@ -73,6 +73,11 @@ const char WEBLOG_URI[]="/devices/lastlog";      // see apduino online specs.
 #define DREQ_RESET				2
 #define DREQ_RELOADRULES  3
 
+// content types (used in header function)
+#define CONTENT_TYPE_TEXT		0
+#define CONTENT_TYPE_HTML   1
+#define CONTENT_TYPE_JSON   2
+
 struct NETCONF {
   byte mac[6];            //TODO generate random mac, more than 1 APDuino can have collisions
   byte ip[4];                          // ip address
@@ -212,7 +217,7 @@ private:
   void loop_server();
 
   // www helpers
-  static void web_header(EthernetClient *pClient);
+  //static void web_header(EthernetClient *pClient);
   void web_startpage(EthernetClient *pClient, char *title,int refresh);
   void web_endpage(EthernetClient *pClient);
   static void webstatus_table_item(EthernetClient *pClient, const char *group, const int index, const char *name, const char *value, const char *logged );
@@ -224,8 +229,10 @@ private:
   void processProvisioningRequest(EthernetClient *pclient, boolean brespond);
   void claim_device_link(EthernetClient *pClient);
 
+  static void header(EthernetClient *pClient, int content_type);
+
   static void json_array_item(EthernetClient *pClient, const int index, const char *name, const char *value, const char *logged );
-  static void json_header(EthernetClient *pClient);
+  //static void json_header(EthernetClient *pClient);
   void json_status(EthernetClient *pClient);
 
   friend class APDuino;

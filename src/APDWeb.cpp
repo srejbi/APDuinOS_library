@@ -531,12 +531,12 @@ void APDWeb::startWebServer(APDSensor **pSensors, int iSensorCount, APDControl *
 	}
 }
 
-
-void APDWeb::web_header(EthernetClient *pClient) {
+// TODO deprecate this
+/*void APDWeb::web_header(EthernetClient *pClient) {
 	WCPrintP(pClient,"HTTP/1.1 200 OK\n"
 			"Content-Type: text/html\n\n");
 	delay(1);
-}
+}*/
 
 void APDWeb::web_startpage(EthernetClient *pClient, char *title,int refresh=0) {
 	if (*pClient) {
@@ -559,13 +559,12 @@ void APDWeb::web_startpage(EthernetClient *pClient, char *title,int refresh=0) {
 		WCPrintP(pClient,"<table>\n<tr><th>TimeStamp</th><th>Uptime</th><th>WWW Client</th><th>Net Fails</th><th>Net Restarts</th><th>RAM Free</th></tr>\n");
 
 		WCPrintP(pClient,"<tr><td>");
-		char ts[20] = "";
-		strcpy_P(ts,PSTR("1970/01/01 00:00:00"));        // string used for timestamp
-		pClient->print(APDTime::nowS(ts));
+		char tbuf[20] = "";
+		strcpy_P(tbuf,PSTR("1970/01/01 00:00:00"));        // string used for timestamp
+		pClient->print(APDTime::nowS(tbuf));
 		WCPrintP(pClient,"</td><td>");
-		pClient->print(APDTime::getUpTimeS(ts));
+		pClient->print(APDTime::getUpTimeS(tbuf));
 		WCPrintP(pClient,"</td><td>");
-		char tbuf[20] ="";
 		dtostrf(uCCount,5,0,tbuf);
 		pClient->print(tbuf);
 		WCPrintP(pClient,"</td><td>");
@@ -724,13 +723,15 @@ bool APDWeb::ServeFile(EthernetClient client, const char *szPath) {
 	#endif
 		retcode = true;
 		if ( file.isFile() ) {
-			WCPrintP(&client, "HTTP/1.1 200 OK\nContent-Type: ");
+			//WCPrintP(&client, "HTTP/1.1 200 OK\nContent-Type: ");
 			if (strstr_P(szPath, PSTR(".htm")) != 0 || strstr_P(szPath, PSTR(".html")) != 0 ) {
-				WCPrintP(&client, "text/html");
+				//WCPrintP(&client, "text/html");
+				header(&client,CONTENT_TYPE_HTML);
 			} else {
-				WCPrintP(&client, "text/plain");
-			}
-			WCPrintP(&client, "\n\n");
+				//WCPrintP(&client, "text/plain");
+				header(&client,CONTENT_TYPE_TEXT);
+			}	// todo add more content types as needed (images? - should be stored on external server to reduce load on miniweb)
+			//WCPrintP(&client, "\n\n");
 
 			int16_t c;
 			while ((c = file.read()) > -1) {
@@ -741,7 +742,8 @@ bool APDWeb::ServeFile(EthernetClient client, const char *szPath) {
 		} else if (file.isDir()) {
 			//SerPrintP("DIR");
 			// send a standard http response header
-			web_header(&client);
+			//web_header(&client);
+			header(&client,CONTENT_TYPE_HTML);
 			// print all the files, use a helper to keep it clean
 			web_startpage(&client,"files");
 			//WCPrintP(&client, "<h2>Files:</h2>\n");
@@ -759,29 +761,19 @@ bool APDWeb::ServeFile(EthernetClient client, const char *szPath) {
 
 
 void APDWeb::ListFiles(EthernetClient client, const char *szPath, uint8_t flags) {
-	// File copied from SdFile.cpp in the SDFat library
 	SdFile *proot = APDStorage::p_root;
 	dir_t p;
 	if (APDStorage::ready() && APDStorage::p_root ) {
-#ifdef DEBUG
-		SerPrintP("REWIND ROOT");
-#endif
 		proot->rewind();
 		if (szPath != NULL && szPath[0] != 0) {
 			proot = new SdFile(szPath, O_RDONLY);
 		}
 		WCPrintP(&client,"<div class=\"files\">\n<ul>\n");
-#ifdef DEBUG
-		SerPrintP("LIST FILES...");
-#endif
 		// link to upper level if not at root
 		if (proot != APDStorage::p_root) {
 			WCPrintP(&client,"<li><a href=\"../\">..</a></li>\n");
 		}
 		while (proot->readDir(&p) > 0 && p.name[0] != DIR_NAME_FREE) {
-#ifdef DEBUG
-			SerPrintP("dir read\n");
-#endif
 			// done if past last used entry
 			//if (p.name[0] == DIR_NAME_FREE) break;
 			// skip deleted entry and entries for '.'
@@ -790,13 +782,6 @@ void APDWeb::ListFiles(EthernetClient client, const char *szPath, uint8_t flags)
 			if (DIR_IS_FILE_OR_SUBDIR(&p)) {
 				// print any indent spaces
 				WCPrintP(&client,"<li><a href=\"");
-//				if (szPath != NULL && szPath[0] != 0) {
-//
-//					Serial.print(szPath);
-//
-//					client.print(szPath);
-//					WCPrintP(&client,"/");
-//				}
 				for (uint8_t i = 0; i < 11; i++) {
 					if (p.name[i] == ' ') continue;
 					if (i == 8) {
@@ -890,7 +875,8 @@ void APDWeb::loop_server()
 					// Look for substring such as a request to get the root file
 					if (strstr_P(clientline, PSTR("GET /sd/ ")) != 0) {
 						// send a standard http response header
-						web_header(&client);
+						//web_header(&client);
+						header(&client,CONTENT_TYPE_HTML);
 						// print all the files, use a helper to keep it clean
 						web_startpage(&client,"files");
 						//WCPrintP(&client, "<h2>Files:</h2>\n");
@@ -915,7 +901,8 @@ void APDWeb::loop_server()
 							SerPrintP("Sending HTTP Resp...");
 	#endif
 							// send a standard http response header
-							web_header(&client);
+							//web_header(&client);
+							header(&client,CONTENT_TYPE_HTML);
 							web_startpage(&client,"status",20);
 							web_status(&client);
 							web_endpage(&client);
@@ -926,29 +913,34 @@ void APDWeb::loop_server()
 							web_maintenance(&client);
 						}
 					} else if (strstr_P(clientline,PSTR("GET /reconfigure")) != 0) {
-						web_header(&client);
+						//web_header(&client);
+						header(&client,CONTENT_TYPE_HTML);
 						web_startpage(&client,"reconfigure",0);
 						WCPrintP(&client,"Request acknowledged.");
 						web_endpage(&client);
 						this->dispatched_requests = DREQ_RECONF;		// APDuino should read it
 					} else if (strstr_P(clientline,PSTR("GET /reset")) != 0) {
-						web_header(&client);
+						//web_header(&client);
+						header(&client,CONTENT_TYPE_HTML);
 						web_startpage(&client,"reset",0);
 						WCPrintP(&client,"Request acknowledged.");
 						web_endpage(&client);
 						this->dispatched_requests = DREQ_RESET;		// APDuino should read it
 					} else if (strstr_P(clientline,PSTR("GET /reloadrules")) != 0) {
-						web_header(&client);
+						//web_header(&client);
+						header(&client,CONTENT_TYPE_HTML);
 						web_startpage(&client,"reload_rules",0);
 						WCPrintP(&client,"Request acknowledged.");
 						web_endpage(&client);
 						this->dispatched_requests = DREQ_RELOADRULES;		// APDuino should read it
-					}  else if (strstr_P(clientline, PSTR("GET /status.json")) != 0) {
+					} else if (strstr_P(clientline, PSTR("GET /status.json")) != 0) {
 						// send a standard http response header
-						json_header(&client);
+						//json_header(&client);
+						header(&client,CONTENT_TYPE_JSON);
 						json_status(&client);
 					} else if (strstr_P(clientline,PSTR("GET /claimdevice")) != 0) {
-						web_header(&client);
+						//web_header(&client);
+						header(&client,CONTENT_TYPE_HTML);
 						web_startpage(&client,"claimdevice",0);
 						claim_device_link(&client);
 						web_endpage(&client);
@@ -1872,12 +1864,33 @@ void APDWeb::dumpPachube() {
 	saveAPIkey(szCOSM_API_KEY,"PACHUBE.KEY");
 }
 
+// header - returns HTTP OK status code and sets response content type
 
+void APDWeb::header(EthernetClient *pClient, int content_type) {
+	WCPrintP(pClient,"HTTP/1.1 200 OK\n"
+			"Content-Type: ");
+	switch (content_type) {
+	case CONTENT_TYPE_HTML:
+		WCPrintP(pClient,"text/html");
+		break;
+	case CONTENT_TYPE_JSON:
+		WCPrintP(pClient,"application/json");
+		break;
+	case CONTENT_TYPE_TEXT:
+	default:
+		WCPrintP(pClient,"text/plain");
+	}
+	WCPrintP(pClient,"\n\n");
+	delay(1);
+}
+
+// TODO deprecate this
+/*
 void APDWeb::json_header(EthernetClient *pClient) {
 	WCPrintP(pClient,"HTTP/1.1 200 OK\n"
 			"Content-Type: application/json\n\n");
 	delay(1);
-}
+}*/
 
 void APDWeb::json_array_item(EthernetClient *pClient, const int index, const char *name, const char *value, const char *logged ) {
 	if (index>0) {
