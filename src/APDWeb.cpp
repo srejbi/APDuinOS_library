@@ -1802,7 +1802,6 @@ void APDWeb::dumpPachube() {
 }
 
 // header - returns HTTP OK status code and sets response content type
-
 void APDWeb::header(EthernetClient *pClient, int content_type) {
 	WCPrintP(pClient,"HTTP/1.1 200 OK\n"
 			"Content-Type: ");
@@ -1827,7 +1826,7 @@ void APDWeb::json_array_item(EthernetClient *pClient, const int index, const cha
 	}
 	WCPrintP(pClient,"{ \"Index\":\"");
 	pClient->print(index); WCPrintP(pClient,"\",\n");
-		WCPrintP(pClient,"\"Name\":\"");
+  WCPrintP(pClient,"\"Name\":\"");
 	pClient->print(name);
 	WCPrintP(pClient,"\",\n\"Value\":\"");
 	pClient->print(value);
