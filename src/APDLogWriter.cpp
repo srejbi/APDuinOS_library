@@ -28,6 +28,7 @@
 
 char APDLogWriter::szlogfname[13] = "";
 
+// start the debug log functionality
 void APDLogWriter::begin() {
 	strcpy_P(szlogfname,PSTR("APDDEBUG.LOG"));
 	// todo should allocate filename iso static, and copy szFileName
@@ -38,6 +39,10 @@ void APDLogWriter::begin() {
 	}
 }
 
+// enables synchronous log writing
+// this should be called whenever it's certain that no conflicting SD operations may occur
+// when enabled, messages pushed to the debug log buffer get written 'immediately' to SD
+// otherwise they are buffered up (as long as possible)
 void APDLogWriter::enable_sync_writes() {
 	if (APDStorage::ready()) {
 		APDDebugLog::setlogwriter(&(APDLogWriter::log_writer_function));
@@ -45,18 +50,20 @@ void APDLogWriter::enable_sync_writes() {
 	}
 }
 
+// disable synchronous log writing
+// this should be called before SD access (avoid multiple file opens at a time)
 void APDLogWriter::disable_sync_writes() {
 	APDDebugLog::disable_sync_writes();
 }
 
-
-
+// writes (using the log writer callback) all buffered log messages
 void APDLogWriter::write_debug_log() {
 	while (!APDDebugLog::is_empty()) {
 		APDDebugLog::shifttowriter(&(APDLogWriter::log_writer_function));
 	}
 }
 
+// writes a line to the debug log (using APDStorage::write_log_line)
 void APDLogWriter::log_writer_function(const char *pszLog) {
 	APDStorage::write_log_line(szlogfname,pszLog);
 }

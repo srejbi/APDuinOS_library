@@ -18,6 +18,10 @@
  * <http://www.gnu.org/licenses/>.
  *
  * APDLogWriter.h
+ * APDLogWriter is a provides APDDebugLog with a controlled interface to
+ * APDStorage (using the enable/disable_sync_writes() functions it avoids
+ * SD file conflicts and infinite recursions) for outputting any debug log
+ * messages buffered up.
  *
  *  Created on: Oct 15, 2012
  *      Author: George Schreiber
