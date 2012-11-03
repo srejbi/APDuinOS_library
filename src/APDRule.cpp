@@ -42,7 +42,6 @@ APDRule::APDRule(RDCONF *rdc, APDSensorArray *pSA, APDControlArray *pCA) {
   	if (this->config.pszcron = (char *)malloc(sizeof(char)*(l+1))) {
   		strcpy(this->config.pszcron, rdc->pszcron);
   	} else {
-  		//Serial.println(APDUINO_ERROR_RAOUTOFMEM,HEX);
   		APDDebugLog::log(APDUINO_ERROR_RAOUTOFMEM,NULL);
   	}
   } else {
@@ -52,7 +51,6 @@ APDRule::APDRule(RDCONF *rdc, APDSensorArray *pSA, APDControlArray *pCA) {
   	if (this->config.pszconditions = (char *)malloc(sizeof(char)*(l+1))) {
   		strcpy(this->config.pszconditions, rdc->pszconditions);
   	} else {
-  		//Serial.println(APDUINO_ERROR_RAOUTOFMEM,HEX);
   		APDDebugLog::log(APDUINO_ERROR_RAOUTOFMEM,NULL);
   	}
   } else {
@@ -137,7 +135,6 @@ APDRule::APDRule(RDCONF *rdc, APDSensorArray *pSA, APDControlArray *pCA) {
 #endif
         //; Serial.print(this->pcontrol->config.label);SerPrintP("\" ");                // TODO dont access pcontrol, ptr not set!
       } else {
-      	//Serial.println(APDUINO_WARN_RULEINVALIDCONTROL,HEX);
       	APDDebugLog::log(APDUINO_WARN_RULEINVALIDCONTROL,NULL);
 #ifdef VERBOSE
         SerPrintP(" NULL/INVALID CONTROL.");
@@ -193,7 +190,6 @@ APDRule::APDRule(RDCONF *rdc, APDSensorArray *pSA, APDControlArray *pCA) {
           	SerPrintP("Rule Metro allocated");
 #endif
           } else {
-          	//Serial.println(APDUINO_ERROR_RMETROALLOCFAIL,HEX);
           	APDDebugLog::log(APDUINO_ERROR_RMETROALLOCFAIL,NULL);
           }
           break;
@@ -256,7 +252,6 @@ APDRule::APDRule(RDCONF *rdc, APDSensorArray *pSA, APDControlArray *pCA) {
 					this->prulefunc = (&apd_rule_eval_conditions);
 					break;
         default:
-        	//Serial.println(APDUINO_ERROR_RDEFINVALID,HEX);
         	APDDebugLog::log(APDUINO_ERROR_RDEFINVALID,NULL);
 #ifdef VERBOSE
           SerPrintP("Invalid rule definition."); Serial.print(this->config.rule_definition);
@@ -457,7 +452,6 @@ void (*APDRule::get_rule_action_ptr(int rule_action))(APDControl *,int) {
       pfunc= (&APDControl::apd_action_noop);
       break;
     default:
-    	//Serial.println(APDUINO_ERROR_RACTIONINVALID,HEX);
     	char sztemp[10] ="";
     	APDDebugLog::log(APDUINO_ERROR_RACTIONINVALID,itoa(rule_action,sztemp,10));
   }
@@ -564,7 +558,6 @@ boolean APDRule::apd_rule_scheduled(APDRule *pRule) {
 	#endif
 								if (cronposeval(now.dayOfWeek(),pweekdays)) {		// should be also 2-digits! (or change cronposeval)
 
-									//Serial.println(APDUINO_MSG_CRONRUN,HEX);
 									APDDebugLog::log(APDUINO_MSG_CRONRUN,NULL);
 									bret = true;
 									// todo store cron evaluation timestamp to avoid reeval?
@@ -576,11 +569,9 @@ boolean APDRule::apd_rule_scheduled(APDRule *pRule) {
 
 			free(psztemp);	// release temp str buf
   	} else {
-  		//Serial.println(APDUINO_ERROR_CRONOUTOFRAM,HEX);
   		APDDebugLog::log(APDUINO_ERROR_CRONOUTOFRAM,NULL);
   	}
   } else {
-  	//Serial.println(APDUINO_ERROR_NOCRONSPEC,HEX);
   	APDDebugLog::log(APDUINO_ERROR_NOCRONSPEC,NULL);
   }
   return bret;

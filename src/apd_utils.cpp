@@ -27,7 +27,7 @@
 
 bool testprintf()  {
   char sztest[10] ="";
-  sprintf(sztest,"%f", 2012.0326);
+  sprintf_P(sztest,PSTR("%f"), 2012.0326);
   if (sztest[0] == '?') { // minimal version :(
     return false;
   } else if (sztest[0] == '2' ) {	// float-capable :)
@@ -38,7 +38,7 @@ bool testprintf()  {
 
 bool testscanf()  {
   float ftest = 0;
-  sscanf("2012.0326", "%f", &ftest);
+  sscanf_P("2012.0326", PSTR("%f"), &ftest);
   if (ftest == 0) {
     return false;
   } else if (ftest == 2012.0326 ) {
@@ -48,9 +48,14 @@ bool testscanf()  {
 }
 
 
-int get_line_count_from_file(char *szFile) {
+
+// count the lines in a file
+// will be used as a primitive record counter for config files
+// assuming that config files are correct (one item per line in the appropriate format)
+// \return the number of lines counted, -1 on error
+int get_line_count_from_file(const char *szFile) {
   int i=0;
-  char line[BUFSIZ]="";
+  char line[RCV_BUFSIZ]="";
   int bread=0;
   SdFile dataFile(szFile, O_RDONLY );
   if (dataFile.isOpen()) {

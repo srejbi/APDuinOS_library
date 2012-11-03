@@ -95,11 +95,11 @@ void APDControlArray::new_control_parser(void *pCA, int iline, char *psz) {
 
 int APDControlArray::loadControls() {
   if (!this->pAPDControls) {    // if no sensor array
-  	//Serial.println(APDUINO_MSG_LOADINGCONTROLS,HEX);						// debug
-  	APDDebugLog::log(APDUINO_MSG_LOADINGCONTROLS,NULL);						// debug
+  	char szConfFile[32] = "";
+  	strcpy_P(szConfFile,PSTR("CONTROLS.CFG"));
+  	APDDebugLog::log(APDUINO_MSG_LOADINGCONTROLS,szConfFile);						// debug
     // TODO check if SD is available!
-    iControlCount = get_line_count_from_file("CONTROLS.CFG");
-    //Serial.print(APDUINO_MSG_CONTROLCOUNT,HEX); SerPrintP(":"); Serial.println(iControlCount);
+    iControlCount = get_line_count_from_file(szConfFile);
     char sztemp[11]="";
     APDDebugLog::log(APDUINO_MSG_CONTROLCOUNT,itoa(iControlCount,sztemp,10));
     if (iControlCount > -1) {
@@ -116,9 +116,8 @@ int APDControlArray::loadControls() {
         SerPrintP("CA Allocated. Parsing CONTROLS.CFG...\n");
   #endif
 
-        APDStorage::readFileWithParser("CONTROLS.CFG",&new_control_parser,(void*)this);
+        APDStorage::readFileWithParser(szConfFile,&new_control_parser,(void*)this);
 
-        //Serial.println(APDUINO_MSG_CONTROLSLOADED,HEX);
         APDDebugLog::log(APDUINO_MSG_CONTROLSLOADED,NULL);
 
         // TODO add any postprocessing
@@ -134,29 +133,23 @@ int APDControlArray::loadControls() {
 #endif
                 pc->pcustfunc = (void (*)())this->pcustfuncs[pc->config.control_pin];      // cvalue must hold the cfunc idx
               } else {
-              	//Serial.println(APDUINO_ERROR_CAMISSINGCUSTFUNC,HEX);
               	APDDebugLog::log(APDUINO_ERROR_CAMISSINGCUSTFUNC,NULL);
               }
             } else {
-            	//Serial.println(APDUINO_ERROR_CAINVALIDCUSTFUNC,HEX);
             	APDDebugLog::log(APDUINO_ERROR_CAINVALIDCUSTFUNC,NULL);
             }
           }
         }
 
-        //Serial.println(APDUINO_MSG_CONTROLSPOSTPROCESSED,HEX);
         APDDebugLog::log(APDUINO_MSG_CONTROLSPOSTPROCESSED,NULL);
 
       } else {
-      	//Serial.println(APDUINO_ERROR_CAALLOCFAIL,HEX);
       	APDDebugLog::log(APDUINO_ERROR_CAALLOCFAIL,NULL);
       }
     } else {
-    	//Serial.println(APDUINO_ERROR_CANOCONTROLS,HEX);
     	APDDebugLog::log(APDUINO_ERROR_CANOCONTROLS,NULL);
     }
   } else {
-  	//Serial.println(APDUINO_ERROR_CAALREADYALLOC,HEX);
   	APDDebugLog::log(APDUINO_ERROR_CAALREADYALLOC,NULL);
     // TODO should implement cleanup and reload (?)
   }
@@ -173,7 +166,7 @@ int APDControlArray::dumpToFile(char *pszFileName) {
   SdFile dataFile(pszFileName, O_WRITE | O_CREAT );
   if (dataFile.isOpen()) {
     for (int i=0; i<iControlCount; i++) {
-      char line[BUFSIZ]="";
+      char line[RCV_BUFSIZ]="";
       APDControl *pc = pAPDControls[i];
       // TODO update with recent fields
       sprintf_P(line,PSTR("%s %d,%d,%d"),
@@ -189,8 +182,7 @@ int APDControlArray::dumpToFile(char *pszFileName) {
 #endif
   }
   else {
-      // TODO add an error macro in storage, replace all error opening stuff with reference to that
-  	//Serial.println(APDUINO_ERROR_CADUMPOPENFAIL,HEX);
+    // TODO add an error macro in storage, replace all error opening stuff with reference to that
   	APDDebugLog::log(APDUINO_ERROR_CADUMPOPENFAIL,pszFileName);
   }
 

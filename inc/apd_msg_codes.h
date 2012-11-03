@@ -32,13 +32,14 @@
 #define APDUINO_MSG_SDLOGOK					      0x0103	// Logging to SD prepared
 #define APDUINO_MSG_TIMESTAMP		        	0x0104	// Current system timestamp: %s
 #define APDUINO_MSG_SDLOGGING             0x0105	// Logging to SD card %d chars
+#define APDUINO_MSG_SDLOGRESCHED			    0x0106	// SD logging interval reconfigured
 
 #define APDUINO_MSG_ETHERNETFROMCONF      0x0105	// Initializing ethernet with configuration from file
 #define APDUINO_MSG_NETINIT               0x0106	// Initializing ethernet
 #define APDUINO_MSG_DHCPFALLBACK          0x0107 	// Fallback to DHCP
 
-#define APDUINO_MSG_STORAGEINIT           0x0110	// Starting Storage
-#define APDUINO_MSG_STORAGESTART          0x0111	// Starting Storage
+#define APDUINO_MSG_STORAGEINIT           0x0110	// Initializing Storage
+//#define APDUINO_MSG_STORAGESTART          0x0111	// Starting Storage
 #define APDUINO_MSG_SDFATINIT             0x0112	// Initializing SD FAT
 #define APDUINO_MSG_SDFATSTARTED          0x0113	// SD FAT Started
 #define APDUINO_MSG_SSPINPREPARED         0x0114	// Storage prepared SS pin for output
@@ -55,6 +56,8 @@
 #define APDUINO_MSG_UDPFORNTPOK           0x0124 	// UDP networking prepared for NTP
 #define APDUINO_MSG_NTPUDPPACKPREP        0x0125	// Preparing NTP packet for sync
 #define APDUINO_MSG_NTPUDPPACKSEND        0x0126	// Sending NTP packet for sync
+#define APDUINO_MSG_TIMEADJUST		        0x0127	// Adjusting clock...
+#define APDUINO_MSG_TIMEADJUSTED		      0x0128	// Adjusted clock
 
 #define APDUINO_MSG_ETHSTARTED            0x0130	// Ethernet started
 #define APDUINO_MSG_CONFETHSTARTED	      0x0131  // Ethernet started from config
@@ -63,26 +66,31 @@
 #define APDUINO_MSG_TRYINGDHCPIP          0x0133	// Trying to start ethernet with DHCP
 #define APDUINO_MSG_DHCPLEASED            0x0134	// DHCP Lease obtained
 #define APDUINO_MSG_NETFAILSRESTART       0x0135	// Network failure count triggers attempt to restart net
-#define APDUINO_MSG_AOLOGCALLED           0x0136	// APDuino Online logging started
+#define APDUINO_MSG_AOLOGCALLED           0x0136	// APDuino Online logging...
 #define APDUINO_MSG_AOLOGGING             0x0137	// APDuino Online logging %d chars.
 #define APDUINO_MSG_AOLOGDONE             0x0138	// APDuino Online logging done
-#define APDUINO_MSG_COSMLOGCALLED         0x0139	// Cosm logging started
+#define APDUINO_MSG_COSMLOGCALLED         0x0139	// Cosm logging...
 #define APDUINO_MSG_COSMLOGGING           0x0140	// Cosm logging %d chars.
 #define APDUINO_MSG_COSMLOGDONE           0x0141	// Cosm logging done
 #define APDUINO_MSG_TSLOGCALLED           0x0142	// ThingSpeak logging started
 #define APDUINO_MSG_TSLOGGING             0x0143	// ThingSpeak logging %d chars.
 #define APDUINO_MSG_TSLOGDONE             0x0144	// ThingSpeak logging done
+#define APDUINO_MSG_AOLOGSTARTED          0x0145	// APDuino Online logging started
+#define APDUINO_MSG_COSMLOGSTARTED        0x0146	// Cosm logging started
+#define APDUINO_MSG_PROCPROVREQ           0x0147	// Processing provisioning request
+#define APDUINO_MSG_PROVFILE           		0x0148	// Provisioning file %s
 
 #define APDUINO_MSG_LOADINGSENSORS        0x0150	// Sensor Array loading Sensors from config
 #define APDUINO_MSG_SENSORCOUNT 	        0x0151	// Sensor Array counted %d lines in SENSORS.CFG
-#define APDUINO_MSG_SENSORSLOADED         0x0152	// Sensor Array loaded
+#define APDUINO_MSG_SENSORSLOADING        0x0152	// Loading Sensor Array from config %s
+#define APDUINO_MSG_SENSORSLOADED         0x0153	// Sensor Array loaded
 
-#define APDUINO_MSG_LOADINGCONTROLS       0x0160	// Control Array loading Controls from config
+#define APDUINO_MSG_LOADINGCONTROLS       0x0160	// Control Array loading Controls from config %s
 #define APDUINO_MSG_CONTROLCOUNT 	        0x0161	// Control Array counted %d lines in CONTROLS.CFG
 #define APDUINO_MSG_CONTROLSLOADED        0x0162	// Control Array loaded
 #define APDUINO_MSG_CONTROLSPOSTPROCESSED 0x0163	// Control Array postprocessed
 
-#define APDUINO_MSG_LOADINGRULES          0x0170	// Rule Array loading Rules from config
+#define APDUINO_MSG_LOADINGRULES          0x0170	// Rule Array loading Rules from config %s
 #define APDUINO_MSG_RULECOUNT             0x0171	// Rule Array counted %d lines in RULES.CFG
 #define APDUINO_MSG_RULESLOADED           0x0172	// Rule Array loaded
 #define APDUINO_MSG_RULESPOSTPROCESSED    0x0173	// Rule Array postprocessed
@@ -90,6 +98,22 @@
 #define APDUINO_MSG_CRONLAUNCHED          0x01A0	// Cron scheduler started, first run at %ld mills
 #define APDUINO_MSG_CRONCHECK     	      0x01A1	// Cron scheduler checking jobs
 #define APDUINO_MSG_CRONRUN               0x01A2	// Cron schedule met, running job
+
+#define APDUINO_MSG_OWADDRVERIFY  				0x01C0	// 1-Wire sensor: address verification for %s
+#define APDUINO_MSG_OWSEARCHING						0x01C1	// 1-Wire sensor: continue search on wire...
+#define APDUINO_MSG_OWADDRFOUND						0x01C2	// 1-Wire sensor: address found
+#define APDUINO_MSG_OWFIRSTADDRSAVED			0x01C3	// 1-Wire sensor: first address found was saved
+#define APDUINO_MSG_OWDS18S20							0x01C4	// 1-Wire sensor: DS18S20 chip
+#define APDUINO_MSG_OWDS18B20							0x01C5	// 1-Wire sensor: DS18B20 chip
+#define APDUINO_MSG_OWDS1822							0x01C6	// 1-Wire sensor: DS1822 chip
+#define APDUINO_MSG_OWNOMOREADDR  				0x01C7	// 1-Wire sensor: no more addresses.
+#define APDUINO_MSG_OWADDRVEROK  					0x01C8	// 1-Wire sensor: specified address found or first taken.
+#define APDUINO_MSG_OWADDRVERDONE  			  0x01C9	// 1-Wire sensor: address enumeration complete.
+#define APDUINO_MSG_OWDIAGNOSTICS			    0x01CA	// 1-Wire sensor: diagnostics running.
+#define APDUINO_MSG_OWDIAGNOSTICSDONE	    0x01CB	// 1-Wire sensor: diagnostics done.
+
+#define APDUINO_MSG_VIBSENDEFAULTRC 	    0x01E0	// Vibration Sensor: using default read count (10)
+
 // ERRORS
 #define APDUINO_ERROR_UNKNOWN		          0x0200	// Unknown/undefined error.
 #define APDUINO_ERROR_SSCANF		          0x0201	// Bad version of sscanf/sprintf linked.
@@ -143,6 +167,9 @@
 #define APDUINO_ERROR_TSLOGCONNFAIL       0x023E	// ThingSpeak Logging: connection failure
 #define APDUINO_ERROR_PRINTCLIENTOUTOFMEM 0x023F	// APDWeb: out of RAM when printing progmem string
 #define APDUINO_ERROR_JSNOCLIENT          0x0240	// JSON Status: no web client pointer
+#define APDUINO_ERROR_COSMDUMPOPEN        0x0241	// Cosm dump file open failed: %s
+#define APDUINO_ERROR_BROKENHEXCODE       0x0242	// Broken hex code in http request
+#define APDUINO_ERROR_WWWCLIENTGONE       0x0243	// WWW Client gone?
 
 #define APDUINO_ERROR_UNKNOWNSENSORTYPE   0x0250	// Unknown sensor type
 #define APDUINO_ERROR_SAALLOCFAIL         0x0251	// Failed to allocate Sensor Array
@@ -168,8 +195,16 @@
 #define APDUINO_ERROR_NOCRONSPEC          0x02A4	// Missing cron specification
 #define APDUINO_ERROR_CRONOUTOFRAM        0x02A5	// Cron evaluator out of memory
 
-#define APDUINO_ERROR_OWNOADDR						0x02C1	// 1-Wire sensor: no address found
-#define APDUINO_ERROR_OWNOOBJ						  0x02C2	// 1-Wire sensor: missing OneWire object
+#define APDUINO_ERROR_OWNOADDR						0x02C0	// 1-Wire sensor: no address found
+#define APDUINO_ERROR_OWNOOBJ						  0x02C1	// 1-Wire sensor: missing OneWire object
+#define APDUINO_ERROR_OWNOTREADY   			  0x02C2	// 1-Wire sensor: not ready
+#define APDUINO_ERROR_OWBADCRC    			  0x02C3	// 1-Wire sensor: invalid CRC
+#define APDUINO_ERROR_OWNOTDS18X20				0x02C4	// 1-Wire sensor: not a DS18x20 family chipset
+#define APDUINO_ERROR_OWNOADDRESSES				0x02C5	// 1-Wire sensor: no addresses found on wire
+
+#define APDUINO_ERROR_DHTINVALIDCLASS     0x02D0  // DHT sensor: invalid sensor class %d
+
+#define APDUINO_ERROR_SONSENCALIBRATION   0x02E0	// Sonar Sensor: calibration error
 
 // WARNINGS
 #define APDUINO_WARNING_TIMEALREADYSETUP  0x0301	// Time already initialized
@@ -183,4 +218,6 @@
 
 #define APDUINO_WARN_CTYPEINVALID	        0x0390	// Invalid control type
 #define APDUINO_WARN_RULEINVALIDCONTROL   0x03A0	// Invalid or NULL Control referenced in Rule
+
+#define APDUINO_WARN_OWBADADDRFOUND		    0x03A0	// 1-Wire sensor: unexpected address found
 #endif /* APD_MSG_CODES_H_ */

@@ -28,7 +28,6 @@
 DigitalSensor::DigitalSensor(SDCONF *sdc)
 {
   this->initSensor(sdc);
-  // TODO Auto-generated constructor stub
   this->sensor = (DIGISENS*)malloc(sizeof(DIGISENS));
   this->_state = STATE_READY;
   this->sensor->value = NAN;
@@ -51,7 +50,6 @@ boolean DigitalSensor::perform_check()
 
 char *DigitalSensor::getValueS(char *strdest) {
   char *retstr = NULL;
-  sprintf(strdest,"%d",this->sensor->value);
-  retstr=strdest;
+  if (sprintf_P(strdest,PSTR("%d"),this->sensor->value) != EOF) retstr=strdest;
   return retstr;
 }

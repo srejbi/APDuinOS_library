@@ -31,11 +31,11 @@ VibrationSensor::VibrationSensor(SDCONF *sdc)
 #ifdef DEBUG
   SerPrintP("VIBRATION SENSOR INITIALIZING...");
 #endif
-  // TODO Auto-generated constructor stub
+
   this->sensor = (VIBSENS*)malloc(sizeof(VIBSENS));
   if (sscanf(this->config.extra_data, "%d", &(this->sensor->readings)) != 1) {
-    SerPrintP("VibrationSensor: using default readings (10).\n");
     this->sensor->readings = 10;                           // DEFAULT VALUE FIXME define in header
+    APDDebugLog::log(APDUINO_MSG_VIBSENDEFAULTRC,NULL);
   }
 #ifdef DEBUG
   else {

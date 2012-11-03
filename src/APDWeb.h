@@ -150,8 +150,8 @@ private:
   unsigned int apduino_server_port;    // standard HTTP port
   unsigned long apduino_logging_freq;		// how often to log (ms)
 
-  byte cosm_server_ip[4];            // api.pachube.com 216.52.233.122
-  char cosm_server_name[32];         // api.pachube.com
+  byte cosm_server_ip[4];            // api.cosm.com 64.94.18.121
+  char cosm_server_name[32];         // api.cosm.com
   unsigned int cosm_server_port;     // standard HTTP port
   unsigned long cosm_feed_id;         // feed id
   unsigned long cosm_logging_freq;    // logging freq

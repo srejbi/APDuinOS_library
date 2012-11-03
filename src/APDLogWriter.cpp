@@ -60,7 +60,7 @@ void APDLogWriter::write_debug_log() {
 	//SerPrintP("APD LOG WRITER WRITING ANY BUFFERED MESSAGES\n");
 	while (!APDDebugLog::is_empty()) {
 		//SerPrintP("APD LOG WRITER WRITING\n");
-		APDDebugLog::poptowriter(&(APDLogWriter::log_writer_function));
+		APDDebugLog::shifttowriter(&(APDLogWriter::log_writer_function));
 	}
 }
 

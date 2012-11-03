@@ -43,7 +43,7 @@ public:
 	static void log(unsigned int code, const char *psz_logstring);
 	static bool is_empty();
 	static void setlogwriter(void (*writerfunc)(const char *));
-	static void poptowriter(void (*writerfunc)(const char *));
+	static void shifttowriter(void (*writerfunc)(const char *));
 	static int flush();
 	static void flush_first();
 

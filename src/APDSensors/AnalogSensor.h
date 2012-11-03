@@ -19,6 +19,9 @@
  *
  * AnalogSensor.h
  *
+ * AnalogSensor is one of the simplest sensor types. It allows access to the analog pins
+ * and reads integer values from those pins.
+ *
  *  Created on: Apr 5, 2012
  *      Author: George Schreiber
  */
@@ -32,20 +35,21 @@
 // maintain the supported classes in it
 #define ANALOG_SENSOR_CLASSES [SENSE_VOLTS]
 
+// analog sensor structure
 struct ANASENS {
-  int value;
+  int value;		// simply an integer value
 };
 
 class AnalogSensor : public APDSensor
 {
 public:
-  ANASENS *sensor;
-  boolean perform_check();
+  ANASENS *sensor;							// pointer to the ANASENS structure
 
   AnalogSensor(SDCONF *sdc);
   ~AnalogSensor();
 
-  char *getValueS(char *strdest);
+  boolean perform_check();					// implement performing analog read
+  char *getValueS(char *strdest);		// implement itoa for retrieving value as string
 private:
 };
 

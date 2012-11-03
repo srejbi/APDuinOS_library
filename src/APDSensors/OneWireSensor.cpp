@@ -104,17 +104,19 @@ OneWireSensor::~OneWireSensor()
 void OneWireSensor::verify_address()
 {
   // diagnostics
-  byte type_s;
+	char sztmp[64] = "";
+  byte type_s = 0;
   byte nulladdr[8] = {0,0,0,0,0,0,0,0};
-  SerPrintP("1-wire address verification...");
-  SerPrintP("SENSOR ON PIN ");Serial.print( this->config.sensor_pin ); SerPrintP(" (");Serial.print( this->config.label ); SerPrintP(") is 1-wire");
+
+  sprintf_P(sztmp, PSTR("'%s' (pin %d)"), this->config.label, this->config.sensor_pin);		// construct debug log string part
+  APDDebugLog::log(APDUINO_MSG_OWADDRVERIFY,sztmp);				// log verification activity
 
   if (this->sensor->owenc == NULL || this->sensor->owenc->ow == NULL ) {
-  	SerPrintP("no OneWire sensor instance");
+  	APDDebugLog::log(APDUINO_ERROR_OWNOOBJ, NULL);
   	return;
   }
   if (this->sensor->owenc->state != STATE_READY) {
-  	SerPrintP("OneWire sensor not ready.");
+  	APDDebugLog::log(APDUINO_ERROR_OWNOTREADY, NULL);
   	return;
   }
 
@@ -123,12 +125,12 @@ void OneWireSensor::verify_address()
   if (memcmp(this->sensor->address, nulladdr,sizeof(byte)*8) != 0) {	// if looking for a specific addr.
   	dsp->reset_search();		// reset search (we might used it before)
   } else {
-  	SerPrintP("continue search... \n");
+  	APDDebugLog::log(APDUINO_MSG_OWSEARCHING,NULL);				// log verification activity
   }
-  //delay(1000);
+
   byte addr[8];
-  boolean bAfound = false;
-  boolean bfound = false;
+  boolean bAfound = false;				// address found flag
+  boolean bfound = false;					// a 1-wire found flag
   int iCount = 0;
   while ( !bAfound && iCount<10 && dsp->search(addr) ) {		// TODO: check the max no. (anyway, now with shared, the max should be tracked globally)
     bfound = true;
@@ -140,63 +142,63 @@ void OneWireSensor::verify_address()
     }
 
     if (OneWire::crc8(addr, 7) != addr[7]) {
-        SerPrintP("CRC is not valid!");
+    		APDDebugLog::log(APDUINO_ERROR_OWBADCRC, NULL);
         return;
     }
 
+    // if we had no address set in config, or we had and it matches the address found
     if (memcmp(this->sensor->address, &nulladdr,sizeof(byte)*8) == 0 ||
     		memcmp(this->sensor->address, addr,sizeof(byte)*8) == 0) {
-    	if (memcmp(this->sensor->address, &nulladdr,sizeof(byte)*8) == 0) {
-    		SerPrintP("FIRST ");
+    	// check if we had an expectation, if not, we can save the address to the sensor config (will not be saved) todo fixup sensor dump enables storing found addresses for next run
+    	if (memcmp(this->sensor->address, &nulladdr,sizeof(byte)*8) == 0) {	// if we had a config without a specific address (nulladdress)
     		memcpy(this->sensor->address, addr,sizeof(byte)*8);
-    		SerPrintP("(SAVED) ");
+    		APDDebugLog::log(APDUINO_MSG_OWFIRSTADDRSAVED,NULL);				// todo pass string with address
     	}
-    	SerPrintP("ADDRESS FOUND!\n");
+    	// anyway (we now have an address in the sensor config)
+    	// todo construct log string with address
+    	APDDebugLog::log(APDUINO_MSG_OWADDRFOUND,NULL);				// todo pass string with address
     	bAfound = true;
-    } else {
-    	SerPrintP("NOT THE RIGHT ADDRES.");
+    } else {		// unexpected address (we were looking for a specific address and it was not found)
+    	APDDebugLog::log(APDUINO_WARN_OWBADADDRFOUND,NULL);	 // log not the address we expected
     }
 
-    Serial.println();
-
     // the first ROM byte indicates which chip
+    //type_s = 0; already set
     switch (addr[0]) {
       case 0x10:
-        SerPrintP("  Chip = DS18S20");  // or old DS1820
+      	APDDebugLog::log(APDUINO_MSG_OWDS18S20, NULL);  // or old DS1820
         type_s = 1;
         break;
       case 0x28:
-        SerPrintP("  Chip = DS18B20");
-        type_s = 0;
+        APDDebugLog::log(APDUINO_MSG_OWDS18B20, NULL);
         break;
       case 0x22:
-        SerPrintP("  Chip = DS1822");
-        type_s = 0;
+      	APDDebugLog::log(APDUINO_MSG_OWDS1822, NULL);
         break;
       default:
-        SerPrintP("Device is not a DS18x20 family device.");
+      	APDDebugLog::log(APDUINO_ERROR_OWNOTDS18X20, NULL);
         return;
     }
 
     if (memcmp(this->sensor->address, addr,sizeof(byte)*8) == 0) {
     	this->_type_s = type_s;
-    	SerPrintP("type_s saved:"); Serial.println(this->_type_s,DEC);
+    	//SerPrintP("type_s saved:"); Serial.println(this->_type_s,DEC);
     }
   }
   if (!bfound && !bAfound) {
-     SerPrintP("No more addresses.");
-      dsp->reset_search();
-      delay(250);
+  	APDDebugLog::log(APDUINO_MSG_OWNOMOREADDR, NULL);
+		dsp->reset_search();
+		delay(250);
 //          return;
   } else if (bAfound) {
-  	SerPrintP("SPECIFIED ADDRESS FOUND OR FIRST TAKEN.");
+  	APDDebugLog::log(APDUINO_MSG_OWADDRVEROK, NULL);
   } else {
   	memset(this->sensor->address,0,sizeof(byte)*8);
-  	SerPrintP("No addresses at all.");
+  	APDDebugLog::log(APDUINO_ERROR_OWNOADDRESSES, NULL);
   }
   //dsp->reset();
 
-  SerPrintP("1-wire enumeration done.");
+  APDDebugLog::log(APDUINO_MSG_OWADDRVERDONE, NULL);
 }
 
 
@@ -298,19 +300,18 @@ float OneWireSensor::ow_temperature_read()
 
 void OneWireSensor::diagnostics()
 {
+	char sztmp[64] = "";
+	sprintf_P(sztmp, PSTR("'%s' (pin %d)"), this->config.label, this->config.sensor_pin);		// construct debug log string part
+
+	APDDebugLog::log(APDUINO_MSG_OWDIAGNOSTICS,sztmp);
   if (this->sensor->owenc == NULL || this->sensor->owenc->ow == NULL ) {
-  	SerPrintP("no OneWire sensor instance");
+  	APDDebugLog::log(APDUINO_ERROR_OWNOOBJ,NULL);
   	return;
   }
   if (this->sensor->owenc->state != STATE_READY) {
-  	SerPrintP("OneWire sensor not ready.");
+  	APDDebugLog::log(APDUINO_ERROR_OWNOTREADY,NULL);
   	return;
   }
-
-  // diagnostics
-  byte type_s;
-  SerPrintP("1-wire diagnostics running...");
-  SerPrintP("SENSOR ON PIN ");Serial.print( this->config.sensor_pin ); SerPrintP(" (");Serial.print( this->config.label ); SerPrintP(") is 1-wire");
 
   // only call diagnostics for the primary 1-wire instance
   if (!this->bPrimary) {
@@ -340,36 +341,34 @@ void OneWireSensor::diagnostics()
     }
     Serial.println();
 
+    SerPrintP("  Chip ");
     // the first ROM byte indicates which chip
     switch (addr[0]) {
       case 0x10:
-        SerPrintP("  Chip = DS18S20");  // or old DS1820
-        type_s = 1;
+        SerPrintP("= DS18S20");  // or old DS1820
         break;
       case 0x28:
-        SerPrintP("  Chip = DS18B20");
-        type_s = 0;
+        SerPrintP("= DS18B20");
         break;
       case 0x22:
-        SerPrintP("  Chip = DS1822");
-        type_s = 0;
+        SerPrintP("= DS1822");
         break;
       default:
-        SerPrintP("Device is not a DS18x20 family device.");
+        SerPrintP("is not DS18x20 family.");
         return;
     }
   }
   if (bfound) {
-     SerPrintP("No more addresses.");
-      dsp->reset_search();
-      delay(250);
+  	APDDebugLog::log(APDUINO_MSG_OWNOMOREADDR, NULL);
+		dsp->reset_search();
+		delay(250);
 //          return;
   } else {
 
   }
   dsp->reset();
 
-  SerPrintP("1-wire diagnostics done.");
+  APDDebugLog::log(APDUINO_MSG_OWDIAGNOSTICSDONE, NULL);
   delay(1000);
 }
 

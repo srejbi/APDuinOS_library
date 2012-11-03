@@ -70,14 +70,9 @@ public:
 
 	void setupNetworking();         // sets up the network, from config file or DHCP fallback
 	boolean startWebServer();          // starts the local www interface
-	//boolean setupAPDuinoOnline(char *hostname, IPAddress *phostip, int port);    // sets up registration w/ APDuino Online server
-	//boolean startWebLogging(unsigned long ulWebLoggingFreq);                   // starts weblogging to the registered server
 	boolean startLogging(unsigned long ulLoggingFreq);                   // starts logging to SD
 
 	/* start config line parser callbacks */
-	//static void new_rule_parser(void *pAPD, int iline, char *psz);
-	//static void new_control_parser(void *pAPD, int iline, char *psz);
-	//static void new_sensor_parser(void *pAPD, int iline, char *psz);
 	static void new_ethconf_parser(void *pAPD, int iline, char *psz);
 	/* end config line parser callbacks */
 
@@ -86,13 +81,8 @@ public:
 	void Debug(char *string, int iMsgLevel);
 	void DebugP(void *Pstring, int iMsgLevel);
 
-	//int setupRules();
-	//int setupSensors();
-	//int setupControls();
-
 	void startIdling(unsigned long uIdleDuration);
-	//void get_lastlog_string(char *szLogBuf);
-	void log_data();
+	void log_data();								// SD logger function
 
 	boolean bConfigured();
 	//int nextSensor();               // returns the next sensor index from array

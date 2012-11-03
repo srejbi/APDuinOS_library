@@ -61,18 +61,17 @@ APDSensor::APDSensor(SDCONF *sdc) {
 
 APDSensor::~APDSensor()
 {
-  // TODO Auto-generated destructor stub
-  if (this->pmetro) delete(this->pmetro);
-  if (this->sensor) free(this->sensor);
+  delete(this->pmetro);
+  this->pmetro = NULL;
+  free(this->sensor);
+  this->sensor = NULL;
 }
 
 void APDSensor::initSensor() {
   memset(&config,0,sizeof(SDCONF));
   sensor = NULL;
   pmetro = NULL;
-
   fvalue = NAN;
-
   _state = STATE_BUSY;
 }
 
@@ -86,11 +85,10 @@ void APDSensor::initSensor(SDCONF *sdc) {
 }
 
 
-
 char *APDSensor::getValueS(char *strdest) {
-  char *retstr = NULL;
-  sprintf(strdest,"%3.1f",this->fvalue);
-  retstr=strdest;
+  char *retstr = NULL;			// returns NULL on error
+  // todo make the formatstring customizable to allow higher precision on demand (requires revision of references and making sure buffer is large enough for receiving more digits)
+  if (sprintf_P(strdest,PSTR("%3.1f"),this->fvalue) != EOF) retstr = strdest;		// return the pointer to the buffer unless EOF was recived (error)
   return retstr;
 }
 
@@ -106,31 +104,35 @@ boolean APDSensor::check() {
       SerPrintP(" - done, reset metro\n");
 #endif
       this->pmetro->reset();
-  }/* else {
+  }
+#ifdef DEBUG
+  else {
   	Serial.print(this->config.label); SerPrintP(" metroskip.");
   	if (this->pmetro == NULL)
   		SerPrintP(" NULLMETRO\n");
-  }*/
+  }
+#endif
   return retcode;
 }
 
 
 
-
+// stub for method that performs the check
 boolean APDSensor::perform_check() {
-  // implement the sensor-specific check
+  // implement the sensor-specific check: put all code here needed for communication with sensor
 }
 
+// stub for method that performs diagnostics on sensor
 void APDSensor::diagnostics() {
-  // implement the sensor-specific check
+  // implement the sensor-specific check, if supported
 }
 
-
-
+// returns the sensor value as integer (may overflow)
 int APDSensor::iValue() {
 	return (int)(this->fvalue);
 }
 
+// returns the sensor value as float
 float APDSensor::fValue() {
 	return (this->fvalue);
 }

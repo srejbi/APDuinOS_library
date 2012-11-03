@@ -60,7 +60,8 @@ public:
 	static unsigned long getUpTime();
 	static char *getUpTimeS(char *psz_uptime);
 
-	static void PrintDateTime(DateTime t);
+	static void LogDateTime(DateTime t);
+	static void SdDateTimeCallback(uint16_t* date, uint16_t* time);
 
 	static void ntpSync();
 	static void setupNTPSync(int UDPPort, byte *TimeServer, int iTZ, int iDST );
@@ -70,6 +71,7 @@ public:
 	static int dst;
 	static byte timeServer[4];
 	static int localPort;
+
 
 private:
 	static EthernetUDP *pUdp;                        // todo, make this a pointer

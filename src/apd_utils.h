@@ -31,7 +31,7 @@
 #include "apd_version.h"
 //#include <avr/io.h>
 //#include <avr/wdt.h>
-#define BUFSIZ 100
+#define RCV_BUFSIZ 100
 
 //void serprintP(void *Pstring);
 
@@ -42,7 +42,7 @@ bool testprintf();
 bool testscanf();
 char *getPstr(void *Pstring);           // you must free the address
 
-int get_line_count_from_file(char *szFile);
+int get_line_count_from_file(const char *szFile);
 /*
 double dewPointFast(double celsius, double humidity);
 double dewPoint(double celsius, double humidity);

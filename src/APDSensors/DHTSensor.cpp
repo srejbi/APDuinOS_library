@@ -73,23 +73,16 @@ DHTSensor::~DHTSensor()
 boolean DHTSensor::perform_check()
 {
   float value = 0;
+  char sztmp[11]="";
   switch (this->config.sensor_class) {
     case SENSE_TEMP:
-#ifdef DEBUG
-      SerPrintP("TEMP");
-#endif
       value = ((DHTSENS *)this->sensor)->dht->readTemperature();
       break;
     case SENSE_HUMIDITY:
-#ifdef DEBUG
-      SerPrintP("HUM");
-#endif
       value = ((DHTSENS *)this->sensor)->dht->readHumidity();
       break;
     default:
-//#ifdef DEBUG
-      SerPrintP("DHTSensor: Invalid sensor class!"); Serial.print(this->config.sensor_class);
-//#endif
+      APDDebugLog::log(APDUINO_ERROR_DHTINVALIDCLASS, itoa(this->config.sensor_class,sztmp,10));
       break;
   }
   // if (value == NAN) { this-> status |= }

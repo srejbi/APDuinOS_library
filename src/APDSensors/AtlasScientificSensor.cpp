@@ -269,8 +269,6 @@ boolean AtlasScientificSensor::perform_check()
 float AtlasScientificSensor::as_sensor_read()
 {
 	float sensorval = -120;
-	//if (this->config.sensor_type != ATLASSCIENTIFIC_SENSOR || this->config.sensor_class != SENSE_PH )
-	//	return -98;                 // no good type
 
 	if (this->sensor->asenc == NULL || this->sensor->asenc->serialport == NULL ) {
 		SerPrintP("E");			// error, no sensor port etc.

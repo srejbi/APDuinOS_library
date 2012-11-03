@@ -34,6 +34,7 @@
 
 #include "APDStorage.h"
 #include "APDSerial.h"
+#include "APDTime.h"
 
 // initialize variables
 int APDStorage::sdChipSelect = -1;
@@ -45,146 +46,55 @@ SdFile *APDStorage::p_root = NULL;                              // fileserver /w
 boolean APDStorage::bReady = false;
 // end init variables
 
-//APDStorage::APDStorage(int iSS, int iChip, int iSpeed = SPI_HALF_SPEED ) {
-//  // TODO Auto-generated constructor stub
-//  sdChipSelect = iChip;
-//  iSSPin = iSS;		// SS_PIN
-//  iSDSpeed =  (iSpeed == SPI_HALF_SPEED || iSpeed == SPI_FULL_SPEED) ? iSpeed : SPI_HALF_SPEED;
+// Attempt to start the storage with SdFat
 //
-//  // make sure that the default chip select pin is set to
-//  // output, even if you don't use it:
-//#ifdef DEBUG
-//  SerPrintP("SS PIN: ") Serial.print(iSS,DEC); SerPrintP("(OUT+HIGH)");
-//#endif
-//  pinMode(iSS, OUTPUT);        // set SS PIN as output -- see SD readings
-//  digitalWrite(iSS, HIGH);     // turn off the W5100 chip -- see SD readings
-//  Serial.println(APDUINO_MSG_SSPINPREPARED,HEX);
-//#ifdef DEBUG
-//  SerPrintP(" - prepared...");
-//#endif
-//  p_sd = NULL;
-//  p_root = NULL;
-//  bReady = false;
-//}
-
-//APDStorage::~APDStorage() {
-//  // TODO Auto-generated destructor stub
-//  free(p_root);
-//  free(p_sd);
-//}
-
-/** Attempts to start the storage with SdFat
- *
- */
 boolean APDStorage::begin(int iSS, int iChip, int iSpeed = SPI_HALF_SPEED) {
-
+	// store SD parameters *without checks*
   sdChipSelect = iChip;
-  iSSPin = iSS;		// SS_PIN
-  iSDSpeed =  (iSpeed == SPI_HALF_SPEED || iSpeed == SPI_FULL_SPEED) ? iSpeed : SPI_HALF_SPEED;
+  iSSPin = iSS;						// SS_PIN
+  iSDSpeed =  iSpeed;
 
   // make sure that the default chip select pin is set to output
-  pinMode(iSS, OUTPUT);        // set SS PIN as output -- see SD readings
-  digitalWrite(iSS, HIGH);     // turn off the W5100 chip -- see SD readings
-  //Serial.println(APDUINO_MSG_SSPINPREPARED,HEX);
-  char sztmp[11] = "";		// support unsigned longs
+  pinMode(iSS, OUTPUT);         // set SS PIN as output -- see SD readings
+  digitalWrite(iSS, HIGH);      // turn off the W5100 chip -- see SD readings
+
+  char sztmp[11] = "";					// support unsigned longs
   APDDebugLog::log(APDUINO_MSG_SSPINPREPARED,itoa(iSS,sztmp,10));
 
+  // reset internal pointers and ready flag
   p_sd = NULL;
   p_root = NULL;
   bReady = false;
 
-	//Serial.println(APDUINO_MSG_STORAGEINIT,HEX);
   APDDebugLog::log(APDUINO_MSG_STORAGEINIT,NULL);
 
-  if (p_sd == NULL ) { // && !bReady
-      bReady = false;
-      //Serial.println(APDUINO_MSG_STORAGESTART,HEX);
-      APDDebugLog::log(APDUINO_MSG_STORAGESTART,NULL);
+	//APDDebugLog::log(APDUINO_MSG_STORAGESTART,NULL);
 #ifdef VERBOSE
-      SerPrintP(" starting.");
+	SerPrintP(" starting.");
 #endif
-      p_sd = new SdFat();
-      //SerPrintP("..");
-      if (p_sd) {
-      	//Serial.println(APDUINO_MSG_SDFATINIT,HEX);
-      	APDDebugLog::log(APDUINO_MSG_SDFATINIT,NULL);
-#ifdef VERBOSE
-          SerPrintP("SdFat init("); Serial.print(iSDSpeed, DEC); SerPrintP(","); Serial.print(sdChipSelect,DEC);SerPrintP(")...");
-#endif
-          if (p_sd->init(iSDSpeed, sdChipSelect)) {
-              // should be initialized
-              p_root = new SdFile();
-              p_root->openRoot(p_sd->vol());
+	p_sd = new SdFat();
+	if (p_sd) {
+		APDDebugLog::log(APDUINO_MSG_SDFATINIT,NULL);
+			if (p_sd->init(iSDSpeed, sdChipSelect)) {
+					// should be initialized
+					p_root = new SdFile();
+					p_root->openRoot(p_sd->vol());
 
-              //Serial.println(APDUINO_MSG_SDFATSTARTED,HEX);
-              APDDebugLog::log(APDUINO_MSG_SDFATSTARTED,NULL);
-              bReady = true;
-          } else {
-              p_root = NULL;
-              //Serial.println(APDUINO_ERROR_SDFATSTARTERR,HEX);
-              APDDebugLog::log(APDUINO_ERROR_SDFATSTARTERR,NULL);
-              bReady = false;
-          }
-      }
-  }
+					APDDebugLog::log(APDUINO_MSG_SDFATSTARTED,NULL);
+					bReady = true;
+			} else {
+					p_root = NULL;
+					APDDebugLog::log(APDUINO_ERROR_SDFATSTARTERR,NULL);
+					bReady = false;
+			}
+	}
+
   return bReady;
 }
 
 
-
-
-
-
-//boolean APDStorage::begin(int iSS, int iChip, int iSpeed = SPI_HALF_SPEED) {
-//	Serial.println(APDUINO_MSG_STORAGEINIT,HEX);
-//#ifdef VERBOSE
-//  SerPrintP("Storage ");
-//#endif
-//  if (this->p_sd == NULL ) { // && !bReady
-//      this->bReady = false;
-//      Serial.println(APDUINO_MSG_STORAGESTART,HEX);
-//#ifdef VERBOSE
-//      SerPrintP(" starting.");
-//#endif
-//      this->p_sd = new SdFat();
-//      //SerPrintP("..");
-//      if (p_sd) {
-//      	Serial.println(APDUINO_MSG_SDFATINIT,HEX);
-//#ifdef VERBOSE
-//          SerPrintP("SdFat init("); Serial.print(iSDSpeed, DEC); SerPrintP(","); Serial.print(sdChipSelect,DEC);SerPrintP(")...");
-//#endif
-//          if (p_sd->init(iSDSpeed, sdChipSelect)) {
-//              // should be initialized
-//              p_root = new SdFile();
-//              p_root->openRoot(p_sd->vol());
-//              //root.openRoot(sd.vol());
-//#ifdef VERBOSE
-//              SerPrintP("OK.\n");
-//#endif
-//              Serial.println(APDUINO_MSG_SDFATSTARTED,HEX);
-//              bReady = true;
-//          } else {
-//              p_root = NULL;
-//              Serial.println(APDUINO_ERROR_SDFATSTARTERR,HEX);
-//#ifdef VERBOSE
-//              SerPrintP("ERR.\n");
-//#endif
-//              bReady = false;
-//          }
-//      }
-//  }
-//#ifdef DEBUG
-//  SerPrintP("APDStorage is");
-//  if (!bReady) SerPrintP(" Not");
-//  SerPrintP(" Ready.\n");
-//#endif
-//  return bReady;
-//}
-
-/** Tell if storage is ready or not.
- *
- * \return true if storage is ready to use, false if not.
- */
+// Tell if storage is ready or not.
+// \return true if storage is ready to use, false if not.
 boolean APDStorage::ready() {
   return bReady;
 }
@@ -195,11 +105,8 @@ void APDStorage::stop() {
   free(p_sd);
 }
 
-/** Rotate log files.
- *
- *
- * \return the number of files rotated
- */
+// Rotate log files.
+// \return the number of files rotated
 int APDStorage::rotate_file(const char *szLogFile, unsigned long maxsize) {
   int iRetCode = -1;	// something wrong
   if (bReady) {
@@ -259,21 +166,19 @@ int APDStorage::rotate_file(const char *szLogFile, unsigned long maxsize) {
 
 							APDDebugLog::log(APDUINO_MSG_LOGROTATE,NULL);
 
-
 							if (p_sd->exists(fname)) {
 									p_sd->remove(fname);
 							}
-
 							while (ibak > 0) {
-										sprintf_P((char*)(ofname+(int)(pszext-fname)),PSTR(".%03d"),ibak-1);
-										sprintf_P(pszext,PSTR(".%03d"),ibak);
+								sprintf_P((char*)(ofname+(int)(pszext-fname)),PSTR(".%03d"),ibak-1);
+								sprintf_P(pszext,PSTR(".%03d"),ibak);
 
 #ifdef VERBOSE
-									SerPrintP("Renaming "); Serial.print(ofname); SerPrintP(" to "); Serial.print(fname); SerPrintP(".\n");
+								SerPrintP("Renaming "); Serial.print(ofname); SerPrintP(" to "); Serial.print(fname); SerPrintP(".\n");
 #endif
-									p_sd->rename(ofname,fname);
-									ibak--;
-									iRetCode++;			// number of logs that will be rotated
+								p_sd->rename(ofname,fname);
+								ibak--;
+								iRetCode++;			// number of logs that will be rotated
 							}
 							// rename APDLOG.TXT to APDLOG.000 using PSTRINGS for filenames to save on RAM
 							strcpy(ofname,szLogFile);								// move the original file
@@ -331,12 +236,12 @@ int APDStorage::readFileWithParser(char *szFile, void (*pParserFunc)(void *, int
 #endif
 
   int i=0;
-  char line[BUFSIZ]="";
-  int bread=0;
+  char line[RCV_BUFSIZ]="";	// buffer for reading file
+  int bread=0;							// bytes read
 
   SdFile dataFile(szFile, O_RDONLY );
   if (dataFile.isOpen()) {
-      // TODO upgrade and also pass bread
+    // TODO upgrade and also pass bread
     while ((bread=dataFile.fgets(line, sizeof(line)))) {      // get the next line
       (*pParserFunc)(pAPD,i,line);                                           // pass it to the parser
       i++;
@@ -352,21 +257,30 @@ int APDStorage::readFileWithParser(char *szFile, void (*pParserFunc)(void *, int
 }
 
 
-
+// writes a line to a file
+// szLogFile - log file name
+// szLogLine - message to be printed
+// this function is used to write the log files (measurements, *debug*).
+// Note: to avoid an infinite recursion, any *debug* logs generated by this function will be written out
+// *next time* the debug log is written (therefore setting APDDebugLog::disable_sync_writes() and ~::enable_sync_writes()
 void APDStorage::write_log_line(const char *szLogFile, const char *szLogLine) {
   if (APDStorage::bReady) {
-  	APDDebugLog::disable_sync_writes();			// otherwise we get a bad recursion (this function is used by the APDLogWriter)
+  	APDDebugLog::disable_sync_writes();			// otherwise we get a bad bad infinite recursion and kiss goodbye to operations
 
     SdFile dataFile(szLogFile, O_WRITE | O_CREAT | O_APPEND);
     if (dataFile.isOpen()) {
-        dataFile.println(szLogLine);
-        delay(1);
-        dataFile.close();
-        //APDDebugLog::log(APDUINO_MSG_SDLOGGINGOK,NULL);					// debug
+			DateTime dtnow = APDTime::now();
+			dataFile.println(szLogLine);
+			delay(1);						// TODO check if we really need to give time here...
+
+			//APDDebugLog::log(APDUINO_MSG_SDLOGGINGOK,NULL);					// debug
+			dataFile.timestamp(T_WRITE, dtnow.year(), dtnow.month(),
+																	dtnow.day(), dtnow.hour(), dtnow.minute(), dtnow.second());
+			dataFile.close();
     } else {
     	APDDebugLog::log(APDUINO_ERROR_LOGOPENERR,NULL);
     }
-    APDDebugLog::enable_sync_writes();
+    APDDebugLog::enable_sync_writes();				// enable sync writes otherwise we may soon run out of log buffer
   } else {
   	APDDebugLog::log(APDUINO_ERROR_LOGSDERR,NULL);
   }

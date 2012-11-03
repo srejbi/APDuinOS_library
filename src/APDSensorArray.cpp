@@ -76,7 +76,7 @@ int APDSensorArray::dumpToFile(char * pszFileName) {
   SdFile dataFile(pszFileName, O_WRITE | O_CREAT );
   if (dataFile.isOpen()) {
     for (int i=0; i<iSensorCount; i++) {
-      char line[BUFSIZ]="";
+      char line[RCV_BUFSIZ]="";
       APDSensor *ps = pAPDSensors[i];
       // TODO update with recent fields
       sprintf_P(line,PSTR("%s %i,%i,%i,%i,%i,%i,%i,%s"),ps->config.label,ps->config.sensor_type,ps->config.sensor_class,ps->config.sensor_subtype,ps->config.sensor_pin,ps->config.sensor_secondary_pin,ps->config.sensor_freq,ps->config.sensor_log,ps->config.extra_data);
@@ -188,7 +188,6 @@ void APDSensorArray::new_sensor_parser(void *pSA, int iline, char *psz) {
       newsensor = new AtlasScientificSensor(&sdc, reusablesensor);
       break;
   default:
-  	//Serial.println(APDUINO_ERROR_UNKNOWNSENSORTYPE,HEX);
   	APDDebugLog::log(APDUINO_ERROR_UNKNOWNSENSORTYPE,NULL);
   }
   ((APDSensorArray*)pSA)->pAPDSensors[iline] = newsensor;
@@ -262,9 +261,11 @@ APDSensor *APDSensorArray::byIndex(int idx) {
 
 int APDSensorArray::loadSensors() {
   if (pAPDSensors == NULL) {    // if no sensor array
+  	char szConfFile[32] = "";
+  	strcpy_P(szConfFile,PSTR("SENSORS.CFG"));
   	APDDebugLog::log(APDUINO_MSG_LOADINGSENSORS,NULL);						// debug
     // TODO check if SD is available!
-    iSensorCount =  get_line_count_from_file("SENSORS.CFG");
+    iSensorCount =  get_line_count_from_file(szConfFile);
 
     char sztemp[11]="";		// supports unsigned longs
     APDDebugLog::log(APDUINO_MSG_SENSORCOUNT,itoa(iSensorCount,sztemp,10));
@@ -278,28 +279,21 @@ int APDSensorArray::loadSensors() {
 
       if (pAPDSensors != NULL) {
         memset(pAPDSensors,0,sizeof(APDSensor*)*iSensorCount);
+        APDDebugLog::log(APDUINO_MSG_SENSORSLOADING,szConfFile);
 
-#ifdef DEBUG
-        SerPrintP("Sensor Array allocated. Populating from SENSORS.CFG...");
-#endif
+        APDStorage::readFileWithParser((char *)szConfFile,&new_sensor_parser, (void*)this);
 
-        APDStorage::readFileWithParser((char *)"SENSORS.CFG",&new_sensor_parser, (void*)this);
-
-        //Serial.println(APDUINO_MSG_SENSORSLOADED,HEX);
         APDDebugLog::log(APDUINO_MSG_SENSORSLOADED,NULL);
         // TODO add any postprocessing
 
         iNextSensor = 0;                // first sensor to read
       } else {
-      	//Serial.println(APDUINO_ERROR_SAALLOCFAIL,HEX);
       	APDDebugLog::log(APDUINO_ERROR_SAALLOCFAIL,NULL);
       }
     } else {
-    	//Serial.println(APDUINO_ERROR_SAEMPTY,HEX);
     	APDDebugLog::log(APDUINO_ERROR_SAEMPTY,NULL);
     }
   } else {
-  	//Serial.println(APDUINO_ERROR_SAALREADYALLOC,HEX);
   	APDDebugLog::log(APDUINO_ERROR_SAALREADYALLOC,NULL);
   }
   return iSensorCount;

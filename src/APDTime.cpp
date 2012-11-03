@@ -65,29 +65,24 @@ int APDTime::begin(boolean bRTC) {
         pRTC->begin();
 
         if (! pRTC->isrunning()) {
-        	//Serial.println(APDUINO_MSG_RTCNOTRUNNING,HEX);
         	APDDebugLog::log(APDUINO_MSG_RTCNOTRUNNING,NULL);
           free(pRTC);
           pRTC = NULL;
 //          SerPrintP("RTC HW NEEDS TESTING!\n");
           //RTC.adjust(DateTime(__DATE__, __TIME__));
         } else {       // we have RTC
-        	//Serial.println(APDUINO_MSG_HWRTCOK,HEX);
         	APDDebugLog::log(APDUINO_MSG_HWRTCOK,NULL);
         }
       } else {
-      	//Serial.println(APDUINO_ERROR_RTCALLOCFAIL,HEX);
       	APDDebugLog::log(APDUINO_ERROR_RTCALLOCFAIL,NULL);
         pRTC = NULL;
       }
     }else{
-    	//Serial.println(APDUINO_ERROR_RTCALREADYINIT,HEX);
     	APDDebugLog::log(APDUINO_ERROR_RTCALREADYINIT,NULL);
     }
   } else {
       // millis based already by default
       if (pRTCm == NULL) {
-      	//Serial.println(APDUINO_ERROR_SWRTCFAIL,HEX);
       	APDDebugLog::log(APDUINO_ERROR_SWRTCFAIL,NULL);
       }
   }
@@ -106,14 +101,11 @@ void APDTime::begin() {
   pRTC = NULL;
   pRTCm = new RTC_Millis();
   if (pRTCm) {
-  	//Serial.println(APDUINO_MSG_SWRTCSTART,HEX);
   	APDDebugLog::log(APDUINO_MSG_SWRTCSTART,NULL);
 		// TODO check & load time from APDLOG.TXT last message, if exists
 		pRTCm->begin(DateTime(__DATE__, __TIME__));           // SW clock always start @ last build time - adjusted later if RTC | NTP
-		PrintDateTime(pRTCm->now());
-		SerPrintP("\n");
+		LogDateTime(pRTCm->now());
   } else {
-  	//Serial.println(APDUINO_ERROR_SWRTCSETUPFAIL,HEX);
   	APDDebugLog::log(APDUINO_ERROR_SWRTCSETUPFAIL,NULL);
 #ifdef VERBOSE
 		SerPrintP("Seems SW clock setup failed. :(\n");
@@ -129,6 +121,7 @@ void APDTime::begin() {
 #endif
 }
 
+// return current system time in DateTime
 DateTime APDTime::now() {
   if (pRTCm != NULL && pRTC->isrunning()) {
       return pRTC->now();
@@ -146,16 +139,22 @@ char *APDTime::nowS(char *strbuf) {
   return strbuf;
 }
 
+// returns uptime in millis
 unsigned long APDTime::getUpTime() {
   return (millis() - start_time);
 }
 
+// prints uptime in a char buffer, days,hours,minutes,seconds
+// the buffer must be large enough (>13 chars) to hold the string that is (13chars+\0)
+// returns pointer to the char buffer or EOF if an error occurred (sprintf)
 char *APDTime::getUpTimeS(char *psz_uptime) {
   unsigned long ut = getUpTime() / 1000;
+  // calculate uptime positions
   int updays = (ut / 3600) / 24;
   int uphours = (ut / 3600) % 24;
   int upmins = (ut % 3600) / 60;
   int upsec = (ut % 3600) % 60;
+  // print uptime to the string
   sprintf_P(psz_uptime,PSTR("%03dd%02dh%02dm%02ds"),updays,uphours,upmins,upsec);
   return psz_uptime;
 }
@@ -163,30 +162,25 @@ char *APDTime::getUpTimeS(char *psz_uptime) {
 // TODO return whatever udp would return
 void APDTime::setupNTPSync(int UDPPort, byte *TimeServer, int iTZ, int iDST ) {
   // check if not in use...
-	//Serial.println(APDUINO_MSG_SETUPUDPFORNTP,HEX);
 	APDDebugLog::log(APDUINO_MSG_SETUPUDPFORNTP,NULL);
 #ifdef VERBOSE
   SerPrintP("SETUP UDP 4 NTP\n");
 #endif
   if (pUdp==NULL) {
-    //Ethernet.begin(mac, ip, );     // For when you are directly connected to the Internet.
     memcpy(timeServer,TimeServer,4);
     dst = iDST;
     time_zone = iTZ;
     localPort = UDPPort;
     pUdp = new EthernetUDP;
-    if (pUdp != NULL) {
-      if (pUdp->begin(localPort)) {
-      	//Serial.println(APDUINO_MSG_UDPFORNTPOK,HEX);
+    if (pUdp != NULL) {				// if we have UDP
+      if (pUdp->begin(localPort)) {			// if opening localPort for UDP succeeds
       	APDDebugLog::log(APDUINO_MSG_UDPFORNTPOK,NULL);
-      } else {
-      	//Serial.println(APDUINO_WARN_NOUDPFORNTP,HEX);
+      } else {													// failed to start UDP on localport
       	APDDebugLog::log(APDUINO_WARN_NOUDPFORNTP,NULL);
-				free(pUdp);
-				pUdp = NULL;
+				free(pUdp);			// free the EthernetUDP
+				pUdp = NULL;		// reset the UDP ptr.
       }
     }else{
-    	//Serial.println(APDUINO_ERROR_UDPNETINITFAIL,HEX);
     	APDDebugLog::log(APDUINO_ERROR_UDPNETINITFAIL,NULL);
     }
   }
@@ -197,7 +191,7 @@ void APDTime::setupNTPSync(int UDPPort, byte *TimeServer, int iTZ, int iDST ) {
 //
 // NTP2RTC MISC
 //
-void APDTime::PrintDateTime(DateTime t)
+void APDTime::LogDateTime(DateTime t)
 {
     char datestr[32] = "";
     // TODO implement format string, input by user
@@ -205,6 +199,14 @@ void APDTime::PrintDateTime(DateTime t)
     APDDebugLog::log(APDUINO_MSG_TIMESTAMP,datestr);
 }
 
+// callback for SdBaseFile to get current date time
+void APDTime::SdDateTimeCallback(uint16_t* date, uint16_t* time) {
+	DateTime dtnow = APDTime::now();
+	if (date && time) {
+		*date = FAT_DATE(dtnow.year(),dtnow.month(),dtnow.day());
+		*time = FAT_TIME(dtnow.hour(),dtnow.minute(),dtnow.second());
+	} // todo log error? for now let's trust SDFatLib to provide date and time buffers
+}
 
 /* * send an NTP request to the time server at the given address
  * NTP syncing is based on NTP2RTC - code in the public domain - http://www.arduino.cc/playground/Main/DS1307OfTheLogshieldByMeansOfNTP
@@ -218,7 +220,6 @@ unsigned long APDTime::sendNTPpacket(byte *address)
 {
   unsigned long ulret = 0;
   if (pUdp != NULL) {
-  	//Serial.println(APDUINO_MSG_NTPUDPPACKPREP,HEX);
   	APDDebugLog::log(APDUINO_MSG_NTPUDPPACKPREP,NULL);
 
   	memset(pb, 0, NTP_PACKET_SIZE);		// blank packet
@@ -233,7 +234,7 @@ unsigned long APDTime::sendNTPpacket(byte *address)
     pb[13]  = 0x4E;
     pb[14]  = 49;
     pb[15]  = 52;
-    //Serial.println(APDUINO_MSG_NTPUDPPACKSEND,HEX);
+
     APDDebugLog::log(APDUINO_MSG_NTPUDPPACKSEND,NULL);
     // all NTP fields have been given values, now
     // you can send a packet requesting a timestamp:
@@ -243,24 +244,20 @@ unsigned long APDTime::sendNTPpacket(byte *address)
     	pUdp->write(pb,NTP_PACKET_SIZE);
     	pUdp->endPacket();
     } else {
-    	//Serial.println(APDUINO_ERROR_NTPUDPSTARTFAIL,HEX);
     	APDDebugLog::log(APDUINO_ERROR_NTPUDPSTARTFAIL,NULL);
     }
   #else
     pUdp->sendPacket( pb,NTP_PACKET_SIZE,  address, 123); //NTP requests are to port 123
   #endif
   } else {
-  	//Serial.println(APDUINO_ERROR_NTPNOUDP,HEX);
   	APDDebugLog::log(APDUINO_ERROR_NTPNOUDP,NULL);
   }
   return ulret;
 }
 
-
+// set time to a given DateTime
 void APDTime::adjust(DateTime dt) {
-#ifdef VERBOSE
-	SerPrintP("ADJUST:");
-#endif
+	APDDebugLog::log(APDUINO_MSG_TIMEADJUST,NULL);
   if (pRTC != NULL && pRTC->isrunning()) {
 #ifdef VERBOSE
       SerPrintP("RTC,");
@@ -271,9 +268,7 @@ void APDTime::adjust(DateTime dt) {
   SerPrintP("SW.");
 #endif
   pRTCm->adjust(dt);
-#ifdef VERBOSE
-  SerPrintP("DONE.\n");
-#endif
+	APDDebugLog::log(APDUINO_MSG_TIMEADJUSTED,NULL);		// TODO include datetime string in log
 }
 
 
@@ -287,10 +282,11 @@ void APDTime::adjust(DateTime dt) {
  *
  * integrated into APDuinOS by George Schreiber 27-03-2012
 */
+
+// sync clock to NTP server
 void APDTime::ntpSync()
 {
 	if (pUdp == NULL) {
-		//Serial.println(APDUINO_ERROR_NTPNOUDP,HEX);
 		APDDebugLog::log(APDUINO_ERROR_NTPNOUDP,NULL);
 		return;
 	}
@@ -307,10 +303,8 @@ void APDTime::ntpSync()
     }
     SerPrintP(".NTP REQ:");
 
-    //delay(5);
     SerDumpIP(timeServer);
     SerPrintP(".\n");
-    //delay(10);
 #endif
 
     // send an NTP packet to a time server
@@ -395,12 +389,12 @@ void APDTime::ntpSync()
       PrintDateTime(DateTime(t2)); Serial.println(f2,4);
       PrintDateTime(DateTime(t3)); Serial.println(f3,4);
       */
-      PrintDateTime(DateTime(t4)); Serial.println(f4,4);
+      LogDateTime(DateTime(t4)); Serial.println(f4,4);
 
       // Adjust timezone and DST
       t4 += (( time_zone + dst )* 3600L);     // Notice the L for long calculations!
-      t4 += 1;               // adjust the delay(1000) at begin of loop!
-      if (f4 > 0.4) t4++;    // adjust fractional part, see above
+      t4 += 1;               									// adjust the delay(1000) at begin of loop!
+      if (f4 > 0.4) t4++;   								  // adjust fractional part, see above
       adjust(DateTime(t4));
 
 #ifdef VERBOSE
@@ -420,11 +414,9 @@ void APDTime::ntpSync()
     }
     else
     {
-    	//Serial.println(APDUINO_ERROR_NTPNOUDP,HEX);
     	APDDebugLog::log(APDUINO_ERROR_NTPNOUDP,NULL);
     }
   } else {
-  	//Serial.println(APDUINO_ERROR_NTPNORTC,HEX);
   	APDDebugLog::log(APDUINO_ERROR_NTPNORTC,NULL);
   }
 }

@@ -28,7 +28,6 @@
 AnalogSensor::AnalogSensor(SDCONF *sdc)
 {
   this->initSensor(sdc);
-  // TODO Auto-generated constructor stub
   this->sensor = (ANASENS*)malloc(sizeof(ANASENS));
   this->sensor->value = NAN;
   this->_state = STATE_READY;
@@ -49,9 +48,11 @@ boolean AnalogSensor::perform_check()
   return retcode;
 }
 
+// returns the sensor value as string (base 10)
+// strdest must point to a character buffer large enough to receive an integer 0-255 (4bytes with \0)
+// returns a pointer to the character buffer, NULL on error
 char *AnalogSensor::getValueS(char *strdest) {
   char *retstr = NULL;
-  sprintf(strdest,"%d",this->sensor->value);
-  retstr=strdest;
+  if (sprintf_P(strdest,PSTR("%d"),this->sensor->value) != EOF) retstr = strdest;
   return retstr;
 }

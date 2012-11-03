@@ -31,7 +31,7 @@ SonarSensor::SonarSensor(SDCONF *sdc)
   // TODO Auto-generated constructor stub
   this->sensor = (SONSENS*)malloc(sizeof(SONSENS));
   if (sscanf(this->config.extra_data, "%f", &(this->sensor->calibration_value)) != 1) {
-    SerPrintP("SonarSensor: calibration error.\n");
+  	APDDebugLog::log(APDUINO_ERROR_SONSENCALIBRATION, NULL);
     this->sensor->calibration_value = 1 / 58;                           // DEFAULT VALUE FIXME define in header
   }
 #ifdef DEBUG

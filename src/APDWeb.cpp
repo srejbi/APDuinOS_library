@@ -27,52 +27,42 @@
 
 #define WCPrintP(pc,s) myCPrintP(pc,(PSTR(s)));
 
+// initilize without config (DHCP)
 APDWeb::APDWeb()
 {
-	// TODO Auto-generated constructor stub
 	initBlank();
 	if (start()) {
-		//Serial.println(APDUINO_MSG_ETHSTARTED,HEX);
 		APDDebugLog::log(APDUINO_MSG_ETHSTARTED,NULL);
-#ifdef VERBOSE
-		SerPrintP("Eth started.\n");
-#endif
-	} else {
-		//Serial.println(APDUINO_ERROR_ETHCONF,HEX);
+	} else {	// Failed to configure Ethernet.
+	  				// Fix DHCP on your LAN or provide a valid static config on SD and reset.
 		APDDebugLog::log(APDUINO_ERROR_ETHCONF,NULL);
-#ifdef VERBOSE
-		SerPrintP("Failed to configure Ethernet. Fix DHCP on your LAN or provide a valid static config on SD and reset.\n");
-#endif
 	}
 }
 
-
 APDWeb::~APDWeb()
 {
-	if (pwwwclient != NULL) free(pwwwclient);
-	if (pwwwserver != NULL) free(pwwwclient);
-
-	// TODO Auto-generated destructor stub
+	// todo should close any open connections first (?) - for now we don't care
+	free(pwwwclient);
+	pwwwclient = NULL;
+	free(pwwwserver);
+	pwwwserver = NULL;
 }
 
+// initialize with a network configuration
+// (may be static or DHCP (set pnc->ip='0.0.0.0'))
 APDWeb::APDWeb(NETCONF *pnc)
 {
-	// TODO Auto-generated constructor stub
 	initBlank();
 	memcpy(&net,pnc,sizeof(NETCONF));             // copy the provided config
 	if (start()) {
-		//Serial.println(APDUINO_MSG_CONFETHSTARTED,HEX);
 		APDDebugLog::log(APDUINO_MSG_CONFETHSTARTED,NULL);
 	} else {
-		//Serial.println(APDUINO_WARN_NETCONFDHCPFALLBACK,HEX);
 		APDDebugLog::log(APDUINO_WARN_NETCONFDHCPFALLBACK,NULL);
 
-		initBlank();
+		initBlank();			// reinit
 		if (start()) {
-			//Serial.println(APDUINO_MSG_NETOK,HEX);
 			APDDebugLog::log(APDUINO_MSG_NETOK,NULL);
 		} else {
-			//Serial.println(APDUINO_ERROR_DHCPFAILED,HEX);
 			APDDebugLog::log(APDUINO_ERROR_DHCPFAILED,NULL);
 		}
 	}
@@ -85,11 +75,6 @@ void APDWeb::initBlank()
 #ifdef DEBUG
 	SerPrintP("APDWeb initializing...\n");
 #endif
-	//pAPDTime = NULL;
-	//pAPDTime = pTime;
-#ifdef DEBUG
-	if (pAPDTime == NULL) SerPrintP("NO VALID TIME SOURCE!\n");
-#endif
 	// TODO generate mac randomness
 	memcpy(&net.mac,(byte []){ 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED },6);            //TODO generate random mac, more than 1 APDuino can have collisions
 	memset(&net.ip,0,4*sizeof(byte));                          // uninitialized address
@@ -97,15 +82,13 @@ void APDWeb::initBlank()
 	memset(&net.subnet,0,4*sizeof(byte));                      // uninitialized address
 	memset(&net.pridns,0,4*sizeof(byte));                      // uninitialized address
 
-	//memcpy_P(&apduino_server_ip,(byte[])APDUINO_SERVER_IP,4*sizeof(byte));           // apduino.localhost -- test server on LAN
-	memcpy(&apduino_server_ip,APDUINO_SERVER_IP,4*sizeof(byte));           // apduino.localhost -- test server on LAN
-	strcpy_P(apduino_server_name,APDUINO_SERVER);                   // test APDuino server on LAN
-	apduino_server_port = 80;                 // standard HTTP port
+	memcpy(&apduino_server_ip,APDUINO_SERVER_IP,4*sizeof(byte));  // set APDuino Online IP
+	strcpy_P(apduino_server_name,APDUINO_SERVER);                 // APDuino Online hostname
+	apduino_server_port = 80;                 										// standard HTTP port
 	apduino_logging_freq = DEFAULT_ONLINE_LOG_FREQ;
 
-	//memcpy_P(&cosm_server_ip,(byte[])COSM_SERVER_IP,4*sizeof(byte));           // api.pachube.com 216.52.233.122
-	memcpy(&cosm_server_ip,COSM_SERVER_IP,4*sizeof(byte));           // api.pachube.com 216.52.233.122
-	strcpy_P(cosm_server_name, COSM_SERVER );
+	memcpy(&cosm_server_ip,COSM_SERVER_IP,4*sizeof(byte));           // set cosm ip
+	strcpy_P(cosm_server_name, COSM_SERVER );												// set cosm hostname
 	cosm_server_port = 80;     // standard HTTP port
 	cosm_feed_id = 0;         // TODO reset feed id
 	cosm_logging_freq = DEFAULT_ONLINE_LOG_FREQ;    // 1 min
@@ -148,6 +131,9 @@ void APDWeb::initBlank()
 	dispatched_requests = 0;
 }
 
+
+// start the networking service(s) as configured (or not configured)
+// returns true on success, false otherwise (check logs)
 boolean APDWeb::start() {
 #ifdef VERBOSE
 	SerPrintP("\nMAC:");
@@ -160,7 +146,6 @@ boolean APDWeb::start() {
 
 	//net.ip[0] = 0;
 	if ((bRestart && !this->bDHCP) || (!bRestart && net.ip[0] != 0)) {                 // if an IP seems to be provided
-		//Serial.println(APDUINO_MSG_TRYINGSTATICIP,HEX);
 		APDDebugLog::log(APDUINO_MSG_TRYINGSTATICIP,NULL);			// TODO print IP in string and push to debug log
 #ifdef VERBOSE
 		SerPrintP("Trying static IP...\n");
@@ -183,18 +168,15 @@ boolean APDWeb::start() {
 		this->bDHCP = false;
 		// todo read on howto check state
 	} else {                              // go for DHCP
-		//Serial.println(APDUINO_MSG_TRYINGDHCPIP,HEX);
 		APDDebugLog::log(APDUINO_MSG_TRYINGDHCPIP,NULL);
 
 		// trying DHCP
 		if (Ethernet.begin(net.mac) == 0) {
-			//Serial.println(APDUINO_ERROR_DHCPSTARTFAIL,HEX);
 			APDDebugLog::log(APDUINO_ERROR_DHCPSTARTFAIL,NULL);
 			operational_state = OPSTATE_BLANK | OPSTATE_ERROR;
 			return false;
 		}
 		// we should have a lease now
-		//Serial.println(APDUINO_MSG_DHCPLEASED,HEX);
 		APDDebugLog::log(APDUINO_MSG_DHCPLEASED,NULL);			// TODO print IP to string and put to log message
 #ifdef VERBOSE
 		SerPrintP("DHCP DONE.\nIP: ");
@@ -241,11 +223,10 @@ boolean APDWeb::restart() {
 	// if running in a multithreading environment, we should lock the APDWeb with a semaphore here...
 	if (bEthConfigured) {
 		if (pwwwclient) {
-			//SerPrintP("STOPPING CLIENTS\n");
 			pwwwclient->stop();
 			delay(1000);
 		}
-		//SerPrintP("RESTARTING NET\n");
+
 		bEthConfigured = false;
 		operational_state = OPSTATE_BLANK;
 		if (this->start()) {
@@ -269,16 +250,17 @@ void APDWeb::failure() {
 		SerPrintP("->FC="); Serial.print(iFailureCount);
 #endif
 		this->bRestart = true;		// request a restart (will be done in loop)
-
-		//Serial.println(APDUINO_MSG_NETFAILSRESTART,HEX);
 		APDDebugLog::log(APDUINO_MSG_NETFAILSRESTART,NULL);
 	}
 }
 
+
+// registers the moment a response was first expected
+// subsequent calls increase busy counter (as still no response)
+// upon MAX_WEBCLIENT_BUSY_LOOPS checks
+// or WEBCLIENT_BUSY_TIMEOUT_MS millisecs from first check (whichever occurs first)
+// it increases failure counter (that may lead to network restart)
 void APDWeb::wc_busy() {
-#ifdef DEBUG
-	SerPrintP("WCB"); Serial.print(this->iBusyCounter); SerPrintP("++");
-#endif
 	unsigned long nowms = millis();
 	if (wcb_millis == 0 || iBusyCounter == 0) {
 		wcb_millis = nowms;
@@ -335,13 +317,11 @@ boolean APDWeb::setupAPDuinoOnline() {
 			startWebLogging(apduino_logging_freq);
 			retcode = true;
 		} else {
-			//Serial.println(APDUINO_ERROR_APDUINOONLINEIP,HEX);
 			APDDebugLog::log(APDUINO_ERROR_APDUINOONLINEIP,NULL);
 		}
 
 		retcode = true;
 	} else {
-		//Serial.println(APDUINO_ERROR_STORAGEERRORAO,HEX);
 		APDDebugLog::log(APDUINO_ERROR_STORAGEERRORAO,NULL);
 	}
 	return retcode;
@@ -349,14 +329,12 @@ boolean APDWeb::setupAPDuinoOnline() {
 
 
 boolean APDWeb::loadAPIkey(char *szAPIKey, char *szAPIFile) {
-	//SerPrintP("LOADING API KEY...");
 	if (APDStorage::ready()) {
 		int i=0;
-		char line[BUFSIZ]="";
+		char line[RCV_BUFSIZ]="";
 		int bread=0;
 		SdFile dataFile(szAPIFile, O_RDONLY );
 		if (dataFile.isOpen()) {
-			//SerPrintP("Opened file\n");
 			while (bread=dataFile.fgets(line, sizeof(line))) {      // get the next line
 				if (char *nl=strstr_P(line,PSTR("\n")) ) {
 					*nl = '\0';
@@ -369,11 +347,12 @@ boolean APDWeb::loadAPIkey(char *szAPIKey, char *szAPIFile) {
 		}
 		return (i>0 && strlen(szAPIKey)>0);
 	}
-	//SerPrintP("BAILING OUT\n");
 	return false;
 }
 
-
+// stores an API key in a keyfile (a file containing a string with API key)
+// szAPIKey - character buffer with API key
+// szAPIFile - path to the file
 void APDWeb::saveAPIkey(char *szAPIKey, char *szAPIFile)
 {
 	if (APDStorage::ready()) {
@@ -382,15 +361,14 @@ void APDWeb::saveAPIkey(char *szAPIKey, char *szAPIFile)
 			dataFile.println(szAPIKey);
 			dataFile.close();
 		} else {
-			//Serial.println(APDUINO_ERROR_AKSAVEIOERR,HEX);
 			APDDebugLog::log(APDUINO_ERROR_AKSAVEIOERR,NULL);
 		}
 	} else {
-		//Serial.println(APDUINO_ERROR_AKSAVESTORAGE,HEX);
 		APDDebugLog::log(APDUINO_ERROR_AKSAVESTORAGE,NULL);
 	}
 }
 
+// start periodic logging to APDuino Online
 boolean APDWeb::startWebLogging(unsigned long uWWWLoggingFreq) {
 	boolean retcode = false;
 	if (this->pmetro == NULL) {
@@ -400,24 +378,13 @@ boolean APDWeb::startWebLogging(unsigned long uWWWLoggingFreq) {
 	}
 	this->pmetro->reset();
 	retcode = (this->pmetro != NULL);
-
-#ifdef DEBUG
-	SerPrintP("APDW: ONLINE LOG SINK: ");
-	Serial.print(apduino_server_name); SerPrintP("@");
-	SerDumpIP(apduino_server_ip);
-
-	SerPrintP("\n\n");
-#endif
-
+	APDDebugLog::log(APDUINO_MSG_AOLOGSTARTED, apduino_server_name); // todo include IP in log -- SerDumpIP(apduino_server_ip);
 	return retcode;
 }
 
-
+// setup lohhomh to Cosm
 boolean APDWeb::setupCosmLogging() {
 	boolean retcode = false;
-#ifdef VERBOSE
-	SerPrintP("COSM...");
-#endif
 	szCOSM_API_KEY[0] = 0;
 	if (bEthConfigured && APDStorage::ready() && this->phmetro == NULL) {
 		if (APDStorage::readFileWithParser("PACHUBE.CFG",&new_cosmconf_parser,(void*)this) > 0) {
@@ -427,7 +394,6 @@ boolean APDWeb::setupCosmLogging() {
 			SerDumpIP(cosm_server_ip);
 #endif
 			if (cosm_server_ip[0]>0) {                            // if we have a server name
-				//SerPrintP("loading API key\n");
 				loadAPIkey(szCOSM_API_KEY,"PACHUBE.KEY");             // TODO -> load api key for ; allow multiple keys for different services
 				Serial.print(szCOSM_API_KEY);
 				delay(20);
@@ -437,10 +403,8 @@ boolean APDWeb::setupCosmLogging() {
 				SerPrintP("FAIL.\n");
 #endif
 			}
-#ifdef VERBOSE
-			SerPrintP("SET UP.\n");
-#endif
 			this->phmetro = new Metro(cosm_logging_freq, true);                     // TODO check this
+			APDDebugLog::log(APDUINO_MSG_COSMLOGSTARTED, cosm_server_name); // todo include IP in log -- SerDumpIP(cosm_server_ip);
 			retcode = true;
 
 		} else {
@@ -531,12 +495,6 @@ void APDWeb::startWebServer(APDSensor **pSensors, int iSensorCount, APDControl *
 	}
 }
 
-// TODO deprecate this
-/*void APDWeb::web_header(EthernetClient *pClient) {
-	WCPrintP(pClient,"HTTP/1.1 200 OK\n"
-			"Content-Type: text/html\n\n");
-	delay(1);
-}*/
 
 void APDWeb::web_startpage(EthernetClient *pClient, char *title,int refresh=0) {
 	if (*pClient) {
@@ -565,17 +523,13 @@ void APDWeb::web_startpage(EthernetClient *pClient, char *title,int refresh=0) {
 		WCPrintP(pClient,"</td><td>");
 		pClient->print(APDTime::getUpTimeS(tbuf));
 		WCPrintP(pClient,"</td><td>");
-		dtostrf(uCCount,5,0,tbuf);
-		pClient->print(tbuf);
+		pClient->print(dtostrf(uCCount,5,0,tbuf));
 		WCPrintP(pClient,"</td><td>");
-		dtostrf(iFailureCount,5,0,tbuf);
-		pClient->print(tbuf);
+		pClient->print(dtostrf(iFailureCount,5,0,tbuf));
 		WCPrintP(pClient,"</td><td>");
-		dtostrf(iRestartCount,5,0,tbuf);
-		pClient->print(tbuf);
+		pClient->print(dtostrf(iRestartCount,5,0,tbuf));
 		WCPrintP(pClient,"</td><td>");
-		dtostrf(freeMemory(),5,0,tbuf);
-		pClient->print(tbuf);
+		pClient->print(dtostrf(freeMemory(),5,0,tbuf));
 		WCPrintP(pClient,"</td></tr>\n"
 									"</table></div>\n");
 
@@ -591,20 +545,18 @@ void APDWeb::web_startpage(EthernetClient *pClient, char *title,int refresh=0) {
 		WCPrintP(pClient,"</ul></div>");												  // closing sidebar
 
 	} else {
-		SerPrintP("Client gone.?!");
+		APDDebugLog::log(APDUINO_ERROR_WWWCLIENTGONE,NULL);
 	}
 }
 
 void APDWeb::web_endpage(EthernetClient *pClient) {
 	if (*pClient) {
-		pClient->println("</body></html>");
+		WCPrintP(pClient,"</body></html>");
 #ifdef DEBUG
 		SerPrintP("SEND_STATUS END.\n");
 #endif
 	} else {
-#ifdef DEBUG
-		SerPrintP("Client gone.?!\n");
-#endif
+		APDDebugLog::log(APDUINO_ERROR_WWWCLIENTGONE,NULL);
 	}
 }
 
@@ -677,6 +629,11 @@ void APDWeb::web_status(EthernetClient *pClient) {
 		// give the web browser time to receive the data
 		delay(1);
 	} else {
+
+
+
+
+
 		SerPrintP("W02");
 	}
 }
@@ -706,10 +663,20 @@ void APDWeb::claim_device_link(EthernetClient *pClient) {
 		// give the web browser time to receive the data
 		delay(1);
 	} else {
+
+
+
+
+
+
+
 		SerPrintP("W01");
 	}
 }
 
+// serve a file from SD card
+// client - the ethernet client to write to
+// szPath - path to the file
 bool APDWeb::ServeFile(EthernetClient client, const char *szPath) {
 	bool retcode = false;
 	// serve file
@@ -723,15 +690,11 @@ bool APDWeb::ServeFile(EthernetClient client, const char *szPath) {
 	#endif
 		retcode = true;
 		if ( file.isFile() ) {
-			//WCPrintP(&client, "HTTP/1.1 200 OK\nContent-Type: ");
 			if (strstr_P(szPath, PSTR(".htm")) != 0 || strstr_P(szPath, PSTR(".html")) != 0 ) {
-				//WCPrintP(&client, "text/html");
 				header(&client,CONTENT_TYPE_HTML);
 			} else {
-				//WCPrintP(&client, "text/plain");
 				header(&client,CONTENT_TYPE_TEXT);
 			}	// todo add more content types as needed (images? - should be stored on external server to reduce load on miniweb)
-			//WCPrintP(&client, "\n\n");
 
 			int16_t c;
 			while ((c = file.read()) > -1) {
@@ -769,8 +732,7 @@ void APDWeb::ListFiles(EthernetClient client, const char *szPath, uint8_t flags)
 			proot = new SdFile(szPath, O_RDONLY);
 		}
 		WCPrintP(&client,"<div class=\"files\">\n<ul>\n");
-		// link to upper level if not at root
-		if (proot != APDStorage::p_root) {
+		if (proot != APDStorage::p_root) {		// link to upper level if not at root
 			WCPrintP(&client,"<li><a href=\"../\">..</a></li>\n");
 		}
 		while (proot->readDir(&p) > 0 && p.name[0] != DIR_NAME_FREE) {
@@ -817,10 +779,11 @@ void APDWeb::ListFiles(EthernetClient client, const char *szPath, uint8_t flags)
 
 				// print modify date/time if requested
 				if (flags & LS_DATE) {
-					// TODO write dates to the client
-					//proot->printFatDate(p.lastWriteDate);
-					//client.print(' ');
-					//proot->printFatTime(p.lastWriteTime);
+					char sztmp[32]="";
+				  sprintf_P(sztmp,PSTR("%02d-%02d-%02d %02d:%02d:%02d"),
+				  									FAT_YEAR(p.lastWriteDate), FAT_MONTH(p.lastWriteDate), FAT_DAY(p.lastWriteDate),
+				  	  							FAT_HOUR(p.lastWriteTime), FAT_MINUTE(p.lastWriteTime), FAT_SECOND(p.lastWriteTime));
+					client.print(sztmp);
 				}
 				// print size if requested
 				if (!DIR_IS_SUBDIR(&p) && (flags & LS_SIZE)) {
@@ -832,10 +795,8 @@ void APDWeb::ListFiles(EthernetClient client, const char *szPath, uint8_t flags)
 		}
 		WCPrintP(&client,"</ul>\n</div>\n");
 	} else {
-		//Serial.println(APDUINO_ERROR_WWWFSNOSTORAGE,HEX);
 		APDDebugLog::log(APDUINO_ERROR_WWWFSNOSTORAGE,NULL);
-		//todo redirect this error also to www client
-		//WCPrintP(&client,"W03\n");		//NO STORAGE ERROR
+		//todo redirect this error also to the www client
 	}
 	if (proot != APDStorage::p_root) {
 		free(proot);
@@ -846,8 +807,8 @@ void APDWeb::ListFiles(EthernetClient client, const char *szPath, uint8_t flags)
 void APDWeb::loop_server()
 {
 	if (pwwwserver != NULL) {      // if server is instantiated
-		char clientline[BUFSIZ];
-		clientline[BUFSIZ-1]=0;      // a terminating 0 at the last position
+		char clientline[RCV_BUFSIZ];
+		clientline[RCV_BUFSIZ-1]=0;      // a terminating 0 at the last position
 		int index = 0;
 
 		EthernetClient client = pwwwserver->available();
@@ -865,28 +826,22 @@ void APDWeb::loop_server()
 						clientline[index] = c;
 						index++;
 
-						if (index >= BUFSIZ)                // are we too big for the buffer? start tossing out data
-							index = BUFSIZ -1;
-						continue;            // continue to read more data!
+						if (index >= RCV_BUFSIZ)           // are we too big for the buffer? start tossing out data
+							index = RCV_BUFSIZ -1;
+						continue;           							 // continue to read more data!
 					}
 					// got a \n or \r new line, which means the string is done
 					clientline[index] = 0;
 
 					// Look for substring such as a request to get the root file
-					if (strstr_P(clientline, PSTR("GET /sd/ ")) != 0) {
-						// send a standard http response header
-						//web_header(&client);
-						header(&client,CONTENT_TYPE_HTML);
-						// print all the files, use a helper to keep it clean
+					if (strstr_P(clientline, PSTR("GET /sd/ ")) != 0) { // print all the files, use a helper to keep it clean
+						header(&client,CONTENT_TYPE_HTML);	// send a standard http response header for html page
 						web_startpage(&client,"files");
-						//WCPrintP(&client, "<h2>Files:</h2>\n");
 						ListFiles(client, NULL, LS_DATE | LS_SIZE);		// list root
 						web_endpage(&client);
-					} else if (strstr_P(clientline, PSTR("GET /sd/")) != 0) {
-						// this time no space after the /, so a sub-file!
+					} else if (strstr_P(clientline, PSTR("GET /sd/")) != 0) {		// no space after the /, so a filename is expected to follow
 						char *filename;
 
-						//filename = clientline + 5; // pointer to after "GET /"
 						filename = clientline + 8; // pointer to after "GET /sd/"
 						(strstr_P(clientline, PSTR(" HTTP")))[0] = 0;       // terminate string just before proto string
 #ifdef DEBUG
@@ -900,8 +855,6 @@ void APDWeb::loop_server()
 	#ifdef DEBUG
 							SerPrintP("Sending HTTP Resp...");
 	#endif
-							// send a standard http response header
-							//web_header(&client);
 							header(&client,CONTENT_TYPE_HTML);
 							web_startpage(&client,"status",20);
 							web_status(&client);
@@ -913,33 +866,27 @@ void APDWeb::loop_server()
 							web_maintenance(&client);
 						}
 					} else if (strstr_P(clientline,PSTR("GET /reconfigure")) != 0) {
-						//web_header(&client);
 						header(&client,CONTENT_TYPE_HTML);
 						web_startpage(&client,"reconfigure",0);
 						WCPrintP(&client,"Request acknowledged.");
 						web_endpage(&client);
 						this->dispatched_requests = DREQ_RECONF;		// APDuino should read it
 					} else if (strstr_P(clientline,PSTR("GET /reset")) != 0) {
-						//web_header(&client);
 						header(&client,CONTENT_TYPE_HTML);
 						web_startpage(&client,"reset",0);
 						WCPrintP(&client,"Request acknowledged.");
 						web_endpage(&client);
 						this->dispatched_requests = DREQ_RESET;		// APDuino should read it
 					} else if (strstr_P(clientline,PSTR("GET /reloadrules")) != 0) {
-						//web_header(&client);
 						header(&client,CONTENT_TYPE_HTML);
 						web_startpage(&client,"reload_rules",0);
 						WCPrintP(&client,"Request acknowledged.");
 						web_endpage(&client);
 						this->dispatched_requests = DREQ_RELOADRULES;		// APDuino should read it
 					} else if (strstr_P(clientline, PSTR("GET /status.json")) != 0) {
-						// send a standard http response header
-						//json_header(&client);
 						header(&client,CONTENT_TYPE_JSON);
 						json_status(&client);
 					} else if (strstr_P(clientline,PSTR("GET /claimdevice")) != 0) {
-						//web_header(&client);
 						header(&client,CONTENT_TYPE_HTML);
 						web_startpage(&client,"claimdevice",0);
 						claim_device_link(&client);
@@ -988,9 +935,9 @@ void APDWeb::forwardToMarker(EthernetClient *pclient, char *szBuf, char *szMarke
 		index++;
 		szBuf[index]=0;
 		// are we too big for the buffer? shift left
-		if (index >= BUFSIZ-1) {
-			for (int i=0; i < BUFSIZ-1; i++) szBuf[i] = szBuf[i+1];
-			index = BUFSIZ -2;
+		if (index >= RCV_BUFSIZ-1) {
+			for (int i=0; i < RCV_BUFSIZ-1; i++) szBuf[i] = szBuf[i+1];
+			index = RCV_BUFSIZ -2;
 		}
 #ifdef DEBUG_LOG
 		// continue to read more data!
@@ -1010,14 +957,15 @@ void APDWeb::processProvisioningRequest(EthernetClient *pclient, boolean brespon
 	unsigned int bytesProv = 0;
 	unsigned int bytesProvSaved = 0;
 	if (pclient != NULL && pclient->available()) {
-//#ifdef DEBUG
-		SerPrintP("PROVISIONING.");
-//#endif
-		char clientline[BUFSIZ];
-		char destfile[14]="";
+		APDDebugLog::log(APDUINO_MSG_PROCPROVREQ,NULL);
+
+		char clientline[RCV_BUFSIZ];
+		char provfile[32]="";			            // todo unify name lengths
+		strcpy_P(provfile,PSTR("PROV.TMP"));
+		char destfile[32]="";
 		int index = 0;
 		clientline[index]=0;
-		clientline[BUFSIZ-1]=0;
+		clientline[RCV_BUFSIZ-1]=0;
 
 		if (brespond) web_startpage(pclient,"provisioning");
 #ifdef DEBUG
@@ -1065,8 +1013,8 @@ void APDWeb::processProvisioningRequest(EthernetClient *pclient, boolean brespon
 					SerPrintP("Processing Data");
 #endif
 					// remove temp file if exists
-					if (APDStorage::p_sd->exists("PROV.TMP")) APDStorage::p_sd->remove("PROV.TMP");
-					SdFile tempFile("PROV.TMP", O_WRITE | O_CREAT );
+					if (APDStorage::p_sd->exists(provfile)) APDStorage::p_sd->remove(provfile);
+					SdFile tempFile(provfile, O_WRITE | O_CREAT );
 
 					clientline[0]=0;
 					index = 0;
@@ -1105,7 +1053,7 @@ void APDWeb::processProvisioningRequest(EthernetClient *pclient, boolean brespon
 								}
 								c = newc;
 							} else {
-								SerPrintP("E22\n");
+								APDDebugLog::log(APDUINO_ERROR_BROKENHEXCODE,NULL);
 							}
 						}
 
@@ -1124,9 +1072,9 @@ void APDWeb::processProvisioningRequest(EthernetClient *pclient, boolean brespon
 						index++;
 						clientline[index]=0;
 						// are we too big for the buffer? shift left
-						if (index >= BUFSIZ-1) {
-							for (int i=0; i < BUFSIZ -1; i++) clientline[i] = clientline[i+1];
-							index = BUFSIZ -2;
+						if (index >= RCV_BUFSIZ-1) {
+							for (int i=0; i < RCV_BUFSIZ -1; i++) clientline[i] = clientline[i+1];
+							index = RCV_BUFSIZ -2;
 							delay(1);				// todo large files provision unreliably
 						}
 
@@ -1141,14 +1089,13 @@ void APDWeb::processProvisioningRequest(EthernetClient *pclient, boolean brespon
 
 					if (tempFile.isOpen()) tempFile.close(); // either no more bytes or & reached, anyways, file is to be closed at this point
 					if (strlen(destfile) > 0) {
-//#ifdef DEBUG_LOG
-						SerPrintP("renaming file to "); Serial.println(destfile);
-//#endif
+						APDDebugLog::log(APDUINO_MSG_PROVFILE,destfile);
+
 						if (APDStorage::p_sd->exists(destfile)) {
 							APDStorage::rotate_file(destfile,0);		// make backup
 							APDStorage::p_sd->remove(destfile);
 						}
-						APDStorage::p_sd->rename("PROV.TMP",destfile);
+						APDStorage::p_sd->rename(provfile,destfile);
 #ifdef DEBUG_LOG
 						if (brespond) WCPrintP(pclient, "<b>OK</b>");
 #endif
@@ -1211,7 +1158,7 @@ void APDWeb::registration_response(APDWeb *pAPDWeb){
 		SerPrintP("SR: Processing server response...");
 #endif
 		while (pAPDWeb->pwwwclient->available()) {    // with bytes to read
-			char www_respline[BUFSIZ] ="";
+			char www_respline[RCV_BUFSIZ] ="";
 			int index = 0;
 			boolean bProcessingBody = false;
 			int iStatusCode = -1;
@@ -1222,9 +1169,9 @@ void APDWeb::registration_response(APDWeb *pAPDWeb){
 						www_respline[index] = c;
 						index++;
 						www_respline[index]=0;
-						if (index >= BUFSIZ-1) {           // are we too big for the buffer? shift left
-							for (int i=0; i < BUFSIZ-1; i++) www_respline[i] = www_respline[i+1];
-							index = BUFSIZ -2;
+						if (index >= RCV_BUFSIZ-1) {           // are we too big for the buffer? shift left
+							for (int i=0; i < RCV_BUFSIZ-1; i++) www_respline[i] = www_respline[i+1];
+							index = RCV_BUFSIZ -2;
 						}
 					}
 				}
@@ -1342,7 +1289,6 @@ boolean APDWeb::self_register() {
 
 				// last pieces of the HTTP PUT request:
 				WCPrintP(pwwwclient,"Connection: close\n\n");
-				//pwwwclient->println();
 
 				// here's the actual content of the PUT request:
 				pwwwclient->println(www_postdata);
@@ -1369,7 +1315,6 @@ boolean APDWeb::self_register() {
 		SerPrintP("WWWCLI: "); Serial.println(bWebClient,DEC); SerPrintP("WWCLI?"); Serial.println((int)pwwwclient,DEC);
 #endif
 	} else {
-		//Serial.println(APDUINO_ERROR_AONOWEBCLIENT,HEX);
 		APDDebugLog::log(APDUINO_ERROR_AONOWEBCLIENT,NULL);
 		this->failure();
 	}
@@ -1512,7 +1457,6 @@ void APDWeb::get_cosmlog_string(char *szLogBuf) {
 	*pcLog='\n'; pcLog++; *pcLog='\0'; // \n\0
 }
 
-
 // TODO: add size control, avoid writing to random places
 void APDWeb::get_thingspeaklog_string(char *szLogBuf) {
 	uint8_t uSens=0;
@@ -1578,10 +1522,8 @@ void APDWeb::log_to_ApduinoOnline() {
 
 				// here's the actual content of the PUT request:
 				pwwwclient->println(www_logdata);
-				//Serial.println(APDUINO_MSG_AOLOGDONE,HEX);		// debug
 				APDDebugLog::log(APDUINO_MSG_AOLOGDONE,NULL);		// debug
 			} else {
-				//Serial.println(APDUINO_ERROR_WWWCANTCONNECTAO,HEX);		// debug
 				APDDebugLog::log(APDUINO_ERROR_WWWCANTCONNECTAO,NULL);		// debug
 
 				pwwwclient->stop();          // stop client now
@@ -1589,7 +1531,6 @@ void APDWeb::log_to_ApduinoOnline() {
 			}
 		}
 	}	else {
-		//Serial.println(APDUINO_ERROR_AOLOGNOWEBCLIENT,HEX);
 		APDDebugLog::log(APDUINO_ERROR_AOLOGNOWEBCLIENT,NULL);
 		this->failure();
 	}
@@ -1619,11 +1560,8 @@ void APDWeb::log_to_Cosm() {
 				// send the HTTP PUT request:
 				WCPrintP(pwwwclient,"PUT "); pwwwclient->print(feedUrl); WCPrintP(pwwwclient," HTTP/1.1\n");
 				WCPrintP(pwwwclient,"Host: ");    pwwwclient->println(cosm_server_name);
-				// TODO fix api key
-				//WCPrintP(pwwwclient,"X-PachubeApiKey: ");   pwwwclient->println(szCOSM_API_KEY);
 				WCPrintP(pwwwclient,"X-ApiKey: ");   pwwwclient->println(szCOSM_API_KEY);
 				WCPrintP(pwwwclient,"User-Agent: "); pwwwclient->println(USERAGENT);
-				//pwwwclient->println("Content-Type: application/x-www-form-urlencoded");
 				WCPrintP(pwwwclient,"Content-Type: text/csv\n");
 				WCPrintP(pwwwclient,"Content-Length: ");
 
@@ -1843,7 +1781,7 @@ void APDWeb::dumpPachube() {
 	}
 	SdFile dataFile(conffile, O_WRITE | O_CREAT );
 	if (dataFile.isOpen()) {
-		char line[BUFSIZ]="";
+		char line[RCV_BUFSIZ]="";
 		// TODO update with recent fields
 		sprintf_P(line,PSTR("%s %2x%2x%2x%2x,%d,%lu,%lu"),
 				this->cosm_server_name,
@@ -1858,8 +1796,7 @@ void APDWeb::dumpPachube() {
 		SerPrintP("Pachube Config dumped.");
 #endif
 	} else {
-		// TODO add an error macro in storage, replace all error opening stuff with reference to that
-		SerPrintP("W280");
+		APDDebugLog::log(APDUINO_ERROR_COSMDUMPOPEN,conffile);
 	}
 	saveAPIkey(szCOSM_API_KEY,"PACHUBE.KEY");
 }
@@ -1883,14 +1820,6 @@ void APDWeb::header(EthernetClient *pClient, int content_type) {
 	WCPrintP(pClient,"\n\n");
 	delay(1);
 }
-
-// TODO deprecate this
-/*
-void APDWeb::json_header(EthernetClient *pClient) {
-	WCPrintP(pClient,"HTTP/1.1 200 OK\n"
-			"Content-Type: application/json\n\n");
-	delay(1);
-}*/
 
 void APDWeb::json_array_item(EthernetClient *pClient, const int index, const char *name, const char *value, const char *logged ) {
 	if (index>0) {

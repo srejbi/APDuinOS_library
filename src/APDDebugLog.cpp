@@ -30,23 +30,19 @@ LOGITEM *APDDebugLog::bufend = NULL;
 int APDDebugLog::lostmessages = 0;
 void (*APDDebugLog::plogwriterfunc)(const char *) = NULL;
 void (*APDDebugLog::plogwriterfunc_off)(const char *) = NULL;
-boolean APDDebugLog::logtoserial = true;
+boolean APDDebugLog::logtoserial = true;			// todo this should be set in APDuino Config
 
-
+// prints the debug code & message to Serial
 void APDDebugLog::serialprint(unsigned int code, const char *psz_logstring){
-	// dump log to serial
-	//if (logtoserial) {
-		SerPrintP("0x"); Serial.print(code,HEX);
-		if (psz_logstring) {
-			SerPrintP(":");
-			Serial.print(psz_logstring);
-		}
-		 SerPrintP("-");
-	//}
+	SerPrintP("0x"); Serial.print(code,HEX);
+	if (psz_logstring) {
+		SerPrintP(":");
+		Serial.print(psz_logstring);
+	}
+	SerPrintP("-");
 }
 
 LOGITEM *APDDebugLog::makelog(unsigned int code, const char *psz_logstring){
-	// dump log to serial
 	if (logtoserial) serialprint(code,psz_logstring);
 
 	LOGITEM *newlog = (LOGITEM*)malloc(sizeof(LOGITEM));
@@ -101,7 +97,7 @@ void APDDebugLog::log(unsigned int code, const char *psz_logstring) {
 		if (plogwriterfunc) {
 			while (bufstart) {
 				SerPrintP(">");
-				poptowriter(plogwriterfunc);
+				shifttowriter(plogwriterfunc);
 				//delay(1);
 			}
 		} else SerPrintP("+");
@@ -112,10 +108,13 @@ void APDDebugLog::log(unsigned int code, const char *psz_logstring) {
 	Serial.println();
 }
 
+// check if there is anything in the log buffer
 bool APDDebugLog::is_empty() {
 	return (bufstart == NULL);
 }
 
+// empty the log messages buffer
+// return the number of elements flushed
 int APDDebugLog::flush() {
 	int iflushed = 0;
 	while (bufstart) {
@@ -125,6 +124,7 @@ int APDDebugLog::flush() {
 	return iflushed;
 }
 
+// flushes the first (oldest) log item
 void APDDebugLog::flush_first() {
 	if (bufstart) {
 		free(bufstart->psz_logstring);
@@ -135,23 +135,24 @@ void APDDebugLog::flush_first() {
 	}
 }
 
+// enable synchronous write to SD by restoring the writer function
 void APDDebugLog::enable_sync_writes() {
-	//SerPrintP("APD DEBUG ENABLING SYNCW\n");
 	plogwriterfunc = plogwriterfunc_off;
 }
 
+// disable synchronous write to SD by archiving the writer function
 void APDDebugLog::disable_sync_writes() {
-	//SerPrintP("APD DEBUG DISABLING SYNCW\n");
 	plogwriterfunc_off = plogwriterfunc;
 	plogwriterfunc = NULL;
 }
 
+// sets the log writer function (will enable writing to SD)
 void APDDebugLog::setlogwriter(void (*writerfunc)(const char *)) {
-	//SerPrintP("APD DEBUG SETTING LOG WRITER\n");
 	plogwriterfunc = writerfunc;
 }
 
-void APDDebugLog::poptowriter(void (*writerfunc)(const char *)) {
+//
+void APDDebugLog::shifttowriter(void (*writerfunc)(const char *)) {
 	if (lostmessages) {
 		char sztmp[11] = "";
 		LOGITEM *newlog = makelog(APDUINO_WARN_MESSAGESFLUSHED,itoa(lostmessages,sztmp,10));

@@ -125,13 +125,13 @@ if (iscand<13) {
 
 int APDRuleArray::loadRules() {
   if (!this->pAPDRules) {    // if no sensor array
-  	//Serial.println(APDUINO_MSG_LOADINGRULES,HEX);
-  	APDDebugLog::log(APDUINO_MSG_LOADINGRULES,NULL);
+  	char szConfFile[32] = "";
+  	strcpy_P(szConfFile,PSTR("RULES.CFG"));
+  	APDDebugLog::log(APDUINO_MSG_LOADINGRULES,szConfFile);
       // TODO check if SD is available!
-      iRuleCount = get_line_count_from_file("RULES.CFG");
+      iRuleCount = get_line_count_from_file(szConfFile);
       // TODO should log this
       char sztemp[10]="";
-      //Serial.print(APDUINO_MSG_RULECOUNT,HEX); SerPrintP(":"); Serial.println(iRuleCount);
       APDDebugLog::log(APDUINO_MSG_RULECOUNT,itoa(iRuleCount,sztemp,10));
       if (iRuleCount > 0) {
 #ifdef DEBUG_INFO
@@ -146,9 +146,8 @@ int APDRuleArray::loadRules() {
           SerPrintP("Rule Array allocated. Populating from RULES.CFG...\n");
 #endif
 
-          APDStorage::readFileWithParser("RULES.CFG",&new_rule_parser,(void*)this);
+          APDStorage::readFileWithParser(szConfFile,&new_rule_parser,(void*)this);
 
-          //Serial.println(APDUINO_MSG_RULESLOADED,HEX);
           APDDebugLog::log(APDUINO_MSG_RULESLOADED,NULL);
 
           // postprocessing of sensor & control pointers
@@ -216,20 +215,16 @@ int APDRuleArray::loadRules() {
   //          }
           }       // end enumerating rules
 
-          //Serial.println(APDUINO_MSG_RULESPOSTPROCESSED,HEX);
           APDDebugLog::log(APDUINO_MSG_RULESPOSTPROCESSED,NULL);
 
           this->nextrunmillis += 1000;
         } else {
-        	//Serial.println(APDUINO_ERROR_RAALLOCFAIL,HEX);
         	APDDebugLog::log(APDUINO_ERROR_RAALLOCFAIL,NULL);
         }
       } else {
-      	//Serial.println(APDUINO_ERROR_RANORULES,HEX);
       	APDDebugLog::log(APDUINO_ERROR_RANORULES,NULL);
       }
     } else {
-    	//Serial.println(APDUINO_ERROR_RAALREADYALLOC,HEX);
     	APDDebugLog::log(APDUINO_ERROR_RAALREADYALLOC,NULL);
     }
 }
@@ -246,7 +241,7 @@ void APDRuleArray::dumpToFile(char *pszFileName) {
   SdFile dataFile(pszFileName, O_WRITE | O_CREAT );
   if (dataFile.isOpen()) {
     for (int i=0; i<iRuleCount; i++) {
-      char line[BUFSIZ]="";
+      char line[RCV_BUFSIZ]="";
       APDRule *pr = pAPDRules[i];
       // TODO update with recent fields
       sprintf_P(line,PSTR("%s %d,%d,%f,%d,%d,%d,%d,%d,%d"),
@@ -267,7 +262,6 @@ void APDRuleArray::dumpToFile(char *pszFileName) {
 #endif
   }
   else {
-  	//Serial.println(APDUINO_ERROR_RADUMPOPENFAIL,HEX);
   	APDDebugLog::log(APDUINO_ERROR_RADUMPOPENFAIL,NULL);
   }
 }
@@ -350,7 +344,6 @@ void APDRuleArray::evaluateScheduledRules() {
 	if (this->nextrunmillis < millis()) {		// check if time's up
 		if (this->lastCronMin == -1) {					// if cron has been just started, we evaluate next 00:00
 			adjustnextcronminute();								// push nextrunmillis to next 0s
-			//Serial.print(APDUINO_MSG_CRONLAUNCHED,HEX); SerPrintP(":"); Serial.println(nextrunmillis);
 			char sztmp[10] = "";
 			APDDebugLog::log(APDUINO_MSG_CRONLAUNCHED,ultoa(nextrunmillis,sztmp,10));
 			return;
@@ -358,7 +351,6 @@ void APDRuleArray::evaluateScheduledRules() {
 
 		DateTime now = APDTime::now();
 		if (now.minute() != this->lastCronMin) {
-			//Serial.println(APDUINO_MSG_CRONCHECK,HEX);
 			APDDebugLog::log(APDUINO_MSG_CRONCHECK,NULL);
 			for (int i=0; i < this->iRuleCount; i++) {      // loop through rules
 				if (this->pAPDRules[i]->config.rule_definition == RF_SCHEDULED) {	// only check scheduled
