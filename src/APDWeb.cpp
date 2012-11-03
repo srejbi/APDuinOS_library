@@ -514,7 +514,7 @@ void APDWeb::web_startpage(EthernetClient *pClient, char *title,int refresh=0) {
 
 		WCPrintP(pClient,"<div class=\"stats\">"
 											"<sub>Version: "); pClient->print(APDUINO_VERSION); WCPrintP(pClient,"."); pClient->print(APDUINO_BUILD); WCPrintP(pClient,"</sub>");
-		WCPrintP(pClient,"<table>\n<tr><th>TimeStamp</th><th>Uptime</th><th>WWW Client</th><th>Net Fails</th><th>Net Restarts</th><th>RAM Free</th></tr>\n");
+		WCPrintP(pClient,"<table>\n<tr><th>TimeStamp</th><th>Uptime</th><th>WWW Client</th><th>Net Fails</th><th>Net Restarts</th><th>RAM Free</th><th>SD Free</th></tr>\n");
 
 		WCPrintP(pClient,"<tr><td>");
 		char tbuf[20] = "";
@@ -530,6 +530,8 @@ void APDWeb::web_startpage(EthernetClient *pClient, char *title,int refresh=0) {
 		pClient->print(dtostrf(iRestartCount,5,0,tbuf));
 		WCPrintP(pClient,"</td><td>");
 		pClient->print(dtostrf(freeMemory(),5,0,tbuf));
+		WCPrintP(pClient,"</td><td>");
+		pClient->print(dtostrf(APDStorage::bytesFree(),10,0,tbuf));
 		WCPrintP(pClient,"</td></tr>\n"
 									"</table></div>\n");
 
@@ -1852,6 +1854,7 @@ void APDWeb::json_status(EthernetClient *pClient) {
 		json_array_item(pClient,4,"netfail",dtostrf(iFailureCount,5,0,tbuf),"0");
 		json_array_item(pClient,5,"netrestarts",dtostrf(iRestartCount,5,0,tbuf),"0");
 		json_array_item(pClient,6,"ramfree",dtostrf(freeMemory(),5,0,tbuf),"0");
+		json_array_item(pClient,7,"sdfree",dtostrf(APDStorage::bytesFree(),16,0,tbuf),"0");
 		WCPrintP(pClient,"] },\n");  // End System data Array, System
 
 		WCPrintP(pClient,"{ \"name\": \"sensors\", \"data\": [");

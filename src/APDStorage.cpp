@@ -256,6 +256,12 @@ int APDStorage::readFileWithParser(char *szFile, void (*pParserFunc)(void *, int
   return retcode;
 }
 
+// return the number of free bytes on free clusters or 0 on error
+// todo add free bytes on dirty clusters
+uint64_t APDStorage::bytesFree() {
+	return p_sd ? p_sd->vol()->freeClusterCount() * p_sd->vol()->blocksPerCluster()*512UL : 0;
+}
+
 
 // writes a line to a file
 // szLogFile - log file name

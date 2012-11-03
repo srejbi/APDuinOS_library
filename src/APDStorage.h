@@ -59,6 +59,7 @@ public:
 	static void write_log_line(const char *szLogFile, const char *szLogLine);
 
 	static int readFileWithParser(char *szFile, void (*pParserFunc)(void*, int, char*), void *pAPD  );
+	static uint64_t bytesFree();
 
 	static int sdChipSelect;
 	static int iSSPin;
