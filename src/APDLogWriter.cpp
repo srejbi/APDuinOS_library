@@ -29,20 +29,16 @@
 char APDLogWriter::szlogfname[13] = "";
 
 void APDLogWriter::begin() {
-	//SerPrintP("APD LOG WRITER BEGIN");
 	strcpy_P(szlogfname,PSTR("APDDEBUG.LOG"));
 	// todo should allocate filename iso static, and copy szFileName
 	APDStorage::rotate_file(szlogfname,0);
-	//SerPrintP("APD LOG WRITER SHOULD HAVE ROTATED "); Serial.println(szlogfname);
 	delay(200);
 	if (APDStorage::ready()) {
-		//SerPrintP("APD LOG WRITER SETTING LOG WRITER CALLBACK\n");
 		APDDebugLog::setlogwriter(&(APDLogWriter::log_writer_function));
 	}
 }
 
 void APDLogWriter::enable_sync_writes() {
-	//SerPrintP("APD LOG WRITER ENABLING SYNCW\n");
 	if (APDStorage::ready()) {
 		APDDebugLog::setlogwriter(&(APDLogWriter::log_writer_function));
 		APDDebugLog::enable_sync_writes();
@@ -50,16 +46,13 @@ void APDLogWriter::enable_sync_writes() {
 }
 
 void APDLogWriter::disable_sync_writes() {
-	//SerPrintP("APD LOG WRITER DISABLING SYNCW\n");
 	APDDebugLog::disable_sync_writes();
 }
 
 
 
 void APDLogWriter::write_debug_log() {
-	//SerPrintP("APD LOG WRITER WRITING ANY BUFFERED MESSAGES\n");
 	while (!APDDebugLog::is_empty()) {
-		//SerPrintP("APD LOG WRITER WRITING\n");
 		APDDebugLog::shifttowriter(&(APDLogWriter::log_writer_function));
 	}
 }
