@@ -1142,11 +1142,10 @@ void APDWeb::registration_response(APDWeb *pAPDWeb){
 									SerPrintP("/devices/claim_device?api_key=");
 									Serial.println(pAPDWeb->szAPDUINO_API_KEY);
 								} // end if no local API KEY
-	#ifdef DEBUG
 								else {
-									SerPrintP("API key present already.\n");
+									// todo log this when enabled log levels ("API key present already.\n");
 								}
-	#endif
+
 							} else {
 									// the response line does not contain API KEY - skip
 							}
@@ -1674,9 +1673,7 @@ void APDWeb::dumpPachube() {
 		dataFile.println(line);
 
 		dataFile.close();
-#ifdef DEBUG
-		SerPrintP("Pachube Config dumped.");
-#endif
+		// todo log this when enabled log levels ("Pachube Config dumped.");
 	} else {
 		APDDebugLog::log(APDUINO_ERROR_COSMDUMPOPEN,conffile);
 	}
