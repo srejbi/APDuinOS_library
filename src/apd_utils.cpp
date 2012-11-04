@@ -143,10 +143,41 @@ double dewPointFast(double celsius, double humidity)
 }
 */
 
-byte *hexbytes(char *hexcode,byte *destbytes, int destbytes_count) {
+
+// returns calculated hex value of a char (as integer), -1 if char was out of range [0-9a-fA-F
+int hex_digit_val(const char c)
+{
+	int ival = -1;
+	// calculate value if char is in range
+	if (c >= '0' && c <= '9') {
+		ival = c - '0';
+	} else if (c >= 'a' && c <= 'f') {
+		ival = c - 'a' + 10;
+	} else if (c >= 'A' && c <= 'F') {
+		ival = c - 'A' + 10;
+	} //else not a hex digit, -1 already set in ival
+	return ival;
+}
+
+// return integer value of a string with a hexadecimal byte in it (2chars expected)
+// -1 on error
+int read_hex_byte(const char *szByte)
+{
+    byte a = hex_digit_val(szByte[0]);		// get the first digit converted
+    byte b = hex_digit_val(szByte[1]);		// get the second digit converted
+    if (a<0 || b<0) {						// if any is nonhex (-1)
+			return -1;  									// the entire conversion is considered nonhex
+    } else {										// otherwise it's valid
+      return (a*16) + b;					// return the value of the byte as integer
+    }
+}
+
+// converts a string with an even number of characters (should be in range of |0-9a-fA-F|)
+// to an array of bytes and returns a ptr to it
+byte *hexbytes(const char *hexcode,byte *destbytes, int destbytes_count) {
   byte *rbytes = 0;
   if (hexcode && strlen(hexcode) > 2 && strlen(hexcode)%2 == 0) {
-    char *sptr = hexcode;    // will shift as string bytes (2chars)
+    char *sptr = (char *)hexcode;    // will shift as string bytes (2chars)
     char abyte[3] = "";      // a byte as a string, 2 characters
     int i = 0;
     while (strlen(sptr) && i<destbytes_count) {
@@ -163,51 +194,26 @@ byte *hexbytes(char *hexcode,byte *destbytes, int destbytes_count) {
   return rbytes;
 }
 
-
-
-
-int hex_digit_val(char c)
-{
-    if (c >= '0' && c <= '9') {
-          return c - '0';
-    } else if (c >= 'a' && c <= 'f') {
-          return c - 'a' + 10;
-    } else if (c >= 'A' && c <= 'F') {
-          return c - 'A' + 10;
-    } else {
-          return -1;   // not a hex digit
-    }
-}
-
-int read_hex_byte(char *szByte)
-{
-    byte a = hex_digit_val(szByte[0]);
-    byte b = hex_digit_val(szByte[1]);
-    if (a<0 || b<0) {
-          return -1;  // nonhex
-    } else {
-          return (a*16) + b;
-    }
-}
-
-
-// you must free the address received!
+// get a PSTR in string buffer, that will be allocated by getPstr
+// the caller must free the address received!
 char *getPstr(void *Pstring) {
-  char *psob ;
+  char *psob;				// not initializing as malloc should set it NULL on failure anyway (otherwise will be a valid ptr)
   if (Pstring!=NULL) {
-    int ilen = strlen_P((char*)Pstring);
-    psob = (char*)malloc(sizeof(char)*ilen+1);
+    int ilen = strlen_P((char*)Pstring);			// get length of progmem string
+    psob = (char*)malloc(sizeof(char)*ilen+1);	// allocate char buffer long enough
     if (psob != NULL) {
-      memset(psob,0,sizeof(char)*ilen+1);
-      strcpy_P(psob, (char*)Pstring);
+      // todo the following is not needed, strcpy_P should set \0, deprecate code
+    	memset(psob,0,sizeof(char)*ilen+1);
+      strcpy_P(psob, (char*)Pstring);					// copy the progmem string to the buffer
     } else {
-      Serial.print("OUT OF RAM. could not allocate "); Serial.print(ilen,DEC); Serial.println(" bytes.");
+    	// TODO log this .print("OUT OF RAM. could not allocate "); Serial.print(ilen,DEC); Serial.println(" bytes.");
     }
   }
   return psob;
 }
 
-
+// not the recommended way as it does not properly reinitalize hardware, registers, etc.
+// but it works in most cases
 void soft_reset() {
 	asm volatile ("  jmp 0");
 }

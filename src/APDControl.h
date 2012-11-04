@@ -62,7 +62,7 @@ public:
 	APDControl();
 	APDControl(CDCONF *cdc,APDControl *preusablecontrol);                 // setup control from definition
 	virtual ~APDControl();
-	char *getValueS(char *strdest);
+	char *get_value_str(char *strdest);
 
 	CDCONF config;
 	void *control;

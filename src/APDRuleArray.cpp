@@ -121,7 +121,7 @@ if (iscand<13) {
   // now do something with the values parsed...
 }
 
-int APDRuleArray::loadRules() {
+int APDRuleArray::load_rules() {
   if (!this->pAPDRules) {    // if no sensor array
   	char szConfFile[32] = "";
   	strcpy_P(szConfFile,PSTR("RULES.CFG"));
@@ -138,7 +138,7 @@ int APDRuleArray::loadRules() {
         if (pAPDRules) {
           memset(pAPDRules,0,sizeof(APDRule*)*iRuleCount);
           // todo log this when enabled log levels ("Rule Array allocated. Populating from RULES.CFG...\n")
-          APDStorage::readFileWithParser(szConfFile,&new_rule_parser,(void*)this);
+          APDStorage::read_file_with_parser(szConfFile,&new_rule_parser,(void*)this);
 
           APDDebugLog::log(APDUINO_MSG_RULESLOADED,NULL);
           // postprocessing of sensor & control pointers
@@ -209,7 +209,7 @@ int APDRuleArray::loadRules() {
 }
 
 // TODO this function is out of structure-sync...
-void APDRuleArray::dumpToFile(char *pszFileName) {
+void APDRuleArray::dump_to_file(char *pszFileName) {
   // make a string for assembling the data to log:
 	// todo log this when enabled log levels SerPrintP("Dumping Rule Array Config...");
     if (APDStorage::p_sd->exists(pszFileName)) {
@@ -242,15 +242,15 @@ void APDRuleArray::dumpToFile(char *pszFileName) {
 }
 
 
-APDRule *APDRuleArray::firstRuleBySensorIdx(int iSensorIdx) {
+APDRule *APDRuleArray::first_rule_by_sensor_index(int iSensorIdx) {
 // todo
 }
 
-APDRule *APDRuleArray::firstRuleByControlIdx(int iControlIdx) {
+APDRule *APDRuleArray::first_rule_by_control_index(int iControlIdx) {
 // todo
 }
 
-void APDRuleArray::evaluateSensorRules(void *pra, APDSensor *pSensor) {
+void APDRuleArray::evaluate_sensor_rules(void *pra, APDSensor *pSensor) {
 	if (pra != NULL && pSensor->fvalue != NAN) {			// todo add switch on nan?
 		APDRuleArray *pRA = (APDRuleArray *)pra;
 
@@ -258,7 +258,7 @@ void APDRuleArray::evaluateSensorRules(void *pra, APDSensor *pSensor) {
 		if (iSensorIndex >= 0) {
 			for (int i=0; i < pRA->iRuleCount; i++) {      // loop through rules
 				if (pRA->pAPDRules[i]->config.rf_sensor_idx == iSensorIndex || pRA->pAPDRules[i]->config.ra_sensor_idx == iSensorIndex) {    // if rule is bound to the sensor either as trigger or input value for control
-					if (pRA->pAPDRules[i]->config.rule_definition != RF_SCHEDULED) pRA->pAPDRules[i]->evaluateRule();	// evaluate but scheduled rules
+					if (pRA->pAPDRules[i]->config.rule_definition != RF_SCHEDULED) pRA->pAPDRules[i]->evaluate_rule();	// evaluate but scheduled rules
 				}  // evaluate if rule is for sensor
 			}  // loop rules
 		}
@@ -268,13 +268,13 @@ void APDRuleArray::evaluateSensorRules(void *pra, APDSensor *pSensor) {
 	}
 }
 
-void APDRuleArray::evaluateSensorRulesByIdx(int iSensorIndex) {
+void APDRuleArray::evaluate_rules_by_sensor_index(int iSensorIndex) {
 	// todo log this when enabled log levels ("RULEEVAL!");
   if (this->pSA->pAPDSensors[iSensorIndex]->fvalue != NAN) {
 		for (int i=0; i < this->iRuleCount; i++) {      // loop through rules
 			if (this->pAPDRules[i]->config.rf_sensor_idx == iSensorIndex || this->pAPDRules[i]->config.ra_sensor_idx == iSensorIndex) {    // if rule is bound to the sensor either as trigger or input value for control
 				// todo log this when enabled log levels SerPrintP("RULE_EVAL:"); Serial.print(this->pAPDRules[i]->config.label);
-				if (this->pAPDRules[i]->config.rule_definition != RF_SCHEDULED) this->pAPDRules[i]->evaluateRule(); // evaluate but scheduled rules
+				if (this->pAPDRules[i]->config.rule_definition != RF_SCHEDULED) this->pAPDRules[i]->evaluate_rule(); // evaluate but scheduled rules
 			}  // evaluate if rule is for sensor
 		}  // loop rules
 		//this->pRuleMetro->reset();    // restart the metro
@@ -284,12 +284,12 @@ void APDRuleArray::evaluateSensorRulesByIdx(int iSensorIndex) {
 }
 
 
-void APDRuleArray::loopRules() {
+void APDRuleArray::loop_rules() {
 	// todo log this when enabled log levels SerPrintP("loop rules\n");
-	evaluateScheduledRules();
+	evaluate_scheduled_rules();
   for (int i=0; i < this->iRuleCount; i++) {      // loop through rules
   	if (this->pAPDRules[i]->config.rule_definition != RF_SCHEDULED) {	// except scheduled rules
-  		this->pAPDRules[i]->evaluateRule();
+  		this->pAPDRules[i]->evaluate_rule();
   	}
   }
 
@@ -297,7 +297,7 @@ void APDRuleArray::loopRules() {
 }
 
 // sets the nextrunmillis to the millis remaining till the next minute 0s
-void APDRuleArray::adjustnextcronminute() {
+void APDRuleArray::adjust_next_cron_minute() {
 	DateTime now = APDTime::now();
 	this->lastCronMin = now.minute();
 	this->nextrunmillis = millis();
@@ -307,10 +307,10 @@ void APDRuleArray::adjustnextcronminute() {
 // iterate through RF_SCHEDULED rules and execute the scheduler evaluation
 // as this should be done 1x a minute, nextrunmillis is checked against millis
 // (and readjusted to next run if we did a check)
-void APDRuleArray::evaluateScheduledRules() {
+void APDRuleArray::evaluate_scheduled_rules() {
 	if (this->nextrunmillis < millis()) {		// check if time's up
 		if (this->lastCronMin == -1) {					// if cron has been just started, we evaluate next 00:00
-			adjustnextcronminute();								// push nextrunmillis to next 0s
+			adjust_next_cron_minute();								// push nextrunmillis to next 0s
 			char sztmp[10] = "";
 			APDDebugLog::log(APDUINO_MSG_CRONLAUNCHED,ultoa(nextrunmillis,sztmp,10));
 			return;
@@ -321,10 +321,10 @@ void APDRuleArray::evaluateScheduledRules() {
 			APDDebugLog::log(APDUINO_MSG_CRONCHECK,NULL);
 			for (int i=0; i < this->iRuleCount; i++) {      // loop through rules
 				if (this->pAPDRules[i]->config.rule_definition == RF_SCHEDULED) {	// only check scheduled
-					this->pAPDRules[i]->evaluateRule();
+					this->pAPDRules[i]->evaluate_rule();
 				}
 			}
 		}
-		adjustnextcronminute();
+		adjust_next_cron_minute();
 	}
 }

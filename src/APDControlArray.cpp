@@ -78,7 +78,7 @@ void APDControlArray::new_control_parser(void *pCA, int iline, char *psz) {
 	}
 
   APDControl *newcontrol = NULL;
-  APDControl *preusablecontrol = ((APDControlArray *)pCA)->findReusableControl(&cdc);
+  APDControl *preusablecontrol = ((APDControlArray *)pCA)->find_reusable_control(&cdc);
   newcontrol = new APDControl(&cdc,preusablecontrol);
   ((APDControlArray*)pCA)->pAPDControls[iline] = newcontrol;
 
@@ -87,7 +87,7 @@ void APDControlArray::new_control_parser(void *pCA, int iline, char *psz) {
   // now do something with the values parsed...
 }
 
-int APDControlArray::loadControls() {
+int APDControlArray::load_controls() {
   if (!this->pAPDControls) {    // if no sensor array
   	char szConfFile[32] = "";
   	strcpy_P(szConfFile,PSTR("CONTROLS.CFG"));
@@ -105,7 +105,7 @@ int APDControlArray::loadControls() {
 
         // todo log this when enabled log levels "CA Allocated. Parsing CONTROLS.CFG..."
 
-        APDStorage::readFileWithParser(szConfFile,&new_control_parser,(void*)this);
+        APDStorage::read_file_with_parser(szConfFile,&new_control_parser,(void*)this);
 
         APDDebugLog::log(APDUINO_MSG_CONTROLSLOADED,NULL);
 
@@ -141,7 +141,7 @@ int APDControlArray::loadControls() {
   }
 }
 
-int APDControlArray::dumpToFile(char *pszFileName) {
+int APDControlArray::dump_to_file(char *pszFileName) {
   // make a string for assembling the data to log:
 	// todo log this when enabled log levels "Dumping CA Config..."
     if (APDStorage::p_sd->exists(pszFileName)) {
@@ -170,7 +170,7 @@ int APDControlArray::dumpToFile(char *pszFileName) {
 
 }
 
-APDControl *APDControlArray::firstControlByPin(int iPin, int iType) {
+APDControl *APDControlArray::first_control_by_pin(int iPin, int iType) {
 	APDControl *pcont = NULL;
 	for (int i=0; i<this->iControlCount && this->pAPDControls[i] != NULL; i++) {
 			if (this->pAPDControls[i]->config.control_type == iType &&
@@ -182,12 +182,12 @@ APDControl *APDControlArray::firstControlByPin(int iPin, int iType) {
 	return pcont;
 }
 
-APDControl *APDControlArray::findReusableControl(CDCONF *cdc) {
+APDControl *APDControlArray::find_reusable_control(CDCONF *cdc) {
 	APDControl *preusable = NULL;
   switch (cdc->control_type) {
   // TODO: put all reusable controls below
   case RCPLUG_CONTROL:
-    preusable = this->firstControlByPin(cdc->control_pin, cdc->control_type);
+    preusable = this->first_control_by_pin(cdc->control_pin, cdc->control_type);
     // todo log this when enabled log levels (the VERBOSE defines below)
 #ifdef VERBOSE
     if (preusable) {
@@ -209,7 +209,7 @@ APDControl *APDControlArray::findReusableControl(CDCONF *cdc) {
   return preusable;
 }
 
-APDControl *APDControlArray::byIndex(int idx) {
+APDControl *APDControlArray::find_control_by_index(int idx) {
 	APDControl *ret = NULL;
   if (idx >= 0 && idx <= this->iControlCount) {
   	ret = this->pAPDControls[idx];

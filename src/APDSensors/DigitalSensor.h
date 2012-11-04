@@ -45,7 +45,7 @@ public:
   boolean perform_check();
   virtual
   ~DigitalSensor();
-  char *getValueS(char *strdest);
+  char *get_value_str(char *strdest);
 private:
 
 };

@@ -28,20 +28,16 @@
 VibrationSensor::VibrationSensor(SDCONF *sdc)
 {
   this->initSensor(sdc);
-#ifdef DEBUG
-  SerPrintP("VIBRATION SENSOR INITIALIZING...");
-#endif
+  // todo log this when enabled log levels ("VIBRATION SENSOR INITIALIZING...");
 
   this->sensor = (VIBSENS*)malloc(sizeof(VIBSENS));
   if (sscanf(this->config.extra_data, "%d", &(this->sensor->readings)) != 1) {
     this->sensor->readings = 10;                           // DEFAULT VALUE FIXME define in header
     APDDebugLog::log(APDUINO_MSG_VIBSENDEFAULTRC,NULL);
+  } else {
+  	// todo log this when enabled log levels ("VIBRATION: CALIBRATIONDATA:"); Serial.println(this->sensor->readings);
   }
-#ifdef DEBUG
-  else {
-      SerPrintP("VIBRATION: CALIBRATIONDATA:"); Serial.println(this->sensor->readings);
-  }
-#endif
+
   this->history = (int*)malloc(sizeof(int)*this->sensor->readings);
   if (this->history) {
       memset(this->history,0,sizeof(int)*this->sensor->readings);
@@ -50,9 +46,7 @@ VibrationSensor::VibrationSensor(SDCONF *sdc)
   this->ltotal = 0;
   this->boverflow = false;
   this->sensor->value = NAN;
-#ifdef DEBUG
-  SerPrintP("VIBRATION SENSOR INIT DONE");
-#endif
+  // todo log this when enabled log levels ("VIBRATION SENSOR INIT DONE");
 }
 
 VibrationSensor::~VibrationSensor()
@@ -72,18 +66,16 @@ boolean VibrationSensor::perform_check()
   return retcode;
 }
 
+// do an averaged reading over a short period of time window
+// should ultimately be evaluated as true/false
+// (don't want interrupts for now)
 float VibrationSensor::read_sensor() {
-#ifdef DEBUG
-  SerPrintP("VIBRATION SENSOR READING");
-#endif
-  //delay(10);
+	// todo log this when enabled log levels("VIBRATION SENSOR READING");
   float avg_val = 0;                        // stores the average value
 
   if (this->history != NULL) {
       int i = this->lastreading % this->sensor->readings;
-#ifdef DEBUG
-      SerPrintP("reading"); Serial.print(i,DEC);
-#endif
+      // todo log this when enabled log levels ("reading"); Serial.print(i,DEC);
       this->ltotal -= this->history[i];
       this->history[i] = analogRead(this->config.sensor_pin);
       this->ltotal += this->history[i];
@@ -93,19 +85,13 @@ float VibrationSensor::read_sensor() {
           this->lastreading = 0;
           this->boverflow = true;
       }
-#ifdef DEBUG
-      SerPrintP("MOD"); Serial.print(j); SerPrintP(" - TOT: "); Serial.println(this->ltotal,DEC);
-#endif
+      // todo log this when enabled log levels ("MOD"); Serial.print(j); SerPrintP(" - TOT: "); Serial.println(this->ltotal,DEC);
       avg_val =  this->ltotal / j;
 
   } else {
-#ifdef DEBUG
-      SerPrintP("SINGLE-READ");
-#endif
+  	// todo log this when enabled log levels ("SINGLE-READ");
       avg_val = analogRead(this->config.sensor_pin);
   }
-#ifdef DEBUG
-  SerPrintP("Average vibration voltage: "); Serial.println(avg_val, DEC);         // print out the average distance to the debugger
-#endif
+  // todo log this when enabled log levels ("Average vibration voltage: "); Serial.println(avg_val, DEC);         // print out the average distance to the debugger
   return avg_val;
 }

@@ -1,3 +1,4 @@
+// todo deprecate this file, let display-enabled versions define their own ways of displaying
 #ifndef __APD_SCREENS_H
 #define __APD_SCREENS_H
 const char splash_screen[][16] ={ 

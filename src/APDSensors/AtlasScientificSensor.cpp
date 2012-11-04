@@ -19,6 +19,9 @@
  *
  * AtlasScientificSensor.cpp
  *
+ * todo sensors need testing, code might not be fully working
+ * todo design calibration process (design a generic sensor calibration process!)
+ *
  *  Created on: Aug 27, 2012
  *      Author: George Schreiber
  */
@@ -55,15 +58,15 @@ AtlasScientificSensor::AtlasScientificSensor(SDCONF *sdc, void *assensor)
 			  if (memcmp(&(ast.S0), &(this->sensor->asenc->S0), sizeof(byte)*3) == 0) {
 				  if (cht != ((AtlasScientificSensor*)assensor)->sensor->channel) {
 					  this->sensor->channel = cht;	// OK, reusing a softserial, setting channel
-					  SerPrintP(" channel "); Serial.print(this->sensor->channel);
+					  // todo log this when enabled log levels SerPrintP(" channel "); Serial.print(this->sensor->channel);
 				  } else {
-					  SerPrintP("E");		// ERROR same SW serial channel
+				  	// todo log this when enabled log levels ERROR same SW serial channel
 				  }
 			  } else {
-				  SerPrintP("E");			// ERROR different SoftSerial config on same HW pins
+			  	// todo log this when enabled log levels ERROR different SoftSerial config on same HW pins
 			  }
     	  } else {
-    		  SerPrintP("E");				// ERROR invalid reusable Atlas Sensor (not SW Serial)
+    	  	// todo log this when enabled log levels ERROR invalid reusable Atlas Sensor (not SW Serial)
     	  }
       } else {
           this->bPrimary = true;
@@ -72,23 +75,21 @@ AtlasScientificSensor::AtlasScientificSensor(SDCONF *sdc, void *assensor)
         	  memset(this->sensor->asenc,0,sizeof(ASENC));
         	 // get ptr to HW serial or allocate a new SW serial object, according to extra config
         	 if (edscand == 0) {	// hardware serial (0 SW serial parameters scanned)
-        	 //#ifdef DEBUG
-        	     SerPrintP("ATLAS: HW Serial.\n");
-        	 //#endif
+        		 // todo log this when enabled log levels ("ATLAS: HW Serial.\n");
         	     if (this->selectHWSerial()) {		// will detect which HW serial to open
         	    	 // start the hardware serial port
         	    	 ((HardwareSerial*)(((ASSENS*)(this->sensor))->asenc->serialport))->begin(ATLAS_BAUD_RATE);
         	     }	else {
-        	    	 SerPrintP("E"); 				// ERROR selecting HW serial
+        	    	 // todo log this when enabled log levels SerPrintP("E"); 				// ERROR selecting HW serial
         	     }
         	     // todo halt?
         	   } else {			// Software Serial (3 or 4 SW serial params scanned)
         	 	  if (edscand >= 3) {	// we at least have YN,S0,S1
-        	 		  SerPrintP("ATLAS: SW Serial.\n");
-        	 		  SerPrintP("YN: ");Serial.print(cht);SerPrintP(" S0: ");Serial.print(ast.S0);SerPrintP(" S1: ");Serial.print(ast.S1);
+        	 	  	// todo log this when enabled log levels SerPrintP("ATLAS: SW Serial.\n"); \
+        	 	  					("YN: ") (cht) (" S0: ") (ast.S0) (" S1: ") (ast.S1);
 
-        	 		  if (edscand > 3) {
-        	 			  SerPrintP(" E: ");Serial.print(ast.E);
+        	 		  if (edscand > 3) {	// if E not specified
+        	 		  	// todo log this when enabled log levels SerPrintP(" E: ");Serial.print(ast.E);
         	 		  } else {
         	 			  ast.E = -1;		// E should be hard pulled GND
         	 		  }
@@ -99,16 +100,16 @@ AtlasScientificSensor::AtlasScientificSensor(SDCONF *sdc, void *assensor)
         	 		  if (this->selectSWSerial()) {
         	 			 ((SoftwareSerial*)(((ASSENS*)(this->sensor))->asenc->serialport))->begin(ATLAS_BAUD_RATE);
         	 		  } else {
-        	 			  SerPrintP("E2");		// ERROR selecting sw serial
+        	 		  	// todo log this when enabled log levels  ERROR selecting sw serial
         	 		  }
         	 	  } else {
-        	 		  SerPrintP("E1");			// ERROR configuration error, at least 3 parameters (YN,S0,S1) should be provided for softserial
+        	 	  	// todo log this when enabled log levels ERROR configuration error, at least 3 parameters (YN,S0,S1) should be provided for softserial
         	 	  }
         	   }
         	 	// todo bail out on previous errors otherwise state will look like ready even if error(s) occurred
           	this->sensor->asenc->state = STATE_READY;
           } else {
-          	SerPrintP("E0");			// ERROR - out of ram
+          	// todo log this when enabled log levels SerPrintP("E0");			// ERROR - out of ram
           }
       }
 
@@ -132,7 +133,7 @@ AtlasScientificSensor::~AtlasScientificSensor() {
 								SoftwareSerial *sp = (SoftwareSerial *)(this->sensor->asenc->serialport);
 								//sp->end();			// SoftwareSerial destructor will end
 								delete(sp);
-								SerPrintP("swserdeleted.");
+								// todo log this when enabled log levels SerPrintP("swserdeleted.");
 							} else {
 								HardwareSerial *sp = (HardwareSerial *)(this->sensor->asenc->serialport);
 								sp->end();
@@ -141,16 +142,16 @@ AtlasScientificSensor::~AtlasScientificSensor() {
 							this->sensor->asenc->serialport = NULL;			// reset serialport to NULL
 					}
 					free(this->sensor->asenc);										// free Atlas Scientific Sensor encapsulation struct
-					SerPrintP("encobjfreed.");
+					// todo log this when enabled log levels SerPrintP("encobjfreed.");
       	}
       	this->sensor->asenc = NULL;										// reset encapsulation struct ptr to NULL
       }
       free(this->sensor);
-      SerPrintP("sensorfreed.");
+      // todo log this when enabled log levels SerPrintP("sensorfreed.");
       this->sensor = NULL;
   }
   delete(this->pmetro);
-  SerPrintP("metrodeleted.");
+  // todo log this when enabled log levels SerPrintP("metrodeleted.");
   this->pmetro = NULL;
 }
 
@@ -162,6 +163,7 @@ bool AtlasScientificSensor::is_soft_serial() {
 	return (this->sensor != NULL && this->sensor->channel > -1);
 }
 
+// selects SoftwareSerial channel via the RS-232
 // adopted from the Atlas-Scientific sample code for RS-232
 void AtlasScientificSensor::openChannel(short channel) {
 	switch (channel) {
@@ -183,6 +185,7 @@ void AtlasScientificSensor::openChannel(short channel) {
 		break;
 	}
 	this->print('/r');
+	if (this->sensor->asenc->E != -1) digitalWrite(this->sensor->asenc->S1, HIGH); //S1=1
 	//the print cr was put in place to improve stability.
 	//sometimes, when switching channels errant data
 	//was passed. The print CR clears any incorrect data that was
@@ -217,16 +220,17 @@ bool AtlasScientificSensor::selectHWSerial()
 				pser = &Serial3;
 				break;
 			default:
-				SerPrintP("E");			// ERROR invalid RX PIN for Hardware Serial
+				// todo log this when enabled log levels SerPrintP("E");			// ERROR invalid RX PIN for Hardware Serial
+				;;
 			}
 		} else {
-			SerPrintP("E");			// ERROR invalid PIN sequence for Hardware Serial
+			// todo log this when enabled log levels SerPrintP("E");			// ERROR invalid PIN sequence for Hardware Serial
 		}
 		// todo check serial state
 		((ASSENS*)(this->sensor))->asenc->serialport = (void *)pser;		// STORE pointer to serial port
 		bRetCode = (pser != NULL);			// return true if a HW serial was selected
 	} else {
-		SerPrintP("E");				// ERROR, invalid object
+		// todo log this when enabled log levels SerPrintP("E");				// ERROR, invalid object
 	}
 	return bRetCode;
 }
@@ -236,7 +240,7 @@ bool AtlasScientificSensor::selectHWSerial()
 bool AtlasScientificSensor::selectSWSerial()
 {
 	bool bRetCode = false;
-	SerPrintP("Selecting SW Serial...\n");
+	// todo log this when enabled log levels SerPrintP("Selecting SW Serial...\n");
 	if (this->sensor != NULL && ((ASSENS*)(this->sensor))->asenc->serialport == NULL) {
 		// allocate a new SoftwareSerial
 		SoftwareSerial *pser = new SoftwareSerial(this->config.sensor_pin, this->config.sensor_secondary_pin );
@@ -246,12 +250,14 @@ bool AtlasScientificSensor::selectSWSerial()
 			pinMode(this->sensor->asenc->S1, OUTPUT);							// S1 is OUTPUT
 			if (this->sensor->asenc->E > 0) {		// if E pin specified (not pulled to GND fixed)
 				pinMode(this->sensor->asenc->E, OUTPUT);						// E is OUTPUT (LOW to enable, HIGH to disable)
+				// now pulling LOW fixed if using SW serial, otherwise should be enabled/disabled before/after read/print operations
+				digitalWrite(this->sensor->asenc->E, LOW);
 			}
-			SerPrintP("SW Serial selected.\n");
+			// todo log this when enabled log levels SerPrintP("SW Serial selected.\n");
 			bRetCode = true;
 		} // else?
 	} else {
-		SerPrintP("E");				// ERROR, invalid object
+		// todo log this when enabled log levels SerPrintP("E");				// ERROR, invalid object
 	}
 	return bRetCode;
 }
@@ -271,8 +277,8 @@ float AtlasScientificSensor::as_sensor_read()
 	float sensorval = -120;
 
 	if (this->sensor->asenc == NULL || this->sensor->asenc->serialport == NULL ) {
-		SerPrintP("E");			// error, no sensor port etc.
-		return -999;
+		// todo log this when enabled log SerPrintP("E");			// error, no sensor port etc.
+		return NAN; //return -999;
 	}
 
    if (this->_state == STATE_READY) {			// attempt to trigger reading if ready
@@ -286,7 +292,7 @@ float AtlasScientificSensor::as_sensor_read()
 
   		 // and "come back" in 1100 ms for results
   		 this->pmetro->interval(1100);							// reschedule checking this sensor in 1100 ms (will go to the STATE_WRITE branch)
-  		 SerPrintP("ATLAS COMMANDSENT:");Serial.print(millis() - this->_lm);
+  		 // todo log this when enabled log levels SerPrintP("ATLAS COMMANDSENT:");Serial.print(millis() - this->_lm);
   		 this->_lm = millis();
   	 } else {												// the serial port is occupied (by another instance using the shared serial port)
   		 //SerPrintP(".");
@@ -297,21 +303,18 @@ float AtlasScientificSensor::as_sensor_read()
 	 int databytes = 0;		// bytes to read
 	 char sz_rx[64];
 	 databytes = this->fetch(sz_rx);
-	 Serial.print(databytes); SerPrintP(" bytes received.\n");
-	 Serial.print(sz_rx);
+	 // todo log this when enabled log  Serial.print(databytes); SerPrintP(" bytes received.\n");	 Serial.print(sz_rx);
 
 	 float sensorval = 0;
 	 if (sscanf(sz_rx, "%f", &sensorval) == 0) {
-		 SerPrintP("AS: Unexpected data:");
-		 Serial.print(sz_rx);
+		 // todo log this when enabled log levels SerPrintP("AS: Unexpected data:");
+		 // todo log this when enabled log Serial.print(sz_rx);
 	 } else {
 		 this->fvalue = sensorval;
-		 SerPrintP("Storing value: ");
-		 Serial.print(this->fvalue);
+		 // todo log this when enabled log levels SerPrintP("Storing value: "); Serial.print(this->fvalue);
 	 }
 
-  	 SerPrintP("AS "); Serial.print(this->config.label); SerPrintP(" FETCH PIN "); Serial.print(this->config.sensor_pin,DEC); SerPrintP("...");
-  	 Serial.print(millis() - this->_lm);
+	 // todo log this when enabled log SerPrintP("AS "); Serial.print(this->config.label); SerPrintP(" FETCH PIN "); Serial.print(this->config.sensor_pin,DEC); SerPrintP("..."); Serial.print(millis() - this->_lm);
   	 this->_lm = millis();
 
       // set ready states
@@ -319,7 +322,7 @@ float AtlasScientificSensor::as_sensor_read()
       this->sensor->asenc->state = STATE_READY;
       this->pmetro->interval(this->config.sensor_freq);						// reset normal poll time
    } else {
-  	 SerPrintP("Unknown state. Slowing sensor polling.\n");
+  	 // todo log this when enabled log levels ("Unknown state. Slowing sensor polling.\n");
   	 this->pmetro->interval(this->config.sensor_freq*10);
    }
   return sensorval;
@@ -343,15 +346,16 @@ void AtlasScientificSensor::diagnostics() {
 	case SENSE_DO:
 	case SENSE_EC:
 	case SENSE_ORP:
-		SerPrintP("Not Implemented.\n");
+		// todo log this when enabled log levels ("Not Implemented.\n");
 		break;
 	default:
-		SerPrintP("E");			// ERROR: unknown class
+		// todo log this when enabled log levels SerPrintP("E");			// ERROR: unknown class
+		;;
 	}
 }
 
 void AtlasScientificSensor::calibrate() {
-	SerPrintP("Not Implemented.\n");
+	// todo log this when enabled log levels SerPrintP("Not Implemented.\n");
 }
 
 

@@ -102,7 +102,7 @@ void APDTime::begin() {
   	APDDebugLog::log(APDUINO_MSG_SWRTCSTART,NULL);
 		// TODO check & load time from APDLOG.TXT last message, if exists
 		pRTCm->begin(DateTime(__DATE__, __TIME__));           // SW clock always start @ last build time - adjusted later if RTC | NTP
-		LogDateTime(pRTCm->now());
+		log_datetime(pRTCm->now());
   } else {
   	APDDebugLog::log(APDUINO_ERROR_SWRTCSETUPFAIL,NULL);
   	// todo log this when enabled log levels ("Seems SW clock setup failed. :(\n");
@@ -139,7 +139,7 @@ unsigned long APDTime::getUpTime() {
 // prints uptime in a char buffer, days,hours,minutes,seconds
 // the buffer must be large enough (>13 chars) to hold the string that is (13chars+\0)
 // returns pointer to the char buffer or EOF if an error occurred (sprintf)
-char *APDTime::getUpTimeS(char *psz_uptime) {
+char *APDTime::get_uptime_str(char *psz_uptime) {
   unsigned long ut = getUpTime() / 1000;
   // calculate uptime positions
   int updays = (ut / 3600) / 24;
@@ -152,7 +152,7 @@ char *APDTime::getUpTimeS(char *psz_uptime) {
 }
 
 // TODO return whatever udp would return
-void APDTime::setupNTPSync(int UDPPort, byte *TimeServer, int iTZ, int iDST ) {
+void APDTime::setup_ntp_sync(int UDPPort, byte *TimeServer, int iTZ, int iDST ) {
   // check if not in use...
 	APDDebugLog::log(APDUINO_MSG_SETUPUDPFORNTP,NULL);
 	// todo log this when enabled log levels ("SETUP UDP 4 NTP\n");
@@ -181,7 +181,7 @@ void APDTime::setupNTPSync(int UDPPort, byte *TimeServer, int iTZ, int iDST ) {
 //
 // NTP2RTC MISC
 //
-void APDTime::LogDateTime(DateTime t)
+void APDTime::log_datetime(DateTime t)
 {
     char datestr[32] = "";
     // TODO implement format string, input by user
@@ -206,7 +206,7 @@ void APDTime::SdDateTimeCallback(uint16_t* date, uint16_t* time) {
  *       Thanx!
  *       mod by Rob Tillaart, 10-10-2010""
 */
-unsigned long APDTime::sendNTPpacket(byte *address)
+unsigned long APDTime::send_ntp_packet(byte *address)
 {
   unsigned long ulret = 0;
   if (pUdp != NULL) {
@@ -271,7 +271,7 @@ void APDTime::adjust(DateTime dt) {
 */
 
 // sync clock to NTP server
-void APDTime::ntpSync()
+void APDTime::sync_to_ntp()
 {
 	if (pUdp == NULL) {
 		APDDebugLog::log(APDUINO_ERROR_NTPNOUDP,NULL);
@@ -286,7 +286,7 @@ void APDTime::ntpSync()
     } ; SerPrintP(".NTP REQ:");  SerDumpIP(timeServer);
 
     // send an NTP packet to a time server
-    sendNTPpacket(timeServer);
+    send_ntp_packet(timeServer);
     // todo log this when enabled log levels ("Packet sent.\n");
     // wait to see if a reply is available
     //delay(3000);                // TODO iso loop and check if there is a response, bail out after soft timeout
@@ -360,7 +360,7 @@ void APDTime::ntpSync()
       PrintDateTime(DateTime(t2)); Serial.println(f2,4);
       PrintDateTime(DateTime(t3)); Serial.println(f3,4);
       */
-      LogDateTime(DateTime(t4)); Serial.println(f4,4);
+      log_datetime(DateTime(t4)); Serial.println(f4,4);
 
       // Adjust timezone and DST
       t4 += (( time_zone + dst )* 3600L);     // Notice the L for long calculations!

@@ -117,17 +117,17 @@ void APDuino::init(long baudrate) {
 }
 
 
-boolean APDuino::initApplication() {
+boolean APDuino::init_app() {
 	// we need storage!
 	if (APDStorage::ready()) {
 		// enable sending debug log to SD card
 		APDLogWriter::begin();							// this starts the DEBUG log writer (not the data log!)
 		APDLogWriter::write_debug_log();		// write any buffered messages
 
-		this->setupTimeKeeping();
+		this->setup_timekeeping();
 		delay(50);
 
-		this->setupNetworking();  // TODO provide details here
+		this->setup_networking();  // TODO provide details here
 		delay(50);
 
 		//bInitialized = (pAPDTime != NULL && pAPDWeb != NULL);
@@ -137,8 +137,8 @@ boolean APDuino::initApplication() {
 		//byte hackts[4] = ;
 
 		//this->pAPDTime->setupNTPSync(8888, DEFAULT_TIMESERVER_IP,1,1);
-		APDTime::setupNTPSync(8888, DEFAULT_TIMESERVER_IP,1,1);
-		this->checkTimeKeeping();
+		APDTime::setup_ntp_sync(8888, DEFAULT_TIMESERVER_IP,1,1);
+		this->check_timekeeping();
 	#ifdef DEBUG
 		SerPrintP("\ninit sensors\n");
 	#endif
@@ -151,7 +151,7 @@ boolean APDuino::initApplication() {
 		SerPrintP("\ninit controls\n");
 	#endif
 		//this->setupControls();
-		this->pca->loadControls();
+		this->pca->load_controls();
 		//SerPrintP("APD Controls - ok.\n");
 		//GLCD.Puts(".");
 	#ifdef DEBUG
@@ -159,11 +159,11 @@ boolean APDuino::initApplication() {
 		SerPrintP("init rules\n");
 	#endif
 		//this->setupRules();
-		this->pra->loadRules();
+		this->pra->load_rules();
 		//SerPrintP("APD Rules - ok.\n");
 
 		// enable "real-time" rule evaluation
-		this->psa->enableRuleEvaluation(&(APDRuleArray::evaluateSensorRules),(void *)this->pra);
+		this->psa->enableRuleEvaluation(&(APDRuleArray::evaluate_sensor_rules),(void *)this->pra);
 
 		// FIXME check if we are initialized, set it in bConfigured
 		// TODO revise what is obligatory. for now, 1 sensor or control is enough to be considered as configured
@@ -177,7 +177,7 @@ boolean APDuino::initApplication() {
 
 	// adding custom functions should be done outside
 		//SerPrintP("APD: WWWSRV...");
-		if (this->startWebServer()) {
+		if (this->start_webserver()) {
 //				SerPrintP("OK.\n");
 //		} else {
 //				SerPrintP("FAIL.\n");
@@ -219,7 +219,7 @@ boolean APDuino::initApplication() {
 
 		if (bConfigured()) {
 			//SerPrintP("APD: LOGGING...");
-			if (this->startLogging(DEFAULT_ONLINE_LOG_FREQ)) {		// TODO revise, this should be configurable
+			if (this->start_logging(DEFAULT_ONLINE_LOG_FREQ)) {		// TODO revise, this should be configurable
 //					SerPrintP("OK.\n");
 //			} else {
 //					SerPrintP("FAIL.\n");
@@ -231,12 +231,12 @@ boolean APDuino::initApplication() {
 	}
 }
 
-void APDuino::setupWithStorage(int iChip, int iSpeed) {
+void APDuino::setup_with_storage(int iChip, int iSpeed) {
   delay(250);    // give the hw some time, we're probably just powering on
   // check if storage was initialized with success
   // check we have APDWeb allocated
-  if (setupStorage(SS_PIN,iChip,iSpeed)) {
-			initApplication();
+  if (setup_storage(SS_PIN,iChip,iSpeed)) {
+			init_app();
   } else {
   	APDDebugLog::log(APDUINO_ERROR_STORAGENOTSETUP,NULL);
 	}
@@ -247,9 +247,9 @@ unsigned long APDuino::getUpTime() {
   return APDTime::getUpTime();
 }
 
-char *APDuino::getUpTimeS(char *psz_uptime) {
+char *APDuino::get_uptime_str(char *psz_uptime) {
   // TODO nullptr chk
-  return APDTime::getUpTimeS(psz_uptime);
+  return APDTime::get_uptime_str(psz_uptime);
 }
 
 boolean APDuino::storage_ready() {
@@ -257,7 +257,7 @@ boolean APDuino::storage_ready() {
 }
 
 
-void APDuino::setupTimeKeeping() {
+void APDuino::setup_timekeeping() {
 #ifdef DEBUG
   SerPrintP("Time...");
 #endif
@@ -270,14 +270,14 @@ void APDuino::setupTimeKeeping() {
   }
 }
 
-void APDuino::checkTimeKeeping() {
+void APDuino::check_timekeeping() {
 #ifdef DEBUG
   SerPrintP("Time check...");
 #endif
   //if (this->pAPDTime != NULL) {
   if (APDTime::started()) {
       // TODO add NTP switch
-      APDTime::ntpSync();
+      APDTime::sync_to_ntp();
       SerPrintP("check@:"); Serial.print((unsigned long)APDTime::now().unixtime(),DEC);
       char tbuf[20] = "1970/01/01 00:00:00";
       SerPrintP("now: "); Serial.print(APDTime::nowS(tbuf)); SerPrintP("...");
@@ -292,22 +292,22 @@ DateTime APDuino::timeNow() {
 
 
 
-void APDuino::Print(char *string){
+void APDuino::print(char *string){
  if (pAPDSerial != NULL) {
    pAPDSerial->print(string);
  }
 }
-void APDuino::PrintP(void *Pstring) {
+void APDuino::printP(void *Pstring) {
   if (pAPDSerial != NULL) {
      pAPDSerial->printP(Pstring);
    }
 }
-void APDuino::Debug(char *string, int iMsgLevel) {
+void APDuino::debug(char *string, int iMsgLevel) {
   if (pAPDSerial != NULL && iMsgLevel <= iDebugLevel) {
      pAPDSerial->printP(string);
    }
 }
-void APDuino::DebugP(void *Pstring, int iMsgLevel) {
+void APDuino::debugP(void *Pstring, int iMsgLevel) {
   if (pAPDSerial != NULL && iMsgLevel <= iDebugLevel) {
      pAPDSerial->printP(Pstring);
    }
@@ -425,7 +425,7 @@ void APDuino::loop_operations() {
   //if (pAPDRules != NULL && iRuleCount > 0)  loop_apd_rules();
   if (this->pra != NULL && this->bProcessRules == true) {
   	//SerPrintP("RULEEVAL");
-  	this->pra->loopRules();
+  	this->pra->loop_rules();
   }
 #ifdef DEBUG
   else {
@@ -440,7 +440,7 @@ void APDuino::loop_operations() {
 }
 
 //APDStorage *APDuino::setupStorage(int iSS, int iChip, int iSpeed) {
-bool APDuino::setupStorage(int iSS, int iChip, int iSpeed) {
+bool APDuino::setup_storage(int iSS, int iChip, int iSpeed) {
 	boolean bret = false;
 	SerPrintP("Storage ");
 	if (bret = APDStorage::begin(iSS,iChip,iSpeed)) {
@@ -463,7 +463,7 @@ boolean APDuino::bConfigured() {
 // adds a custom function pointer (external code) to the custom functions array to a given pos.
 // APDControls then can call these 'software controls'
 //FIXME direct references to controls
-int APDuino::AddCustomFunction(int iPos, void (*pcf)()){
+int APDuino::add_custom_function(int iPos, void (*pcf)()){
 	// todo log this when enabled log levels ("SET CUSTFUNC @IDX "); Serial.print(iPos);
   if (this->pcustfuncs[iPos] == NULL) {
   	// todo log this when enabled log levels ("NULL, SET: "); Serial.print((unsigned int)pcf,DEC);
@@ -546,13 +546,13 @@ boolean APDuino::reconfigure() {
 
   	// todo log this when enabled log levels("\ninit controls\n");
 
-		this->pca->loadControls();
+		this->pca->load_controls();
 		//SerPrintP("APD Controls - ok.\n");
 		//GLCD.Puts(".");
 
 		// todo log this when enabled log levels ("init rules\n"); delay(10);
 
-	  this->pra->loadRules();
+	  this->pra->load_rules();
 	  // todo log this when enabled log levels ("APD Rules - ok.\n");
 
 		// Update pointers in APDWeb
@@ -575,7 +575,7 @@ boolean APDuino::reconfigure() {
 	  	}
 #endif
 		// enable "real-time" rule evaluation
-		this->psa->enableRuleEvaluation(&(APDRuleArray::evaluateSensorRules),(void *)this->pra);
+		this->psa->enableRuleEvaluation(&(APDRuleArray::evaluate_sensor_rules),(void *)this->pra);
 
 		// FIXME check if we are initialized, set it in bConfigured
 		// TODO revise what is obligatory. for now, 1 sensor or control is enough to be considered as configured
@@ -607,7 +607,7 @@ boolean APDuino::reload_rules() {
 
 		delete(this->pra);
 		pra = new APDRuleArray(psa,pca,&(this->bfIdle));
-	  this->pra->loadRules();
+	  this->pra->load_rules();
 	  // todo log this when enabled log levels ("APD Rules - ok.\n");
 
 		// Update pointers in APDWeb
@@ -622,7 +622,7 @@ boolean APDuino::reload_rules() {
 	  	}
 
 		// enable "real-time" rule evaluation
-		this->psa->enableRuleEvaluation(&(APDRuleArray::evaluateSensorRules),(void *)this->pra);
+		this->psa->enableRuleEvaluation(&(APDRuleArray::evaluate_sensor_rules),(void *)this->pra);
 
 		// FIXME check if we are initialized, set it in bConfigured
 		// TODO revise what is obligatory. for now, 1 sensor or control is enough to be considered as configured
@@ -675,13 +675,13 @@ void APDuino::new_ethconf_parser(void *pAPD, int iline, char *psz) {
 
 
 
-void APDuino::setupNetworking() {
+void APDuino::setup_networking() {
 	APDDebugLog::log(APDUINO_MSG_NETINIT,NULL);
   delay(250);                   // probably just starting up, adding a little delay, 1/4s
   if (pAPDWeb == NULL) {      // replace with check if IP config is present
   	// todo log this when enabled log levels ("trying to load config...");
     if (APDStorage::ready()) {
-        if ((APDStorage::readFileWithParser("ETHERNET.CFG",&new_ethconf_parser,(void*)this)) <= 0) {	// check for errors (0 - no lines, -1 - error)
+        if ((APDStorage::read_file_with_parser("ETHERNET.CFG",&new_ethconf_parser,(void*)this)) <= 0) {	// check for errors (0 - no lines, -1 - error)
         	APDDebugLog::log(APDUINO_ERROR_BADNETCONFIG,NULL);
         }
     } else {
@@ -696,7 +696,7 @@ void APDuino::setupNetworking() {
   }
 }
 
-boolean APDuino::startWebServer() {
+boolean APDuino::start_webserver() {
   boolean retcode = false;
   // todo log this when enabled log levels ("WWWS...");
   if (pAPDWeb != NULL) {
@@ -719,7 +719,7 @@ boolean APDuino::startWebServer() {
 // this is for devices with a physical interface typically to dim/shutdown LCD.
 // the application should call startIdling upon completion of any UI action (eg. user pressed a button)
 // uIdleDuration is the value of the timeout in milliseconds
-void APDuino::startIdling(unsigned long uIdleDuration) {
+void APDuino::start_idling(unsigned long uIdleDuration) {
   if (this->pIdleMetro == NULL) {
       this->pIdleMetro = new Metro(uIdleDuration,true);                // used for idling device
   } else {
@@ -749,7 +749,7 @@ void APDuino::idle_device() {
 // internal - call this when ready to log on SD
 // ulLoggingFreq - logging frequency in millisecs
 // returns true if logging was started, false otherwise
-boolean APDuino::startLogging(unsigned long ulLoggingFreq) {
+boolean APDuino::start_logging(unsigned long ulLoggingFreq) {
   boolean bLogging = false;
   if (bAPDuinoConfigured && APDStorage::ready() ) {    // check storage status
   	// APDLogWriter::enable_sync_writes(); // enabled by begin(), just to remember enable/disable after/before SD ops

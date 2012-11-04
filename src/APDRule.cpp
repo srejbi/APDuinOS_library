@@ -29,12 +29,12 @@
 APDRule::APDRule()
 {
   // TODO Auto-generated constructor stub
-  initBlank();
+  init_blank();
 }
 
 // initialize with RDCONF
 APDRule::APDRule(RDCONF *rdc, APDSensorArray *pSA, APDControlArray *pCA) {
-  initBlank();
+  init_blank();
   int l = 0;
 
   memcpy((void*)&(this->config),(void*)rdc,sizeof(RDCONF));       // copy the structure to config
@@ -205,10 +205,10 @@ APDRule::~APDRule()
 	if (this->pmetro) delete(this->pmetro);		// delete metro if any
 	free(this->config.pszcron);									// free up any dynamically allocated cron string
 	free(this->config.pszconditions);					  // free up any dynamically allocated conditions string
-	initBlank();
+	init_blank();
 }
 
-void APDRule::initBlank() {
+void APDRule::init_blank() {
   memset(&config,0,sizeof(RDCONF));		// this NULLs the cron and conditions string ptrs too
   prulefunc = NULL;
   ptcontrolfunc = NULL;
@@ -227,7 +227,7 @@ void APDRule::initBlank() {
 
 
 // evaluate the rule and call the corresponding true or false actions
-void APDRule::evaluateRule() {
+void APDRule::evaluate_rule() {
 	// todo log this when enabled log levels ("EVAL RULE ") (this->config.label);
     if (this->pcsensorvalue && *(this->pcsensorvalue) == NAN) {
     	return;			// bail out if rule sensor is NAN
@@ -273,11 +273,11 @@ void APDRule::evaluateRule() {
 }
 
 
-boolean APDRule::bState() {
-	return this->bState();
+boolean APDRule::b_state() {
+	return this->b_state();
 }
 
-char *APDRule::getValueS(char *strdest) {
+char *APDRule::get_value_str(char *strdest) {
   char *retstr = NULL;
   sprintf(strdest,"%d",(int)this->bLastState);
   retstr=strdest;

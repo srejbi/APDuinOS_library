@@ -35,17 +35,17 @@
 
 bool testprintf();
 bool testscanf();
-char *getPstr(void *Pstring);           // you must free the address
+char *getPstr(const void *Pstring);           // you must free the address returned!
 
-int get_line_count_from_file(char *szFile);
+int get_line_count_from_file(const char *szFile);
 
 /*double dewPointFast(double celsius, double humidity);
 double dewPoint(double celsius, double humidity);
 double Kelvin(double celsius);
 double Fahrenheit(double celsius);*/
 
-byte *hexbytes(char *hexcode,byte *destbytes, int destbytes_count);
-int read_hex_byte(char *szByte);
+byte *hexbytes(const char *hexcode,byte *destbytes, int destbytes_count);
+int read_hex_byte(const char *szByte);
 
 // reset macro from http://support.atmel.com/bin/customer.exe?=&action=viewKbEntry&id=21
 // TODO check why the code below causes debug to flash rapidly, device becomes unresponsive

@@ -124,12 +124,12 @@ class APDRule
 public:
   APDRule();
   APDRule(RDCONF *rdc,APDSensorArray *pSA,APDControlArray *pca);      // initialize with RDCONF
-  void evaluateRule();
+  void evaluate_rule();
   virtual
   ~APDRule();
 
-  char *getValueS(char *strdest);
-  boolean bState();															// returns the last evaluation state
+  char *get_value_str(char *strdest);
+  boolean b_state();															// returns the last evaluation state
 
   //static APDRule *rule_parser(int iline, char *psz);
 
@@ -163,7 +163,7 @@ public:
   static boolean cronposeval(int curval,const char*pcpos);
 
 private:
-  void initBlank();
+  void init_blank();
   boolean bLastState;
   APDSensorArray *psa;
   APDControlArray *pca;

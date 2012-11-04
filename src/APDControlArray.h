@@ -44,15 +44,16 @@ public:
   ~APDControlArray();
 
   static void new_control_parser(void *pCA, int iline, char *psz);
-  int loadControls();
-  int dumpToFile(char *pszFileName);
+  int load_controls();
+  int dump_to_file(char *pszFileName);
 
-  APDControl *firstControlByPin(int iPin, int iType);
-  APDControl *findReusableControl(CDCONF *cdc);
-  APDControl *byIndex(int idx);
+  APDControl *first_control_by_pin(int iPin, int iType);
+  APDControl *find_reusable_control(CDCONF *cdc);
+  APDControl *find_control_by_index(int idx);
 private:
   APDControl** pAPDControls;
   int iControlCount;
+  // todo remove deprecated code
   //void (*pcustfuncs[10])() ;
   //(void ((*pcustfuncs))())* ;                        // allow 10 custom functions to be called
   void **pcustfuncs;

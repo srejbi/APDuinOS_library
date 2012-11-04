@@ -38,7 +38,6 @@
 OneWireSensor::OneWireSensor(SDCONF *sdc, void *owsensor)
 {
   this->initSensor(sdc);
-  // TODO Auto-generated constructor stub
   this->sensor = (OWSENS*)malloc(sizeof(OWSENS));
 
   if (this->sensor != NULL) {
@@ -52,7 +51,7 @@ OneWireSensor::OneWireSensor(SDCONF *sdc, void *owsensor)
           	this->sensor->owenc->ow = new OneWire(this->config.sensor_pin);
           	this->sensor->owenc->state = STATE_READY;
           } else {
-          	SerPrintP("malloc error");
+          	// todo log this when enabled log levels SerPrintP("malloc error");
           }
       }
       //TODO add address, other parameters ,etc
@@ -64,12 +63,14 @@ OneWireSensor::OneWireSensor(SDCONF *sdc, void *owsensor)
       this->sensor->value = NAN;
       this->fvalue = NAN;
 
+      // todo log this when enabled log levels
       SerPrintP("ADDR: ");
       for(byte i = 0; i < 8; i++) {
         Serial.write(' ');
         Serial.print(this->sensor->address[i], HEX);
       }
       SerPrintP("\n");
+      // end todo log this when enabled log levels
 
       // verify address before use; if address invalid, then invalidate the address field and the sensor
       this->verify_address();
@@ -134,12 +135,14 @@ void OneWireSensor::verify_address()
   int iCount = 0;
   while ( !bAfound && iCount<10 && dsp->search(addr) ) {		// TODO: check the max no. (anyway, now with shared, the max should be tracked globally)
     bfound = true;
+    // todo log this when enabled log levels
     SerPrintP("Loop "); Serial.print(iCount++); SerPrintP("...");
     SerPrintP("ROM =");
     for(byte i = 0; i < 8; i++) {
       Serial.write(' ');
       Serial.print(addr[i], HEX);
     }
+    // end todo log this when enabled log levels
 
     if (OneWire::crc8(addr, 7) != addr[7]) {
     		APDDebugLog::log(APDUINO_ERROR_OWBADCRC, NULL);
@@ -182,27 +185,24 @@ void OneWireSensor::verify_address()
 
     if (memcmp(this->sensor->address, addr,sizeof(byte)*8) == 0) {
     	this->_type_s = type_s;
-    	//SerPrintP("type_s saved:"); Serial.println(this->_type_s,DEC);
+    	// todo log this when enabled log levels ("type_s saved:") (this->_type_s);
     }
   }
   if (!bfound && !bAfound) {
   	APDDebugLog::log(APDUINO_MSG_OWNOMOREADDR, NULL);
 		dsp->reset_search();
 		delay(250);
-//          return;
+// todo remove deprecated code         return;
   } else if (bAfound) {
   	APDDebugLog::log(APDUINO_MSG_OWADDRVEROK, NULL);
   } else {
   	memset(this->sensor->address,0,sizeof(byte)*8);
   	APDDebugLog::log(APDUINO_ERROR_OWNOADDRESSES, NULL);
   }
-  //dsp->reset();
+  // todo remove deprecated code //dsp->reset();
 
   APDDebugLog::log(APDUINO_MSG_OWADDRVERDONE, NULL);
 }
-
-
-
 
 
 boolean OneWireSensor::perform_check()
@@ -240,6 +240,7 @@ float OneWireSensor::ow_temperature_read()
 				 } else if (this->_state == STATE_WRITE) {		// if ready to fetch data
 					 // we assume nobody else is using the shared object in this state, should be STATE_BUSY (by this sensor)
 
+					 // todo log this when enabled log levels
 					 //SerPrintP("OW "); Serial.print(this->config.label); SerPrintP(" FETCH PIN "); Serial.print(this->config.sensor_pin,DEC); SerPrintP("...");
 					 //Serial.print(millis() - this->_lm);
 					 this->_lm = millis();
@@ -328,6 +329,7 @@ void OneWireSensor::diagnostics()
   int iCount = 0;
   while ( dsp->search(addr) && iCount<10) {
     bfound = true;
+    // todo log this when enabled log levels
     SerPrintP("Loop "); Serial.print(iCount++); SerPrintP("...");
     SerPrintP("ROM =");
     for(byte i = 0; i < 8; i++) {
@@ -336,6 +338,7 @@ void OneWireSensor::diagnostics()
     }
 
     if (OneWire::crc8(addr, 7) != addr[7]) {
+    	// todo log this when enabled log levels
         SerPrintP("CRC is not valid!");
         return;
     }
@@ -343,6 +346,7 @@ void OneWireSensor::diagnostics()
 
     SerPrintP("  Chip ");
     // the first ROM byte indicates which chip
+    // todo log this when enabled log levels
     switch (addr[0]) {
       case 0x10:
         SerPrintP("= DS18S20");  // or old DS1820

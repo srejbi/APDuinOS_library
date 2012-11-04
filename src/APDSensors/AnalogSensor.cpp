@@ -51,7 +51,7 @@ boolean AnalogSensor::perform_check()
 // returns the sensor value as string (base 10)
 // strdest must point to a character buffer large enough to receive an integer 0-255 (4bytes with \0)
 // returns a pointer to the character buffer, NULL on error
-char *AnalogSensor::getValueS(char *strdest) {
+char *AnalogSensor::get_value_str(char *strdest) {
   char *retstr = NULL;
   if (sprintf_P(strdest,PSTR("%d"),this->sensor->value) != EOF) retstr = strdest;
   return retstr;

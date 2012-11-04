@@ -199,7 +199,7 @@ int APDStorage::rotate_file(const char *szLogFile, unsigned long maxsize) {
  *
  * \return -1 on error, the number of lines read otherwise.
  */
-int APDStorage::readFileWithParser(char *szFile, void (*pParserFunc)(void *, int, char*), void *pAPD) {
+int APDStorage::read_file_with_parser(char *szFile, void (*pParserFunc)(void *, int, char*), void *pAPD) {
   int retcode = -1;
   APDDebugLog::disable_sync_writes();						// the parser might call for logging while we have the file open
 #ifdef DEBUG
@@ -231,7 +231,7 @@ int APDStorage::readFileWithParser(char *szFile, void (*pParserFunc)(void *, int
 
 // return the number of free bytes on free clusters or 0 on error
 // todo add free bytes on dirty clusters
-uint64_t APDStorage::bytesFree() {
+uint64_t APDStorage::get_sd_free_cluster_bytes() {
 	return p_sd ? p_sd->vol()->freeClusterCount() * p_sd->vol()->blocksPerCluster()*512UL : 0;
 }
 

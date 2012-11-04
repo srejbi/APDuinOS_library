@@ -49,7 +49,7 @@ public:
   ~AnalogSensor();
 
   boolean perform_check();					// implement performing analog read
-  char *getValueS(char *strdest);		// implement itoa for retrieving value as string
+  char *get_value_str(char *strdest);		// implement itoa for retrieving value as string
 private:
 };
 

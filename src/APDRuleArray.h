@@ -29,14 +29,11 @@
 #include <Arduino.h>
 #include "apd_version.h"
 #include "apd_utils.h"
-//#include "APDSensor.h"
 #include "APDSensorArray.h"
 #include "APDControlArray.h"
 #include "APDStorage.h"
 #include "APDRule.h"
 #include "APDLogWriter.h"
-
-//#include "APDControl.h"
 
 class APDRuleArray
 {
@@ -47,21 +44,19 @@ public:
   ~APDRuleArray();
 
   static void new_rule_parser(void *pRA, int iline, char *psz);
-  //int loadRules(APDStorage *pAPDStorage);
-  int loadRules();
-  //void dumpToFile(APDStorage *pAPDStorage, char *pszFileName);
-  void dumpToFile(char *pszFileName);
+  int load_rules();
+  void dump_to_file(char *pszFileName);
 
-  APDRule *firstRuleBySensorIdx(int iSensorIdx);
-  APDRule *firstRuleByControlIdx(int iControlIdx);
+  APDRule *first_rule_by_sensor_index(int iSensorIdx);
+  APDRule *first_rule_by_control_index(int iControlIdx);
 
-  void evaluateSensorRulesByIdx(int iSensorIndex);
-  static void evaluateSensorRules(void *pra, APDSensor *pSensor);
-  void loopRules();
-  void evaluateScheduledRules();
+  void evaluate_rules_by_sensor_index(int iSensorIndex);
+  static void evaluate_sensor_rules(void *pra, APDSensor *pSensor);
+  void loop_rules();
+  void evaluate_scheduled_rules();
 
 private:
-  void adjustnextcronminute();
+  void adjust_next_cron_minute();
 
   APDSensorArray *pSA;
   APDControlArray *pCA;

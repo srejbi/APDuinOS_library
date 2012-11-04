@@ -250,7 +250,7 @@ int APDSensorArray::loadSensors() {
         memset(pAPDSensors,0,sizeof(APDSensor*)*iSensorCount);
         APDDebugLog::log(APDUINO_MSG_SENSORSLOADING,szConfFile);
 
-        APDStorage::readFileWithParser((char *)szConfFile,&new_sensor_parser, (void*)this);
+        APDStorage::read_file_with_parser((char *)szConfFile,&new_sensor_parser, (void*)this);
 
         APDDebugLog::log(APDUINO_MSG_SENSORSLOADED,NULL);
         // TODO add any postprocessing
@@ -291,7 +291,7 @@ char *APDSensorArray::valueS(int iSensorIdx, char *szvalue) {
   strcpy(szvalue,"");
   if (iSensorIdx >= 0 && iSensorIdx < this->iSensorCount) {
   	// todo log this when enabled log levels ("calling getval"); Serial.println(iSensorIdx);
-    this->pAPDSensors[iSensorIdx]->getValueS(szvalue);
+    this->pAPDSensors[iSensorIdx]->get_value_str(szvalue);
     // todo log this when enabled log levels (szvalue);
   }
   return szvalue;

@@ -164,7 +164,7 @@ boolean APDWeb::start() {
 		memcpy((void *)(byte *)net.subnet, (void *)&ipaddr, sizeof(byte)*4);
 		ipaddr = (uint32_t)Ethernet.gatewayIP();
 		memcpy((void *)(byte *)net.gateway, (void *)&ipaddr, sizeof(byte)*4);
-		// TODO what about DNS?
+		// TODO what about DNS? (not using right now, resolving IP's manually in config)
 #if (ARDUINO >= 101)
 		ipaddr = Ethernet.dnsServerIP();
 		memcpy((void *)(byte *)net.pridns, (void *)&ipaddr, sizeof(byte)*4);
@@ -241,7 +241,7 @@ boolean APDWeb::setupAPDuinoOnline() {
 	szAPDUINO_API_KEY[0] = 0;
 	if (bEthConfigured && APDStorage::ready()) {
 		// todo log this when enabled log levels
-		if (APDStorage::readFileWithParser("ONLINE.CFG",&new_apduinoconf_parser,(void*)this) > 0) {
+		if (APDStorage::read_file_with_parser("ONLINE.CFG",&new_apduinoconf_parser,(void*)this) > 0) {
 		} else {
 			// use defaults
 			memcpy(&apduino_server_ip,APDUINO_SERVER_IP,4*sizeof(byte));           // apduino.localhost -- test server on LAN
@@ -331,7 +331,7 @@ boolean APDWeb::setupCosmLogging() {
 	boolean retcode = false;
 	szCOSM_API_KEY[0] = 0;
 	if (bEthConfigured && APDStorage::ready() && this->phmetro == NULL) {
-		if (APDStorage::readFileWithParser("PACHUBE.CFG",&new_cosmconf_parser,(void*)this) > 0) {
+		if (APDStorage::read_file_with_parser("PACHUBE.CFG",&new_cosmconf_parser,(void*)this) > 0) {
 			// todo log this when enabled log levels
 			if (cosm_server_ip[0]>0) {                            // if we have a server name
 				loadAPIkey(szCOSM_API_KEY,"PACHUBE.KEY");             // TODO -> load api key for ; allow multiple keys for different services
@@ -361,7 +361,7 @@ boolean APDWeb::setupThingSpeakLogging() {
 	// todo log this
 	szTHINGSPEAK_API_KEY[0] = 0;
 	if (bEthConfigured && APDStorage::ready() && this->tsmetro == NULL) {
-		if (APDStorage::readFileWithParser("THINGSPK.CFG",&new_thingspeakconf_parser,(void*)this) > 0) {
+		if (APDStorage::read_file_with_parser("THINGSPK.CFG",&new_thingspeakconf_parser,(void*)this) > 0) {
 			// todo log this w/ server name
 			if (thingspeak_server_ip[0]>0) {                            // if we have a server name
 				loadAPIkey(szTHINGSPEAK_API_KEY,"THINGSPK.KEY");
@@ -429,7 +429,7 @@ void APDWeb::web_startpage(EthernetClient *pClient, char *title,int refresh=0) {
 		strcpy_P(tbuf,PSTR("1970/01/01 00:00:00"));        // string used for timestamp
 		pClient->print(APDTime::nowS(tbuf));
 		WCPrintP(pClient,"</td><td>");
-		pClient->print(APDTime::getUpTimeS(tbuf));
+		pClient->print(APDTime::get_uptime_str(tbuf));
 		WCPrintP(pClient,"</td><td>");
 		pClient->print(dtostrf(uCCount,5,0,tbuf));
 		WCPrintP(pClient,"</td><td>");
@@ -439,7 +439,7 @@ void APDWeb::web_startpage(EthernetClient *pClient, char *title,int refresh=0) {
 		WCPrintP(pClient,"</td><td>");
 		pClient->print(dtostrf(freeMemory(),5,0,tbuf));
 		WCPrintP(pClient,"</td><td>");
-		pClient->print(dtostrf(APDStorage::bytesFree(),10,0,tbuf));
+		pClient->print(dtostrf(APDStorage::get_sd_free_cluster_bytes(),10,0,tbuf));
 		WCPrintP(pClient,"</td></tr>\n"
 									"</table></div>\n");
 
@@ -497,7 +497,7 @@ void APDWeb::web_status(EthernetClient *pClient) {
 
 		//    SerPrintP("Output sensors...");
 		for (int i = 0; i < iSensorCount; i++) {
-			webstatus_table_item(pClient, "sensor", i, pAPDSensors[i]->config.label, pAPDSensors[i]->getValueS(tbuf), (pAPDSensors[i]->config.sensor_log ? "1" : "0") );
+			webstatus_table_item(pClient, "sensor", i, pAPDSensors[i]->config.label, pAPDSensors[i]->get_value_str(tbuf), (pAPDSensors[i]->config.sensor_log ? "1" : "0") );
 		}
 
 		WCPrintP(pClient,"</table>"
@@ -507,7 +507,7 @@ void APDWeb::web_status(EthernetClient *pClient) {
 				"<table id=\"controls_table\">");
 
 		for (int i = 0; i < iControlCount; i++) {
-			webstatus_table_item(pClient, "control", i, pAPDControls[i]->config.label, pAPDControls[i]->getValueS(tbuf), (pAPDControls[i]->config.control_log ? "1" : "0") );
+			webstatus_table_item(pClient, "control", i, pAPDControls[i]->config.label, pAPDControls[i]->get_value_str(tbuf), (pAPDControls[i]->config.control_log ? "1" : "0") );
 		}
 
 		WCPrintP(pClient,"</table>"
@@ -518,7 +518,7 @@ void APDWeb::web_status(EthernetClient *pClient) {
 				"<table id=\"rules_table\">");
 
 		for (int i = 0; i < iRuleCount; i++) {
-			webstatus_table_item(pClient, "rule", i, pAPDRules[i]->config.label, pAPDRules[i]->getValueS(tbuf), "0" );
+			webstatus_table_item(pClient, "rule", i, pAPDRules[i]->config.label, pAPDRules[i]->get_value_str(tbuf), "0" );
 		}
 
 		WCPrintP(pClient,"</table>"
@@ -1336,7 +1336,7 @@ void APDWeb::get_lastlog_string(char *szLogBuf) {
 			//strcpy(pcLog,pAPDSensors[i]->config.label);
 			//pcLog+=strlen(pAPDSensors[i]->config.label);
 			*pcLog=','; pcLog++;// *pcLog = '\0';
-			pAPDSensors[i]->getValueS(dataString);
+			pAPDSensors[i]->get_value_str(dataString);
 			strcpy(pcLog,dataString);
 			pcLog+=strlen(dataString);
 		}
@@ -1355,7 +1355,7 @@ void APDWeb::get_cosmlog_string(char *szLogBuf) {
 			strcpy(pcLog,pAPDSensors[i]->config.label);
 			pcLog+=strlen(pAPDSensors[i]->config.label);
 			*pcLog=','; pcLog++;// *pcLog = '\0';
-			pAPDSensors[i]->getValueS(dataString);
+			pAPDSensors[i]->get_value_str(dataString);
 			strcpy(pcLog,dataString);
 			pcLog+=strlen(dataString);
 			*pcLog='\n'; pcLog++;
@@ -1366,7 +1366,7 @@ void APDWeb::get_cosmlog_string(char *szLogBuf) {
 			strcpy(pcLog,pAPDControls[i]->config.label);
 			pcLog+=strlen(pAPDControls[i]->config.label);
 			*pcLog=','; pcLog++;// *pcLog = '\0';
-			pAPDControls[i]->getValueS(dataString);
+			pAPDControls[i]->get_value_str(dataString);
 			strcpy(pcLog,dataString);
 			pcLog+=strlen(dataString);
 			*pcLog='\n'; pcLog++;
@@ -1393,7 +1393,7 @@ void APDWeb::get_thingspeaklog_string(char *szLogBuf) {
 			strcpy(pcLog,szFN);
 		  pcLog+=strlen(szFN);
 			*pcLog='='; pcLog++;// *pcLog = '\0';
-			pAPDSensors[i]->getValueS(dataString);
+			pAPDSensors[i]->get_value_str(dataString);
 			strcpy(pcLog,dataString);
 			pcLog+=strlen(dataString);
 			//*pcLog='\n'; pcLog++;
@@ -1734,29 +1734,29 @@ void APDWeb::json_status(EthernetClient *pClient) {
 		json_array_item(pClient,0,"version",tbuf,"0");
 		strcpy_P(tbuf,PSTR("1970/01/01 00:00:00")); 			       // default string used for timestamp
 		json_array_item(pClient,1,"timestamp",APDTime::nowS(tbuf),"0");
-    json_array_item(pClient,2,"uptime",APDTime::getUpTimeS(tbuf),"0");
+    json_array_item(pClient,2,"uptime",APDTime::get_uptime_str(tbuf),"0");
 		json_array_item(pClient,3,"wwwclient",dtostrf(uCCount,5,0,tbuf),"0");
 		json_array_item(pClient,4,"netfail",dtostrf(iFailureCount,5,0,tbuf),"0");
 		json_array_item(pClient,5,"netrestarts",dtostrf(iRestartCount,5,0,tbuf),"0");
 		json_array_item(pClient,6,"ramfree",dtostrf(freeMemory(),5,0,tbuf),"0");
-		json_array_item(pClient,7,"sdfree",dtostrf(APDStorage::bytesFree(),16,0,tbuf),"0");
+		json_array_item(pClient,7,"sdfree",dtostrf(APDStorage::get_sd_free_cluster_bytes(),16,0,tbuf),"0");
 		WCPrintP(pClient,"] },\n");  // End System data Array, System
 
 		WCPrintP(pClient,"{ \"name\": \"sensors\", \"data\": [");
 		for (int i = 0; i < iSensorCount; i++) {
-			json_array_item(pClient,i,pAPDSensors[i]->config.label,pAPDSensors[i]->getValueS(tbuf),((pAPDSensors[i]->config.sensor_log) ? "1" : "0"));
+			json_array_item(pClient,i,pAPDSensors[i]->config.label,pAPDSensors[i]->get_value_str(tbuf),((pAPDSensors[i]->config.sensor_log) ? "1" : "0"));
 		}
 		WCPrintP(pClient,"] },\n");  // End Sensors data Array, Sensors
 
 		WCPrintP(pClient,"{ \"name\": \"controls\", \"data\": [");
 		for (int i = 0; i < iControlCount; i++) {
-			json_array_item(pClient,i,pAPDControls[i]->config.label,pAPDControls[i]->getValueS(tbuf),((pAPDControls[i]->config.control_log) ? "1" : "0"));
+			json_array_item(pClient,i,pAPDControls[i]->config.label,pAPDControls[i]->get_value_str(tbuf),((pAPDControls[i]->config.control_log) ? "1" : "0"));
 		}
 		WCPrintP(pClient,"] },\n");		// End Controls data Array, Controls
 
 		WCPrintP(pClient,"{ \"name\": \"rules\", \"data\": [");
 		for (int i = 0; i < iRuleCount; i++) {
-			json_array_item(pClient,i,pAPDRules[i]->config.label,pAPDRules[i]->getValueS(tbuf),"0");
+			json_array_item(pClient,i,pAPDRules[i]->config.label,pAPDRules[i]->get_value_str(tbuf),"0");
 		}
 		WCPrintP(pClient,"] }\n");	// End Rules data Array, Rules
 

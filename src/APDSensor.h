@@ -117,7 +117,7 @@ public:
   boolean check();
 
   virtual boolean perform_check();
-  virtual char *getValueS(char *strdest);
+  virtual char *get_value_str(char *strdest);
   virtual void diagnostics();
 
   int iValue();

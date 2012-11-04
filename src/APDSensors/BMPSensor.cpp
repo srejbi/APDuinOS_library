@@ -36,7 +36,6 @@
 BMPSensor::BMPSensor(SDCONF *sdc, void *bmpsensor)
 {
   this->initSensor(sdc);
-  // TODO Auto-generated constructor stub
   this->sensor = (BMPSENS*)malloc(sizeof(BMPSENS));
   if (this->sensor != NULL) {
       if (bmpsensor!=NULL) {
@@ -53,7 +52,6 @@ BMPSensor::BMPSensor(SDCONF *sdc, void *bmpsensor)
 
 BMPSensor::~BMPSensor()
 {
-  // TODO Auto-generated destructor stub
   if (this->sensor != NULL) {
         if (this->sensor->pbmp != NULL) {
         	if (this->bPrimary) {
@@ -91,17 +89,17 @@ boolean BMPSensor::perform_check()
   return retcode;
 }
 
-//test BMP085
+//wrapper around Adafruit_BMP085.readPressure()
 float BMPSensor::read_pressure() {
   return ((BMPSENS*)this->sensor)->pbmp->readPressure();
 }
 
-//test BMP085
+//wrapper around Adafruit_BMP085.readTemperature()
 float BMPSensor::read_temperature() {
   return (((BMPSENS*)this->sensor)->pbmp->readTemperature());
 }
 
-//test BMP085
+//wrapper around Adafruit_BMP085.readAltitude()
 float BMPSensor::read_altitude() {
   // TODO add calibrated reading
   return ((BMPSENS*)this->sensor)->pbmp->readAltitude();
@@ -111,26 +109,23 @@ float BMPSensor::read_altitude() {
 //test BMP085
 void BMPSensor::diagnostics() {
   float fpressure =0;
-  SerPrintP("Temperature = ");
-  Serial.print(((BMPSENS*)this->sensor)->pbmp->readTemperature());
+  // todo log this when enabled log
+  SerPrintP("Temp: ");  Serial.print(((BMPSENS*)this->sensor)->pbmp->readTemperature());
   SerPrintP(" *C");
 
-  SerPrintP("Pressure = ");
-  Serial.print(((BMPSENS*)this->sensor)->pbmp->readPressure());
+  SerPrintP("Press: "); Serial.print(((BMPSENS*)this->sensor)->pbmp->readPressure());
   Serial.println(" Pa");
 
   // Calculate altitude assuming 'standard' barometric
   // pressure of 1013.25 millibar = 101325 Pascal
-  SerPrintP("Altitude = ");
-  Serial.print(((BMPSENS*)this->sensor)->pbmp->readAltitude());
-  SerPrintP(" meters\n");
+  SerPrintP("Alt: ");  Serial.print(((BMPSENS*)this->sensor)->pbmp->readAltitude());
+  SerPrintP(" m\n");
 
   // you can get a more precise measurement of altitude
   // if you know the current sea level pressure which will
   // vary with weather and such. If it is 1015 millibars
   // that is equal to 101500 Pascals.
-  SerPrintP("Real altitude = ");
-  Serial.print(((BMPSENS*)this->sensor)->pbmp->readAltitude(((BMPSENS*)this->sensor)->sea_level_pressure));
-  SerPrintP(" meters\n");
+  SerPrintP("Real alt: "); Serial.print(((BMPSENS*)this->sensor)->pbmp->readAltitude(((BMPSENS*)this->sensor)->sea_level_pressure));
+  SerPrintP(" m\n");
 }
 

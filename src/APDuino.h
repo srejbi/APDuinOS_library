@@ -52,11 +52,7 @@ public:
 	virtual ~APDuino();
 
 	unsigned long getUpTime();
-	char *getUpTimeS(char *psz_uptime);
-
-	/*int iLoadSensorCountFromSD();
-	int iLoadRuleCountFromSD();
-	int iLoadControlCountFromSD();*/
+	char *get_uptime_str(char *psz_uptime);
 
 	void loop();
 	void loop_operations();
@@ -65,31 +61,26 @@ public:
 
   boolean storage_ready();
 
-	void setupTimeKeeping();        // sets up the timekeeping source
-	void checkTimeKeeping();        // checks if timekeeping needs an update
+	void setup_timekeeping();        // sets up the timekeeping source
+	void check_timekeeping();        // checks if timekeeping needs an update
 
-	void setupNetworking();         // sets up the network, from config file or DHCP fallback
-	boolean startWebServer();          // starts the local www interface
-	boolean startLogging(unsigned long ulLoggingFreq);                   // starts logging to SD
+	void setup_networking();         // sets up the network, from config file or DHCP fallback
+	boolean start_webserver();          // starts the local www interface
+	boolean start_logging(unsigned long ulLoggingFreq);                   // starts logging to SD
 
 	/* start config line parser callbacks */
 	static void new_ethconf_parser(void *pAPD, int iline, char *psz);
 	/* end config line parser callbacks */
 
-	void Print(char *string);
-	void PrintP(void *Pstring);
-	void Debug(char *string, int iMsgLevel);
-	void DebugP(void *Pstring, int iMsgLevel);
+	void print(char *string);
+	void printP(void *Pstring);
+	void debug(char *string, int iMsgLevel);
+	void debugP(void *Pstring, int iMsgLevel);
 
-	void startIdling(unsigned long uIdleDuration);
+	void start_idling(unsigned long uIdleDuration);
 	void log_data();								// SD logger function
 
 	boolean bConfigured();
-	//int nextSensor();               // returns the next sensor index from array
-
-	//void poll_apd_sensors();
-	//void loop_apd_rules();
-	//void evaluate_apd_rules_for_sensor(int iSensorIndex);
 
 	void unidle_device();
 	void idle_device();
@@ -111,7 +102,6 @@ public:
 	boolean reload_rules();						// reload rules
 
 	APDSerial *pAPDSerial;
-	//APDStorage *pAPDStorage;
 	APDWeb *pAPDWeb;
 
 	int iDebugLevel;
@@ -125,19 +115,19 @@ public:
 	APDRuleArray *pra;                    // will replace APD Rules pointer
 
 	volatile int iNextSensor;            // next sensor to poll, point to first one (if any)
-	//APDTime *pAPDTime;		// deprecating this as APDTime is being made static
 
 	void (*pcustfuncs[10])() ;                        // allow 10 custom functions to be called
-	int AddCustomFunction(int iPos, void (*pcf)());
+	int add_custom_function(int iPos, void (*pcf)());
 
-	void setupWithStorage(int iChip, int iSpeed);
+	void setup_with_storage(int iChip, int iSpeed);
+
 private:
 	float bfIdle;                     // idle bit as float (it will be passed to rules as a sensor value)
 	void init(long baudrate);
 
 	//APDStorage *setupStorage(int iSS, int iChip, int iSpeed);
-	bool setupStorage(int iSS, int iChip, int iSpeed);
-	boolean initApplication();
+	bool setup_storage(int iSS, int iChip, int iSpeed);
+	boolean init_app();
 
 	boolean bInitialized;
 	boolean bFirstLoopDone;

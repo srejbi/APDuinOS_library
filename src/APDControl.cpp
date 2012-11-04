@@ -157,7 +157,7 @@ void APDControl::initBlank() {
  * \return strdest
  *
  */
-char *APDControl::getValueS(char *strdest) {
+char *APDControl::get_value_str(char *strdest) {
   char *retstr = NULL;
   //sprintf(strdest,"%3.1f",this->iValue);
   itoa(this->iValue, strdest, 10);

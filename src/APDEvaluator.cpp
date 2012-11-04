@@ -136,7 +136,7 @@ Expr* APDEvaluator::factor(const char* string, Expr* expr) {
   	expr->op = 'd';																	// set operand to digit
   	int iControl = proc_i(string);							// parse the control index
   	APDControl *pC = NULL;													// will get the control
-		if ((pC = this->pControls->byIndex(iControl)) != NULL ) {
+		if ((pC = this->pControls->find_control_by_index(iControl)) != NULL ) {
 			expr->data.term = pC->iValue;
 			//expr->data.terminal = consume_int(string);
 		} else {

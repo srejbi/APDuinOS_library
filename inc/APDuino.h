@@ -45,7 +45,7 @@ public:
 	virtual ~APDuino();
 
 	unsigned long getUpTime();
-	char *getUpTimeS(char *psz_uptime);
+	char *get_uptime_str(char *psz_uptime);
 
   boolean storage_ready();
 
@@ -53,24 +53,24 @@ public:
 	void loop_operations();
 	void loop_core();
 
-	void setupTimeKeeping();        // sets up the timekeeping source
-	void checkTimeKeeping();        // checks if timekeeping needs an update
+	void setup_timekeeping();        // sets up the timekeeping source
+	void check_timekeeping();        // checks if timekeeping needs an update
 
-	void setupNetworking();         // sets up the network, from config file or DHCP fallback
+	void setup_networking();         // sets up the network, from config file or DHCP fallback
 
-	boolean startWebServer();          // starts the local www interface
-	boolean startLogging(unsigned long ulLoggingFreq);                   // starts logging to SD
+	boolean start_webserver();          // starts the local www interface
+	boolean start_logging(unsigned long ulLoggingFreq);                   // starts logging to SD
 
 	/* start config line parser callbacks */
 	static void new_ethconf_parser(void *pAPD, int iline, char *psz);
 	/* end config line parser callbacks */
 
-	void Print(char *string);
-	void PrintP(void *Pstring);
-	void Debug(char *string, int iMsgLevel);
-	void DebugP(void *Pstring, int iMsgLevel);
+	void print(char *string);
+	void printP(void *Pstring);
+	void debug(char *string, int iMsgLevel);
+	void debugP(void *Pstring, int iMsgLevel);
 
-	void startIdling(unsigned long uIdleDuration);
+	void start_idling(unsigned long uIdleDuration);
 	void log_data();
 
 	boolean bConfigured();
@@ -100,9 +100,9 @@ public:
 	Metro *pLoggingMetro;
 
 	void (*pcustfuncs[10])() ;                        // allow 10 custom functions to be called
-	int AddCustomFunction(int iPos, void (*pcf)());
+	int add_custom_function(int iPos, void (*pcf)());
 
-	void setupWithStorage(int iChip, int iSpeed);
+	void setup_with_storage(int iChip, int iSpeed);
 };
 
 #endif /* APDUINO_H_ */

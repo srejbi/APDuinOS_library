@@ -41,14 +41,17 @@ DigitalSensor::~DigitalSensor()
 	this->pmetro = NULL;
 }
 
+// wrapper around digitalRead() (wiring_digital)
 boolean DigitalSensor::perform_check()
 {
   boolean retcode = (this->sensor->value = digitalRead(this->config.sensor_pin));
   this->fvalue = this->sensor->value;
   return retcode;
 }
-
-char *DigitalSensor::getValueS(char *strdest) {
+// prints value as string, "nan" on NAN into strdest
+// strdest must be large enough to receive
+// returns ptr to string (strdest), NULL on error
+char *DigitalSensor::get_value_str(char *strdest) {
   char *retstr = NULL;
   if (sprintf_P(strdest,PSTR("%d"),this->sensor->value) != EOF) retstr=strdest;
   return retstr;

@@ -58,14 +58,14 @@ public:
 	static char *nowS(char *strbuf);
 	static void adjust(DateTime dt);
 	static unsigned long getUpTime();
-	static char *getUpTimeS(char *psz_uptime);
+	static char *get_uptime_str(char *psz_uptime);
 
-	static void LogDateTime(DateTime t);
+	static void log_datetime(DateTime t);
 	static void SdDateTimeCallback(uint16_t* date, uint16_t* time);
 
-	static void ntpSync();
-	static void setupNTPSync(int UDPPort, byte *TimeServer, int iTZ, int iDST );
-	static unsigned long sendNTPpacket(byte *address);
+	static void sync_to_ntp();
+	static void setup_ntp_sync(int UDPPort, byte *TimeServer, int iTZ, int iDST );
+	static unsigned long send_ntp_packet(byte *address);
 
 	static int time_zone;
 	static int dst;

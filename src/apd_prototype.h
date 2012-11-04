@@ -19,6 +19,11 @@
  *
  * apd_prototype.h
  *
+ * a currently unmaintained file with a bunch of default values that has been in use
+ * before things like autoprovisioning have been implemented.
+ *
+ * todo revise this file, the need for it and deprecate if not needed
+ *
  *  Created on: Mar 27, 2012
  *      Author: George Schreiber
  */

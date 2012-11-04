@@ -35,7 +35,6 @@
 DHTSensor::DHTSensor(SDCONF *sdc, void *dhtsensor)
 {
   this->initSensor(sdc);
-  // TODO Auto-generated constructor stub
   this->sensor = (DHTSENS*)malloc(sizeof(DHTSENS));
   if (this->sensor != NULL) {
       if (dhtsensor!=NULL) {
@@ -46,7 +45,7 @@ DHTSensor::DHTSensor(SDCONF *sdc, void *dhtsensor)
           ((DHTSENS*)this->sensor)->dht = new DHT(this->config.sensor_pin, this->config.sensor_subtype);
           if (((DHTSENS*)this->sensor)->dht != NULL) {
               ((DHTSENS*)this->sensor)->dht->begin();
-              //SerPrintP("DHT object should be initialized.\n");
+              // todo log this when enabled log levels SerPrintP("DHT object should be initialized.\n");
           }
       }
   }

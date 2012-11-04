@@ -78,7 +78,7 @@ void APDSensor::initSensor(SDCONF *sdc) {
 }
 
 
-char *APDSensor::getValueS(char *strdest) {
+char *APDSensor::get_value_str(char *strdest) {
   char *retstr = NULL;			// returns NULL on error
   // todo make the formatstring customizable to allow higher precision on demand (requires revision of references and making sure buffer is large enough for receiving more digits)
   if (sprintf_P(strdest,PSTR("%3.1f"),this->fvalue) != EOF) retstr = strdest;		// return the pointer to the buffer unless EOF was recived (error)
