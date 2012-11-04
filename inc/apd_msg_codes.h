@@ -161,19 +161,19 @@
 #define APDUINO_ERROR_WWWCLIENTOCCUPIED   0x0238	// APDuino Online: web client taken by another process
 #define APDUINO_ERROR_WWWCANTCONNECTAO    0x0239	// APDuino Online: connection error
 #define APDUINO_ERROR_WWWCLIENTBUSY       0x023A	// APDuino Online: client busy
-#define APDUINO_ERROR_AONOWEBCLIENT       0x023A	// APDuino Online: no web client
-#define APDUINO_ERROR_AOLOGNOWEBCLIENT    0x023B	// APDuino Online: no web client for logger
-#define APDUINO_ERROR_CLOGNOWEBCLIENT     0x023C	// Cosm Logging: no web client for logger
-#define APDUINO_ERROR_CLOGCONNFAIL        0x023D	// Cosm Logging: connection failure
-#define APDUINO_ERROR_TSLOGCONNFAIL       0x023E	// ThingSpeak Logging: connection failure
-#define APDUINO_ERROR_PRINTCLIENTOUTOFMEM 0x023F	// APDWeb: out of RAM when printing progmem string
-#define APDUINO_ERROR_JSNOCLIENT          0x0240	// JSON Status: no web client pointer
-#define APDUINO_ERROR_COSMDUMPOPEN        0x0241	// Cosm dump file open failed: %s
-#define APDUINO_ERROR_BROKENHEXCODE       0x0242	// Broken hex code in http request
-#define APDUINO_ERROR_WWWCLIENTGONE       0x0243	// WWW Client gone?
-#define APDUINO_ERROR_WWWAUTHFAIL         0x0244	// WWW Authentication Failed %s
-#define APDUINO_ERROR_WWWUNAUTH           0x0245	// WWW Unauthorized, authentication requested
-
+#define APDUINO_ERROR_AONOWEBCLIENT       0x023B	// APDuino Online: no web client
+#define APDUINO_ERROR_AOLOGNOWEBCLIENT    0x023C	// APDuino Online: no web client for logger
+#define APDUINO_ERROR_CLOGNOWEBCLIENT     0x023D	// Cosm Logging: no web client for logger
+#define APDUINO_ERROR_CLOGCONNFAIL        0x023E	// Cosm Logging: connection failure
+#define APDUINO_ERROR_TSLOGCONNFAIL       0x023F	// ThingSpeak Logging: connection failure
+#define APDUINO_ERROR_PRINTCLIENTOUTOFMEM 0x0240	// APDWeb: out of RAM when printing progmem string
+#define APDUINO_ERROR_JSNOCLIENT          0x0241	// JSON Status: no web client pointer
+#define APDUINO_ERROR_COSMDUMPOPEN        0x0242	// Cosm dump file open failed: %s
+#define APDUINO_ERROR_BROKENHEXCODE       0x0243	// Broken hex code in http request
+#define APDUINO_MSG_AOSELFREG				      0x0244	// APDuino Online: self registering: %s
+#define APDUINO_ERROR_WWWAUTHFAIL         0x0245	// WWW Authentication Failed %s
+#define APDUINO_ERROR_WWWUNAUTH           0x0246	// WWW Unauthorized, authentication requested
+#define APDUINO_ERROR_WWWNOCLIENT         0x0247	// WWW : no client connection in %s
 
 #define APDUINO_ERROR_UNKNOWNSENSORTYPE   0x0250	// Unknown sensor type
 #define APDUINO_ERROR_SAALLOCFAIL         0x0251	// Failed to allocate Sensor Array

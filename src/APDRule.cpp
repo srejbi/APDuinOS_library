@@ -59,7 +59,7 @@ APDRule::APDRule(RDCONF *rdc, APDSensorArray *pSA, APDControlArray *pCA) {
   this->psa = pSA;
   this->pca = pCA;
 
-// NOW's the time to do some tests
+// NOW's the time to do some tests (if any :p)
 //            boolean (*prulefunc)(void *);   // the evaluation function pointer, rule
 //            void (*ptcontrolfunc)(APD_CONTROL *,int);        // control, value
 //            void (*pfcontrolfunc)(APD_CONTROL *,int);        // control, value
@@ -71,36 +71,22 @@ APDRule::APDRule(RDCONF *rdc, APDSensorArray *pSA, APDControlArray *pCA) {
 //            float *pcsensorvalue;                         // pointer to a sensor to take control value from
 //            void *pmetro;                                 // we might put a metro, or something else on it...
       this->finternal = this->config.rf_value;                                  // fill the internal float with the provided static test value
-#ifdef VERBOSE
-      SerPrintP("RULE: '"); Serial.print( this->config.label); SerPrintP("'");
-#endif
+      // todo log this when enabled log levels"RULE: '" this->config.label "'"
       this->pcsensorvalue = NULL;               // done in init
       this->pmetro = NULL;                      // done in init
       // set rule evaluation sensor / value
       if (this->config.rf_sensor_idx > -1 ) {              // TODO reimplement sensor indexing : && this->config.rf_sensor_idx < iSensorCount) {
-
-          //TODO - this has to be done outside of the class - in APDUINO
-          //this->psensor = &(pAPDSensors[this->config.rf_sensor_idx]);
-
-
-
-//            this->pvalue = &(pAPDSensors[this->config.rf_sensor_idx].fvalue);
-#ifdef VERBOSE
-        SerPrintP(" IN SENSOR(id");Serial.print(this->config.rf_sensor_idx);
-        SerPrintP(" - ");
-#endif
-        // TODO THIS PART IS CRUCIAL - outside
-        //Serial.print(pAPDSensors[this->config.rf_sensor_idx].config.label);
-#ifdef VERBOSE
-        SerPrintP(") ");
-#endif
+				//TODO - this has to be done outside of the class - in APDUINO
+				// todo remove deprecated code
+				//this->psensor = &(pAPDSensors[this->config.rf_sensor_idx]);
+      	//this->pvalue = &(pAPDSensors[this->config.rf_sensor_idx].fvalue);
+      	// todo log this when enabled log levels " IN SENSOR(id" (this->config.rf_sensor_idx) (pAPDSensors[this->config.rf_sensor_idx].config.label);
       } else {
         this->psensor = NULL;
-//            this->pvalue = &(this->finternal);      // use the provided static value
-//            SerPrintP(" evals Static Value=");Serial.print(this->finternal); SerPrintP(" ");
-#ifdef VERBOSE
-        SerPrintP(" IS VIRTUAL");
-#endif
+        // todo remove deprecated code
+				// this->pvalue = &(this->finternal);      // use the provided static value
+				// SerPrintP(" evals Static Value=");Serial.print(this->finternal); SerPrintP(" ");
+        // todo log this when enabled log levels " IS VIRTUAL"
       }
 
       // test value is always the internal number, for now
@@ -109,36 +95,26 @@ APDRule::APDRule(RDCONF *rdc, APDSensorArray *pSA, APDControlArray *pCA) {
       // set rule execution control / value
       // TODO - reimplement the following check somehow (ArrayWrapper?)
       if (this->config.rule_control_idx > -1 ) {//&& this->config.rule_control_idx < pAPD->iControlCount) {
-          // TODO THIS HAS TO BE SET ON APDUINO LEVEL
+        // TODO THIS HAS TO BE SET ON APDUINO LEVEL
         //this->pcontrol = &(pAPDControls[this->config.rule_control_idx]);
 
           //TODO REIMPLEMENT CHECK
         if (this->config.ra_sensor_idx >= 0) {// && this->config.ra_sensor_idx < pAPD->iSensorCount) {
             // THIS HAS TO BE SET ON THE APDUINO LEVEL
           //this->pcsensorvalue = &(pAPDSensors[this->config.ra_sensor_idx].fvalue);
-#ifdef VERBOSE
-          SerPrintP(" SENSORVAL "); //Serial.print(pAPDSensors[this->config.ra_sensor_idx].config.label);
-#endif
-          Serial.print(this->config.ra_sensor_idx,DEC);
+        	// todo log this when enabled log levels " SENSORVAL "); pAPDSensors[this->config.ra_sensor_idx].config.label, this->config.ra_sensor_idx
         } else {
           // TODO check the config.value_mapping
-#ifdef VERBOSE
-          SerPrintP(" STATIC VALUE ");
-#endif
+        	// todo log this when enabled log levels " STATIC VALUE "
           this->cvalue = this->config.ra_value;      // use the provided static value
 
           //TODO reimplement outside
           //this->cvalue = (pAPDControls[this->config.rule_control_idx].iValue);
         }
-#ifdef VERBOSE
-        SerPrintP(" CONTROL "); Serial.print(this->config.rule_control_idx); SerPrintP(" -\" name can't be known yet. postproc needed...");
-#endif
-        //; Serial.print(this->pcontrol->config.label);SerPrintP("\" ");                // TODO dont access pcontrol, ptr not set!
+        // todo log this when enabled log levels " CONTROL " (this->config.rule_control_idx); SerPrintP(" -\" name can't be known yet. postproc needed..."); // DO NOT access pcontrol, ptr not set!
       } else {
       	APDDebugLog::log(APDUINO_WARN_RULEINVALIDCONTROL,NULL);
-#ifdef VERBOSE
-        SerPrintP(" NULL/INVALID CONTROL.");
-#endif
+      	// todo log this when enabled log levels " NULL/INVALID CONTROL."
         this->pcontrol = NULL;
         // todo revise this
         //this->cvalue = &(this->finternal);      // use the provided static value
@@ -146,94 +122,64 @@ APDRule::APDRule(RDCONF *rdc, APDSensorArray *pSA, APDControlArray *pCA) {
         //this->cvalue = this->config.ra_value;      // use the provided static value
       }
       if (this->config.pszconditions[0]!=0) {
-#ifdef VERBOSE
-      	SerPrintP(" EVALS: \"");Serial.print(this->config.pszconditions);SerPrintP("\" --");
-#endif
+      	// todo log this when enabled log levels " EVALS: \"" (this->config.pszconditions) ("\" --")
       }
 
       // select control functions
-#ifdef VERBOSE
-      SerPrintP(" T: ");
-#endif
+      // todo log this when enabled log levels (" T: ");
       this->ptcontrolfunc= get_rule_action_ptr(this->config.rule_true_action);
-#ifdef VERBOSE
-      SerPrintP(" F: ");
-#endif
+      // todo log this when enabled log levels (" F: ");
       this->pfcontrolfunc= get_rule_action_ptr(this->config.rule_false_action);
 
       // choose the evaluation function
-#ifdef VERBOSE
-      SerPrintP(" depending on -");
-#endif
+      // todo log this when enabled log levels (" depending on -")
       /* link in the rule evaluation funtion */
       this->prulefunc = NULL;    // initialize as nullptr
       switch (this->config.rule_definition) {
         case RF_FALSE:
-#ifdef VERBOSE
-          SerPrintP("FALSE Rule");
-#endif
+        	// todo log this when enabled log levels ("FALSE Rule")
           this->prulefunc = (&apd_rule_false);
           break;
         case RF_TRUE:
-#ifdef VERBOSE
-          SerPrintP("TRUE Rule");
-#endif
+        	// todo log this when enabled log levels ("TRUE Rule")
           this->prulefunc = (&apd_rule_true);
           break;
         case RF_METRO:
-#ifdef VERBOSE
-          SerPrintP("METRO Rule");
-#endif
+        	// todo log this when enabled log levels ("METRO Rule")
           this->prulefunc = (&apd_rule_metro);
           if (this->pmetro = new Metro(this->config.rf_value)) {      // the correct metro value is the sensor's test val
-#ifdef VERBOSE
-          	SerPrintP("Rule Metro allocated");
-#endif
+          	// todo log this when enabled log levels ("Rule Metro allocated")
           } else {
           	APDDebugLog::log(APDUINO_ERROR_RMETROALLOCFAIL,NULL);
           }
           break;
         case RF_SCHEDULED:
-#ifdef VERBOSE
-          SerPrintP("RTC Rule");
-#endif
+        	// todo log this when enabled log levels ("RTC Rule")
           this->prulefunc = (&apd_rule_scheduled);
           break;
         case RF_IDLE_CHECK:
-#ifdef VERBOSE
-          SerPrintP("IDLE Rule");
-#endif
+        	// todo log this when enabled log levels ("IDLE Rule")
           this->prulefunc = (&apd_rule_idle_check);
           break;
         case RF_RAM_CHECK:
-#ifdef VERBOSE
-          SerPrintP("RAM Rule");
-#endif
+        	// todo log this when enabled log levels ("RAM Rule")
           this->prulefunc = (&apd_rule_ram_check);
           break;
         case RF_SENSOR_GT:
-#ifdef VERBOSE
-			SerPrintP("SENSOR GT VAL Rule");
-#endif
+        	// todo log this when enabled log levels ("SENSOR GT VAL Rule")
 			this->prulefunc = (&apd_rule_sensor_gt);
 			break;
         case RF_SENSOR_GTE:
         	break;
         case RF_SENSOR_LT:
-#ifdef VERBOSE
-            SerPrintP("SENSOR LT VAL Rule");
-#endif
+        	// todo log this when enabled log levels ("SENSOR LT VAL Rule")
             this->prulefunc = (&apd_rule_sensor_lt);
             break;
         case RF_SENSOR_LTE:
-#ifdef VERBOSE
-          SerPrintP("NOT SUPPORTED");
-#endif
+        	// todo log this when enabled log levels ("NOT SUPPORTED")
           break;
         case RF_SENSOR_EQ:
-#ifdef VERBOSE
-            SerPrintP("SENSOR EQ VAL Rule");
-#endif
+        	// todo log this when enabled log levels ("SENSOR EQ VAL Rule")
             this->prulefunc = (&apd_rule_sensor_equ);
             break;
         case RF_SENSOR_GT_SENSOR:
@@ -241,28 +187,21 @@ APDRule::APDRule(RDCONF *rdc, APDSensorArray *pSA, APDControlArray *pCA) {
         case RF_SENSOR_LT_SENSOR:
         case RF_SENSOR_LTE_SENSOR:
         case RF_SENSOR_EQ_SENSOR:
-#ifdef VERBOSE
-          SerPrintP("NOT SUPPORTED");
-#endif
+        	// todo log this when enabled log levels("NOT SUPPORTED")
           break;
         case RF_EVALUATE:
-#ifdef VERBOSE
-					SerPrintP("EVALUATE CONDITIONS");
-#endif
+        	// todo log this when enabled log levels ("EVALUATE CONDITIONS")
 					this->prulefunc = (&apd_rule_eval_conditions);
 					break;
         default:
         	APDDebugLog::log(APDUINO_ERROR_RDEFINVALID,NULL);
-#ifdef VERBOSE
-          SerPrintP("Invalid rule definition."); Serial.print(this->config.rule_definition);
-#endif
-      }
+        	// todo log this when enabled log levels ("Invalid rule definition.") (this->config.rule_definition)
+			}
 }
 
 
 APDRule::~APDRule()
 {
-  // TODO Auto-generated destructor stub
 	if (this->pmetro) delete(this->pmetro);		// delete metro if any
 	free(this->config.pszcron);									// free up any dynamically allocated cron string
 	free(this->config.pszconditions);					  // free up any dynamically allocated conditions string
@@ -287,11 +226,9 @@ void APDRule::initBlank() {
 }
 
 
-
+// evaluate the rule and call the corresponding true or false actions
 void APDRule::evaluateRule() {
-#ifdef DEBUG
-    SerPrintP("EVAL RULE "); Serial.print(this->config.label); //delay(10);
-#endif
+	// todo log this when enabled log levels ("EVAL RULE ") (this->config.label);
     if (this->pcsensorvalue && *(this->pcsensorvalue) == NAN) {
     	return;			// bail out if rule sensor is NAN
     }
@@ -305,49 +242,31 @@ void APDRule::evaluateRule() {
     	this->bLastState = bRuleOn;
 		  int iControlValue = 0;
 		  if (bRuleOn) {                           // if the rule evaluated as TRUE
-	#ifdef DEBUG
-			SerPrintP(" EVALUATES TRUE -> ");
-	#endif
+		  	// todo log this when enabled log levels (" EVALUATES TRUE -> ")
 			if (this->pcsensorvalue != NULL) {    // if a sensor is specified for control value
 			  //iControlValue = *((float*)(this->pcsensorvalue));      // take the sensor value
 				iControlValue = map(*((float*)(this->pcsensorvalue)), 0, 1024, 0, 255);
-#ifdef DEBUG
-			  SerPrintP(" sensorval ");
-#endif
+				// todo log this when enabled log levels (" sensorval ")
 			} else {                                                    // else
 			  iControlValue = this->cvalue;                        // the value provided as control value
-#ifdef DEBUG
-			  SerPrintP(" static ");
-#endif
+			  // todo log this when enabled log levels (" static ")
 			}
-#ifdef DEBUG
-			Serial.print(iControlValue); SerPrintP(" will be passed ");
-#endif
+			// todo log this when enabled log levels (iControlValue) " will be passed "
 
 			(*(this->ptcontrolfunc))(this->pcontrol, iControlValue);      // call the TRUE control function with the selected control value
 		  } else {                                 // else; do as described above, except the control function called is the FALSE control function
-#ifdef DEBUG
-			SerPrintP(" EVALUATES FALSE ->");
-#endif
+		  	// todo log this when enabled log levels " EVALUATES FALSE ->"
 			if (this->pcsensorvalue != NULL) {                    // ...as above...
-#ifdef DEBUG
-			  SerPrintP(" sensorval ");
-#endif
+				// todo log this when enabled log levels " sensorval "
 			  iControlValue = map(*((float*)(this->pcsensorvalue)), 0, 1024, 0, 255);
 			} else {
-#ifdef DEBUG
-			  SerPrintP(" static ");
-#endif
+				// todo log this when enabled log levels " static "
 			  iControlValue = this->cvalue;
 			}
-#ifdef DEBUG
-			Serial.print(iControlValue); SerPrintP(" will be passed ");
-#endif
+			// todo log this when enabled log levels (iControlValue) (" will be passed ")
 			(*(this->pfcontrolfunc))(this->pcontrol, iControlValue);      // call the FALSE control function
 		  }
-#ifdef DEBUG
-		  SerPrintP(".\n");
-#endif
+
 	//    }  // if virtual sensor rule
 		// other rules should be evaluated on value change detected
   } // else no state change
@@ -374,81 +293,55 @@ void (*APDRule::get_rule_action_ptr(int rule_action))(APDControl *,int) {
 
   switch (rule_action) {
     case APDRA_SET_OFF:
-#ifdef VERBOSE
-      SerPrintP("Off Control");
-#endif
+    	// todo log this when enabled log levels "Off Control"
       pfunc= (&APDControl::apd_action_set_off);
       break;
     case APDRA_SET_ON:
-#ifdef VERBOSE
-      SerPrintP("On Control");
-#endif
+    	// todo log this when enabled log levels("On Control")
       pfunc= (&APDControl::apd_action_set_on);
       break;
     case APDRA_SWITCH_VALUE:
-#ifdef VERBOSE
-    SerPrintP("Switch Control");
-#endif
+    	// todo log this when enabled log levels ("Switch Control")
       pfunc= (&APDControl::apd_action_switch);
       break;
     case APDRA_SET_VALUE:
-#ifdef VERBOSE
-    SerPrintP("Set Value Control");
-#endif
+    	// todo log this when enabled log levels "Set Value Control"
       pfunc= (&APDControl::apd_action_set_value);
       break;
     case APDRA_RCSWITCH_ON:
-#ifdef VERBOSE
-        SerPrintP("RC-Switch On");
-#endif
+    	// todo log this when enabled log levels ("RC-Switch On")
           pfunc= (&APDControl::apd_action_rc_switch_on);
           break;
     case APDRA_RCSWITCH_OFF:
-#ifdef VERBOSE
-        SerPrintP("RC-Switch Off");
-#endif
+    	// todo log this when enabled log levels("RC-Switch Off")
           pfunc= (&APDControl::apd_action_rc_switch_off);
           break;
     case APDRA_RCPLUG_SET_VALUE:
-#ifdef VERBOSE
-        SerPrintP("RC-Plug Set Value");
-#endif
+    	// todo log this when enabled log levels ("RC-Plug Set Value")
           pfunc= (&APDControl::apd_action_rc_plug_set_value);
           break;
     case APDRA_RCPLUG_ON:
-#ifdef VERBOSE
-        SerPrintP("RC-Plug On");
-#endif
+    	// todo log this when enabled log levels ("RC-Plug On")
           pfunc= (&APDControl::apd_action_rc_plug_on);
           break;
     case APDRA_RCPLUG_OFF:
-#ifdef VERBOSE
-        SerPrintP("RC-Plug Off");
-#endif
+    	// todo log this when enabled log levels ("RC-Plug Off")
           pfunc= (&APDControl::apd_action_rc_plug_off);
           break;
     case APDRA_VIRT_CUST_FUNC:
-#ifdef VERBOSE
-    SerPrintP("Custom Function Control");
-#endif
+    	// todo log this when enabled log levels ("Custom Function Control")
       pfunc= (&APDControl::apd_action_custom_function);
       break;
     case APDRA_VIRT_SCREEN_NEXT:
-#ifdef VERBOSE
-    SerPrintP("Next Screen Control");
-#endif
+    	// todo log this when enabled log levels ("Next Screen Control")
       pfunc= (&APDControl::apd_action_next_screen);
       break;
     case APDRA_VIRT_SYNCNTP:
-#ifdef VERBOSE
-    SerPrintP("NTPSync Control");
-#endif
+    	// todo log this when enabled log levels ("NTPSync Control")
       pfunc= (&APDControl::apd_action_sync_ntp);
       break;
     case APDRA_NOOP:
-#ifdef VERBOSE
-    SerPrintP("NOOP Control");
-#endif
+    	// todo log this when enabled log levels ("NOOP Control")
       pfunc= (&APDControl::apd_action_noop);
       break;
     default:
@@ -464,32 +357,18 @@ void (*APDRule::get_rule_action_ptr(int rule_action))(APDControl *,int) {
 
 
 
-
-
-
-
-
-
 boolean APDRule::apd_rule_idle_check(APDRule *pRule) {
-#ifdef DEBUG
-  SerPrintP("IDLE CHK");
-#endif
+	// todo log this when enabled log levels ("IDLE CHK")
   boolean bIdle = (*(pRule->pcsensorvalue) == 1);
-#ifdef DEBUG
-  Serial.print(bIdle, DEC); SerPrintP("\n");
-#endif
+  // todo log this when enabled log levels (bIdle, DEC)
   return bIdle;
 }
 
 boolean APDRule::apd_rule_metro(APDRule *pRule) {
-#ifdef DEBUG
-  SerPrintP("METRO CHK");
-#endif
+	// todo log this when enabled log levels ("METRO CHK")
   boolean retcode = (((APDRule*)pRule)->pmetro != NULL ? (((APDRule*)pRule)->pmetro)->check() : false);
   if (retcode) {
-#ifdef DEBUG
-      SerPrintP("METRO INTERVAL"); Serial.print(pRule->config.);
-#endif
+  	// todo log this when enabled log levels ("METRO INTERVAL");
       pRule->pmetro->reset();          // reset metro if passed
   }
   return retcode;
@@ -498,9 +377,7 @@ boolean APDRule::apd_rule_metro(APDRule *pRule) {
 boolean APDRule::cronposeval(int curval,const char*pcpos) {
 	char cnow[3]="";
 	sprintf_P(cnow,PSTR("%02d"),curval);
-#ifdef DEBUG
-	SerPrintP(">:"); Serial.print(cnow);
-#endif
+	// todo log this when enabled log levels (">:") (cnow);
 	int di = 0;			// used for extracting dividers
 	// check if minute is *, equal to value or list containing value
 	return (!strcmp_P(pcpos,PSTR("*")) || !strcmp(pcpos,cnow) ||
@@ -529,35 +406,22 @@ boolean APDRule::apd_rule_scheduled(APDRule *pRule) {
 				if (psztemp[i] == '_') { psztemp[i] = 0; i++; }	// terminate substring (staring address just saved to a position)
 			}
 			// now we should have substrings
-	#ifdef DEBUG
-			SerPrintP("CRON STRING: "); Serial.print(pmins);
-			Serial.print(","); Serial.print(phours); Serial.print(","); Serial.print(pdays); Serial.print(",");  Serial.print(pmonths); Serial.print(","); Serial.println(pweekdays);
-	#endif
-
+			// todo log this when enabled log levels ("CRON STRING: "); Serial.print(pmins); Serial.print(","); Serial.print(phours); Serial.print(","); Serial.print(pdays); Serial.print(",");  Serial.print(pmonths); Serial.print(","); Serial.println(pweekdays);
 			DateTime now = APDTime::now();
 			// check if minute is *, equal to value or list containing value
 			if (cronposeval(now.minute(),pmins) ) {		// should handle "*", "10", "10,20" type inputs on minute
 				// if minute was matching
-	#ifdef DEBUG
-				SerPrintP(".min.");
-	#endif
+				// todo log this when enabled log levels (".min.")
 				if (cronposeval(now.hour(),phours)) {
 						// if hour was matching
-	#ifdef DEBUG
-					SerPrintP(".hour.");
-	#endif
+					// todo log this when enabled log levels (".hour.")
 						if (cronposeval(now.day(),pdays)) {
 							// if day was matching
-	#ifdef DEBUG
-							SerPrintP(".day.");
-	#endif
+							// todo log this when enabled log levels (".day.")
 							if (cronposeval(now.month(),pmonths)) {
 								// if month was matching
-	#ifdef DEBUG
-								SerPrintP(".month.");
-	#endif
+								// todo log this when enabled log levels (".month.")
 								if (cronposeval(now.dayOfWeek(),pweekdays)) {		// should be also 2-digits! (or change cronposeval)
-
 									APDDebugLog::log(APDUINO_MSG_CRONRUN,NULL);
 									bret = true;
 									// todo store cron evaluation timestamp to avoid reeval?
@@ -583,45 +447,36 @@ boolean APDRule::apd_rule_scheduled(APDRule *pRule) {
 //}
 
 boolean APDRule::apd_rule_true(APDRule *pRule) {
-#ifdef DEBUG
-  SerPrintP("TRUE CHK");
-#endif
+	// todo log this when enabled log levels ("TRUE CHK")
   return true;
 }
 
 
 boolean APDRule::apd_rule_false(APDRule *pRule) {
-#ifdef DEBUG
-  SerPrintP("FALSE CHK");
-#endif
+	// todo log this when enabled log levels ("FALSE CHK")
   return false;
 }
 
 boolean APDRule::apd_rule_ram_check(APDRule *pRule) {
-#ifdef DEBUG
-  SerPrintP("RAM CHK");
-#endif
+	// todo log this when enabled log levels ("RAM CHK")
   return (((APDRule*)pRule)->cvalue > freeMemory());
 }
 
 
 boolean APDRule::apd_rule_sensor_equ(APDRule *pRule) {
-#ifdef DEBUG
-  SerPrintP("SENSOR EQ CHK");
-#endif
+	// todo log this when enabled log levels "SENSOR EQ CHK"
   APDRule *pr = (APDRule*)pRule;
   APDSensor *ps = pr->psensor;
 
   // simplified rule checking : take fvalue from the sensor
+  // todo revise type conversions here!
   return ((int)ps->fvalue == (int)*((float *)(pr->pvalue)));
 
+  // todo remove type specific checks deprecated code
 /*  switch(ps->config.sensor_type) {
     case ANALOG_SENSOR:
     case DIGITAL_SENSOR:
-#ifdef DEBUG
-      SerPrintP("ADCK: "); Serial.print(ps->config.label); SerPrintP(" : "); Serial.print(ps->fvalue,DEC); SerPrintP("(S) ==(?) "); Serial.print((int)*(float *)(pr->pvalue),DEC); SerPrintP("(R) ? ");
-      delay(100);
-#endif
+    // todo log this when enabled log levels SerPrintP("ADCK: "); Serial.print(ps->config.label); SerPrintP(" : "); Serial.print(ps->fvalue,DEC); SerPrintP("(S) ==(?) "); Serial.print((int)*(float *)(pr->pvalue),DEC); SerPrintP("(R) ? ");
 //      return ((ANADEF *)(ps->sensor))->value == *(int *)(pr->pvalue);
       return ((int)ps->fvalue == (int)*((float *)(pr->pvalue)));
       break;
@@ -644,10 +499,9 @@ boolean APDRule::apd_rule_sensor_equ(APDRule *pRule) {
   //return false;
 }
 
+// sensor baéir less than
 boolean APDRule::apd_rule_sensor_lt(APDRule *pRule) {
-#ifdef DEBUG
-  SerPrintP("SENSOR LT CHK");
-#endif
+	// todo log this when enabled log levels ("SENSOR LT CHK");
   APDRule *pr = (APDRule*)pRule;
   APDSensor *ps = pr->psensor;
 
@@ -655,10 +509,9 @@ boolean APDRule::apd_rule_sensor_lt(APDRule *pRule) {
   return ((int)ps->fvalue < (int)*((float *)(pr->pvalue)));
 }
 
+// sensor value greater than
 boolean APDRule::apd_rule_sensor_gt(APDRule *pRule) {
-#ifdef DEBUG
-  SerPrintP("SENSOR GT CHK");
-#endif
+	// todo log this when enabled log levels ("SENSOR GT CHK")
   APDRule *pr = (APDRule*)pRule;
   APDSensor *ps = pr->psensor;
 
@@ -666,19 +519,14 @@ boolean APDRule::apd_rule_sensor_gt(APDRule *pRule) {
   return ((int)ps->fvalue > (int)*((float *)(pr->pvalue)));
 }
 
-
+// evaluate the expression provided
 boolean APDRule::apd_rule_eval_conditions(APDRule *pRule){
-#ifdef DEBUG
-  SerPrintP("EVALUATE CONDITIONS");
-#endif
+	// todo log this when enabled log levels ("EVALUATE CONDITIONS")
   APDRule *pr = (APDRule*)pRule;
   APDEvaluator *ape = new APDEvaluator(pr->psa, pr->pca);
   float fres = ape->feval(pr->config.pszconditions);
   free(ape);
-#ifdef DEBUG
-  SerPrintP("ram free:");  Serial.print(freeMemory()); SerPrintP("\n");
-#endif
-  // simplified rule checking : take fvalue from the sensor
+  // todo log this when enabled log levels ("ram free:");  Serial.print(freeMemory());
   return (fres != 0);
 }
 

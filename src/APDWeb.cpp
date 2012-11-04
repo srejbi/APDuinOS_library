@@ -72,10 +72,8 @@ APDWeb::APDWeb(NETCONF *pnc)
 
 void APDWeb::initBlank()
 {
-#ifdef DEBUG
-	SerPrintP("APDWeb initializing...\n");
-#endif
-	// TODO generate mac randomness
+	// todo log this when enabled log levels
+	// TODO generate mac randomness ?
 	memcpy(&net.mac,(byte []){ 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED },6);            //TODO generate random mac, more than 1 APDuino can have collisions
 	memset(&net.ip,0,4*sizeof(byte));                          // uninitialized address
 	memset(&net.gateway,0,4*sizeof(byte));                     // uninitialized address
@@ -135,33 +133,12 @@ void APDWeb::initBlank()
 // start the networking service(s) as configured (or not configured)
 // returns true on success, false otherwise (check logs)
 boolean APDWeb::start() {
-#ifdef VERBOSE
-	SerPrintP("\nMAC:");
-
-	for (byte thisByte = 0; thisByte < 6; thisByte++) {
-		Serial.print(net.mac[thisByte],HEX);
-		if (thisByte < 5) SerPrintP(":");
-	}
-#endif
+	// todo log this when enabled log levels
 
 	//net.ip[0] = 0;
 	if ((bRestart && !this->bDHCP) || (!bRestart && net.ip[0] != 0)) {                 // if an IP seems to be provided
 		APDDebugLog::log(APDUINO_MSG_TRYINGSTATICIP,NULL);			// TODO print IP in string and push to debug log
-#ifdef VERBOSE
-		SerPrintP("Trying static IP...\n");
-		SerPrintP("IP: ");
-		// display and save in RAM config to netconfig
-		SerDumpIP(net.ip);
-		SerPrintP("MASK: ");
-		// display and save in RAM config to netconfig
-		SerDumpIP(net.subnet);
-		SerPrintP("GW: ");
-		// display and save in RAM config to netconfig
-		SerDumpIP(net.gateway);
-		SerPrintP("DNS: ");
-		// display and save in RAM config to netconfig
-	    SerDumpIP(net.pridns);
-#endif
+		// todo log this with the net params
 		Ethernet.begin(net.mac, net.ip, net.pridns, net.gateway, net.subnet);
 		bEthConfigured = true;
 		operational_state = OPSTATE_CONFIGURED | OPSTATE_STARTED;
@@ -178,9 +155,8 @@ boolean APDWeb::start() {
 		}
 		// we should have a lease now
 		APDDebugLog::log(APDUINO_MSG_DHCPLEASED,NULL);			// TODO print IP to string and put to log message
-#ifdef VERBOSE
-		SerPrintP("DHCP DONE.\nIP: ");
-#endif
+		// todo log this when enabled log levels
+
 		// we should have a lease now, save data
 		uint32_t ipaddr = (uint32_t)Ethernet.localIP();
 		memcpy((void *)(byte *)net.ip, (void *)&ipaddr, sizeof(byte)*4);
@@ -193,16 +169,8 @@ boolean APDWeb::start() {
 		ipaddr = Ethernet.dnsServerIP();
 		memcpy((void *)(byte *)net.pridns, (void *)&ipaddr, sizeof(byte)*4);
 #endif
-#ifdef VERBOSE
-		// display and save in RAM config to netconfig
-		SerDumpIP(net.ip);
-		SerPrintP("\nMASK: ");
-		SerDumpIP(net.subnet);
-		SerPrintP("\nGW: ");
-		SerDumpIP(net.gateway);
-		SerPrintP("\nDNS: ");
-	  SerDumpIP(net.pridns);
-#endif
+		// TODO log this with net.ip, net.subnet, net.gateway, net.pridns
+
 		bEthConfigured = true;
 		operational_state = OPSTATE_CONFIGURED | OPSTATE_STARTED;
 	}
@@ -242,13 +210,8 @@ boolean APDWeb::restart() {
 }
 
 void APDWeb::failure() {
-#ifdef VERBOSE
-	SerPrintP("FC"); Serial.print(this->iFailureCount); SerPrintP("++");
-#endif
 	if (++this->iFailureCount >= MAX_NET_FAILURES) {	// TODO replace 3 with a variable
-#ifdef VERBOSE
-		SerPrintP("->FC="); Serial.print(iFailureCount);
-#endif
+		// todo log this with "->FC=" iFailureCount when enabled log levels
 		this->bRestart = true;		// request a restart (will be done in loop)
 		APDDebugLog::log(APDUINO_MSG_NETFAILSRESTART,NULL);
 	}
@@ -265,12 +228,7 @@ void APDWeb::wc_busy() {
 	if (wcb_millis == 0 || iBusyCounter == 0) {
 		wcb_millis = nowms;
 	}
-
 	if (++this->iBusyCounter >= MAX_WEBCLIENT_BUSY_LOOPS  || (nowms - wcb_millis > WEBCLIENT_BUSY_TIMEOUT_MS)) {	// TODO replace 50 with a variable
-#ifdef DEBUG
-		SerPrintP("->WCB="); Serial.print(iBusyCounter);
-		SerPrintP(" busy ms:"); Serial.print(nowms - wcb_millis); SerPrintP("\n");
-#endif
 		this->failure();
 		this->iBusyCounter = 0;
 		this->wcb_millis = 0;
@@ -279,15 +237,10 @@ void APDWeb::wc_busy() {
 
 boolean APDWeb::setupAPDuinoOnline() {
 	boolean retcode = false;
-#ifdef DEBUG
-	SerPrintP("WILL SETUP APDUINO ONLINE...\n");
-#endif
+	// todo log this when enabled log levels
 	szAPDUINO_API_KEY[0] = 0;
 	if (bEthConfigured && APDStorage::ready()) {
-#ifdef DEBUG
-		SerPrintP("WE HAVE NET\n");
-#endif
-
+		// todo log this when enabled log levels
 		if (APDStorage::readFileWithParser("ONLINE.CFG",&new_apduinoconf_parser,(void*)this) > 0) {
 		} else {
 			// use defaults
@@ -296,22 +249,11 @@ boolean APDWeb::setupAPDuinoOnline() {
 			apduino_server_port = 80;
 			apduino_logging_freq = DEFAULT_ONLINE_LOG_FREQ;
 		}
-		//
-#ifdef VERBOSE
-		SerPrintP("APDuino Online server:"); Serial.println(apduino_server_name);
-		SerPrintP("@");
-		SerDumpIP(apduino_server_ip);
-#endif
+		// todo log this with apduino_server_name apduino_server_ip when enabled log levels
+
 		if (apduino_server_ip[0]>0) {                            // if we have a server name
 			loadAPIkey(szAPDUINO_API_KEY,"APIKEY.CFG");             // load api key for apduino.com
-#ifdef VERBOSE
-			Serial.print(szAPDUINO_API_KEY);
-			delay(20);
-#endif
-
-#ifdef DEBUG
-			SerPrintP("Executing self-registration proc.\n");
-#endif
+			// todo log this when enabled log levels
 			self_register();								// this will get a server-generated key
 
 			startWebLogging(apduino_logging_freq);
@@ -327,8 +269,10 @@ boolean APDWeb::setupAPDuinoOnline() {
 	return retcode;
 }
 
-
-boolean APDWeb::loadAPIkey(char *szAPIKey, char *szAPIFile) {
+// load api key, basically reads a line from the given file, if found
+// szAPIKey - pointer to a string that receives the line (should be large enough)
+// szAPIFile - path to the file
+boolean APDWeb::loadAPIkey(char *szAPIKey, const char *szAPIFile) {
 	if (APDStorage::ready()) {
 		int i=0;
 		char line[RCV_BUFSIZ]="";
@@ -353,7 +297,7 @@ boolean APDWeb::loadAPIkey(char *szAPIKey, char *szAPIFile) {
 // stores an API key in a keyfile (a file containing a string with API key)
 // szAPIKey - character buffer with API key
 // szAPIFile - path to the file
-void APDWeb::saveAPIkey(char *szAPIKey, char *szAPIFile)
+void APDWeb::saveAPIkey(const char *szAPIKey, const char *szAPIFile)
 {
 	if (APDStorage::ready()) {
 		SdFile dataFile(szAPIFile, O_WRITE | O_CREAT);
@@ -388,35 +332,25 @@ boolean APDWeb::setupCosmLogging() {
 	szCOSM_API_KEY[0] = 0;
 	if (bEthConfigured && APDStorage::ready() && this->phmetro == NULL) {
 		if (APDStorage::readFileWithParser("PACHUBE.CFG",&new_cosmconf_parser,(void*)this) > 0) {
-#ifdef VERBOSE
-			SerPrintP("server:"); Serial.println(cosm_server_name);
-			SerPrintP("@");
-			SerDumpIP(cosm_server_ip);
-#endif
+			// todo log this when enabled log levels
 			if (cosm_server_ip[0]>0) {                            // if we have a server name
 				loadAPIkey(szCOSM_API_KEY,"PACHUBE.KEY");             // TODO -> load api key for ; allow multiple keys for different services
 				Serial.print(szCOSM_API_KEY);
 				delay(20);
 
 			} else {
-#ifdef VERBOSE
-				SerPrintP("FAIL.\n");
-#endif
+				// todo log this when enabled log levels
 			}
 			this->phmetro = new Metro(cosm_logging_freq, true);                     // TODO check this
 			APDDebugLog::log(APDUINO_MSG_COSMLOGSTARTED, cosm_server_name); // todo include IP in log -- SerDumpIP(cosm_server_ip);
 			retcode = true;
 
 		} else {
-#ifdef VERBOSE
-			SerPrintP("CONF ERR.\n");
-#endif
+			// todo log this when enabled log levels
 		}
 
 	} else {
-#ifdef VERBOSE
-		SerPrintP("ERR.\n");
-#endif
+		// todo log this when enabled log levels
 	}
 	return retcode;
 }
@@ -424,46 +358,25 @@ boolean APDWeb::setupCosmLogging() {
 
 boolean APDWeb::setupThingSpeakLogging() {
 	boolean retcode = false;
-#ifdef VERBOSE
-	SerPrintP("THINGSPEAK...");
-#endif
+	// todo log this
 	szTHINGSPEAK_API_KEY[0] = 0;
 	if (bEthConfigured && APDStorage::ready() && this->tsmetro == NULL) {
 		if (APDStorage::readFileWithParser("THINGSPK.CFG",&new_thingspeakconf_parser,(void*)this) > 0) {
-#ifdef VERBOSE
-			SerPrintP("server:"); Serial.println(thingspeak_server_name);
-			SerPrintP("@");
-			SerDumpIP(thingspeak_server_ip);
-#endif
-
+			// todo log this w/ server name
 			if (thingspeak_server_ip[0]>0) {                            // if we have a server name
 				loadAPIkey(szTHINGSPEAK_API_KEY,"THINGSPK.KEY");
-#ifdef VERBOSE
-				Serial.print(szTHINGSPEAK_API_KEY);
-				delay(20);
-#endif
-
+				// todo log this with szTHINGSPEAK_API_KEY
 			} else {
-#ifdef VERBOSE
-				SerPrintP("FAIL.\n");
-#endif
+				// todo log this
 			}
-#ifdef VERBOSE
-			SerPrintP("SETUP.\n");
-#endif
+			// todo log this
 			this->tsmetro = new Metro(thingspeak_logging_freq, true);                     // TODO check this
 			retcode = true;
-
 		} else {
-#ifdef VERBOSE
-			SerPrintP("CONF ERR.\n");
-#endif
+			// todo log this
 		}
-
 	} else {
-#ifdef VERBOSE
-		SerPrintP("ERR.\n");
-#endif
+		// todo log this
 	}
 	return retcode;
 }
@@ -471,13 +384,9 @@ boolean APDWeb::setupThingSpeakLogging() {
 
 void APDWeb::startWebServer(APDSensor **pSensors, int iSensorCount, APDControl **pControls, int iControlCount, APDRule **pRules, int iRuleCount)
 {
-#ifdef VERBOSE
-	SerPrintP("WS");
-#endif
+	// todo log this
 	if (pwwwserver == NULL) {
-#ifdef VERBOSE
-		SerPrintP("Starting WWW Server on port "); Serial.print(net.wwwPort); SerPrintP("...\n");
-#endif
+		// todo log this
 		pwwwserver = new EthernetServer(net.wwwPort);
 		pwwwserver->begin();
 		this->pAPDSensors = pSensors;
@@ -489,18 +398,17 @@ void APDWeb::startWebServer(APDSensor **pSensors, int iSensorCount, APDControl *
 
 		this->setup_webclient();
 	} else {
-#ifdef VERBOSE
-		SerPrintP("WS already running?\n");
-#endif
+		// todo log this
 	}
 }
 
-
+// start a html page using image, css resources on the APDuino Online server
+// todo this code should be deprecated (or minimized) in favor of the JSON data + www server solution
 void APDWeb::web_startpage(EthernetClient *pClient, char *title,int refresh=0) {
 	if (*pClient) {
 		WCPrintP(pClient,"<html>\n");
 		WCPrintP(pClient,"<head><title>APDUINO - "); pClient->print(title); WCPrintP(pClient,"</title>\n");
-		WCPrintP(pClient,"<link rel=\"shortcut icon\" type=\"image/x-icon\" href=\"http://apduino.localhost/images/apduino_icon.png\"/>\n");
+		WCPrintP(pClient,"<link rel=\"shortcut icon\" type=\"image/x-icon\" href=\"http://"); pClient->print(apduino_server_name); WCPrintP(pClient,"/images/apduino_icon.png\"/>\n");
 		if (refresh) {
 			WCPrintP(pClient,"<meta http-equiv=\"refresh\" content=\""); pClient->print(refresh); WCPrintP(pClient,"\"/>\n");
 		}
@@ -547,21 +455,22 @@ void APDWeb::web_startpage(EthernetClient *pClient, char *title,int refresh=0) {
 		WCPrintP(pClient,"</ul></div>");												  // closing sidebar
 
 	} else {
-		APDDebugLog::log(APDUINO_ERROR_WWWCLIENTGONE,NULL);
+		char sztmp[24]="";
+		APDDebugLog::log(APDUINO_ERROR_WWWNOCLIENT,strcpy_P(sztmp,PSTR("web_startpage")));
 	}
 }
 
+// closes the HTML body and html tags
 void APDWeb::web_endpage(EthernetClient *pClient) {
 	if (*pClient) {
 		WCPrintP(pClient,"</body></html>");
-#ifdef DEBUG
-		SerPrintP("SEND_STATUS END.\n");
-#endif
 	} else {
-		APDDebugLog::log(APDUINO_ERROR_WWWCLIENTGONE,NULL);
+		char sztmp[24]="";
+		APDDebugLog::log(APDUINO_ERROR_WWWNOCLIENT,strcpy_P(sztmp,PSTR("web_endpage")));
 	}
 }
 
+// generates HTML code with a table line for status
 void APDWeb::webstatus_table_item(EthernetClient *pClient, const char *group, const int index, const char *name, const char *value, const char *logged ) {
 	WCPrintP(pClient,"<tr class=\"line\">"
 										"<td class=\""); pClient->print(group); WCPrintP(pClient,"_name\">");
@@ -576,13 +485,12 @@ void APDWeb::webstatus_table_item(EthernetClient *pClient, const char *group, co
 	WCPrintP(pClient,"></td></tr>");		// end row
 }
 
+
+// list sensors on a html page
+// todo deprecate this in favor of the JSON api
 void APDWeb::web_status(EthernetClient *pClient) {
 	if (*pClient) {
 		char tbuf[20] ="";
-#ifdef DEBUG
-		Serial.print(iSensorCount); SerPrintP("sensors should be listed...\n");
-#endif
-
 		WCPrintP(pClient,"<div class=\"status\">"
 				"<div class=\"sensors\"><h1>Sensors</h1>"
 				"<table id=\"sensors_table\">");
@@ -590,22 +498,15 @@ void APDWeb::web_status(EthernetClient *pClient) {
 		//    SerPrintP("Output sensors...");
 		for (int i = 0; i < iSensorCount; i++) {
 			webstatus_table_item(pClient, "sensor", i, pAPDSensors[i]->config.label, pAPDSensors[i]->getValueS(tbuf), (pAPDSensors[i]->config.sensor_log ? "1" : "0") );
-#ifdef DEBUG
-			SerPrintP("Sensor "); Serial.print(i);
-#endif
 		}
 
 		WCPrintP(pClient,"</table>"
-										"</div>");
+										"</div>");		// sensors div
 		// CONTROLS OUTPUT
 		WCPrintP(pClient,"<div class=\"controls\"><h1>Controls</h1>"
 				"<table id=\"controls_table\">");
 
-		//    SerPrintP("Output controls...");
 		for (int i = 0; i < iControlCount; i++) {
-#ifdef DEBUG
-			SerPrintP("Control "); Serial.print(i);
-#endif
 			webstatus_table_item(pClient, "control", i, pAPDControls[i]->config.label, pAPDControls[i]->getValueS(tbuf), (pAPDControls[i]->config.control_log ? "1" : "0") );
 		}
 
@@ -617,62 +518,48 @@ void APDWeb::web_status(EthernetClient *pClient) {
 				"<table id=\"rules_table\">");
 
 		for (int i = 0; i < iRuleCount; i++) {
-#ifdef DEBUG
-			SerPrintP("Rule "); Serial.print(i);
-#endif
 			webstatus_table_item(pClient, "rule", i, pAPDRules[i]->config.label, pAPDRules[i]->getValueS(tbuf), "0" );
 		}
 
 		WCPrintP(pClient,"</table>"
-											"</div>\n");		// controls div
-
+											"</div>\n");		// rules div
 
 		WCPrintP(pClient,"</div>\n");		// status div
 		// give the web browser time to receive the data
 		delay(1);
 	} else {
-
-
-
-
-
-		SerPrintP("W02");
+		char sztmp[24] = "";
+		APDDebugLog::log(APDUINO_ERROR_WWWNOCLIENT,strcpy_P(sztmp,PSTR("web_status")));
 	}
 }
 
+
+// return HTTP 503 - Service unavailable
 void APDWeb::web_maintenance(EthernetClient *pClient) {
 	WCPrintP(pClient, "HTTP/1.1 503 (Service unavailable)\n"
 			"Content-Type: text/html\n\n"
 			"<h2>Temporarily unavailable. Please try again later.</h2>\n");
 }
 
+// return HTTP 404 - Not found
 void APDWeb::web_notfound(EthernetClient *pClient) {
 	WCPrintP(pClient, "HTTP/1.1 404 Not Found\n"
 			"Content-Type: text/html\n\n"
 			"<h2>File Not Found!</h2>\n");
 }
 
+// generate a HTML snippet with <a href /> tag hyperlinking to the APDuino Online server
+// allowing to associate device with APDuino Online account
 void APDWeb::claim_device_link(EthernetClient *pClient) {
 	if (*pClient) {
-		//    SerPrintP("\nSEND_STATUS START.");
-#ifdef DEBUG
-		WCPrintP(pClient,"<sub>Version: ");    pClient->print(APDUINO_VERSION); WCPrintP(pClient,"."); pClient->print(APDUINO_BUILD); WCPrintP(pClient,"</sub>");
-		delay(1);
-#endif
 		WCPrintP(pClient,"<a href=\"http://"); pClient->print(apduino_server_name); WCPrintP(pClient,"/devices/claim_device?api_key=");
 		pClient->print(szAPDUINO_API_KEY); WCPrintP(pClient,"\">Claim your APDuino!</a>");
 		WCPrintP(pClient,"<hr/>");
 		// give the web browser time to receive the data
 		delay(1);
 	} else {
-
-
-
-
-
-
-
-		SerPrintP("W01");
+		char sztmp[24]="";
+		APDDebugLog::log(APDUINO_ERROR_WWWNOCLIENT,strcpy_P(sztmp,PSTR("claim_device_link")));
 	}
 }
 
@@ -802,7 +689,8 @@ void APDWeb::ListFiles(EthernetClient client, const char *szPath, uint8_t flags)
 	}
 }
 
-
+// loop the server, process incoming requests
+// APDuino calls this reasonably often to have a smooth web service
 void APDWeb::loop_server()
 {
 	if (pwwwserver != NULL) {      // if server is instantiated
@@ -846,9 +734,7 @@ void APDWeb::loop_server()
 
 							filename = clientline + 8; // pointer to after "GET /sd/"
 							(strstr_P(clientline, PSTR(" HTTP")))[0] = 0;       // terminate string just before proto string
-	#ifdef DEBUG
-							SerPrintP("REQ: "); Serial.println(filename);  // print the file we want
-	#endif
+							// todo log this
 							if (!ServeFile(client,filename)) web_notfound(&client);		// server file or 404 if serving returns false
 						//} else if ((strstr_P(clientline, PSTR("GET /status")) != 0 && strlen(clientline) == 11) ||		// /status
 						}
@@ -856,16 +742,12 @@ void APDWeb::loop_server()
 							(strstr_P(clientline, PSTR("GET / ")) != 0 && !ServeFile(client,"/index.htm"))) {				// also for www root
 						if (!(this->operational_state & OPSTATE_PAUSED)) {
 							if (basicAuthorize(&client)) {
-		#ifdef DEBUG
-								SerPrintP("Sending HTTP Resp...");
-		#endif
+								// todo log this when enabled log levels
 								header(&client,CONTENT_TYPE_HTML);
 								web_startpage(&client,"status",20);
 								web_status(&client);
 								web_endpage(&client);
-		#ifdef DEBUG
-								SerPrintP("HTTP Resp Sent.");
-		#endif
+								// todo log this when enabled log levels
 							} else {
 								web_maintenance(&client);
 							}
@@ -909,7 +791,7 @@ void APDWeb::loop_server()
 				// TODO investigate/research why the Reset_AVR messes up the device
 				/* } else if (strstr_P(filename,PSTR("reset")) != 0) {
 				  	if (basicAuthorize(&client)) {
-							SerPrintP("Web initiated reset.\n");
+							// todo log this
 							Reset_AVR();
 					  }*/
 					} else if (strstr_P(clientline, PSTR("POST /provisioning")) != 0) {
@@ -921,9 +803,7 @@ void APDWeb::loop_server()
 							}
 						}
 					} else {
-#ifdef DEBUG
-						SerPrintP("404\n");
-#endif
+						// todo log this when enabled log levels
 						// everything else is a 404
 						if (basicAuthorize(&client)) {
 							if (strstr_P(clientline, PSTR("GET / ")) == 0) {		// if not root url
@@ -944,6 +824,13 @@ void APDWeb::loop_server()
 	}
 }
 
+// attempts to locate Basic Authorization HTTP header, if found, checks if base64 encoded value
+// matches with the one stored in LOCAL.KEY (if not found than base64 encoded "admin:admin")
+// returns true if authorized, false otherwise
+// Note: when unauthorized, it will call sendAuthRequest to send the request
+// so the caller can just close the connection
+// if true, the caller can proceed serving the protected content
+// todo multiuser, multirealm, etc.
 boolean APDWeb::basicAuthorize(EthernetClient *pclient) {
 	boolean bretcode = false;		// unauth
 	char sztmp[RCV_BUFSIZ] = "";
@@ -965,15 +852,17 @@ boolean APDWeb::basicAuthorize(EthernetClient *pclient) {
 			sztmp[index] = 0;			// terminating string at index
 			char szencstr[128] = "";
 			if (!loadAPIkey(szencstr,"LOCAL.KEY")) {
-				// base64 encode u/p and compare
+				// todo remove deprecated code block
+				// deprecated implementation with Base64: base64 encode u/p and compare
 				// for first implementation will go with admin:admin
 				//char szliteral[] = "";
 				//strcpy_P(szliteral,PSTR("admin:admin"));
 				//int encoded = base64_encode(szencstr,szliteral,11);
-				// same thing using pre-encoded default pw
+
+				// same thing using pre-encoded default pw (smaller footprint)
 				strcpy_P(szencstr,PSTR("YWRtaW46YWRtaW4="));	// "admin:admin"
 			}
-			// todo log access
+			// todo log access when enabled log levels
 			//APDDebugLog::log(APDUINO_MSG_WWWAUTHOK,NULL);
 			if (strcmp(sztmp,szencstr)==0) {
 				bretcode = true;
@@ -1016,7 +905,7 @@ void APDWeb::forwardToMarker(EthernetClient *pclient, char *szBuf, char *szMarke
 			for (int i=0; i < RCV_BUFSIZ-1; i++) szBuf[i] = szBuf[i+1];
 			index = RCV_BUFSIZ -2;
 		}
-#ifdef DEBUG_LOG
+#ifdef DEBUG
 		// continue to read more data!
 		Serial.print(c);
 		pclient->print(c);
@@ -1024,7 +913,7 @@ void APDWeb::forwardToMarker(EthernetClient *pclient, char *szBuf, char *szMarke
 		//continue;
 	}
 #ifdef DEBUG
-	SerPrintP("Bailing out with :"); Serial.println(szBuf);
+	SerPrintP("szBuf:"); Serial.println(szBuf);
 #endif
 }
 
@@ -1046,13 +935,6 @@ void APDWeb::processProvisioningRequest(EthernetClient *pclient, boolean brespon
 
 		if (brespond) web_startpage(pclient,"provisioning");
 #ifdef DEBUG
-		if (!APDStorage::ready()) {
-			SerPrintP("STORAGE AVAILABLE");
-		} else {
-			SerPrintP("STORAGE NOT AVAILABLE");
-		}
-#endif
-#ifdef DEBUG
 		if (brespond) {
 			// send back what we received - for debug
 			WCPrintP(pclient, "<hr />\n");
@@ -1070,25 +952,22 @@ void APDWeb::processProvisioningRequest(EthernetClient *pclient, boolean brespon
 
 				if (strstr(clientline, "&")) {
 					*strstr(clientline, "&") = 0;
-#ifdef DEBUG_LOG
+#ifdef DEBUG
 					if (brespond) {
 						WCPrintP(pclient, "<hr/><b>DESTINATION</b>=\n");
 						pclient->println(clientline);
+						WCPrintP(pclient, "<hr/>\n");
 					}
 #endif
 					strcpy(destfile,clientline);										// save the dest file name
-#ifdef DEBUG_LOG
-					if (brespond) WCPrintP(pclient, "<hr/>\n");
-#endif
 				}
 
 				// forward to the data portion
 				forwardToMarker(pclient,clientline,"data=");
 
 				if (strstr(clientline, "data=")) {
-#ifdef DEBUG
-					SerPrintP("Processing Data");
-#endif
+					// todo log this ("Processing Data") when enabled log levels
+
 					// remove temp file if exists
 					if (APDStorage::p_sd->exists(provfile)) APDStorage::p_sd->remove(provfile);
 					SdFile tempFile(provfile, O_WRITE | O_CREAT );
@@ -1104,24 +983,15 @@ void APDWeb::processProvisioningRequest(EthernetClient *pclient, boolean brespon
 							hexcode[0] = pclient->read();
 							hexcode[1] = pclient->read();
 							if (isHexadecimalDigit(hexcode[0]) && isHexadecimalDigit(hexcode[1])) {
-#ifdef DEBUG
-								SerPrintP("HEX CODE:"); Serial.println(hexcode);
-#endif
 								int cc = read_hex_byte(hexcode);
-#ifdef DEBUG
-								Serial.print(cc);
-#endif
 								char newc = cc;
-#ifdef DEBUG
-								SerPrintP("Translates to: '"); Serial.print(newc); SerPrintP("'");
-#endif
 								if (newc == '&') {
 									bytesProv++;
 									if (tempFile.isOpen()) {
 										tempFile.write(newc);      // we print this character early to file
 										bytesProvSaved++;
 									}
-#ifdef DEBUG_INFO
+#ifdef DEBUG
 									Serial.print(c);
 									if (brespond) pclient->print(c);
 #endif
@@ -1129,7 +999,7 @@ void APDWeb::processProvisioningRequest(EthernetClient *pclient, boolean brespon
 									newc = 1;      // hack / & would stop the checks/
 								}
 								c = newc;
-							} else {
+							} else {		// incomplete hex code??!
 								APDDebugLog::log(APDUINO_ERROR_BROKENHEXCODE,NULL);
 							}
 						}
@@ -1140,7 +1010,7 @@ void APDWeb::processProvisioningRequest(EthernetClient *pclient, boolean brespon
 								tempFile.write(c);    // write the char to the tempfile
 								bytesProvSaved++;
 							}
-#ifdef DEBUG_INFO
+#ifdef DEBUG
 							Serial.print(c);
 							pclient->print(c);
 #endif
@@ -1173,24 +1043,13 @@ void APDWeb::processProvisioningRequest(EthernetClient *pclient, boolean brespon
 							APDStorage::p_sd->remove(destfile);
 						}
 						APDStorage::p_sd->rename(provfile,destfile);
-#ifdef DEBUG_LOG
-						if (brespond) WCPrintP(pclient, "<b>OK</b>");
-#endif
+						// todo log this when enabled log levels
 						uProv++;
 					}
 
 					if (strstr(clientline, "&")) {
 						*strstr(clientline, "&") = 0;
-#ifdef DEBUG_LOG
-						if (brespond) {
-							WCPrintP(pclient, "<hr/><b>DATA</b>=");
-							pclient->print(clientline);
-							WCPrintP(pclient, "<hr/>\n");
-						}
-#endif
-#ifdef DEBUG
-						SerPrintP("DATA:"); Serial.println(clientline);
-#endif
+						// todo log this with (clientline) when enabled log levels
 					}
 				}
 
@@ -1209,10 +1068,11 @@ void APDWeb::processProvisioningRequest(EthernetClient *pclient, boolean brespon
 		}
 		if (bytesProv != bytesProvSaved) {
 			if (brespond) WCPrintP(pclient, "<div class=\"error\">Corrupted provisioning!?</div>");
-			// TODO ADD ERRPR LOGGING HERE
+			// todo log this when enabled log levels
 		}
 		// TODO a callback to apduino online would be nice
 		// TODO or a redirect
+		// TODO and handling joined reconfig/reloadrules/reboot instructions
 		if (brespond) web_endpage(pclient);
 	}
 }
@@ -1231,9 +1091,7 @@ void APDWeb::registration_response(APDWeb *pAPDWeb){
 	boolean apikeyconfirmed=false;
 	char new_api_key[65]="";
 	if (pAPDWeb->pwwwclient != NULL && pAPDWeb->pwwwclient->available()) {
-#ifdef DEBUG
-		SerPrintP("SR: Processing server response...");
-#endif
+		// todo log this when enabled log levels "SR: Processing server response..."
 		while (pAPDWeb->pwwwclient->available()) {    // with bytes to read
 			char www_respline[RCV_BUFSIZ] ="";
 			int index = 0;
@@ -1254,16 +1112,12 @@ void APDWeb::registration_response(APDWeb *pAPDWeb){
 				}
 
 				// a line in www_respline
-#ifdef DEBUG
-				SerPrintP("LINE2CHK: "); Serial.println(www_respline);
-#endif
+				// todo log this when enabled log levels (www_respline);
 				if (!bProcessingBody) {      // if fetching lines of the HTTP header
 					if (iStatusCode < 0) {          // if no status code yet
 						sscanf_P(www_respline,PSTR("Status: %d"),&iStatusCode);    // scan for status
 					} else {                       // if status already found
-#ifdef VERBOSE
-						SerPrintP("STATUS : "); Serial.println(iStatusCode);
-#endif
+						// todo log this when enabled log levels (iStatusCode);
 						if (www_respline[0] == '\n') {    // if blank line (separating header and body)
 							bProcessingBody = true;            // now comes the body part
 						}
@@ -1271,9 +1125,7 @@ void APDWeb::registration_response(APDWeb *pAPDWeb){
 				} else {                  // if fetching lines from the HTTP body
 					if (content_length < 0) {  // we are in the body but no length yet (1st row)
 						content_length = atoi(www_respline);
-#ifdef DEBUG
-						SerPrintP("content_length:"); Serial.println(content_length);
-#endif
+						// todo log this when enabled log levels(content_length);
 					} else { 									// we are in the body somewhere
 						if (new_api_key[0]==0) {	// no api key found yet (in the server response body)
 							if (sscanf(www_respline,"REG_API_KEY=%s",new_api_key)) {	// scan if the line specifies api key, scan it in
@@ -1284,12 +1136,11 @@ void APDWeb::registration_response(APDWeb *pAPDWeb){
 									bReReg = true;					// signal internally for repeating registration (to confirm new API KEY)
 
 									// done with reception of a new api key
-	//#ifdef VERBOSE
+									// TODO log these through APDDebug
 									SerPrintP("Registered device on APDuino Online.\nClaim your device at: http://");
 									Serial.print(pAPDWeb->apduino_server_name);
 									SerPrintP("/devices/claim_device?api_key=");
 									Serial.println(pAPDWeb->szAPDUINO_API_KEY);
-	//#endif
 								} // end if no local API KEY
 	#ifdef DEBUG
 								else {
@@ -1308,11 +1159,11 @@ void APDWeb::registration_response(APDWeb *pAPDWeb){
 					if (pAPDWeb->pwwwclient->available() && pAPDWeb->szAPDUINO_API_KEY[0]!=0) {
 						if (strstr(www_respline,pAPDWeb->szAPDUINO_API_KEY)) {	// check for api key
 							apikeyconfirmed = true;
-							SerPrintP("APDuino Online confirms device.\n");
+							// todo log this when enabled log levels "APDuino Online confirms device.")
 						} else if(apikeyconfirmed) {		// only accept provisioning if API key was confirmed
 							Serial.println(pAPDWeb->pwwwclient->available()); SerPrintP("bytes left. Looking for provisioning data...");
 							pAPDWeb->processProvisioningRequest(pAPDWeb->pwwwclient, false);  // process any provisioning data without rendering a response
-							SerPrintP("Should be done");
+							// todo log this when enabled log levels "Should be done"
 						}
 					}
 				}
@@ -1326,9 +1177,7 @@ void APDWeb::registration_response(APDWeb *pAPDWeb){
 
 		pAPDWeb->pwwwcp = NULL;			// reset the www parser callback
 		if (bReReg) {				// if it was detected as a response to a new registration, we must confirm
-#ifdef VERBOSE
-			SerPrintP("Confirming registration.\n");
-#endif
+			// todo log this when enabled log levels "Confirming registration."
 			pAPDWeb->self_register();          // re-run registration with the new API key so server creates the device
 		}
 	}
@@ -1346,9 +1195,7 @@ boolean APDWeb::self_register() {
 	if ( pwwwclient!=NULL ) {
 		if ( !pwwwclient->connected() ) {
 			sprintf_P(www_postdata,PSTR("lan_ip=%d.%d.%d.%d&v=%s.%s"),net.ip[0],net.ip[1],net.ip[2],net.ip[3],APDUINO_VERSION,APDUINO_BUILD);
-#ifdef DEBUG
-			SerPrintP("SR: "); Serial.print(www_postdata); SerPrintP(" ...");
-#endif
+			APDDebugLog::log(APDUINO_MSG_AOSELFREG,www_postdata);
 			if( pwwwclient->connect(apduino_server_ip, apduino_server_port) ) {
 				// send the HTTP PUT request:
 				WCPrintP(pwwwclient,"PUT /devices/self_register HTTP/1.1\n");
@@ -1369,18 +1216,15 @@ boolean APDWeb::self_register() {
 
 				// here's the actual content of the PUT request:
 				pwwwclient->println(www_postdata);
-#ifdef VERBOSE
-				SerPrintP("Request sent.");
-#endif
+				APDDebugLog::log(APDUINO_MSG_AOSELFREG,"ok.");
 				if (pwwwcp ==NULL)
 					pwwwcp = (&registration_response);      // set reader 'callback'
 				else {
 					APDDebugLog::log(APDUINO_ERROR_WWWCLIENTOCCUPIED,NULL);
 				}
 			} else {
-				Serial.println();
-				// TODO check this out
-				//SerPrintP("E24");
+				// TODO check this branch out
+				// todo log this when enabled log levels "E24"
 				pwwwclient->stop();
 			}
 		} else {
@@ -1388,9 +1232,7 @@ boolean APDWeb::self_register() {
 			this->wc_busy();
 		}
 		bWebClient = (pwwwclient!=0) && pwwwclient->connected();
-#ifdef DEBUG
-		SerPrintP("WWWCLI: "); Serial.println(bWebClient,DEC); SerPrintP("WWCLI?"); Serial.println((int)pwwwclient,DEC);
-#endif
+		// todo log this when enabled log levels
 	} else {
 		APDDebugLog::log(APDUINO_ERROR_AONOWEBCLIENT,NULL);
 		this->failure();
@@ -1573,13 +1415,10 @@ void APDWeb::log_to_ApduinoOnline() {
 
 			char sztmp[11] = "";
 			APDDebugLog::log(APDUINO_MSG_AOLOGGING,ultoa(strlen(www_logdata),sztmp,10));		// logdata has \n
-#ifdef DEBUG
-			SerPrintP("WL: "); Serial.print(this->pstr_APDUINO_API_KEY); SerPrintP(" - "); Serial.print(www_logdata); SerPrintP(" ...");
-#endif
+			// todo log this when enabled log levels (this->pstr_APDUINO_API_KEY) (www_logdata)
+
 			if( pwwwclient->connect(apduino_server_ip, apduino_server_port) ) {
-#ifdef VERBOSE
-				SerPrintP("connecting...");
-#endif
+				// todo log this when enabled log levels
 				// send the HTTP PUT request:
 				WCPrintP(pwwwclient,"PUT "); pwwwclient->print(WEBLOG_URI); WCPrintP(pwwwclient," HTTP/1.1\n");
 				WCPrintP(pwwwclient,"Host: ");    pwwwclient->println(apduino_server_name);
@@ -1628,12 +1467,8 @@ void APDWeb::log_to_Cosm() {
 			APDDebugLog::log(APDUINO_MSG_COSMLOGGING,ultoa(strlen(www_logdata),sztmp,10));		// logdata has \n
 
 			sprintf_P(feedUrl,PSTR("/v2/feeds/%lu.csv"),cosm_feed_id);
-#ifdef VERBOSE
-			Serial.println(www_logdata);
-			SerPrintP("\n\nconn:"); Serial.print(cosm_server_name); Serial.println(feedUrl);
-#endif
+			// todo log this when enabled log levels with (cosm_server_name) (feedUrl)
 			if( pwwwclient->connect(cosm_server_ip, cosm_server_port) ) {
-
 				// send the HTTP PUT request:
 				WCPrintP(pwwwclient,"PUT "); pwwwclient->print(feedUrl); WCPrintP(pwwwclient," HTTP/1.1\n");
 				WCPrintP(pwwwclient,"Host: ");    pwwwclient->println(cosm_server_name);
@@ -1664,7 +1499,6 @@ void APDWeb::log_to_Cosm() {
 		APDDebugLog::log(APDUINO_ERROR_CLOGNOWEBCLIENT,NULL);
 		this->failure();
 	}
-
 	//APDDebugLog::enable_sync_writes();
 	bWebClient = (pwwwclient!=0) && pwwwclient->connected();
 }
@@ -1680,12 +1514,8 @@ void APDWeb::log_to_ThingSpeak() {
 
 			char sztmp[11] = "";
 			APDDebugLog::log(APDUINO_MSG_TSLOGGING,ultoa(strlen(www_logdata),sztmp,10));
-#ifdef DEBUG
-			Serial.println(www_logdata);
-			SerPrintP("\n\nconn:"); Serial.print(thingspeak_server_name); //Serial.println(feedUrl);
-#endif
+			// todo log this when enabled log levels (www_logdata) (thingspeak_server_name) (feedUrl)
 			if( pwwwclient->connect(thingspeak_server_ip, thingspeak_server_port) ) {
-
 				// send the HTTP PUT request:
 				WCPrintP(pwwwclient,"POST /update HTTP/1.1\n");
 				WCPrintP(pwwwclient,"Host: ");    pwwwclient->println(thingspeak_server_name);
@@ -1712,12 +1542,9 @@ void APDWeb::log_to_ThingSpeak() {
 				this->failure();
 			}
 		}
+	}	else {
+		// todo log this when enabled log levels
 	}
-#ifdef DEBUG
-	else {
-		SerPrintP("E292");
-	}
-#endif
 	bWebClient = (pwwwclient!=0) && pwwwclient->connected();
 }
 
@@ -1729,22 +1556,16 @@ void APDWeb::loop_webclient()
 {
 	if (pwwwclient) {                // if we have an EthernetClient instantiated
 		if(pwwwclient->available()) {    // with bytes to read
-#ifdef DEBUG
-			SerPrintP("WEBCLIENT GOT SOMETHING!");
-#endif
+			// todo log this when enabled log levels
 			if (pwwwcp != NULL) {
-#ifdef DEBUG
-				SerPrintP("CALL WEBCLIENT PROCESSOR!\n");
-#endif
+				// todo log this when enabled log levels
 				(*pwwwcp)(this);    // call processor
 				// TODO: commented out the line below that enforced that the wwwprocessor function is reset. make sure the processors reset themselves!
 				//pwwwcp = NULL;  // no more processor ;-)
 			}
 
 			// read anything remaining
-#ifdef DEBUG
-			SerPrintP("Processing leftovers...\n");
-#endif
+			// todo log this when enabled log levels "Processing leftovers...\n"
 
 			while (pwwwclient->available()) {    // with bytes to read
 				char c = pwwwclient->read();        // then read a byte
@@ -1755,18 +1576,13 @@ void APDWeb::loop_webclient()
 
 		// if the server's disconnected, stop the client:
 		if (!pwwwclient->connected()) {
-#ifdef DEBUG
-			SerPrintP("LOOP WEBCLIENT disconnecting.\n");
-#endif
+			// todo log this when enabled log levels
 			pwwwclient->stop();
 			bWebClient = false;
 		}
+	}	else {
+		// todo log this when enabled log levels ("WL: error, no web client.\n");
 	}
-#ifdef DEBUG
-	else {
-		SerPrintP("WL: error, no web client.\n");
-	}
-#endif
 }
 
 void APDWeb::myCPrintP(EthernetClient *pClient, void *Pstring) {
@@ -1789,9 +1605,7 @@ void APDWeb::new_apduinoconf_parser(void *pAPDWeb, int iline, char *psz) {
 	APDWeb *pw = (APDWeb*)pAPDWeb;
 	char szhost[32];
 	unsigned long uLogFreq = DEFAULT_ONLINE_LOG_FREQ;
-#ifdef DEBUG
-	Serial.print("ONLINE READ: "); Serial.print(psz);
-#endif
+	// todo log this when enabled log levels
 	//        hostname  |IP4     |Port|feedid
 	sscanf_P( psz, PSTR("%s %2x%2x%2x%2x,%d,%lu"),
 			szhost,
@@ -1820,20 +1634,14 @@ void APDWeb::new_cosmconf_parser(void *pAPDWeb, int iline, char *psz) {
 			&(pw->cosm_logging_freq));
 
 	strncpy(pw->cosm_server_name,szhost,31);
-#ifdef DEBUG
-	Serial.println(szhost); Serial.println(pw->cosm_server_name);
-	Serial.println(pw->cosm_feed_id);
-	Serial.println(pw->cosm_logging_freq);
-#endif
+	// todo log this when enabled log levels
 	// Cosm config should be in APDWeb now
 }
 
 void APDWeb::new_thingspeakconf_parser(void *pAPDWeb, int iline, char *psz) {
 	APDWeb *pw = (APDWeb*)pAPDWeb;
 	char szhost[32];
-#ifdef DEBUG
-	Serial.print("THINGSPEAK READ: "); Serial.print(psz);
-#endif
+	// todo log this when enabled log levels
 	//        hostname  |IP4     |Port|feedid
 	sscanf_P( psz, PSTR("%s %2x%2x%2x%2x,%d,%lu,%lu"),
 			szhost,
@@ -1842,10 +1650,7 @@ void APDWeb::new_thingspeakconf_parser(void *pAPDWeb, int iline, char *psz) {
 			&(pw->thingspeak_logging_freq));
 
 	strncpy(pw->thingspeak_server_name,szhost,31);
-#ifdef DEBUG
-	Serial.println(szhost); Serial.println(pw->thingspeak_server_name);
-	Serial.println(pw->thingspeak_logging_freq);
-#endif
+	// todo log this when enabled log levels
 	// TS config now should be in APDWeb...
 }
 
@@ -1961,9 +1766,7 @@ void APDWeb::json_status(EthernetClient *pClient) {
 		WCPrintP(pClient,"]");		// End Main Array
 		// give the web browser time to receive the data
 		delay(1);
-#ifdef VERBOSE
-		SerPrintP("JSONDONE.");
-#endif
+		// todo log this when enabled log levels
 	} else {
 		APDDebugLog::log(APDUINO_ERROR_JSNOCLIENT,NULL);
 	}

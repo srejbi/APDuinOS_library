@@ -214,8 +214,8 @@ private:
 
   void dumpPachube();
 
-  boolean loadAPIkey(char *szAPIKey, char *szAPIFile);
-  void saveAPIkey(char *szAPIKey, char *szAPIFile);
+  boolean loadAPIkey(char *szAPIKey, const char *szAPIFile);
+  void saveAPIkey(const char *szAPIKey, const char *szAPIFile);
 
   // helpers
   static void myCPrintP(EthernetClient *pClient, void *Pstring);

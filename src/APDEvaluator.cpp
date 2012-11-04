@@ -28,6 +28,8 @@
  *
  * Credits: original C evaluator implementation Copyright by RosettaCode 2010
  *
+ * TODO make errors non-blocking, evaluation return NAN on errors
+ *
  * Integrated into APDuinOS and further improvements by George Schreiber 30-07-2012
  */
 
@@ -46,7 +48,6 @@ APDEvaluator::~APDEvaluator() {
 	// TODO Auto-generated destructor stub
 
 }
-
 
 
 void APDEvaluator::parse_error(const char* string) {

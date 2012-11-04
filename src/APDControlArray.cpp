@@ -59,9 +59,7 @@ APDControlArray::~APDControlArray()
 
 void APDControlArray::new_control_parser(void *pCA, int iline, char *psz) {
   CDCONF cdc;
-#ifdef VERBOSE
-  Serial.print("CONTROL READ: "); Serial.print(psz);
-#endif
+  // todo log this when enabled log levels "CONTROL READ: " (psz)
   int iscand = sscanf_P( psz, CONTROL_PARSERSTRING,
       (cdc.label),
       &(cdc.control_type),
@@ -71,15 +69,11 @@ void APDControlArray::new_control_parser(void *pCA, int iline, char *psz) {
       (cdc.extra_data));
 
   if (iscand < 6) {
-#ifdef VERBOSE
-		SerPrintP("no extra data");
-#endif
+  	// todo log this when enabled log levels "no extra data"
 		memset(cdc.extra_data,0,sizeof(char)*24);
 	}
 	if (iscand < 5) {
-#ifdef VERBOSE
-		SerPrintP("no logging");
-#endif
+		// todo log this when enabled log levels "no logging"
 		cdc.control_log = 0;
 	}
 
@@ -103,18 +97,13 @@ int APDControlArray::loadControls() {
     char sztemp[11]="";
     APDDebugLog::log(APDUINO_MSG_CONTROLCOUNT,itoa(iControlCount,sztemp,10));
     if (iControlCount > -1) {
-#ifdef DEBUG
-      SerPrintP("Control Array: allocating "); Serial.print(sizeof(APDControl*)*iControlCount,DEC); SerPrintP(" bytes of RAM\n");
-#endif
-
+    	// todo log this when enabled log levels "Control Array: allocating " (sizeof(APDControl*)*iControlCount)
       pAPDControls = (APDControl**)malloc(sizeof(APDControl*)*iControlCount);
 
       if (pAPDControls) {
         memset(pAPDControls,0,sizeof(APDControl*)*iControlCount);
 
-  #ifdef DEBUG
-        SerPrintP("CA Allocated. Parsing CONTROLS.CFG...\n");
-  #endif
+        // todo log this when enabled log levels "CA Allocated. Parsing CONTROLS.CFG..."
 
         APDStorage::readFileWithParser(szConfFile,&new_control_parser,(void*)this);
 
@@ -127,10 +116,7 @@ int APDControlArray::loadControls() {
             if (pc->config.control_pin < 10 && pc->config.control_pin > 0) {
               if (this->pcustfuncs[pc->config.control_pin] != NULL) {
                 // assign the custom function pointer to the control; take control's PIN as IDX
-#ifdef DEBUG
-                SerPrintP("SETTING CUSTOM FUCTION IDX "); Serial.print(pc->config.control_pin);
-                SerPrintP(" FOR CONTROL IDX"); Serial.print(i); SerPrintP(".\n");
-#endif
+              	// todo log this when enabled log levels "SETTING CUSTOM FUCTION IDX " pc->config.control_pin " FOR CONTROL IDX" i
                 pc->pcustfunc = (void (*)())this->pcustfuncs[pc->config.control_pin];      // cvalue must hold the cfunc idx
               } else {
               	APDDebugLog::log(APDUINO_ERROR_CAMISSINGCUSTFUNC,NULL);
@@ -157,9 +143,7 @@ int APDControlArray::loadControls() {
 
 int APDControlArray::dumpToFile(char *pszFileName) {
   // make a string for assembling the data to log:
-#ifdef DEBUG
-  SerPrintP("Dumping CA Config...");
-#endif
+	// todo log this when enabled log levels "Dumping CA Config..."
     if (APDStorage::p_sd->exists(pszFileName)) {
           APDStorage::p_sd->remove(pszFileName);
         }
@@ -177,9 +161,7 @@ int APDControlArray::dumpToFile(char *pszFileName) {
       dataFile.println(line);
     }
     dataFile.close();
-#ifdef DEBUG
-    SerPrintP("Rule Control Config dumped.");
-#endif
+    // todo log this when enabled log levels "Rule Control Config dumped."
   }
   else {
     // TODO add an error macro in storage, replace all error opening stuff with reference to that
@@ -206,6 +188,7 @@ APDControl *APDControlArray::findReusableControl(CDCONF *cdc) {
   // TODO: put all reusable controls below
   case RCPLUG_CONTROL:
     preusable = this->firstControlByPin(cdc->control_pin, cdc->control_type);
+    // todo log this when enabled log levels (the VERBOSE defines below)
 #ifdef VERBOSE
     if (preusable) {
         SerPrintP("REUSING @");
@@ -222,6 +205,7 @@ APDControl *APDControlArray::findReusableControl(CDCONF *cdc) {
 #ifdef VERBOSE
   SerPrintP("REUSABLE");
 #endif
+  // todo log this - the above VERBOSES - when enabled log levels
   return preusable;
 }
 
