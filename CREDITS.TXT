@@ -1,0 +1,38 @@
+APDuinOS Library uses code from 3rd parties.
+
+Source code of these software can be found in the 'libraries' subfolder. 
+Below please find credits and links where originals/recent versions can be downloaded.
+
+Credits and links to software source code:
+* Arduino
+  http://arduino.cc , http://code.google.com/p/arduino/
+  
+* SdFat Library Copyright (C) 2009 by William Greiman
+  http://code.google.com/p/sdfatlib/
+  
+* Arduino Metro library Copyright Thomas Ouellet Fredericks
+  http://arduino.cc/playground/uploads/Code/Metro.zip
+  
+* RTCLib - Copyright JeeLabs 
+  http://news.jeelabs.org/code/
+
+* ADAFruit BMP085 Library Copyright Limor Fried/Ladyada for Adafruit Industries
+  https://github.com/adafruit/Adafruit-BMP085-Library   
+  
+* Arduino OneWire library (v2.1) Copyright (c) 2007, Jim Studt (original),
+  Paul Stoffregen, Guillermo Lovato, Jason Dangel, Glenn Trewitt, Robin James, Tom Pollard, Josh Larios 
+  http://www.pjrc.com/teensy/td_libs_OneWire.html
+  
+* DHT-sensor-library Copyright Adafruit Industries
+  https://github.com/adafruit/DHT-sensor-library
+  
+* MemoryFree Library - public domain, Matthew Murdoch 
+  http://arduino.cc/playground/Code/AvailableMemory 
+  
+* RCSwitch - Arduino libary Copyright (c) 2011 Suat Özgür
+  http://code.google.com/p/rc-switch/  
+  
+
+Credits:
+* NTP syncing is based on NTP2RTC - code in the public domain - http://www.arduino.cc/playground/Main/DS1307OfTheLogshieldByMeansOfNTP
+* Arithmetic evaluator - Rosetta Code - http://rosettacode.org/wiki/Arithmetic_Evaluator/C
