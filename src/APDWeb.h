@@ -32,6 +32,7 @@
 
 #include <Arduino.h>
 #include <SPI.h>                 // SPI comms
+#include <Base64.h>
 #include <Ethernet.h>            // ethernet shield
 #include <MemoryFree.h>
 #include <Metro.h>
@@ -184,6 +185,8 @@ private:
   void wc_busy();
 
   // www-processing helpers
+  boolean basicAuthorize(EthernetClient *pclient);
+  void sendAuthRequest(EthernetClient *pclient, const char *szrealm);
   void forwardToMarker(EthernetClient *pclient, char *szBuf, char *szMarker);
 
   // log string generators

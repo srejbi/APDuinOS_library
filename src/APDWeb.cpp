@@ -682,7 +682,7 @@ void APDWeb::claim_device_link(EthernetClient *pClient) {
 // return true if file was found and served, false on error (not found)
 bool APDWeb::ServeFile(EthernetClient client, const char *szPath) {
 	bool retcode = false;
-	APDDebugLog.log(APDUINO_MSG_WWWFILEACCESS, szPath);
+	APDDebugLog::log(APDUINO_MSG_WWWFILEACCESS, szPath);
 	SdFile file;
 	if (file.open(APDStorage::p_root, szPath, O_READ)) {
 		retcode = true;
@@ -834,81 +834,103 @@ void APDWeb::loop_server()
 
 					// Look for substring such as a request to get the root file
 					if (strstr_P(clientline, PSTR("GET /sd/ ")) != 0) { // print all the files, use a helper to keep it clean
-						header(&client,CONTENT_TYPE_HTML);	// send a standard http response header for html page
-						web_startpage(&client,"files");
-						ListFiles(client, NULL, LS_DATE | LS_SIZE);		// list root
-						web_endpage(&client);
+						if (basicAuthorize(&client)) {
+							header(&client,CONTENT_TYPE_HTML);	// send a standard http response header for html page
+							web_startpage(&client,"files");
+							ListFiles(client, NULL, LS_DATE | LS_SIZE);		// list root
+							web_endpage(&client);
+						}
 					} else if (strstr_P(clientline, PSTR("GET /sd/")) != 0) {		// no space after the /, so a filename is expected to follow
-						char *filename;
+						if (basicAuthorize(&client)) {
+							char *filename;
 
-						filename = clientline + 8; // pointer to after "GET /sd/"
-						(strstr_P(clientline, PSTR(" HTTP")))[0] = 0;       // terminate string just before proto string
-#ifdef DEBUG
-						SerPrintP("REQ: "); Serial.println(filename);  // print the file we want
-#endif
-            if (!ServeFile(client,filename)) web_notfound(&client);		// server file or 404 if serving returns false
-					//} else if ((strstr_P(clientline, PSTR("GET /status")) != 0 && strlen(clientline) == 11) ||		// /status
+							filename = clientline + 8; // pointer to after "GET /sd/"
+							(strstr_P(clientline, PSTR(" HTTP")))[0] = 0;       // terminate string just before proto string
+	#ifdef DEBUG
+							SerPrintP("REQ: "); Serial.println(filename);  // print the file we want
+	#endif
+							if (!ServeFile(client,filename)) web_notfound(&client);		// server file or 404 if serving returns false
+						//} else if ((strstr_P(clientline, PSTR("GET /status")) != 0 && strlen(clientline) == 11) ||		// /status
+						}
 					} else if (strstr_P(clientline, PSTR("GET /status ")) != 0 ||		// /status
 							(strstr_P(clientline, PSTR("GET / ")) != 0 && !ServeFile(client,"/index.htm"))) {				// also for www root
 						if (!(this->operational_state & OPSTATE_PAUSED)) {
-	#ifdef DEBUG
-							SerPrintP("Sending HTTP Resp...");
-	#endif
-							header(&client,CONTENT_TYPE_HTML);
-							web_startpage(&client,"status",20);
-							web_status(&client);
-							web_endpage(&client);
-	#ifdef DEBUG
-							SerPrintP("HTTP Resp Sent.");
-	#endif
-						} else {
-							web_maintenance(&client);
+							if (basicAuthorize(&client)) {
+		#ifdef DEBUG
+								SerPrintP("Sending HTTP Resp...");
+		#endif
+								header(&client,CONTENT_TYPE_HTML);
+								web_startpage(&client,"status",20);
+								web_status(&client);
+								web_endpage(&client);
+		#ifdef DEBUG
+								SerPrintP("HTTP Resp Sent.");
+		#endif
+							} else {
+								web_maintenance(&client);
+							}
 						}
 					} else if (strstr_P(clientline,PSTR("GET /reconfigure")) != 0) {
-						header(&client,CONTENT_TYPE_HTML);
-						web_startpage(&client,"reconfigure",0);
-						WCPrintP(&client,"Request acknowledged.");
-						web_endpage(&client);
-						this->dispatched_requests = DREQ_RECONF;		// APDuino should read it
+						if (basicAuthorize(&client)) {
+							header(&client,CONTENT_TYPE_HTML);
+							web_startpage(&client,"reconfigure",0);
+							WCPrintP(&client,"Request acknowledged.");
+							web_endpage(&client);
+							this->dispatched_requests = DREQ_RECONF;		// APDuino should read it
+						}
 					} else if (strstr_P(clientline,PSTR("GET /reset")) != 0) {
-						header(&client,CONTENT_TYPE_HTML);
-						web_startpage(&client,"reset",0);
-						WCPrintP(&client,"Request acknowledged.");
-						web_endpage(&client);
-						this->dispatched_requests = DREQ_RESET;		// APDuino should read it
+						if (basicAuthorize(&client)) {
+							header(&client,CONTENT_TYPE_HTML);
+							web_startpage(&client,"reset",0);
+							WCPrintP(&client,"Request acknowledged.");
+							web_endpage(&client);
+							this->dispatched_requests = DREQ_RESET;		// APDuino should read it
+						}
 					} else if (strstr_P(clientline,PSTR("GET /reloadrules")) != 0) {
-						header(&client,CONTENT_TYPE_HTML);
-						web_startpage(&client,"reload_rules",0);
-						WCPrintP(&client,"Request acknowledged.");
-						web_endpage(&client);
-						this->dispatched_requests = DREQ_RELOADRULES;		// APDuino should read it
+						if (basicAuthorize(&client)) {
+							header(&client,CONTENT_TYPE_HTML);
+							web_startpage(&client,"reload_rules",0);
+							WCPrintP(&client,"Request acknowledged.");
+							web_endpage(&client);
+							this->dispatched_requests = DREQ_RELOADRULES;		// APDuino should read it
+						}
 					} else if (strstr_P(clientline, PSTR("GET /status.json")) != 0) {
-						header(&client,CONTENT_TYPE_JSON);
-						json_status(&client);
+						if (basicAuthorize(&client)) {
+							header(&client,CONTENT_TYPE_JSON);
+							json_status(&client);
+						}
 					} else if (strstr_P(clientline,PSTR("GET /claimdevice")) != 0) {
-						header(&client,CONTENT_TYPE_HTML);
-						web_startpage(&client,"claimdevice",0);
-						claim_device_link(&client);
-						web_endpage(&client);
-						// TODO investigate/research why the Reset_AVR messes up the device
+						if (basicAuthorize(&client)) {
+							header(&client,CONTENT_TYPE_HTML);
+							web_startpage(&client,"claimdevice",0);
+							claim_device_link(&client);
+							web_endpage(&client);
+						}
+				// TODO investigate/research why the Reset_AVR messes up the device
 				/* } else if (strstr_P(filename,PSTR("reset")) != 0) {
-						SerPrintP("Web initiated reset.\n");
-						Reset_AVR();*/
+				  	if (basicAuthorize(&client)) {
+							SerPrintP("Web initiated reset.\n");
+							Reset_AVR();
+					  }*/
 					} else if (strstr_P(clientline, PSTR("POST /provisioning")) != 0) {
-						if (!(this->operational_state & OPSTATE_PAUSED)) {
-							this->processProvisioningRequest(&client, true);
-						} else {
-							web_maintenance(&client);
+						if (basicAuthorize(&client)) {
+							if (!(this->operational_state & OPSTATE_PAUSED)) {
+								this->processProvisioningRequest(&client, true);
+							} else {
+								web_maintenance(&client);
+							}
 						}
 					} else {
 #ifdef DEBUG
 						SerPrintP("404\n");
 #endif
 						// everything else is a 404
-						if (strstr_P(clientline, PSTR("GET / ")) == 0) {		// if not root url
-							web_notfound(&client);
-						} else {
-							// 'GET / ' served already
+						if (basicAuthorize(&client)) {
+							if (strstr_P(clientline, PSTR("GET / ")) == 0) {		// if not root url
+								web_notfound(&client);
+							} else {
+								// 'GET / ' served already
+							}
 						}
 					}
 					break;
@@ -922,6 +944,60 @@ void APDWeb::loop_server()
 	}
 }
 
+boolean APDWeb::basicAuthorize(EthernetClient *pclient) {
+	boolean bretcode = false;		// unauth
+	char sztmp[RCV_BUFSIZ] = "";
+	char szmark[24] = "";
+	forwardToMarker(pclient,sztmp,strcpy_P(szmark, PSTR("Authorization: Basic ")));
+	if (strstr(sztmp, szmark)) {
+		sztmp[0] = 0;
+		int index = 0;
+		while (pclient->available() && !bretcode) {    // if there are bytes to read and still not authorized
+			char c = pclient->read();                // read 1 character
+			if (c != '\n' && c != '\r') {         // If it isn't a new line, add the character to the buffer
+				sztmp[index] = c;
+				index++;
+
+				if (index >= RCV_BUFSIZ)           // are we too big for the buffer? start tossing out data (messes up the decoding of u/p
+					index = RCV_BUFSIZ -1;
+				continue;           							 // continue to read more data!
+			}
+			sztmp[index] = 0;			// terminating string at index
+			char szencstr[128] = "";
+			if (!loadAPIkey(szencstr,"LOCAL.KEY")) {
+				// base64 encode u/p and compare
+				// for first implementation will go with admin:admin
+				char szliteral[] = "";
+				strcpy_P(szliteral,PSTR("admin:admin"));
+				int encoded = base64_encode(szencstr,szliteral,11);
+			}
+			// todo log access
+			//APDDebugLog::log(APDUINO_MSG_WWWAUTHOK,NULL);
+			if (strcmp(sztmp,szencstr)==0) {
+				bretcode = true;
+			} else break;
+		}
+		if (!bretcode) {
+			APDDebugLog::log(APDUINO_ERROR_WWWAUTHFAIL,sztmp);
+			sendAuthRequest(pclient,"apduino");
+		}
+	} else {
+		Serial.print(sztmp);
+		// Unauthorized, send auth req.
+		APDDebugLog::log(APDUINO_ERROR_WWWUNAUTH,NULL);
+		sendAuthRequest(pclient,"apduino");
+	}
+	return bretcode;
+}
+
+void APDWeb::sendAuthRequest(EthernetClient *pclient, const char *szrealm) {
+	WCPrintP(pclient,"HTTP/1.1 401 Not Authorized\n"
+				"WWW-Authenticate: Basic realm=\"");
+	pclient->print(szrealm);
+	WCPrintP(pclient,"\"\n");
+	WCPrintP(pclient,"\n\n");
+	delay(1);
+}
 
 void APDWeb::forwardToMarker(EthernetClient *pclient, char *szBuf, char *szMarker) {
 	//SerPrintP("FORWARD TO"); Serial.print(szMarker);

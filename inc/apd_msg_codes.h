@@ -171,6 +171,9 @@
 #define APDUINO_ERROR_COSMDUMPOPEN        0x0241	// Cosm dump file open failed: %s
 #define APDUINO_ERROR_BROKENHEXCODE       0x0242	// Broken hex code in http request
 #define APDUINO_ERROR_WWWCLIENTGONE       0x0243	// WWW Client gone?
+#define APDUINO_ERROR_WWWAUTHFAIL         0x0244	// WWW Authentication Failed %s
+#define APDUINO_ERROR_WWWUNAUTH           0x0245	// WWW Unauthorized, authentication requested
+
 
 #define APDUINO_ERROR_UNKNOWNSENSORTYPE   0x0250	// Unknown sensor type
 #define APDUINO_ERROR_SAALLOCFAIL         0x0251	// Failed to allocate Sensor Array
