@@ -967,9 +967,11 @@ boolean APDWeb::basicAuthorize(EthernetClient *pclient) {
 			if (!loadAPIkey(szencstr,"LOCAL.KEY")) {
 				// base64 encode u/p and compare
 				// for first implementation will go with admin:admin
-				char szliteral[] = "";
-				strcpy_P(szliteral,PSTR("admin:admin"));
-				int encoded = base64_encode(szencstr,szliteral,11);
+				//char szliteral[] = "";
+				//strcpy_P(szliteral,PSTR("admin:admin"));
+				//int encoded = base64_encode(szencstr,szliteral,11);
+				// same thing using pre-encoded default pw
+				strcpy_P(szencstr,PSTR("YWRtaW46YWRtaW4="));	// "admin:admin"
 			}
 			// todo log access
 			//APDDebugLog::log(APDUINO_MSG_WWWAUTHOK,NULL);

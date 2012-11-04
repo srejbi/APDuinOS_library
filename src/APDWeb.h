@@ -32,7 +32,7 @@
 
 #include <Arduino.h>
 #include <SPI.h>                 // SPI comms
-#include <Base64.h>
+//#include <Base64.h>
 #include <Ethernet.h>            // ethernet shield
 #include <MemoryFree.h>
 #include <Metro.h>

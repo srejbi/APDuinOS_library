@@ -21,7 +21,7 @@
 							<builder buildPath="${workspace_loc:/libAPD/Debug}" errorParsers="org.eclipse.cdt.core.MakeErrorParser" id="it.baeyens.avreclipse.target.builder.winavr.lib.debug.1083348871" keepEnvironmentInBuildfile="false" managedBuildOn="true" name="AVR GNU Make Builder" superClass="it.baeyens.avreclipse.target.builder.winavr.lib.debug"/>
 							<tool command="avr-gcc" commandLinePattern="${COMMAND} ${FLAGS} ${OUTPUT_FLAG} ${OUTPUT_PREFIX}${OUTPUT} ${INPUTS}" errorParsers="org.eclipse.cdt.core.GASErrorParser" id="it.baeyens.avreclipse.tool.assembler.winavr.lib.debug.649612536" name="AVR Assembler" superClass="it.baeyens.avreclipse.tool.assembler.winavr.lib.debug">
 								<option id="it.baeyens.avreclipse.assembler.option.debug.level.1029632115" name="Generate Debugging Info" superClass="it.baeyens.avreclipse.assembler.option.debug.level"/>
-								<option id="it.baeyens.avreclipse.asm.option.include.paths.335334304" superClass="it.baeyens.avreclipse.asm.option.include.paths" valueType="includePath"/>
+								<option id="it.baeyens.avreclipse.asm.option.include.paths.335334304" name="#include paths for preprocessor(-I)" superClass="it.baeyens.avreclipse.asm.option.include.paths" valueType="includePath"/>
 								<inputType id="it.baeyens.avreclipse.tool.assembler.input.619001297" superClass="it.baeyens.avreclipse.tool.assembler.input"/>
 							</tool>
 							<tool command="avr-gcc" commandLinePattern="${COMMAND} ${FLAGS} ${OUTPUT_FLAG} ${OUTPUT_PREFIX}${OUTPUT} ${INPUTS}" errorParsers="org.eclipse.cdt.core.GCCErrorParser" id="it.baeyens.avreclipse.tool.compiler.winavr.lib.debug.1045713416" name="AVR Compiler" superClass="it.baeyens.avreclipse.tool.compiler.winavr.lib.debug">
@@ -29,7 +29,6 @@
 								<option id="it.baeyens.avreclipse.compiler.option.optimize.1512054623" name="Optimization Level" superClass="it.baeyens.avreclipse.compiler.option.optimize" value="it.baeyens.avreclipse.compiler.optimize.size" valueType="enumerated"/>
 								<option id="it.baeyens.avreclipse.compiler.option.incpath.291528777" name="Include Paths (-I)" superClass="it.baeyens.avreclipse.compiler.option.incpath" valueType="includePath">
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/libraries/SdFat}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/libraries/arduino-base64}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/libraries/SoftwareSerial}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ARDUINOBOARDNAME}/arduino}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/Arduino_Mega_2560_or_Mega_ADK/arduino}&quot;"/>
@@ -45,7 +44,6 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/libraries/RTClib}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/libraries/SPI}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/libraries/Wire/utility}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/libraries/arduino-base64}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src}&quot;"/>
 								</option>
 								<option id="it.baeyens.avreclipse.compiler.option.def.1559935131" name="Define Syms (-D)" superClass="it.baeyens.avreclipse.compiler.option.def" valueType="definedSymbols">
@@ -82,7 +80,6 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/libraries/SPI}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/libraries/Wire}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/libraries/Wire/utility}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/libraries/arduino-base64}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src}&quot;"/>
 								</option>
 								<option id="it.baeyens.avreclipse.cppcompiler.option.def.392748544" name="Define Syms (-D)" superClass="it.baeyens.avreclipse.cppcompiler.option.def" valueType="definedSymbols">
