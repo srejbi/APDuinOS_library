@@ -35,24 +35,19 @@ APDSensor::APDSensor() {
 
 APDSensor::APDSensor(SDCONF *sdc) {
   initSensor();
-#ifdef DEBUG
-  SerPrintP("COPY SENSOR DEF\n");
-#endif
+  // todo log this when enabled log levels ("COPY SENSOR DEF\n");
   memcpy((void*)&(this->config),(void*)sdc,sizeof(SDCONF));       // copy the structure to config
-#ifdef VERBOSE
-  SerPrintP("SENSOR DEFINITION:"); SerPrintP(" - "); Serial.print(this->config.label); SerPrintP("(label), ");
-      Serial.print(this->config.sensor_type); SerPrintP(" (sensor_type),"); Serial.print(this->config.sensor_class);
-      SerPrintP(" (class),"); Serial.print(this->config.sensor_pin); SerPrintP("(pin),");
-      Serial.print(this->config.sensor_secondary_pin); SerPrintP("(secondary_pin),");
-      Serial.print(this->config.sensor_subtype); SerPrintP(" (subtype),"); Serial.print(this->config.sensor_freq);
-      SerPrintP("(freq),"); Serial.print(this->config.sensor_log); SerPrintP("(log),");
-      Serial.print(this->config.extra_data); SerPrintP("(extra data),"); SerPrintP("|\n");
-#endif
+  // todo log this when enabled log levels SerPrintP("SENSOR DEFINITION:"); SerPrintP(" - "); Serial.print(this->config.label); SerPrintP("(label), "); \
+      Serial.print(this->config.sensor_type); SerPrintP(" (sensor_type),"); Serial.print(this->config.sensor_class); \
+      SerPrintP(" (class),"); Serial.print(this->config.sensor_pin); SerPrintP("(pin),"); \
+      Serial.print(this->config.sensor_secondary_pin); SerPrintP("(secondary_pin),"); \
+      Serial.print(this->config.sensor_subtype); SerPrintP(" (subtype),"); Serial.print(this->config.sensor_freq); \
+      SerPrintP("(freq),"); Serial.print(this->config.sensor_log); SerPrintP("(log),"); \
+      Serial.print(this->config.extra_data); SerPrintP("(extra data),"); SerPrintP("|\n"); \
+
    boolean bInstantiated = false;      // set if instance was setup ok - type dependent
    if (this->config.sensor_type > 0) {
-#ifdef VERBOSE
-       SerPrintP("This is a specific sensor type...");
-#endif
+  	 // todo log this when enabled log levels ("This is a specific sensor type...");
    }
    this->pmetro = NULL;
    this->sensor = NULL;
@@ -79,9 +74,7 @@ void APDSensor::initSensor(SDCONF *sdc) {
   this->initSensor();
   memcpy(&(this->config),sdc,sizeof(SDCONF));
   this->pmetro = new Metro(this->config.sensor_freq, true);
-#ifdef VERBOSE
-  SerPrintP("\ninitSensor("); Serial.print(this->config.label); SerPrintP(") done.\n");
-#endif
+  // todo log this when enabled log levels ("\ninitSensor("); Serial.print(this->config.label); SerPrintP(") done.\n");
 }
 
 
@@ -96,20 +89,16 @@ char *APDSensor::getValueS(char *strdest) {
 boolean APDSensor::check() {
   boolean retcode = false;
   if (this->pmetro != NULL && this->pmetro->check()) {
-#ifdef DEBUG
-      Serial.print(this->config.label); SerPrintP(" - metro up. Performing check...");
-#endif
+  	// todo log this when enabled log levels (this->config.label); SerPrintP(" - metro up. Performing check...");
       retcode = this->perform_check();
-#ifdef DEBUG
-      SerPrintP(" - done, reset metro\n");
-#endif
+      // todo log this when enabled log levels (" - done, reset metro\n");
       this->pmetro->reset();
   }
 #ifdef DEBUG
   else {
-  	Serial.print(this->config.label); SerPrintP(" metroskip.");
+  	// todo log this when enabled log levels Serial.print(this->config.label);  (" metroskip.");
   	if (this->pmetro == NULL)
-  		SerPrintP(" NULLMETRO\n");
+  		// todo log this when enabled log levels(" NULLMETRO\n");
   }
 #endif
   return retcode;
@@ -136,7 +125,5 @@ int APDSensor::iValue() {
 float APDSensor::fValue() {
 	return (this->fvalue);
 }
-
-
 
 

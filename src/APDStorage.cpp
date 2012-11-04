@@ -68,11 +68,7 @@ boolean APDStorage::begin(int iSS, int iChip, int iSpeed = SPI_HALF_SPEED) {
 
   APDDebugLog::log(APDUINO_MSG_STORAGEINIT,NULL);
 
-	//APDDebugLog::log(APDUINO_MSG_STORAGESTART,NULL);
-#ifdef VERBOSE
-	SerPrintP(" starting.");
-#endif
-	p_sd = new SdFat();
+  p_sd = new SdFat();
 	if (p_sd) {
 		APDDebugLog::log(APDUINO_MSG_SDFATINIT,NULL);
 			if (p_sd->init(iSDSpeed, sdChipSelect)) {
@@ -114,17 +110,13 @@ int APDStorage::rotate_file(const char *szLogFile, unsigned long maxsize) {
 				if (p_sd->exists(szLogFile)) {
 					APDDebugLog::disable_sync_writes();					// we might be rotating the debug log
 					APDDebugLog::log(APDUINO_MSG_LOGCHECK,NULL);
-#ifdef VERBOSE
-					Serial.print(szLogFile); SerPrintP(" -- Log existst, checking size - \n");		// TODO remove these, do messaging via APDSerial
-#endif
+					// todo log this when enabled log levels(szLogFile); SerPrintP(" -- Log existst, checking size - \n");		// TODO remove these, do messaging via APDSerial
 					// check file size
 					SdFile logFile(szLogFile, O_RDONLY);
 					unsigned long fSize = logFile.fileSize();
 					logFile.close();
 
-#ifdef VERBOSE
-					Serial.print(fSize); SerPrintP(" bytes...\n");				// TODO remove debug
-#endif
+					// todo log this when enabled log levels (fSize); SerPrintP(" bytes...\n");				// TODO remove debug
 					// size check
 					if (fSize >= maxsize ) {											// TODO move max size to param
 						APDDebugLog::log(APDUINO_MSG_LOGROTATENEEDED,NULL);
@@ -145,24 +137,15 @@ int APDStorage::rotate_file(const char *szLogFile, unsigned long maxsize) {
 									pszext = (char *)(fname+(strlen(fname)-5));		// overwrite the last part of the filename
 								}
 							}
-#ifdef DEBUG
-							SerPrintP("PSZEXT relative to fname(check):");
-							Serial.println(pszext-fname,DEC);
-#endif
+							// todo log this when enabled log levels ("PSZEXT relative to fname(check):"); (pszext-fname,DEC);
 							int ibak = 0;
 							sprintf_P(pszext, PSTR(".%03d"), ibak);
 
 							// do check for the last backup
 							for (ibak = 0; ibak < 999 && p_sd->exists(fname); sprintf_P(pszext, PSTR(".%03d"), ++ibak)) {
-#ifdef VERBOSE
-								Serial.println();
-							  Serial.print(fname); SerPrintP(" exists already.\n");
-#endif
+								// todo log this when enabled log levels (fname); SerPrintP(" exists already.\n");
 							}
-#ifdef VERBOSE
-							Serial.print(fname);
-							SerPrintP("should be the last log file. Rotating...\n");
-#endif
+							// todo log this when enabled log levels (fname); "should be the last log file. Rotating...\n"
 
 							APDDebugLog::log(APDUINO_MSG_LOGROTATE,NULL);
 
@@ -172,10 +155,8 @@ int APDStorage::rotate_file(const char *szLogFile, unsigned long maxsize) {
 							while (ibak > 0) {
 								sprintf_P((char*)(ofname+(int)(pszext-fname)),PSTR(".%03d"),ibak-1);
 								sprintf_P(pszext,PSTR(".%03d"),ibak);
+								// todo log this when enabled log levels ("Renaming "); Serial.print(ofname); SerPrintP(" to "); Serial.print(fname); SerPrintP(".\n");
 
-#ifdef VERBOSE
-								SerPrintP("Renaming "); Serial.print(ofname); SerPrintP(" to "); Serial.print(fname); SerPrintP(".\n");
-#endif
 								p_sd->rename(ofname,fname);
 								ibak--;
 								iRetCode++;			// number of logs that will be rotated
@@ -193,24 +174,16 @@ int APDStorage::rotate_file(const char *szLogFile, unsigned long maxsize) {
 						// release any memory allocated
 						free(fname);
 						free(ofname);
-#ifdef VERBOSE
-							Serial.print(iRetCode);SerPrintP("\n logs rotated.");
-#endif
+						// todo log this when enabled log levels (iRetCode);SerPrintP("\n logs rotated.");
 					} else {
 							iRetCode = 0;		// no logs rotated
-#ifdef VERBOSE
-							SerPrintP("\n -- less than 1M in size, appending.");
-#endif
+							// todo log this when enabled log levels ("\n -- less than 1M in size, appending.");
 					}
 			} else {
 					iRetCode = 0;		// no logs rotated
-#ifdef VERBOSE
-					SerPrintP("\nNo previous log.");
-#endif
+					// todo log this when enabled log levels ("\nNo previous log.");
 			}
-#ifdef VERBOSE
-      SerPrintP("\nShould be ok to open new log or append to the previous one.");
-#endif
+				// todo log this when enabled log levels ("\nShould be ok to open new log or append to the previous one.");
       APDDebugLog::enable_sync_writes();
   }
   return iRetCode;

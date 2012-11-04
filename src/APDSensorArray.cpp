@@ -43,13 +43,9 @@ APDSensorArray::~APDSensorArray()
   if (this->pAPDSensors != NULL) {
       for (int i=0; i<this->iSensorCount; i++) {
           if (this->pAPDSensors[i] != NULL) {
-#ifdef DEBUG
-          	SerPrintP("\nX S"); Serial.print(i); delay(50);
-#endif
+          	// todo log this when enabled log levels ("\nX S"); Serial.print(i); delay(50);
               delete((this->pAPDSensors[i]));				// each APDSensor was new by 'new_sensor_parser'
-#ifdef DEBUG
-              SerPrintP("OK.\n"); delay(20);
-#endif
+              // todo log this when enabled log levels
               this->pAPDSensors[i] = NULL;
           }
       }
@@ -64,12 +60,10 @@ void APDSensorArray::enableRuleEvaluation(void (*pfunc)(void*, APDSensor *),void
 	this->pRA = pra;
 }
 
-
+// todo actualize format string and arguments!
 int APDSensorArray::dumpToFile(char * pszFileName) {
   // make a string for assembling the data to log:
-#ifdef DEBUG
-  SerPrintP("Dumping Sensor Array Config...");
-#endif
+	// todo log this when enabled log levels ("Dumping Sensor Array Config...");
     if (APDStorage::p_sd->exists(pszFileName)) {
           APDStorage::p_sd->remove(pszFileName);
         }
@@ -83,13 +77,10 @@ int APDSensorArray::dumpToFile(char * pszFileName) {
       dataFile.println(line);
     }
     dataFile.close();
-#ifdef DEBUG
-    SerPrintP("Sensor Array Config dumped.");
-#endif
+    // todo log this when enabled log levels ("Sensor Array Config dumped.");
   }
   else {
-      // TODO add an error macro in storage, replace all error opening stuff with reference to that
-    SerPrintP("E305 ('"); Serial.print(pszFileName); SerPrintP("')\n");			// E305 - error opening dump file
+  	// TODO log this ("E305 ('"); Serial.print(pszFileName); SerPrintP("')\n");			// E305 - error opening dump file
   }
 }
 
@@ -100,9 +91,7 @@ void APDSensorArray::new_sensor_parser(void *pSA, int iline, char *psz) {
   SDCONF sdc;
   memcpy(&sdc,0,sizeof(SDCONF));
   char szExtra[24] = "";
-#ifdef DEBUG
-  SerPrintP("\nSDCONF READS: \""); Serial.print(psz); SerPrintP("\"");
-#endif
+  // todo log this when enabled log levels ("\nSDCONF READS: \""); Serial.print(psz); SerPrintP("\"");
   int iscand = sscanf_P( psz, SENSOR_PARSERSTRING,
       (sdc.label),
       &(sdc.sensor_type),
@@ -115,23 +104,20 @@ void APDSensorArray::new_sensor_parser(void *pSA, int iline, char *psz) {
       (sdc.extra_data));
 
   if (iscand < 9) {
-#ifdef DEBUG
-      SerPrintP("no extra data");
-#endif
+  	// todo log this when enabled log levels ("no extra data");
       memset(sdc.extra_data,0,sizeof(char)*24);
   }
-#ifdef DEBUG
-  SerPrintP("CONF SCANNED: ");
-  Serial.print(sdc.label); SerPrintP(",");
-  Serial.print(sdc.sensor_type); SerPrintP(",");
-  Serial.print(sdc.sensor_class); SerPrintP(",");
-  Serial.print(sdc.sensor_subtype); SerPrintP(",");
-  Serial.print(sdc.sensor_pin); SerPrintP(",");
-  Serial.print(sdc.sensor_secondary_pin); SerPrintP(",");
-  Serial.print(sdc.sensor_freq); SerPrintP(",");
-  Serial.print(sdc.sensor_log); SerPrintP(",");
-  Serial.print(sdc.extra_data); SerPrintP("\n");
-#endif
+  // todo log this when enabled log levels ("CONF SCANNED: ") \
+  		(sdc.label); SerPrintP(","); \
+  		(sdc.sensor_type); SerPrintP(","); \
+			(sdc.sensor_class); SerPrintP(","); \
+			(sdc.sensor_subtype); SerPrintP(","); \
+			(sdc.sensor_pin); SerPrintP(","); \
+			(sdc.sensor_secondary_pin); SerPrintP(","); \
+			(sdc.sensor_freq); SerPrintP(","); \
+			(sdc.sensor_log); SerPrintP(","); \
+			(sdc.extra_data);
+
   //TODO add compatibility code (so other options can follow, even if not parsed)
 
   APDSensor *newsensor = NULL;
@@ -140,51 +126,35 @@ void APDSensorArray::new_sensor_parser(void *pSA, int iline, char *psz) {
   //(((APDuino *)pAPD)->pAPDSensors[iline]) = new APDSensor(&sdc);
   switch (sdc.sensor_type) {
   case ANALOG_SENSOR:
-#ifdef VERBOSE
-    SerPrintP("ANALOG");
-#endif
+  	// todo log this when enabled log levels ("ANALOG");
     newsensor = new AnalogSensor(&sdc);
     break;
   case DIGITAL_SENSOR:
-#ifdef VERBOSE
-    SerPrintP("DIGITAL");
-#endif
+  	// todo log this when enabled log levels ("DIGITAL");
     newsensor = new DigitalSensor(&sdc);
     break;
   case DHT_SENSOR:
-#ifdef VERBOSE
-    SerPrintP("DHT");
-#endif
+  	// todo log this when enabled log levels ("DHT");
     newsensor = new DHTSensor(&sdc, reusablesensor);
     break;
   case ONEWIRE_SENSOR:
-#ifdef VERBOSE
-    SerPrintP("1-WIRE");
-#endif
+  	// todo log this when enabled log levels ("1-WIRE");
     newsensor = new OneWireSensor(&sdc, reusablesensor);
     break;
   case SONAR_SENSOR:
-#ifdef VERBOSE
-    SerPrintP("SONAR");
-#endif
+  	// todo log this when enabled log levels ("SONAR");
     newsensor = new SonarSensor(&sdc);
     break;
   case BMP085_SENSOR:
-#ifdef VERBOSE
-    SerPrintP("BMP085");
-#endif
+  	// todo log this when enabled log levels ("BMP085");
     newsensor = new BMPSensor(&sdc, reusablesensor);
     break;
   case VIBRATION_SENSOR:
-#ifdef VERBOSE
-    SerPrintP("VIBRATION");
-#endif
+  	// todo log this when enabled log levels("VIBRATION");
     newsensor = new VibrationSensor(&sdc);
     break;
   case ATLASSCIENTIFIC_SENSOR:
-#ifdef VERBOSE
-      SerPrintP("ATLASSCIENTIFIC");
-#endif
+  	// todo log this when enabled log levels ("ATLASSCIENTIFIC");
       newsensor = new AtlasScientificSensor(&sdc, reusablesensor);
       break;
   default:
@@ -230,6 +200,7 @@ APDSensor *APDSensorArray::findReusableSensor(SDCONF *sdc) {
   case BMP085_SENSOR:
   case ATLASSCIENTIFIC_SENSOR:
     preusable = this->firstSensorByPin(sdc->sensor_pin, sdc->sensor_type);
+    // todo log this when enabled log levels (below VERBOSEs)
 #ifdef VERBOSE
     if (preusable) {
         SerPrintP("REUSING @");
@@ -271,9 +242,7 @@ int APDSensorArray::loadSensors() {
     APDDebugLog::log(APDUINO_MSG_SENSORCOUNT,itoa(iSensorCount,sztemp,10));
 
     if (iSensorCount > -1) {
-#ifdef VERBOSE
-      SerPrintP("Sensor Array: allocating "); Serial.print(sizeof(APDSensor *)*iSensorCount,DEC); SerPrintP(" bytes of RAM\n");
-#endif
+    	// todo log this when enabled log levels ("Sensor Array: allocating "); Serial.print(sizeof(APDSensor *)*iSensorCount,DEC); SerPrintP(" bytes of RAM\n")
 
       pAPDSensors = (APDSensor**)malloc(sizeof(APDSensor*)*iSensorCount);
 
@@ -310,13 +279,9 @@ char *APDSensorArray::labelS(int iSensorIdx, char *szlabel) {
   //SerPrintP("labelS\n"); Serial.print(iSensorIdx);
   szlabel[0]='\0';
   if (iSensorIdx >= 0 && iSensorIdx < this->iSensorCount) {
-#ifdef DEBUG
-      SerPrintP("calling getlabel"); Serial.println(iSensorIdx);
-#endif
+  	// todo log this when enabled log levels ("calling getlabel"); Serial.println(iSensorIdx);
       strncpy(szlabel,this->pAPDSensors[iSensorIdx]->config.label,12);  // FIXME setup DEFAULT label len in header
-#ifdef DEBUG
-      Serial.println(szlabel);
-#endif
+      // todo log this when enabled log levels (szlabel);
   }
   return szlabel;
 }
@@ -325,33 +290,22 @@ char *APDSensorArray::valueS(int iSensorIdx, char *szvalue) {
   //SerPrintP("valueS\n"); Serial.print(iSensorIdx);
   strcpy(szvalue,"");
   if (iSensorIdx >= 0 && iSensorIdx < this->iSensorCount) {
-#ifdef DEBUG
-    SerPrintP("calling getval"); Serial.println(iSensorIdx);
-#endif
+  	// todo log this when enabled log levels ("calling getval"); Serial.println(iSensorIdx);
     this->pAPDSensors[iSensorIdx]->getValueS(szvalue);
-#ifdef DEBUG
-    Serial.println(szvalue);
-#endif
+    // todo log this when enabled log levels (szvalue);
   }
   return szvalue;
 }
 
 
-
-
-
 void APDSensorArray::pollSensors(boolean bProcessRules) {
-#ifdef DEBUG
-  SerPrintP("POLL APD SENSOR..."); Serial.print(iNextSensor); SerPrintP("...");
+	// todo log this when enabled log levels ("POLL APD SENSOR..."); Serial.print(iNextSensor); \
   Serial.print(iSensorCount); SerPrintP(" SENSORS IN TOTAL, CHECKING "); Serial.println(iNextSensor);
-  delay(10);
-#endif
-  if (iNextSensor >= 0 && iNextSensor < this->iSensorCount && pAPDSensors != NULL)                // check if we have sensors
+
+	if (iNextSensor >= 0 && iNextSensor < this->iSensorCount && pAPDSensors != NULL)                // check if we have sensors
     if (pAPDSensors[iNextSensor]->check()) {
     	if (bProcessRules == true && this->pfruleeval != NULL && this->pRA != NULL) {
-#ifdef DEBUG
-    		SerPrintP("early eval");
-#endif
+    		// todo log this when enabled log levels ("early eval");
     	  if (pAPDSensors[iNextSensor]->fvalue != NAN) {	// todo add an option to run rules on NAN?
     	  	(*this->pfruleeval)(this->pRA,pAPDSensors[iNextSensor]);
     	  } else {
@@ -360,7 +314,6 @@ void APDSensorArray::pollSensors(boolean bProcessRules) {
       }
     }
   iNextSensor = iNextSensor + 1 < this->iSensorCount ? iNextSensor + 1 : 0;    // set next sensor
-  //iNextSensor = (iNextSensor + 1) % this->iSensorCount;    // set next sensor
 }
 
 

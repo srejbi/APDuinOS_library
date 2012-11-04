@@ -464,29 +464,23 @@ boolean APDuino::bConfigured() {
 // APDControls then can call these 'software controls'
 //FIXME direct references to controls
 int APDuino::AddCustomFunction(int iPos, void (*pcf)()){
-#ifdef DEBUG
-  SerPrintP("SET CUSTFUNC @IDX "); Serial.print(iPos);
-#endif
+	// todo log this when enabled log levels ("SET CUSTFUNC @IDX "); Serial.print(iPos);
   if (this->pcustfuncs[iPos] == NULL) {
-#ifdef DEBUG
-      SerPrintP("NULL, SET: "); Serial.print((unsigned int)pcf,DEC);
-#endif
+  	// todo log this when enabled log levels ("NULL, SET: "); Serial.print((unsigned int)pcf,DEC);
+
       this->pcustfuncs[iPos] = pcf;
       // loop though controls, see if any of them is referring to the given index
       for (int i=0; i<this->pca->iControlCount; i++) {
         APDControl *pc = this->pca->pAPDControls[i];
         if (pc != NULL && pc->config.control_type == SOFTWARE_CONTROL ) {
-#ifdef DEBUG
-            SerPrintP("SW CTRL @ IDX");Serial.print(i);SerPrintP(" - ");
-#endif
+        	// todo log this when enabled log levels ("SW CTRL @ IDX");Serial.print(i);SerPrintP(" - ");
+
           if (pc->config.control_pin == iPos) {
             if (this->pcustfuncs[pc->config.control_pin] != NULL) {
               // assign the custom function pointer to the control; take control's PIN as IDX
-#ifdef DEBUG
-              SerPrintP("SET CUSTFUNC IDX "); Serial.print(pc->config.control_pin);
-              SerPrintP(" CTRLIDX"); Serial.print(i); SerPrintP(".\n");
-#endif
-              pc->pcustfunc = this->pcustfuncs[pc->config.control_pin];      // cvalue must hold the cfunc idx
+            	// todo log this when enabled log levels ("SET CUSTFUNC IDX "); Serial.print(pc->config.control_pin); SerPrintP(" CTRLIDX"); Serial.print(i); SerPrintP(".\n");
+
+            	pc->pcustfunc = this->pcustfuncs[pc->config.control_pin];      // cvalue must hold the cfunc idx
             } else {
             	APDDebugLog::log(APDUINO_WARN_NOCUSTFUNCATIDX,NULL);
             }
@@ -520,9 +514,7 @@ boolean APDuino::disableRuleProcessing() {
 
 boolean APDuino::reconfigure() {
 	boolean retcode = false;
-#ifdef DEBUG
-  SerPrintP("\nRECONREQ...\n");
-#endif
+	// todo log this when enabled log levels ("\nRECONREQ...\n");
   delay(100);
 
   // put APDWeb in maintenance mode to PREVENT ACCESS TO sensors, controls, rules
@@ -531,59 +523,37 @@ boolean APDuino::reconfigure() {
     bProcessRules = false;
     unsigned long ulRam = freeMemory();
 
-#ifdef DEBUG
-  	SerPrintP("Reconfiguring Arrays!\n");
-  	delay(10);
-  	Serial.print( ulRam, DEC); SerPrintP(" RAM free.\n");
-  	delay(100);
-#endif
-
+    // todo log this when enabled log levels ("Reconfiguring Arrays!\n");	Serial.print( ulRam, DEC); SerPrintP(" RAM free.\n");
 		this->iNextSensor = -1;				// invalidate next sensor index
 
 		delete(this->pra);
-#ifdef DEBUG
-		SerPrintP("Deleted Rule Array.\n");	Serial.print( freeMemory(), DEC); SerPrintP(" RAM free.\n");	delay(100);
-#endif
+		// todo log this when enabled log levels ("Deleted Rule Array.\n");	Serial.print( freeMemory(), DEC); SerPrintP(" RAM free.\n");
 		delete(this->pca);
-#ifdef DEBUG
-		SerPrintP("Deleted Control Array.\n");	Serial.print( freeMemory(), DEC); SerPrintP(" RAM free.\n");	delay(100);
-#endif
+		// todo log this when enabled log levels ("Deleted Control Array.\n");	Serial.print( freeMemory(), DEC); SerPrintP(" RAM free.\n");
 		delete(this->psa);
-#ifdef DEBUG
-		SerPrintP("Deleted Sensor Array.\n");	Serial.print( freeMemory(), DEC); SerPrintP(" RAM free.\n");	delay(100);
-  	SerPrintP("Deleted Arrays!\n");
-  	Serial.print( freeMemory(), DEC); SerPrintP(" RAM free.\n");
-  	delay(100);
-#endif
+		// todo log this when enabled log levels ("Deleted Sensor Array.\n");	Serial.print( freeMemory(), DEC); SerPrintP(" RAM free.\n");	\
+							SerPrintP("Deleted Arrays!\n"); \
+							Serial.print( freeMemory(), DEC); SerPrintP(" RAM free.\n");
+
 
 		psa = new APDSensorArray();
 		pca = new APDControlArray(&pcustfuncs);
 		pra = new APDRuleArray(psa,pca,&(this->bfIdle));
-#ifdef DEBUG
-  	SerPrintP("Reallocated Arrays!\n"); delay(10);
-  	Serial.print( freeMemory(), DEC); SerPrintP(" RAM free.\n");
-  	delay(10);
-
-  	SerPrintP("\ninit sensors\n"); delay(10);
-#endif
+		// todo log this when enabled log levels ("Reallocated Arrays!\n");  ( freeMemory(), DEC) (" RAM free.\n"); ("\ninit sensors\n");
   	this->psa->loadSensors();
-		//SerPrintP("APD Sensors - ok.\n");
+  	// todo log this when enabled log levels ("APD Sensors - ok.\n");
 		//GLCD.Puts(".");
 
-#ifdef DEBUG
-		SerPrintP("\ninit controls\n"); delay(10);
-#endif
+  	// todo log this when enabled log levels("\ninit controls\n");
 
 		this->pca->loadControls();
 		//SerPrintP("APD Controls - ok.\n");
 		//GLCD.Puts(".");
 
-#ifdef DEBUG
-			SerPrintP("init rules\n"); delay(10);
-#endif
+		// todo log this when enabled log levels ("init rules\n"); delay(10);
 
 	  this->pra->loadRules();
-		//SerPrintP("APD Rules - ok.\n");
+	  // todo log this when enabled log levels ("APD Rules - ok.\n");
 
 		// Update pointers in APDWeb
 		this->pAPDWeb->pAPDRules = this->pra->pAPDRules;
@@ -623,9 +593,7 @@ boolean APDuino::reconfigure() {
 
 boolean APDuino::reload_rules() {
 	boolean retcode = false;
-#ifdef DEBUG
-  SerPrintP("\nRECONREQ...\n");
-#endif
+	// todo log this when enabled log levels ("\nRECONREQ...\n");
   delay(100);
 
   // put APDWeb in maintenance mode to PREVENT ACCESS TO sensors, controls, rules
@@ -634,35 +602,25 @@ boolean APDuino::reload_rules() {
     bProcessRules = false;
     unsigned long ulRam = freeMemory();
 
-#ifdef DEBUG
-  	SerPrintP("Reconfiguring Arrays!\n");
-  	delay(10);
-  	Serial.print( ulRam, DEC); SerPrintP(" RAM free.\n");
-  	delay(100);
-#endif
-
+    // todo log this when enabled log levels("Reconfiguring Arrays!\n") ( ulRam, DEC); SerPrintP(" RAM free.\n");
 		this->iNextSensor = -1;				// invalidate next sensor index
 
 		delete(this->pra);
 		pra = new APDRuleArray(psa,pca,&(this->bfIdle));
 	  this->pra->loadRules();
-		//SerPrintP("APD Rules - ok.\n");
+	  // todo log this when enabled log levels ("APD Rules - ok.\n");
 
 		// Update pointers in APDWeb
 		this->pAPDWeb->pAPDRules = this->pra->pAPDRules;
 		this->pAPDWeb->iRuleCount = this->pra->iRuleCount;
 
-#ifdef DEBUG
-	  	SerPrintP("Reconfigured Arrays!\n");
-	  	Serial.print( freeMemory(), DEC); SerPrintP(" RAM free.\n");
-	  	delay(10);
-
-	  	if (ulRam == freeMemory()) {
-	  		SerPrintP("No memory leak detected.\n");
-	  	} else {
-	  		SerPrintP("\nMEMORY LEAK DETECTED!\n");
+		// todo log this when enabled log levels ("Reconfigured Arrays!\n");	Serial.print( freeMemory(), DEC); SerPrintP(" RAM free.\n"); \
+	  	if (ulRam == freeMemory()) { \
+	  		SerPrintP("No memory leak detected.\n"); \
+	  	} else { \
+	  		SerPrintP("\nMEMORY LEAK DETECTED!\n"); \
 	  	}
-#endif
+
 		// enable "real-time" rule evaluation
 		this->psa->enableRuleEvaluation(&(APDRuleArray::evaluateSensorRules),(void *)this->pra);
 
@@ -683,9 +641,7 @@ boolean APDuino::reload_rules() {
 
 void APDuino::new_ethconf_parser(void *pAPD, int iline, char *psz) {
   NETCONF nc;
-#ifdef DEBUG
-  Serial.print("NETCONF READ: "); Serial.print(psz);
-#endif
+  // todo log this when enabled log levels ("NETCONF READ: "); Serial.print(psz);
   int ab;
   //            mac6              |IP4         |MASK4       |GW4         |UDPPort,WWWPort
   //            DE AF DA DB AD ED ,c0 a8 01 ea, ff ff ff 00 ,c0 a8 01 fe ,8888,80
@@ -699,22 +655,14 @@ void APDuino::new_ethconf_parser(void *pAPD, int iline, char *psz) {
       &(nc.localPort),
       &(nc.wwwPort));
   (nc.subnet[0]) = ab;
-#ifdef DEBUG
-  SerPrintP("Parsed config:\n");
-  // print configuration
-  SerPrintP("IP: ");
-	SerDumpIP(nc.ip);
-	SerPrintP(" MASK: ");
-	SerDumpIP(nc.subnet);
-	SerPrintP(" DNS: ");
-	SerDumpIP(nc.pridns);
-	SerPrintP(" GW: ");
-	SerDumpIP(nc.gateway);
-	SerPrintP(" UDP: ");
-	Serial.println(nc.localPort);
-	SerPrintP(" WWW: ");
-	Serial.println(nc.wwwPort);
-#endif
+  // todo log this when enabled log levels ("Parsed config:\n"); \
+					SerPrintP("IP: ");	SerDumpIP(nc.ip); \
+					SerPrintP(" MASK: "); SerDumpIP(nc.subnet); \
+					SerPrintP(" DNS: "); 	SerDumpIP(nc.pridns); \
+					SerPrintP(" GW: "); 	SerDumpIP(nc.gateway); \
+					SerPrintP(" UDP: "); 	Serial.println(nc.localPort); \
+					SerPrintP(" WWW: "); 	Serial.println(nc.wwwPort);
+
   if (ips < 24) {			// if did not parse the complete config
   	APDDebugLog::log(APDUINO_ERROR_BADNETCONFIG,NULL);
   }
@@ -731,9 +679,7 @@ void APDuino::setupNetworking() {
 	APDDebugLog::log(APDUINO_MSG_NETINIT,NULL);
   delay(250);                   // probably just starting up, adding a little delay, 1/4s
   if (pAPDWeb == NULL) {      // replace with check if IP config is present
-#ifdef DEBUG
-    SerPrintP("trying to load config...");
-#endif
+  	// todo log this when enabled log levels ("trying to load config...");
     if (APDStorage::ready()) {
         if ((APDStorage::readFileWithParser("ETHERNET.CFG",&new_ethconf_parser,(void*)this)) <= 0) {	// check for errors (0 - no lines, -1 - error)
         	APDDebugLog::log(APDUINO_ERROR_BADNETCONFIG,NULL);
@@ -752,13 +698,9 @@ void APDuino::setupNetworking() {
 
 boolean APDuino::startWebServer() {
   boolean retcode = false;
-#ifdef DEBUG
-  SerPrintP("WWWS...");
-#endif
+  // todo log this when enabled log levels ("WWWS...");
   if (pAPDWeb != NULL) {
-#ifdef DEBUG
-      SerPrintP("starting ...");
-#endif
+  	// todo log this when enabled log levels ("starting ...");
       pAPDWeb->startWebServer(this->psa->pAPDSensors,this->psa->iSensorCount,this->pca->pAPDControls,this->pca->iControlCount,this->pra->pAPDRules,this->pra->iRuleCount);
       retcode = (pAPDWeb != NULL && pAPDWeb->pwwwserver != NULL && pAPDWeb->pwwwclient !=NULL);
   } else {
@@ -789,9 +731,7 @@ void APDuino::startIdling(unsigned long uIdleDuration) {
 // function to reset idle status and idle metro
 // call this on every
 void APDuino::unidle_device() {
-#ifdef DEBUG
-  SerPrintP("WAKE UP!\n");
-#endif
+	// todo log this when enabled log levels ("WAKE UP!\n");
   bfIdle = false;
   if (pIdleMetro != NULL) pIdleMetro->reset();    // UI is not idle
 }
@@ -841,9 +781,7 @@ void APDuino::log_data() {
   if (!APDStorage::p_sd->exists("APDLOG.TXT")) {        // if it will be new file
     // FIXME reimplement log_header();                          // start with column names
   }
-#ifdef DEBUG
-  SerPrintP("Assembling log...");
-#endif
+  // todo log this when enabled log levels ("Assembling log...");
   strcpy_P(dataString,PSTR("1970/01/01 00:00:00"));
   strcpy(plog,APDTime::nowS(dataString));
   plog += strlen(dataString);

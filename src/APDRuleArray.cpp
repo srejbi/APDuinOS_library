@@ -103,11 +103,9 @@ if (iscand<13) {
   	if (rdc.pszconditions[0]=='_'&&rdc.pszconditions[0]==0) rdc.pszconditions[0]=0;
     if (rdc.pszcron[0]=='_'&&rdc.pszcron[0]==0) rdc.pszcron[0]=0;
 
-#ifdef DEBUG_INFO
-	  Serial.print(iscand); SerPrintP(" parameters parsed\n");
-	  Serial.print(rdc.label); SerPrintP(" -> cron:"); Serial.print(rdc.pszcron); SerPrintP(", conditions:'");Serial.print(rdc.pszconditions);SerPrintP("'\n");
-#endif
-// }
+    // todo log this when enabled log levels (iscand) (" parameters parsed\n") (rdc.label) " -> cron:") (rdc.pszcron) (", conditions:'") (rdc.pszconditions) ("'\n");
+// todo remove deprecated code
+    // }
 
 //  if (strlen(rdc.pszcron)) {		// TODO think about this; it will probably never be empty as it's followed by conditions(possibly). we likely have to enclose this...
 //  	for (int i=0; i<strlen(rdc.pszcron); i++) {
@@ -134,61 +132,42 @@ int APDRuleArray::loadRules() {
       char sztemp[10]="";
       APDDebugLog::log(APDUINO_MSG_RULECOUNT,itoa(iRuleCount,sztemp,10));
       if (iRuleCount > 0) {
-#ifdef DEBUG_INFO
-        SerPrintP("Rule Array: allocating "); Serial.print(sizeof(APDRule*)*iRuleCount,DEC); SerPrintP(" bytes of RAM\n");
-#endif
+      	// todo log this when enabled log levels ("Rule Array: allocating ") sizeof(APDRule*)*iRuleCount (" bytes of RAM\n")
         pAPDRules = (APDRule**)malloc(sizeof(APDRule*)*iRuleCount);
 
         if (pAPDRules) {
           memset(pAPDRules,0,sizeof(APDRule*)*iRuleCount);
-
-#ifdef DEBUG_INFO
-          SerPrintP("Rule Array allocated. Populating from RULES.CFG...\n");
-#endif
-
+          // todo log this when enabled log levels ("Rule Array allocated. Populating from RULES.CFG...\n")
           APDStorage::readFileWithParser(szConfFile,&new_rule_parser,(void*)this);
 
           APDDebugLog::log(APDUINO_MSG_RULESLOADED,NULL);
-
           // postprocessing of sensor & control pointers
-#ifdef DEBUG
-          SerPrintP("Rules postprocessing.\n");
-#endif
+          // todo log this when enabled log levels ("Rules postprocessing.\n")
           for (int i=0; i<iRuleCount; i++) {
             if (pAPDRules[i]->config.rf_sensor_idx > -1 && pAPDRules[i]->config.rf_sensor_idx < this->pSA->iSensorCount) {
                 // mapping with Sensor Array
-#ifdef DEBUG_INFO
-                SerPrintP("Setting sensor idx"); Serial.print(pAPDRules[i]->config.rf_sensor_idx, DEC);
-                SerPrintP("for rule idx"); Serial.println(i,DEC);
-#endif
+            	// todo log this when enabled log levels SerPrintP("Setting sensor idx"); Serial.print(pAPDRules[i]->config.rf_sensor_idx, DEC); SerPrintP("for rule idx"); Serial.println(i,DEC);
                 pAPDRules[i]->psensor = (this->pSA->pAPDSensors[pAPDRules[i]->config.rf_sensor_idx]);
             }
 
             // mapping sensor value for control input, if specified
             if (pAPDRules[i]->config.ra_sensor_idx >= 0 && pAPDRules[i]->config.ra_sensor_idx < this->pSA->iSensorCount) {
-#ifdef DEBUG_INFO
-                SerPrintP("Setting sensor idx"); Serial.print(pAPDRules[i]->config.ra_sensor_idx, DEC);
-                SerPrintP("for control value for rule "); Serial.println(i,DEC);
-#endif
+            	// todo log this when enabled log levels SerPrintP("Setting sensor idx"); Serial.print(pAPDRules[i]->config.ra_sensor_idx, DEC); SerPrintP("for control value for rule "); Serial.println(i,DEC);
                 pAPDRules[i]->pcsensorvalue = &(this->pSA->pAPDSensors[pAPDRules[i]->config.ra_sensor_idx]->fvalue);
             }
 
            //idling trick
             if (pAPDRules[i]->config.rule_definition == RF_IDLE_CHECK) {
-#ifdef DEBUG
-                SerPrintP("Setting pointer for idle bit");
-#endif
+            	// todo log this when enabled log levels SerPrintP("Setting pointer for idle bit");
                 // internal idling "sensor"
                 pAPDRules[i]->pcsensorvalue = this->bfIdle;
             }
 
             // mapping Control Array
-#ifdef DEBUG_INFO
-            SerPrintP("Setting control idx"); Serial.print(pAPDRules[i]->config.rule_control_idx, DEC);
-            SerPrintP("for rule "); Serial.println(i,DEC);
-#endif
+            // todo log this when enabled log levels SerPrintP("Setting control idx"); Serial.print(pAPDRules[i]->config.rule_control_idx, DEC); SerPrintP("for rule "); Serial.println(i,DEC);
             pAPDRules[i]->pcontrol = (this->pCA->pAPDControls[pAPDRules[i]->config.rule_control_idx]);
 
+            // todo remove relocated (deprecated here) code block
             //custom functions (only on true branch)
   //          if (pAPDRules[i]->config.rule_true_action == APDRA_VIRT_CUST_FUNC) {
   //              // THIS HAS TO BE SET ON THE APDUINO LEVEL
@@ -214,7 +193,7 @@ int APDRuleArray::loadRules() {
   //              }
   //          }
           }       // end enumerating rules
-
+          // todo remove invalid log message
           APDDebugLog::log(APDUINO_MSG_RULESPOSTPROCESSED,NULL);
 
           this->nextrunmillis += 1000;
@@ -232,9 +211,7 @@ int APDRuleArray::loadRules() {
 // TODO this function is out of structure-sync...
 void APDRuleArray::dumpToFile(char *pszFileName) {
   // make a string for assembling the data to log:
-#ifdef DEBUG
-  SerPrintP("Dumping Rule Array Config...");
-#endif
+	// todo log this when enabled log levels SerPrintP("Dumping Rule Array Config...");
     if (APDStorage::p_sd->exists(pszFileName)) {
           APDStorage::p_sd->remove(pszFileName);
         }
@@ -257,9 +234,7 @@ void APDRuleArray::dumpToFile(char *pszFileName) {
       dataFile.println(line);
     }
     dataFile.close();
-#ifdef DEBUG
-    SerPrintP("Rule Array Config dumped.");
-#endif
+    // todo log this when enabled log levels SerPrintP("Rule Array Config dumped.");
   }
   else {
   	APDDebugLog::log(APDUINO_ERROR_RADUMPOPENFAIL,NULL);
@@ -268,11 +243,11 @@ void APDRuleArray::dumpToFile(char *pszFileName) {
 
 
 APDRule *APDRuleArray::firstRuleBySensorIdx(int iSensorIdx) {
-
+// todo
 }
 
 APDRule *APDRuleArray::firstRuleByControlIdx(int iControlIdx) {
-
+// todo
 }
 
 void APDRuleArray::evaluateSensorRules(void *pra, APDSensor *pSensor) {
@@ -294,17 +269,11 @@ void APDRuleArray::evaluateSensorRules(void *pra, APDSensor *pSensor) {
 }
 
 void APDRuleArray::evaluateSensorRulesByIdx(int iSensorIndex) {
-#ifdef DEBUG
-  SerPrintP("RULEEVAL!");
-  delay(10);
-#endif
+	// todo log this when enabled log levels ("RULEEVAL!");
   if (this->pSA->pAPDSensors[iSensorIndex]->fvalue != NAN) {
 		for (int i=0; i < this->iRuleCount; i++) {      // loop through rules
 			if (this->pAPDRules[i]->config.rf_sensor_idx == iSensorIndex || this->pAPDRules[i]->config.ra_sensor_idx == iSensorIndex) {    // if rule is bound to the sensor either as trigger or input value for control
-	#ifdef DEBUG
-			SerPrintP("RULE_EVAL:"); Serial.print(this->pAPDRules[i]->config.label);
-			delay(10);
-	#endif
+				// todo log this when enabled log levels SerPrintP("RULE_EVAL:"); Serial.print(this->pAPDRules[i]->config.label);
 				if (this->pAPDRules[i]->config.rule_definition != RF_SCHEDULED) this->pAPDRules[i]->evaluateRule(); // evaluate but scheduled rules
 			}  // evaluate if rule is for sensor
 		}  // loop rules
@@ -316,9 +285,7 @@ void APDRuleArray::evaluateSensorRulesByIdx(int iSensorIndex) {
 
 
 void APDRuleArray::loopRules() {
-#ifdef DEBUG
-	SerPrintP("loop rules\n");
-#endif
+	// todo log this when enabled log levels SerPrintP("loop rules\n");
 	evaluateScheduledRules();
   for (int i=0; i < this->iRuleCount; i++) {      // loop through rules
   	if (this->pAPDRules[i]->config.rule_definition != RF_SCHEDULED) {	// except scheduled rules

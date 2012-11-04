@@ -95,9 +95,7 @@ boolean APDTime::started() {
 void APDTime::begin() {
   rollovers = 0;
   start_time = millis();
-#ifdef DEBUG
-  SerPrintP("APDTime Starting at "); Serial.print(start_time,DEC); SerPrintP(" millis...\n");
-#endif
+  // todo log this when enabled log levels ("APDTime Starting at "); Serial.print(start_time,DEC); SerPrintP(" millis...\n");
   pRTC = NULL;
   pRTCm = new RTC_Millis();
   if (pRTCm) {
@@ -107,18 +105,12 @@ void APDTime::begin() {
 		LogDateTime(pRTCm->now());
   } else {
   	APDDebugLog::log(APDUINO_ERROR_SWRTCSETUPFAIL,NULL);
-#ifdef VERBOSE
-		SerPrintP("Seems SW clock setup failed. :(\n");
-#endif
+  	// todo log this when enabled log levels ("Seems SW clock setup failed. :(\n");
   }
   memcpy(timeServer,0,4*sizeof(byte));
   localPort = 0;
   pUdp = NULL;
-#ifdef VERBOSE
-  SerPrintP("SW DateTime: ");
-  PrintDateTime(this->now());
-  SerPrintP("\n");
-#endif
+  // todo log this when enabled log levels ("SW DateTime: "); (this->now())
 }
 
 // return current system time in DateTime
@@ -163,9 +155,7 @@ char *APDTime::getUpTimeS(char *psz_uptime) {
 void APDTime::setupNTPSync(int UDPPort, byte *TimeServer, int iTZ, int iDST ) {
   // check if not in use...
 	APDDebugLog::log(APDUINO_MSG_SETUPUDPFORNTP,NULL);
-#ifdef VERBOSE
-  SerPrintP("SETUP UDP 4 NTP\n");
-#endif
+	// todo log this when enabled log levels ("SETUP UDP 4 NTP\n");
   if (pUdp==NULL) {
     memcpy(timeServer,TimeServer,4);
     dst = iDST;
@@ -259,14 +249,11 @@ unsigned long APDTime::sendNTPpacket(byte *address)
 void APDTime::adjust(DateTime dt) {
 	APDDebugLog::log(APDUINO_MSG_TIMEADJUST,NULL);
   if (pRTC != NULL && pRTC->isrunning()) {
-#ifdef VERBOSE
-      SerPrintP("RTC,");
-#endif
+  // todo log this when enabled log levelsSerPrintP("RTC,");
+
       pRTC->adjust(dt);
   }
-#ifdef VERBOSE
-  SerPrintP("SW.");
-#endif
+  // todo log this when enabled log levels ("SW.");
   pRTCm->adjust(dt);
 	APDDebugLog::log(APDUINO_MSG_TIMEADJUSTED,NULL);		// TODO include datetime string in log
 }
@@ -290,28 +277,17 @@ void APDTime::ntpSync()
 		APDDebugLog::log(APDUINO_ERROR_NTPNOUDP,NULL);
 		return;
 	}
-#ifdef DEBUG
-  SerPrintP("\nNTP SYNC!\n");
-#endif
+	// todo log this when enabled log levels ("\nNTP SYNC!\n");
   if (pRTCm != NULL && timeServer[0] != 0) {
-#ifdef VERBOSE
-    SerPrintP("\nSW:");
-    PrintDateTime(pRTCm->now());
-    if (pRTC != NULL && pRTC->isrunning()) {
-        SerPrintP("\nHW:");
-        PrintDateTime(pRTC->now());
-    }
-    SerPrintP(".NTP REQ:");
-
-    SerDumpIP(timeServer);
-    SerPrintP(".\n");
-#endif
+  	// todo log this when enabled log levels0("\nSW:");  PrintDateTime(pRTCm->now()); \
+    if (pRTC != NULL && pRTC->isrunning()) { \
+        SerPrintP("\nHW:"); \
+        PrintDateTime(pRTC->now()); \
+    } ; SerPrintP(".NTP REQ:");  SerDumpIP(timeServer);
 
     // send an NTP packet to a time server
     sendNTPpacket(timeServer);
-#ifdef VERBOSE
-    SerPrintP("Packet sent.\n");
-#endif
+    // todo log this when enabled log levels ("Packet sent.\n");
     // wait to see if a reply is available
     //delay(3000);                // TODO iso loop and check if there is a response, bail out after soft timeout
     for (int i =0; i < 1000; i++) {	// approx 10 secs.
@@ -323,18 +299,14 @@ void APDTime::ntpSync()
     }
 
     if ( pUdp->available() ) {
-#ifdef DEBUG
-       SerPrintP("Comm...");
-#endif
+    	// todo log this when enabled log levels ("Comm...");
       // read the packet into the buffer
   #if ARDUINO >= 100
       pUdp->read(pb, NTP_PACKET_SIZE);      // New from IDE 1.0,
   #else
       pUdp->readPacket(pb, NTP_PACKET_SIZE);
   #endif
-#ifdef VERBOSE
-       SerPrintP("Processing NTP response ...");
-#endif
+      // todo log this when enabled log levels ("Processing NTP response ...");
       // NTP contains four timestamps with an integer part and a fraction part
       // we only use the integer part here
       unsigned long t1, t2, t3, t4;
@@ -371,9 +343,8 @@ void APDTime::ntpSync()
       //    f > 0.5 => add 1 to the second before adjusting the RTC
       //   (or lower threshold eg 0.4 if one keeps network latency etc in mind)
       // 3) a SW RTC might be more precise, => ardomic clock :)
-#ifdef DEBUG
-       SerPrintP("NTP->UNIX...");
-#endif
+      // todo log this when enabled log levels("NTP->UNIX...");
+
       // convert NTP to UNIX time, differs seventy years = 2208988800 seconds
       // NTP starts Jan 1, 1900
       // Unix time starts on Jan 1 1970.
@@ -397,20 +368,17 @@ void APDTime::ntpSync()
       if (f4 > 0.4) t4++;   								  // adjust fractional part, see above
       adjust(DateTime(t4));
 
-#ifdef VERBOSE
-      if (pRTC != NULL) {
-        SerPrintP("RTC after : ");
-        PrintDateTime(pRTC->now());
-      }
-      if (pRTC != NULL) {
-        SerPrintP("RTC after : ");
-        PrintDateTime(pRTC->now());
-      }
-      SerPrintP("APDTime will give time:");
-      PrintDateTime(now());
+      // todo log this when enabled log levels \
+         if (pRTC != NULL){ \
+      				SerPrintP("RTC after : ");  PrintDateTime(pRTC->now());  \
+						}  ; if (pRTC != NULL) { \
+							SerPrintP("RTC after : "); \
+							PrintDateTime(pRTC->now()); \
+						} \
+						SerPrintP("APDTime will give time:"); \
+						PrintDateTime(now()); \
+						SerPrintP("\ndone ...\n"); \
 
-      SerPrintP("\ndone ...\n");
-#endif
     }
     else
     {
