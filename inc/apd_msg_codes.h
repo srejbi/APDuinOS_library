@@ -79,6 +79,7 @@
 #define APDUINO_MSG_COSMLOGSTARTED        0x0146	// Cosm logging started
 #define APDUINO_MSG_PROCPROVREQ           0x0147	// Processing provisioning request
 #define APDUINO_MSG_PROVFILE           		0x0148	// Provisioning file %s
+#define APDUINO_MSG_WWWFILEACCESS					0x0149  // WWW File Access %s
 
 #define APDUINO_MSG_LOADINGSENSORS        0x0150	// Sensor Array loading Sensors from config
 #define APDUINO_MSG_SENSORCOUNT 	        0x0151	// Sensor Array counted %d lines in SENSORS.CFG

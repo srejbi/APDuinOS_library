@@ -74,9 +74,14 @@ const char WEBLOG_URI[]="/devices/lastlog";      // see apduino online specs.
 #define DREQ_RELOADRULES  3
 
 // content types (used in header function)
-#define CONTENT_TYPE_TEXT		0
-#define CONTENT_TYPE_HTML   1
-#define CONTENT_TYPE_JSON   2
+#define CONTENT_TYPE_TEXT				0
+#define CONTENT_TYPE_HTML   		1
+#define CONTENT_TYPE_JSON   		2
+#define CONTENT_TYPE_JAVASCRIPT 3
+#define CONTENT_TYPE_CSS				4
+#define CONTENT_TYPE_PNG				10
+#define CONTENT_TYPE_JPG				11
+#define CONTENT_TYPE_GIF				12
 
 struct NETCONF {
   byte mac[6];            //TODO generate random mac, more than 1 APDuino can have collisions

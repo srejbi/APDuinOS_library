@@ -679,24 +679,21 @@ void APDWeb::claim_device_link(EthernetClient *pClient) {
 // serve a file from SD card
 // client - the ethernet client to write to
 // szPath - path to the file
+// return true if file was found and served, false on error (not found)
 bool APDWeb::ServeFile(EthernetClient client, const char *szPath) {
 	bool retcode = false;
-	// serve file
+	APDDebugLog.log(APDUINO_MSG_WWWFILEACCESS, szPath);
 	SdFile file;
-#ifdef DEBUG
-	SerPrintP("file server\n");
-#endif
 	if (file.open(APDStorage::p_root, szPath, O_READ)) {
-	#ifdef DEBUG
-		SerPrintP("Opened!");
-	#endif
 		retcode = true;
 		if ( file.isFile() ) {
 			if (strstr_P(szPath, PSTR(".htm")) != 0 || strstr_P(szPath, PSTR(".html")) != 0 ) {
 				header(&client,CONTENT_TYPE_HTML);
+			} else if (strstr_P(szPath, PSTR(".js")) != 0) {
+				header(&client,CONTENT_TYPE_JAVASCRIPT);
 			} else {
 				header(&client,CONTENT_TYPE_TEXT);
-			}	// todo add more content types as needed (images? - should be stored on external server to reduce load on miniweb)
+			}	// todo add more content types with an extension-CT mapping file (provisioned)
 
 			int16_t c;
 			while ((c = file.read()) > -1) {
@@ -705,26 +702,26 @@ bool APDWeb::ServeFile(EthernetClient client, const char *szPath) {
 				client.print((char)c);
 			}
 		} else if (file.isDir()) {
-			//SerPrintP("DIR");
-			// send a standard http response header
-			//web_header(&client);
+			// send a standard http response header (todo handle json later)
 			header(&client,CONTENT_TYPE_HTML);
-			// print all the files, use a helper to keep it clean
+			// print all the files, use a helper to keep it 'clean'
 			web_startpage(&client,"files");
-			//WCPrintP(&client, "<h2>Files:</h2>\n");
-			ListFiles(client, szPath, LS_DATE | LS_SIZE);		// list root
+			ListFiles(client, szPath, LS_DATE | LS_SIZE);		// list path
 			web_endpage(&client);
-
 		}
 		file.close();
 	} else {
-		//web_notfound(&client);
-		// let the caller handle 404
+		// let the caller handle 404 //web_notfound(&client);
 	}
 	return retcode;
 }
 
-
+// generate html list of a directory
+// client - Ethernet Client to print to
+// szPath - the directory to list
+// flags - listing flags
+// todo implement listing as json
+// originally used some SdFat example here featured by a webserver example
 void APDWeb::ListFiles(EthernetClient client, const char *szPath, uint8_t flags) {
 	SdFile *proot = APDStorage::p_root;
 	dir_t p;
@@ -1814,6 +1811,14 @@ void APDWeb::header(EthernetClient *pClient, int content_type) {
 	case CONTENT_TYPE_JSON:
 		WCPrintP(pClient,"application/json");
 		break;
+	case CONTENT_TYPE_JAVASCRIPT:
+		WCPrintP(pClient,"application/javascript");
+		break;
+		// todo implement these later, preferably having an extension-content type mapping file provisioned to SD
+	case CONTENT_TYPE_CSS:
+	case CONTENT_TYPE_PNG:
+	case CONTENT_TYPE_JPG:
+	case CONTENT_TYPE_GIF:
 	case CONTENT_TYPE_TEXT:
 	default:
 		WCPrintP(pClient,"text/plain");
