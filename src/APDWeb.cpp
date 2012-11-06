@@ -1085,13 +1085,15 @@ void APDWeb::processProvisioningRequest(EthernetClient *pclient, boolean brespon
 //
 // TODO: server might send auto-configuration data (eg. when a firmware upgrade is detected and the new firmware requires updated configuration files) - in this case this data should be processed and stored
 void APDWeb::registration_response(APDWeb *pAPDWeb){
+	APDDebugLog::log(APDUINO_MSG_AOSRRESPPROC,NULL); // log this when enabled log levels "SR: Processing server response..."
 	bool bReReg = false;
 	delay(500);    // debug
 	int content_length = -1;
 	boolean apikeyconfirmed=false;
 	char new_api_key[65]="";
 	if (pAPDWeb->pwwwclient != NULL && pAPDWeb->pwwwclient->available()) {
-		// todo log this when enabled log levels "SR: Processing server response..."
+		APDDebugLog::log(APDUINO_MSG_AOSRRESPPROC,NULL); // log this when enabled log levels "SR: Processing server response..."
+
 		while (pAPDWeb->pwwwclient->available()) {    // with bytes to read
 			char www_respline[RCV_BUFSIZ] ="";
 			int index = 0;
@@ -1112,7 +1114,8 @@ void APDWeb::registration_response(APDWeb *pAPDWeb){
 				}
 
 				// a line in www_respline
-				// todo log this when enabled log levels (www_respline);
+				//APDDebugLog::log(APDUINO_MSG_AOSRRESPPROC, www_respline); // todo log this when enabled log levels (www_respline);
+
 				if (!bProcessingBody) {      // if fetching lines of the HTTP header
 					if (iStatusCode < 0) {          // if no status code yet
 						sscanf_P(www_respline,PSTR("Status: %d"),&iStatusCode);    // scan for status
@@ -1123,12 +1126,14 @@ void APDWeb::registration_response(APDWeb *pAPDWeb){
 						}
 					}
 				} else {                  // if fetching lines from the HTTP body
+					//TODO reinspect this part of the code, it seems to fail to read the first line (too sleepy now)
 					if (content_length < 0) {  // we are in the body but no length yet (1st row)
 						content_length = atoi(www_respline);
 						// todo log this when enabled log levels(content_length);
 					} else { 									// we are in the body somewhere
 						if (new_api_key[0]==0) {	// no api key found yet (in the server response body)
-							if (sscanf(www_respline,"REG_API_KEY=%s",new_api_key)) {	// scan if the line specifies api key, scan it in
+
+							if (sscanf_P(www_respline,PSTR("REG_API_KEY=%s"),new_api_key)) {	// scan if the line specifies api key, scan it in
 								if (pAPDWeb->szAPDUINO_API_KEY[0]==0) {										// if we have no API key stored locally
 									strcpy(pAPDWeb->szAPDUINO_API_KEY,new_api_key);						// copy the scanned key to the local API key
 
@@ -1141,6 +1146,9 @@ void APDWeb::registration_response(APDWeb *pAPDWeb){
 									Serial.print(pAPDWeb->apduino_server_name);
 									SerPrintP("/devices/claim_device?api_key=");
 									Serial.println(pAPDWeb->szAPDUINO_API_KEY);
+									char sztmp[128] = "";
+									sprintf_P(sztmp,PSTR("Registered on APDuino Online.\nClaim device @ http://%s/devices/claim_device?api_key=%s"), pAPDWeb->apduino_server_name, pAPDWeb->szAPDUINO_API_KEY);
+									APDDebugLog::log(APDUINO_MSG_AOSRRESPPROC, www_respline);
 								} // end if no local API KEY
 								else {
 									// todo log this when enabled log levels ("API key present already.\n");
@@ -1160,9 +1168,10 @@ void APDWeb::registration_response(APDWeb *pAPDWeb){
 							apikeyconfirmed = true;
 							// todo log this when enabled log levels "APDuino Online confirms device.")
 						} else if(apikeyconfirmed) {		// only accept provisioning if API key was confirmed
-							Serial.println(pAPDWeb->pwwwclient->available()); SerPrintP("bytes left. Looking for provisioning data...");
+							char sztmp[16] = "";
+							APDDebugLog::log(APDUINO_MSG_AOSRRESPJOINTPROV,itoa(pAPDWeb->pwwwclient->available(),sztmp,10));
 							pAPDWeb->processProvisioningRequest(pAPDWeb->pwwwclient, false);  // process any provisioning data without rendering a response
-							// todo log this when enabled log levels "Should be done"
+							APDDebugLog::log(APDUINO_MSG_AOSRRESPJOINTPROV,NULL);             // log this when enabled log levels "Should be done"
 						}
 					}
 				}
@@ -1215,15 +1224,16 @@ boolean APDWeb::self_register() {
 
 				// here's the actual content of the PUT request:
 				pwwwclient->println(www_postdata);
-				APDDebugLog::log(APDUINO_MSG_AOSELFREG,"ok.");
-				if (pwwwcp ==NULL)
+				if (pwwwcp ==NULL) {
 					pwwwcp = (&registration_response);      // set reader 'callback'
-				else {
+					APDDebugLog::log(APDUINO_MSG_AOSELFREG,"cb.");
+				} else {
 					APDDebugLog::log(APDUINO_ERROR_WWWCLIENTOCCUPIED,NULL);
 				}
+				APDDebugLog::log(APDUINO_MSG_AOSELFREG,"ok.");
 			} else {
 				// TODO check this branch out
-				// todo log this when enabled log levels "E24"
+				APDDebugLog::log(APDUINO_ERROR_AOSELFREG,NULL); // could not connect
 				pwwwclient->stop();
 			}
 		} else {

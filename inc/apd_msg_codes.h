@@ -78,8 +78,11 @@
 #define APDUINO_MSG_AOLOGSTARTED          0x0145	// APDuino Online logging started
 #define APDUINO_MSG_COSMLOGSTARTED        0x0146	// Cosm logging started
 #define APDUINO_MSG_PROCPROVREQ           0x0147	// Processing provisioning request
-#define APDUINO_MSG_PROVFILE           		0x0148	// Provisioning file %s
-#define APDUINO_MSG_WWWFILEACCESS					0x0149  // WWW File Access %s
+#define APDUINO_MSG_PROVFILE           	  0x0148	// Provisioning file %s
+#define APDUINO_MSG_WWWFILEACCESS		  0x0149  // WWW File Access %s
+#define APDUINO_MSG_AOSELFREG		      0x014A	// APDuino Online: self registering: %s
+#define APDUINO_MSG_AOSRRESPPROC		  0x014B  // APDuino Online self-registration response processing
+#define APDUINO_MSG_AOSRRESPJOINTPROV     0x014C  // APDuino Online self-registration %d bytes left to scan for joint configuration provisioning
 
 #define APDUINO_MSG_LOADINGSENSORS        0x0150	// Sensor Array loading Sensors from config
 #define APDUINO_MSG_SENSORCOUNT 	        0x0151	// Sensor Array counted %d lines in SENSORS.CFG
@@ -170,7 +173,8 @@
 #define APDUINO_ERROR_JSNOCLIENT          0x0241	// JSON Status: no web client pointer
 #define APDUINO_ERROR_COSMDUMPOPEN        0x0242	// Cosm dump file open failed: %s
 #define APDUINO_ERROR_BROKENHEXCODE       0x0243	// Broken hex code in http request
-#define APDUINO_MSG_AOSELFREG				      0x0244	// APDuino Online: self registering: %s
+#define APDUINO_ERROR_AOSELFREG		      0x0244	// APDuino Online: error self registering: %s
+
 #define APDUINO_ERROR_WWWAUTHFAIL         0x0245	// WWW Authentication Failed %s
 #define APDUINO_ERROR_WWWUNAUTH           0x0246	// WWW Unauthorized, authentication requested
 #define APDUINO_ERROR_WWWNOCLIENT         0x0247	// WWW : no client connection in %s
