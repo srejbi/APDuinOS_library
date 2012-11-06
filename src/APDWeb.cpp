@@ -1093,7 +1093,6 @@ void APDWeb::registration_response(APDWeb *pAPDWeb){
 	char new_api_key[65]="";
 	if (pAPDWeb->pwwwclient != NULL && pAPDWeb->pwwwclient->available()) {
 		APDDebugLog::log(APDUINO_MSG_AOSRRESPPROC,NULL); // log this when enabled log levels "SR: Processing server response..."
-
 		while (pAPDWeb->pwwwclient->available()) {    // with bytes to read
 			char www_respline[RCV_BUFSIZ] ="";
 			int index = 0;
@@ -1115,7 +1114,6 @@ void APDWeb::registration_response(APDWeb *pAPDWeb){
 
 				// a line in www_respline
 				//APDDebugLog::log(APDUINO_MSG_AOSRRESPPROC, www_respline); // todo log this when enabled log levels (www_respline);
-
 				if (!bProcessingBody) {      // if fetching lines of the HTTP header
 					if (iStatusCode < 0) {          // if no status code yet
 						sscanf_P(www_respline,PSTR("Status: %d"),&iStatusCode);    // scan for status
@@ -1132,7 +1130,6 @@ void APDWeb::registration_response(APDWeb *pAPDWeb){
 						// todo log this when enabled log levels(content_length);
 					} else { 									// we are in the body somewhere
 						if (new_api_key[0]==0) {	// no api key found yet (in the server response body)
-
 							if (sscanf_P(www_respline,PSTR("REG_API_KEY=%s"),new_api_key)) {	// scan if the line specifies api key, scan it in
 								if (pAPDWeb->szAPDUINO_API_KEY[0]==0) {										// if we have no API key stored locally
 									strcpy(pAPDWeb->szAPDUINO_API_KEY,new_api_key);						// copy the scanned key to the local API key
@@ -1141,14 +1138,9 @@ void APDWeb::registration_response(APDWeb *pAPDWeb){
 									bReReg = true;					// signal internally for repeating registration (to confirm new API KEY)
 
 									// done with reception of a new api key
-									// TODO log these through APDDebug
-									SerPrintP("Registered device on APDuino Online.\nClaim your device at: http://");
-									Serial.print(pAPDWeb->apduino_server_name);
-									SerPrintP("/devices/claim_device?api_key=");
-									Serial.println(pAPDWeb->szAPDUINO_API_KEY);
 									char sztmp[128] = "";
 									sprintf_P(sztmp,PSTR("Registered on APDuino Online.\nClaim device @ http://%s/devices/claim_device?api_key=%s"), pAPDWeb->apduino_server_name, pAPDWeb->szAPDUINO_API_KEY);
-									APDDebugLog::log(APDUINO_MSG_AOSRRESPPROC, www_respline);
+									APDDebugLog::log(APDUINO_MSG_AOSRRESPPROC, sztmp);
 								} // end if no local API KEY
 								else {
 									// todo log this when enabled log levels ("API key present already.\n");

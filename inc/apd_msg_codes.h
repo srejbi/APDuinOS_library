@@ -84,6 +84,7 @@
 #define APDUINO_MSG_AOSRRESPPROC		  0x014B  // APDuino Online self-registration response processing
 #define APDUINO_MSG_AOSRRESPJOINTPROV     0x014C  // APDuino Online self-registration %d bytes left to scan for joint configuration provisioning
 
+
 #define APDUINO_MSG_LOADINGSENSORS        0x0150	// Sensor Array loading Sensors from config
 #define APDUINO_MSG_SENSORCOUNT 	        0x0151	// Sensor Array counted %d lines in SENSORS.CFG
 #define APDUINO_MSG_SENSORSLOADING        0x0152	// Loading Sensor Array from config %s
@@ -174,7 +175,6 @@
 #define APDUINO_ERROR_COSMDUMPOPEN        0x0242	// Cosm dump file open failed: %s
 #define APDUINO_ERROR_BROKENHEXCODE       0x0243	// Broken hex code in http request
 #define APDUINO_ERROR_AOSELFREG		      0x0244	// APDuino Online: error self registering: %s
-
 #define APDUINO_ERROR_WWWAUTHFAIL         0x0245	// WWW Authentication Failed %s
 #define APDUINO_ERROR_WWWUNAUTH           0x0246	// WWW Unauthorized, authentication requested
 #define APDUINO_ERROR_WWWNOCLIENT         0x0247	// WWW : no client connection in %s
