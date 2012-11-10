@@ -45,6 +45,7 @@
 #include <EthernetUdp.h>                          // used for NTP
 #include "APDSerial.h"
 #include "APDDebugLog.h"
+#include "apd_msg_codes.h"
 
 const int NTP_PACKET_SIZE= 48;                   // NTP time stamp is in the first 48 bytes of the message
 
@@ -81,5 +82,7 @@ private:
 	static unsigned long start_time;
 	static unsigned long rollovers;                  // TODO calc rollovers
 };
+
+char *apduino_fullversion(char *szbuf);
 
 #endif /* APDTIME_H_ */

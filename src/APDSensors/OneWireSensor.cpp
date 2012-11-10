@@ -110,7 +110,8 @@ void OneWireSensor::verify_address()
   byte nulladdr[8] = {0,0,0,0,0,0,0,0};
 
   sprintf_P(sztmp, PSTR("'%s' (pin %d)"), this->config.label, this->config.sensor_pin);		// construct debug log string part
-  APDDebugLog::log(APDUINO_MSG_OWADDRVERIFY,sztmp);				// log verification activity
+  // TODO DEBUG LEVEL
+  //APDDebugLog::log(APDUINO_MSG_OWADDRVERIFY,sztmp);				// log verification activity
 
   if (this->sensor->owenc == NULL || this->sensor->owenc->ow == NULL ) {
   	APDDebugLog::log(APDUINO_ERROR_OWNOOBJ, NULL);
@@ -126,6 +127,7 @@ void OneWireSensor::verify_address()
   if (memcmp(this->sensor->address, nulladdr,sizeof(byte)*8) != 0) {	// if looking for a specific addr.
   	dsp->reset_search();		// reset search (we might used it before)
   } else {
+  	// TODO DEBUG LEVEL
   	APDDebugLog::log(APDUINO_MSG_OWSEARCHING,NULL);				// log verification activity
   }
 
@@ -155,11 +157,13 @@ void OneWireSensor::verify_address()
     	// check if we had an expectation, if not, we can save the address to the sensor config (will not be saved) todo fixup sensor dump enables storing found addresses for next run
     	if (memcmp(this->sensor->address, &nulladdr,sizeof(byte)*8) == 0) {	// if we had a config without a specific address (nulladdress)
     		memcpy(this->sensor->address, addr,sizeof(byte)*8);
-    		APDDebugLog::log(APDUINO_MSG_OWFIRSTADDRSAVED,NULL);				// todo pass string with address
+    		// TODO DEBUG LEVEL
+    		//APDDebugLog::log(APDUINO_MSG_OWFIRSTADDRSAVED,NULL);				// todo pass string with address
     	}
     	// anyway (we now have an address in the sensor config)
     	// todo construct log string with address
-    	APDDebugLog::log(APDUINO_MSG_OWADDRFOUND,NULL);				// todo pass string with address
+    	// TODO DEBUG LEVEL
+    	//APDDebugLog::log(APDUINO_MSG_OWADDRFOUND,NULL);				// todo pass string with address
     	bAfound = true;
     } else {		// unexpected address (we were looking for a specific address and it was not found)
     	APDDebugLog::log(APDUINO_WARN_OWBADADDRFOUND,NULL);	 // log not the address we expected
@@ -169,14 +173,17 @@ void OneWireSensor::verify_address()
     //type_s = 0; already set
     switch (addr[0]) {
       case 0x10:
-      	APDDebugLog::log(APDUINO_MSG_OWDS18S20, NULL);  // or old DS1820
+      	// TODO DEBUG LEVEL
+      	//APDDebugLog::log(APDUINO_MSG_OWDS18S20, NULL);  // or old DS1820
         type_s = 1;
         break;
       case 0x28:
-        APDDebugLog::log(APDUINO_MSG_OWDS18B20, NULL);
+      	// TODO DEBUG LEVEL
+				//APDDebugLog::log(APDUINO_MSG_OWDS18B20, NULL);
         break;
       case 0x22:
-      	APDDebugLog::log(APDUINO_MSG_OWDS1822, NULL);
+      	// TODO DEBUG LEVEL
+				//APDDebugLog::log(APDUINO_MSG_OWDS1822, NULL);
         break;
       default:
       	APDDebugLog::log(APDUINO_ERROR_OWNOTDS18X20, NULL);
@@ -189,31 +196,38 @@ void OneWireSensor::verify_address()
     }
   }
   if (!bfound && !bAfound) {
-  	APDDebugLog::log(APDUINO_MSG_OWNOMOREADDR, NULL);
+  	// TODO DEBUG LEVEL
+  	//APDDebugLog::log(APDUINO_MSG_OWNOMOREADDR, NULL);
 		dsp->reset_search();
 		delay(250);
 // todo remove deprecated code         return;
   } else if (bAfound) {
-  	APDDebugLog::log(APDUINO_MSG_OWADDRVEROK, NULL);
+  	// TODO DEBUG LEVEL
+  	//APDDebugLog::log(APDUINO_MSG_OWADDRVEROK, NULL);
   } else {
   	memset(this->sensor->address,0,sizeof(byte)*8);
   	APDDebugLog::log(APDUINO_ERROR_OWNOADDRESSES, NULL);
   }
   // todo remove deprecated code //dsp->reset();
 
-  APDDebugLog::log(APDUINO_MSG_OWADDRVERDONE, NULL);
+  // TODO DEBUG LEVEL
+  //APDDebugLog::log(APDUINO_MSG_OWADDRVERDONE, NULL);
 }
 
 
 boolean OneWireSensor::perform_check()
 {
-  float nv = this->ow_temperature_read();
-  if (this->_state == STATE_READY && nv != NAN) this->fvalue = nv;
+  float nv = NAN;		// new value
+  float cv = this->ow_temperature_read(&nv);	// control value
+  //SerPrintP("OW nv:"); Serial.println(nv,DEC); SerPrintP(" cv: "); Serial.print(cv,DEC); SerPrintP("NANCHK:"); Serial.print(NAN,DEC); Serial.println("/");
+  //if (NAN == 0) SerPrintP("NAN is 0\n");
+  if (this->_state == STATE_READY &&
+  		nv != NAN && cv != NAN && nv == cv ) 	this->fvalue = nv;
   return (nv != NAN);
 }
 
 
-float OneWireSensor::ow_temperature_read()
+float OneWireSensor::ow_temperature_read(float *nv)
 {
 	byte nulladdr[8] = {0,0,0,0,0,0,0,0};
   float celsius = NAN;
@@ -277,6 +291,9 @@ float OneWireSensor::ow_temperature_read()
 							// default is 12 bit resolution, 750 ms conversion time
 						}
 						celsius = (float)raw / 16.0;
+						*nv = celsius;			// save the new value
+						//char szt[16]="";
+						//APDDebugLog::log(APDUINO_MSG_OWSTOREVALUE,dtostrf(celsius,0,3,szt));
 						// todo the following should be potentially added as an expression (by enduser) to convert sensor value
 						//fahrenheit = celsius * 1.8 + 32.0;
 
@@ -285,7 +302,8 @@ float OneWireSensor::ow_temperature_read()
 						this->sensor->owenc->state = STATE_READY;
 						this->pmetro->interval(this->config.sensor_freq);						// reset normal poll time
 				 } else {
-					 SerPrintP("Unknown state. Slowing sensor.\n");
+					 // TODO LOG
+					 APDDebugLog::log(APDUINO_ERROR_OWUNKNOWNSTATE,NULL);
 					 this->pmetro->interval(this->config.sensor_freq*10);
 				 }
 			 } else {		// no onewire object
@@ -338,8 +356,8 @@ void OneWireSensor::diagnose()
     }
 
     if (OneWire::crc8(addr, 7) != addr[7]) {
-    	// todo log this when enabled log levels
-        SerPrintP("CRC is not valid!");
+    		// todo log this when enabled log levels
+    		APDDebugLog::log(APDUINO_ERROR_OWBADCRC,NULL);
         return;
     }
     Serial.println();
@@ -363,16 +381,17 @@ void OneWireSensor::diagnose()
     }
   }
   if (bfound) {
-  	APDDebugLog::log(APDUINO_MSG_OWNOMOREADDR, NULL);
+  	// TODO DEBUG LEVEL
+  	//APDDebugLog::log(APDUINO_MSG_OWNOMOREADDR, NULL);
 		dsp->reset_search();
 		delay(250);
-//          return;
   } else {
 
   }
   dsp->reset();
 
-  APDDebugLog::log(APDUINO_MSG_OWDIAGNOSTICSDONE, NULL);
+  // TODO DEBUG LEVEL
+  //APDDebugLog::log(APDUINO_MSG_OWDIAGNOSTICSDONE, NULL);
   delay(1000);
 }
 

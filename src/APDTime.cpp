@@ -65,13 +65,13 @@ int APDTime::begin(boolean bRTC) {
         pRTC->begin();
 
         if (! pRTC->isrunning()) {
-        	APDDebugLog::log(APDUINO_MSG_RTCNOTRUNNING,NULL);
+        	APDDebugLog::log(APDUINO_WARN_RTCNOTRUNNING,NULL);
           free(pRTC);
           pRTC = NULL;
-//          SerPrintP("RTC HW NEEDS TESTING!\n");
+          //  SerPrintP("RTC HW NEEDS TESTING!\n");
           //RTC.adjust(DateTime(__DATE__, __TIME__));
-        } else {       // we have RTC
-        	APDDebugLog::log(APDUINO_MSG_HWRTCOK,NULL);
+        } else {          // we have RTC
+        	APDDebugLog::log(APDUINO_LOG_HWRTCOK,NULL);
         }
       } else {
       	APDDebugLog::log(APDUINO_ERROR_RTCALLOCFAIL,NULL);
@@ -84,6 +84,8 @@ int APDTime::begin(boolean bRTC) {
       // millis based already by default
       if (pRTCm == NULL) {
       	APDDebugLog::log(APDUINO_ERROR_SWRTCFAIL,NULL);
+      } else {
+      	APDDebugLog::log(APDUINO_LOG_SWRTCOK,NULL);
       }
   }
 }
@@ -186,7 +188,7 @@ void APDTime::log_datetime(DateTime t)
     char datestr[32] = "";
     // TODO implement format string, input by user
     sprintf_P(datestr, PSTR("%04d-%02d-%02d %02d:%02d:%02d"), t.year(), t.month(), t.day(), t.hour(), t.minute(), t.second());
-    APDDebugLog::log(APDUINO_MSG_TIMESTAMP,datestr);
+    APDDebugLog::log(APDUINO_LOG_TIMESTAMP,datestr);
 }
 
 // callback for SdBaseFile to get current date time
@@ -387,4 +389,12 @@ void APDTime::sync_to_ntp()
   } else {
   	APDDebugLog::log(APDUINO_ERROR_NTPNORTC,NULL);
   }
+}
+
+char *apduino_fullversion(char *szbuf) {
+	DateTime dtt(__DATE__,__TIME__);
+	sprintf_P(szbuf,APDUINO_VERSION_STRING,
+			dtt.year(),dtt.month(),dtt.day(),
+			dtt.hour(), dtt.minute(), dtt.second());
+	return szbuf;
 }

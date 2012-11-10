@@ -28,7 +28,6 @@
 
 #include <Arduino.h>
 #include <SdFat.h>               // SD card
-#include "apd_version.h"
 //#include <avr/io.h>
 //#include <avr/wdt.h>
 #define BUFSIZ 100
@@ -38,12 +37,6 @@ bool testscanf();
 char *getPstr(const void *Pstring);           // you must free the address returned!
 
 int get_line_count_from_file(const char *szFile);
-
-/*double dewPointFast(double celsius, double humidity);
-double dewPoint(double celsius, double humidity);
-double Kelvin(double celsius);
-double Fahrenheit(double celsius);*/
-
 byte *hexbytes(const char *hexcode,byte *destbytes, int destbytes_count);
 int read_hex_byte(const char *szByte);
 

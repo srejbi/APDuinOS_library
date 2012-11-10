@@ -658,7 +658,7 @@ void APDWeb::ListFiles(EthernetClient client, const char *szPath, uint8_t flags)
 void APDWeb::loop_server()
 {
 	if (pwwwserver != NULL) {      // if server is instantiated
-		char clientline[RCV_BUFSIZ];
+		char clientline[RCV_BUFSIZ+1];
 		clientline[RCV_BUFSIZ-1]=0;      // a terminating 0 at the last position
 		int index = 0;
 		char *pc = clientline;		// pc is a temporary char pointer that may be used  \
@@ -692,7 +692,18 @@ void APDWeb::loop_server()
 					clientline[index] = 0;
 
 					// Look for substring such as a request to get the root file
-					if (strstr_P(clientline, PSTR("GET /sd/ ")) != 0) { // print all the files, use a helper to keep it clean
+					if (strstr_P(clientline, PSTR("GET /status.json")) != 0) {
+						if (basicAuthorize(&client)) {
+							header(&client,CONTENT_TYPE_JSON);
+							json_status(&client);
+						}
+					} else if (strstr_P(clientline, PSTR("POST /controls/")) != 0) {
+						procControlReq(&client,clientline);		// shoult take care of all, including auth.
+					} else if (strstr_P(clientline, PSTR("POST /sensors/")) != 0) {
+						procSensorReq(&client,clientline);		// shoult take care of all, including auth.
+					} else if ((pc = strstr_P(clientline, PSTR("POST /systems/"))) != 0) {
+						procSystemReq(&client,clientline);		// -- " " --
+					} else if (strstr_P(clientline, PSTR("GET /sd/ ")) != 0) { // print all the files, use a helper to keep it clean
 						if (basicAuthorize(&client)) {
 							header(&client,CONTENT_TYPE_HTML);	// send a standard http response header for html page
 							web_startpage(&client,"files");
@@ -757,11 +768,6 @@ void APDWeb::loop_server()
 							//web_endpage(&client);
 							this->dispatched_requests = DREQ_DIAGNOSTICS;		// APDuino should read it
 						}
-					} else if (strstr_P(clientline, PSTR("GET /status.json")) != 0) {
-						if (basicAuthorize(&client)) {
-							header(&client,CONTENT_TYPE_JSON);
-							json_status(&client);
-						}
 					} else if (strstr_P(clientline,PSTR("GET /claimdevice")) != 0) {
 						if (basicAuthorize(&client)) {
 							header(&client,CONTENT_TYPE_HTML);
@@ -783,12 +789,6 @@ void APDWeb::loop_server()
 								web_maintenance(&client);
 							}
 						}
-					} else if (strstr_P(clientline, PSTR("POST /controls/")) != 0) {
-						procControlReq(&client,clientline);		// shoult take care of all, including auth.
-					} else if (strstr_P(clientline, PSTR("POST /sensors/")) != 0) {
-						procSensorReq(&client,clientline);		// shoult take care of all, including auth.
-					} else if ((pc = strstr_P(clientline, PSTR("POST /systems/"))) != 0) {
-						procSystemReq(&client,clientline);		// -- " " --
 					} else {
 						// todo log this when enabled log levels
 						// everything else is a 404
@@ -883,12 +883,12 @@ void APDWeb::procControlReq(EthernetClient *pclient, char *clientline) {
 
 	pc+=15;				      //skip to post 'POST /control/'
 	int ic = atoi(pc);	// get the control id -> from pc
-	APDDebugLog::log(APDUINO_MSG_WWWCONTROLACCESS,clientline);
+	APDDebugLog::log(APDUINO_LOG_WWWCONTROLACCESS,clientline);
 	if (basicAuthorize(pclient)) {
 		// return OK if done, // resource not available if invalid,// busy if in automatic mode
 		//header(&client,CONTENT_TYPE_JSON);
 		if (ic >= 0 && ic <= this->pca->iControlCount) {
-				pc += 6; // skip "value="
+			//	pc += 6; // skip "value="
 			if (pc = forwardToMarker(pclient,clientline,"value=")) {
 				int iv = NAN;
 				if (pc = forwardToMarker(pclient,clientline,"&")) {
@@ -904,7 +904,7 @@ void APDWeb::procControlReq(EthernetClient *pclient, char *clientline) {
 					// log action
 					char sztmp[16]="";
 					sprintf_P(sztmp,PSTR("%d,%d"),ic,iv);
-					APDDebugLog::log(APDUINO_MSG_WWWCONTROLACCESS,sztmp);
+					APDDebugLog::log(APDUINO_LOG_WWWCONTROLSET,sztmp);
 					// done
 				} else {
 					// should not write, todo log with levels enabled
@@ -926,18 +926,18 @@ void APDWeb::procSensorReq(EthernetClient *pclient, char *clientline) {
 	char *pc = strstr_P(clientline, PSTR("POST /sensors/"));
 	pc+=14;				      	//skip to post 'POST /sensors/'
 	int ic = atoi(pc);		// get the control id -> from pc
-	APDDebugLog::log(APDUINO_MSG_WWWSENSORACCESS,clientline);
+	APDDebugLog::log(APDUINO_LOG_WWWSENSORACCESS,clientline);
 	if (basicAuthorize(pclient)) {
 		// return OK if done, // resource not available if invalid,// busy if in automatic mode
 		if (ic >= 0 && ic <= this->psa->iSensorCount) {
-			APDDebugLog::log(APDUINO_MSG_WWWSENSORACCESS,NULL);
+			APDDebugLog::log(APDUINO_LOG_WWWSENSORACCESS,NULL);
 			if (pc = forwardToMarker(pclient,clientline,"cmd=")) {
-				APDDebugLog::log(APDUINO_MSG_WWWSENSORACCESS,pc);
+				APDDebugLog::log(APDUINO_LOG_WWWSENSORACCESS,pc);
 				if (pc = forwardToMarker(pclient,clientline,"&")) {
 					*pc = 0; // terminate string at '&'
 				}
 				char *pcmd = clientline;			// now we should have an integer /no error handling/
-				APDDebugLog::log(APDUINO_MSG_WWWSENSORACCESS,pcmd);
+				APDDebugLog::log(APDUINO_LOG_WWWSENSORACCESS,pcmd);
 				if (strlen(pcmd) && (!this->pra->bProcRules ||											// if rule proc inactive,
 					(forwardToMarker(pclient,clientline,"force=")&&pclient->read()=='1'))) {// or force=1 flag given
 					// we "can" write the sensor
@@ -946,10 +946,10 @@ void APDWeb::procSensorReq(EthernetClient *pclient, char *clientline) {
 					// log action
 					char sztmp[16]="";
 					sprintf_P(sztmp,PSTR("s%d:%s."),ic,pcmd);
-					APDDebugLog::log(APDUINO_MSG_WWWSENSORACCESS,sztmp);		// TODO change code
+					APDDebugLog::log(APDUINO_LOG_WWWSENSORACCESS,sztmp);		// TODO change code
 					// done
 				} else {
-					APDDebugLog::log(APDUINO_MSG_WWWSENSORACCESS,"RBLOCK");	// should not write, todo log with levels enabled
+					APDDebugLog::log(APDUINO_LOG_WWWSENSORACCESS,"RBLOCK");	// should not write, todo log with levels enabled
 				}
 			}
 		}
@@ -966,17 +966,31 @@ void APDWeb::procSystemReq(EthernetClient *pclient, char *clientline) {
 	char *pc = strstr_P(clientline, PSTR("POST /systems/"));
 	pc+=14;								    //skip to post 'POST /systems/'
 	int ic = atoi(pc);				// get the system ctrl id
-	APDDebugLog::log(APDUINO_MSG_WWWSYSACCESS,clientline);
+	APDDebugLog::log(APDUINO_LOG_WWWSYSACCESS,clientline);
 	if (basicAuthorize(pclient)) {
 		// todo imlement a simple set value on system controls
-		APDDebugLog::log(APDUINO_MSG_WWWSYSACCESS,clientline);
+		APDDebugLog::log(APDUINO_LOG_WWWSYSACCESS,clientline);
 		switch (ic) {
+		case 0: 				// loglevel
+			if (pc = forwardToMarker(pclient,clientline,"value=")) {
+				int iv = NAN;
+				if (pc = forwardToMarker(pclient,clientline,"&")) {
+					*pc = 0; // terminate string at '&'
+				}
+				iv = atoi(clientline);			// now we should have an integer /no error handling/
+				if (iv >= 0 && iv <= LOG_LEVEL_QUIET) {
+					APDDebugLog::set_loglevel(iv);
+					APDDebugLog::log(APDUINO_LOG_WWWDEBUGLEVEL,clientline);
+				}
+			}
+			header(pclient,CONTENT_TYPE_JSON);		// let's just send status ok and nothing
+			break;
 		case 8:					// for now a hardcoded 8 represents rule processing
 										// and we simply toggle, whatever the value param is
 			this->pra->toggle_processing();				// for now just toggle processing
 			header(pclient,CONTENT_TYPE_JSON);		// let's just send status ok and nothing
-			// todo write back the curr. val?
-			json_status(pclient);
+			json_status(pclient);// todo write back the curr. val?
+			break;
 		default:
 			web_notfound(pclient);	// simply not found for now
 		}
@@ -1293,8 +1307,10 @@ boolean APDWeb::self_register() {
 	char www_postdata[96];
 	if ( pwwwclient!=NULL ) {
 		if ( !pwwwclient->connected() ) {
-			sprintf_P(www_postdata,PSTR("lan_ip=%d.%d.%d.%d&v=%s.%s"),net.ip[0],net.ip[1],net.ip[2],net.ip[3],APDUINO_VERSION,APDUINO_BUILD);
-			APDDebugLog::log(APDUINO_MSG_AOSELFREG,www_postdata);
+			//sprintf_P(www_postdata,PSTR("lan_ip=%d.%d.%d.%d&v=%s.%s"),net.ip[0],net.ip[1],net.ip[2],net.ip[3],APDUINO_VERSION,APDUINO_BUILD);
+			char sztmp[20]="";
+			sprintf_P(www_postdata,PSTR("lan_ip=%d.%d.%d.%d&v=%s"),net.ip[0],net.ip[1],net.ip[2],net.ip[3],apduino_fullversion(sztmp));
+			APDDebugLog::log(APDUINO_LOG_AOSELFREG,www_postdata);
 			if( pwwwclient->connect(apduino_server_ip, apduino_server_port) ) {
 				// send the HTTP PUT request:
 				WCPrintP(pwwwclient,"PUT /devices/self_register HTTP/1.1\n");
@@ -1317,11 +1333,11 @@ boolean APDWeb::self_register() {
 				pwwwclient->println(www_postdata);
 				if (pwwwcp ==NULL) {
 					pwwwcp = (&registration_response);      // set reader 'callback'
-					APDDebugLog::log(APDUINO_MSG_AOSELFREG,"cb.");
+					APDDebugLog::log(APDUINO_LOG_AOSELFREGREQSENT,this->szAPDUINO_API_KEY);
 				} else {
 					APDDebugLog::log(APDUINO_ERROR_WWWCLIENTOCCUPIED,NULL);
 				}
-				APDDebugLog::log(APDUINO_MSG_AOSELFREG,"ok.");
+				APDDebugLog::log(APDUINO_LOG_AOSELFREGOK,NULL);
 			} else {
 				// TODO check this branch out
 				APDDebugLog::log(APDUINO_ERROR_AOSELFREG,NULL); // could not connect
@@ -1445,11 +1461,11 @@ void APDWeb::get_lastlog_string(char *szLogBuf) {
 
 // TODO: add size control, avoid writing to random places
 void APDWeb::get_cosmlog_string(char *szLogBuf) {
-	char *pcLog = szLogBuf;
-	char dataString[16]="";                // make a string for assembling the data to log:
+	char *pcLog = szLogBuf;				// write pointer on the buf
+	char dataString[32]="";                // make a string for assembling the data to log:
 
 	for (int i=0;i<this->psa->iSensorCount;i++) {
-		if (this->psa->pAPDSensors[i]->config.sensor_log && this->psa->pAPDSensors[i]->fvalue != NAN) {          // if sensor to be logged & has a valid value (todo use sensor states)
+		if (this->psa->pAPDSensors[i]->config.sensor_log && this->psa->pAPDSensors[i]->fvalue != NAN ) {          // if sensor to be logged & has a valid value (todo use sensor states)
 			strcpy(pcLog,this->psa->pAPDSensors[i]->config.label);
 			pcLog+=strlen(this->psa->pAPDSensors[i]->config.label);
 			*pcLog=','; pcLog++;// *pcLog = '\0';
@@ -1503,7 +1519,7 @@ void APDWeb::get_thingspeaklog_string(char *szLogBuf) {
 
 // requires Ethernet connection to be started already
 void APDWeb::log_to_ApduinoOnline() {
-	APDDebugLog::log(APDUINO_MSG_AOLOGCALLED,NULL);
+	APDDebugLog::log(APDUINO_DEBUG_AOLOGCALLED,NULL);
 	//APDDebugLog::disable_sync_writes();
 	char www_logdata[256];
 	if ( pwwwclient ) {           // TODO check if we're registered
@@ -1511,7 +1527,7 @@ void APDWeb::log_to_ApduinoOnline() {
 			get_lastlog_string(www_logdata);
 
 			char sztmp[11] = "";
-			APDDebugLog::log(APDUINO_MSG_AOLOGGING,ultoa(strlen(www_logdata),sztmp,10));		// logdata has \n
+			APDDebugLog::log(APDUINO_DEBUG_AOLOGGING,ultoa(strlen(www_logdata),sztmp,10));		// logdata has \n
 			// todo log this when enabled log levels (this->pstr_APDUINO_API_KEY) (www_logdata)
 
 			if( pwwwclient->connect(apduino_server_ip, apduino_server_port) ) {
@@ -1552,16 +1568,16 @@ void APDWeb::log_to_ApduinoOnline() {
 }
 
 void APDWeb::log_to_Cosm() {
-	APDDebugLog::log(APDUINO_MSG_COSMLOGCALLED,NULL);
+	APDDebugLog::log(APDUINO_DEBUG_COSMLOGCALLED,NULL);
 	//APDDebugLog::disable_sync_writes();
 	if ( pwwwclient ) {           // TODO check if we're registered
 		if ( !pwwwclient->connected() ) {
 			char feedUrl[64] = "";
-			char www_logdata[512];
+			char www_logdata[640]="";
 			get_cosmlog_string(www_logdata);
 
 			char sztmp[11] = "";
-			APDDebugLog::log(APDUINO_MSG_COSMLOGGING,ultoa(strlen(www_logdata),sztmp,10));		// logdata has \n
+			APDDebugLog::log(APDUINO_DEBUG_COSMLOGGING,ultoa(strlen(www_logdata),sztmp,10));		// logdata has \n
 
 			sprintf_P(feedUrl,PSTR("/v2/feeds/%lu.csv"),cosm_feed_id);
 			// todo log this when enabled log levels with (cosm_server_name) (feedUrl)
@@ -1602,7 +1618,7 @@ void APDWeb::log_to_Cosm() {
 
 
 void APDWeb::log_to_ThingSpeak() {
-	APDDebugLog::log(APDUINO_MSG_TSLOGCALLED,NULL);
+	APDDebugLog::log(APDUINO_DEBUG_TSLOGCALLED,NULL);
 	if ( pwwwclient ) {           // TODO check if we're registered
 		if ( !pwwwclient->connected() ) {
 			char feedUrl[64] = "";
@@ -1610,7 +1626,7 @@ void APDWeb::log_to_ThingSpeak() {
 			get_thingspeaklog_string(www_logdata);
 
 			char sztmp[11] = "";
-			APDDebugLog::log(APDUINO_MSG_TSLOGGING,ultoa(strlen(www_logdata),sztmp,10));
+			APDDebugLog::log(APDUINO_DEBUG_TSLOGGING,ultoa(strlen(www_logdata),sztmp,10));
 			// todo log this when enabled log levels (www_logdata) (thingspeak_server_name) (feedUrl)
 			if( pwwwclient->connect(thingspeak_server_ip, thingspeak_server_port) ) {
 				// send the HTTP PUT request:
@@ -1632,9 +1648,9 @@ void APDWeb::log_to_ThingSpeak() {
 
 				// here's the actual content of the PUT request:
 				pwwwclient->println(www_logdata);
-				APDDebugLog::log(APDUINO_MSG_TSLOGDONE,NULL);		// debug
+				//APDDebugLog::log(APDUINO_MSG_TSLOGDONE,NULL);		// debug
 			} else {
-				APDDebugLog::log(APDUINO_ERROR_TSLOGCONNFAIL,NULL);
+				//APDDebugLog::log(APDUINO_ERROR_TSLOGCONNFAIL,NULL);
 				pwwwclient->stop();          // stop client now
 				this->failure();
 			}
@@ -1828,8 +1844,9 @@ void APDWeb::json_status(EthernetClient *pClient) {
 		WCPrintP(pClient,"[");			// main array
 
 		WCPrintP(pClient,"{ \"name\": \"systems\", \"data\": [");
-		sprintf_P(tbuf,PSTR("%s.%s"),APDUINO_VERSION,APDUINO_BUILD);
-		json_array_item(pClient,0,"version",tbuf,"0");
+		//sprintf_P(tbuf,PSTR("%s.%s"),APDUINO_VERSION,APDUINO_BUILD);
+		//json_array_item(pClient,0,"version",tbuf,"0");
+		json_array_item(pClient,0,"version",apduino_fullversion(tbuf),"0");
 		strcpy_P(tbuf,PSTR("1970/01/01 00:00:00")); 			       // default string used for timestamp
 		json_array_item(pClient,1,"timestamp",APDTime::nowS(tbuf),"0");
     json_array_item(pClient,2,"uptime",APDTime::get_uptime_str(tbuf),"0");
@@ -1837,8 +1854,9 @@ void APDWeb::json_status(EthernetClient *pClient) {
 		json_array_item(pClient,4,"netfail",dtostrf(iFailureCount,5,0,tbuf),"0");
 		json_array_item(pClient,5,"netrestarts",dtostrf(iRestartCount,5,0,tbuf),"0");
 		json_array_item(pClient,6,"ramfree",dtostrf(freeMemory(),5,0,tbuf),"0");
-		json_array_item(pClient,7,"sdfree",dtostrf(APDStorage::get_sd_free_cluster_bytes(),16,0,tbuf),"0");
+		json_array_item(pClient,7,"debuglevel",dtostrf(APDDebugLog::loglevel,16,0,tbuf),"0");
 		json_array_item(pClient,8,"auto",dtostrf(this->pra->bProcRules,16,0,tbuf),"0");
+		json_array_item(pClient,9,"sdfree","NAN","0"); //dtostrf(APDStorage::get_sd_free_cluster_bytes(),16,0,tbuf)
 		WCPrintP(pClient,"] },\n");  // End System data Array, System
 
 		WCPrintP(pClient,"{ \"name\": \"sensors\", \"data\": [");

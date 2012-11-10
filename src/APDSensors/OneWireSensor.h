@@ -68,7 +68,7 @@ public:
 
 private:
   void verify_address();
-  float ow_temperature_read();
+  float ow_temperature_read(float *nv);
   byte _type_s;
   boolean bPrimary;
   unsigned long _lm;

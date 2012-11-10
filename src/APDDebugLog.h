@@ -32,7 +32,7 @@
 #include "APDSerial.h"
 #include "MemoryFree.h"
 
-#define LOG_MESSAGE_OVERHEAD			20		// "<unsigned long:10chars>:(1char)0x(2chars)<unsigned int:(5chars)>":(1char)\0(1char)"
+#define LOG_MESSAGE_HEADER_LEN			20		// "<unsigned long:10chars>:(1char)0x(2chars)<unsigned int:(5chars)>":(1char)\0(1char)"
 struct LOGITEM {
 	char *psz_logstring;
 	LOGITEM *pnext;
@@ -42,7 +42,7 @@ struct LOGITEM {
 
 class APDDebugLog {
 public:
-	static void log(unsigned int code, const char *psz_logstring);
+	static void log(uint16_t code, const char *psz_logstring);
 	static bool is_empty();
 	static void setlogwriter(void (*writerfunc)(const char *));
 	static void shifttowriter(void (*writerfunc)(const char *));
@@ -54,8 +54,13 @@ public:
 
 	// TODO add loglevel variable and related code that discards certain events (INFO/WARN/ERROR)
 	static boolean logtoserial;
-	static LOGITEM *makelog(unsigned int code, const char *psz_logstring);
-	static void serialprint(unsigned int code, const char *psz_logstring);
+	static int loglevel;			// WARNING - todo
+	static int logfilter;			// future use to filter SD logging to specific issues
+	static LOGITEM *makelog(uint16_t code, const char *psz_logstring);
+	static void serialprint(uint16_t code, const char *psz_logstring);
+
+	static void set_loglevel(uint8_t newlevel) {	loglevel = newlevel; }
+	static void set_logfilter(uint8_t newfilter) {	logfilter = newfilter; }
 private:
 
 	static void (*plogwriterfunc)(const char *);				// log writer callback when enabled

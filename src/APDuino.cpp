@@ -37,10 +37,6 @@ APDuino::APDuino(long baudrate) {
   init(baudrate);
 }
 
-APDuino::APDuino() {
-  init(9600);
-}
-
 APDuino::~APDuino() {
 	SdBaseFile::dateTimeCallbackCancel();			// cancel any callback might have been set for storage datetime
   // todo remove: this->bProcessRules = false;
@@ -86,8 +82,14 @@ void APDuino::init(long baudrate) {
   bFirstLoopDone = false;
   bInitialized = false;
 
-  SerPrintP("\n\nAPDuinOS "); SerPrintP(APDUINO_VERSION);   SerPrintP("."); SerPrintP(APDUINO_BUILD);   SerPrintP(" starting up...\n");
-  Serial.print( freeMemory(), DEC); SerPrintP(" RAM free.\n");
+  /* print build number */
+	char *sztmp=(char*)malloc(sizeof(char)*64);		// use a tmpbuf
+	char *fullversion=(char*)malloc(sizeof(char)*20);
+	if (sztmp && fullversion) {																					// to construct log data
+		sprintf_P(sztmp,PSTR("APDuinOS-%s,%d"),apduino_fullversion(fullversion),freeMemory());		// ver and ram
+		APDDebugLog::log(APDUINO_LOG_START,sztmp);													// log
+	}
+	free(sztmp); free(fullversion);
 
   //Serial.Print(pstr_Name);
   //SerPrintP(" - APDuino class started... STORAGE:"); 	Serial.print((unsigned int)pAPDStorage,DEC);
@@ -217,6 +219,7 @@ boolean APDuino::init_app() {
 #endif
 
 		if (bConfigured()) {
+			APDDebugLog::set_loglevel(LOG_LEVEL_LOG);			// if configured, go for less verbosity
 			//SerPrintP("APD: LOGGING...");
 			if (this->start_logging(DEFAULT_ONLINE_LOG_FREQ)) {		// TODO revise, this should be configurable
 //					SerPrintP("OK.\n");
@@ -265,7 +268,7 @@ void APDuino::setup_timekeeping() {
 //      this->pAPDTime = new APDTime(true);       // try with RTC
   		APDTime::begin(true);       // try with RTC
   } else {
-  	APDDebugLog::log(APDUINO_WARNING_TIMEALREADYSETUP,NULL);
+  	APDDebugLog::log(APDUINO_WARN_TIMEALREADYSETUP,NULL);
   }
 }
 
@@ -330,7 +333,7 @@ void APDuino::loop() {
 
     // this following hack is to enable rules only after we should have read sensors
     if (this->bFirstLoopDone == false ) { //&& bProcessRules == false) {
-    	APDDebugLog::log(APDUINO_MSG_ENABLERULEPROC,NULL);
+    	APDDebugLog::log(APDUINO_LOG_ENABLERULEPROC,NULL);
 
     	this->bFirstLoopDone = true;		// first round of check done
     	this->pra->enable_processing(); // enable rule processing  this->bProcessRules = true;
@@ -484,7 +487,7 @@ boolean APDuino::disableRuleProcessing() {
 boolean APDuino::reconfigure() {
 	boolean retcode = false;
 	// todo log this when enabled log levels ("\nRECONREQ...\n");
-	APDDebugLog::log(APDUINO_MSG_RECONF,NULL);
+	APDDebugLog::log(APDUINO_LOG_RECONF,NULL);
   delay(100);
 
   // put APDWeb in maintenance mode to PREVENT ACCESS TO sensors, controls, rules
@@ -716,7 +719,7 @@ boolean APDuino::start_logging(unsigned long ulLoggingFreq) {
   if (bAPDuinoConfigured && APDStorage::ready() ) {    // check storage status
   	// APDLogWriter::enable_sync_writes(); // enabled by begin(), just to remember enable/disable after/before SD ops
   	if (APDStorage::rotate_file("APDLOG.TXT", MAX_LOG_SIZE) >= 0) {
-  			APDDebugLog::log(APDUINO_MSG_SDLOGOK,NULL);
+  			APDDebugLog::log(APDUINO_LOG_SDLOGOK,NULL);
       } else {
       	APDDebugLog::log(APDUINO_ERROR_LOGUNKNOWN,NULL);
       }

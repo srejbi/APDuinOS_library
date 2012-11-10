@@ -31,10 +31,15 @@ int APDDebugLog::lostmessages = 0;
 void (*APDDebugLog::plogwriterfunc)(const char *) = NULL;
 void (*APDDebugLog::plogwriterfunc_off)(const char *) = NULL;
 boolean APDDebugLog::logtoserial = true;			// todo this should be set in APDuino Config
+int APDDebugLog::loglevel = LOG_LEVEL_MESSAGES;			// default log level is messages
+int APDDebugLog::logfilter = NAN;			// reserved for future use
+
 
 // prints the debug code & message to Serial
-void APDDebugLog::serialprint(unsigned int code, const char *psz_logstring){
-	SerPrintP("0x"); Serial.print(code,HEX);
+void APDDebugLog::serialprint(uint16_t code, const char *psz_logstring){
+	char szcode[7] ="";
+	sprintf_P(szcode,PSTR("0x%04x"),code);
+	Serial.print(szcode);
 	if (psz_logstring) {
 		SerPrintP(":");
 		Serial.print(psz_logstring);
@@ -42,24 +47,23 @@ void APDDebugLog::serialprint(unsigned int code, const char *psz_logstring){
 	SerPrintP("-");
 }
 
-LOGITEM *APDDebugLog::makelog(unsigned int code, const char *psz_logstring){
+LOGITEM *APDDebugLog::makelog(uint16_t code, const char *psz_logstring){
 	if (logtoserial) serialprint(code,psz_logstring);
-
 	LOGITEM *newlog = (LOGITEM*)malloc(sizeof(LOGITEM));
 	if (newlog) {
-		SerPrintP(">");
+		if (logtoserial) SerPrintP(">");
 		unsigned long tsmillis = millis();
-		newlog->psz_logstring = (char *)malloc(sizeof(char)*((psz_logstring ? strlen(psz_logstring) : 0)+LOG_MESSAGE_OVERHEAD));
+		newlog->psz_logstring = (char *)malloc(sizeof(char)*((psz_logstring ? strlen(psz_logstring) : 0)+LOG_MESSAGE_HEADER_LEN));
 		newlog->pnext = NULL;
 
 		if (newlog->psz_logstring) {
-			SerPrintP("@");
+			if (logtoserial) SerPrintP("@");
 			sprintf_P(newlog->psz_logstring,PSTR("%lu:0x%04x"), tsmillis, code);
 			if (psz_logstring) {
 				strcat_P(newlog->psz_logstring, PSTR(":"));
 				strcat(newlog->psz_logstring, psz_logstring);
 			}
-			Serial.print(newlog->psz_logstring); SerPrintP("...");
+			if (logtoserial) { Serial.print(newlog->psz_logstring); SerPrintP("..."); }
 		} else {
 			serialprint(APDUINO_ERROR_LOGMSGOUTOFMEM,NULL);
 		}
@@ -75,37 +79,42 @@ LOGITEM *APDDebugLog::makelog(unsigned int code, const char *psz_logstring){
 // logs will be buffered up
 // reenable writerfunc when not working with the SD anymore
 // and flush messages via APDLogWriter (or via pushing a new log message)
-void APDDebugLog::log(unsigned int code, const char *psz_logstring) {
-	if (freeMemory() < MIN_FREE_RAM && bufstart) {		// if low RAM, then FIFO flush
-		flush_first();
-		lostmessages++;				// keep track of dropped messages
-	}
-	// push to log buffer (will dump to serial)
-  LOGITEM *newlog = makelog(code,psz_logstring);
- 	if (newlog) {
-		//delay(3);
-
-		if (bufstart) {
-			bufend->pnext = newlog;
-			bufend = newlog;
-		} else {
-			bufstart = newlog;
-			bufend = newlog;
+void APDDebugLog::log(uint16_t code, const char *psz_logstring) {
+	if (highByte(code) >= (loglevel*16)) {		// if msg exceeds log level
+		if (freeMemory() < MIN_FREE_RAM && bufstart) {		// if low RAM, then FIFO flush
+			flush_first();
+			lostmessages++;				// keep track of dropped messages
+			if (logtoserial) SerPrintP("x");
 		}
+		// push to log buffer (will dump to serial)
+		LOGITEM *newlog = makelog(code,psz_logstring);
+		if (newlog) {
+			//delay(3);
 
-		// TODO auto-dump to log file if a writer is present
-		if (plogwriterfunc) {
-			while (bufstart) {
-				SerPrintP(">");
-				shifttowriter(plogwriterfunc);
-				//delay(1);
+			if (bufstart) {
+				bufend->pnext = newlog;
+				bufend = newlog;
+			} else {
+				bufstart = newlog;
+				bufend = newlog;
 			}
-		} else SerPrintP("+");
-	} else {
-		serialprint(APDUINO_ERROR_LOGITEMOUTOFMEM,NULL);
-		// todo toss out messages and retry
-	}
-	Serial.println();
+
+			// TODO auto-dump to log file if a writer is present
+			if (plogwriterfunc) {
+				while (bufstart) {
+					if (logtoserial) SerPrintP(">");
+					shifttowriter(plogwriterfunc);
+					//delay(1);
+				}
+			} else {
+				if (logtoserial) SerPrintP("+");
+			}
+		} else {
+			serialprint(APDUINO_ERROR_LOGITEMOUTOFMEM,NULL);
+			// todo toss out messages and retry
+		}
+		if (logtoserial) Serial.println();
+	}	// end if loglevel
 }
 
 // check if there is anything in the log buffer
@@ -154,7 +163,7 @@ void APDDebugLog::setlogwriter(void (*writerfunc)(const char *)) {
 //
 void APDDebugLog::shifttowriter(void (*writerfunc)(const char *)) {
 	if (lostmessages) {
-		char sztmp[11] = "";
+		char sztmp[12] = "";
 		LOGITEM *newlog = makelog(APDUINO_WARN_MESSAGESFLUSHED,itoa(lostmessages,sztmp,10));
 		if (writerfunc) (*(writerfunc))((const char *)bufstart->psz_logstring);
 		free(newlog->psz_logstring);		// just clean up newlog string

@@ -27,7 +27,6 @@
 #define APDUINO_H_
 
 #include <Arduino.h>
-#include "apd_version.h"
 #include "apd_utils.h"
 #include <stdlib.h>
 #include <avr/pgmspace.h>
@@ -40,7 +39,6 @@
 
 class APDuino {
 public:
-	APDuino();
 	APDuino(long baudrate);
 	virtual ~APDuino();
 
