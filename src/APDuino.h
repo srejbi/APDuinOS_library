@@ -21,6 +21,47 @@
  *
  *  Created on: Mar 26, 2012
  *      Author: George Schreiber
+ *
+ * APDuino -- microcontroller-based Automation for People using Arduino(TM) (http://arduino.cc)
+ * a tribute to the concept of open-source hardware and a (yet) conceptual implementation
+ * of bringing the power of microcontrollers to everyday people.
+ *
+ * 8bits -- reminds me some criticism having received during the development process,
+ * probably surprisingly to some, real geeks (with respect) opted for less processing power
+ * (fortunately not less bits :D), anyway, the project got that comment a few times,
+ * that using Arduino Mega 2560 for sensor monitoring and automation is an overkill.
+ *
+ * While I don't agree and don't neccessarily debate that either; -- more input needed :)
+ *  - what do you want to monitor? - how? - what other features? - are you willing to reprogram? etc.
+ *
+ * On the other hand, this project is not about one automation system, it aims to provide
+ * help to build *any* automation system a hobbyist may come up with.
+ * So we need a little more ram there for code...
+ * Also for "driver" implementations (talking to specific hardware types)...
+ * We might need a little more ram for the instances the user wants to define...
+ * And for standard services most of them will want: logging, online logging, HTTP GUI&API
+ *
+ * Definitely will try to keep as much stuff & processing as possible on servers
+ * and SD card, use processing power of browsers by JavaScript, etc. but still,
+ * I think Arduino Mega 2560 is just a fine choice after all.
+ *
+ * It also has enough pins to hook up an LCD to flash for your neighbours... ;-)
+ *
+ * Follow the APDuino Project at http://apduino.org
+ *
+ * Or check out the APDuino Project group on LinkedIn:
+ * http://www.linkedin.com/groups/APDuino-Project-4655324/about
+ *
+ * Finally, if you are just using APDuino and checked out sources out of curiosity,
+ * then all I can say: Enjoy! :)
+ *
+ * -- and check out http://apduino.org/projects/apduinos/wiki/Credits_and_Copyrights
+ *    for the list of people that have worked big time (as well) so that this humble
+ *    integration was made possible
+ *
+ * Thanks!
+ * -- Gy.
+ *
  */
 
 #ifndef APDUINO_H_
@@ -93,7 +134,7 @@ public:
 	char *pstr_Name;
 
 
-	boolean bProcessRules;                   // rules on/off
+	//boolean bProcessRules;                   // rules on/off
 	boolean toggleRuleProcessing();
 	boolean enableRuleProcessing();
 	boolean disableRuleProcessing();
@@ -110,9 +151,9 @@ public:
 	Metro *pIdleMetro;
 	Metro *pLoggingMetro;
 
-	APDSensorArray *psa;                    // will replace APD Sensors pointer
-	APDControlArray *pca;                    // will replace APD Controls pointer
-	APDRuleArray *pra;                    // will replace APD Rules pointer
+	APDSensorArray *psa;                  // Sensor Array
+	APDControlArray *pca;                 // Control Array
+	APDRuleArray *pra;                    // Rule Array
 
 	volatile int iNextSensor;            // next sensor to poll, point to first one (if any)
 
@@ -125,7 +166,6 @@ private:
 	float bfIdle;                     // idle bit as float (it will be passed to rules as a sensor value)
 	void init(long baudrate);
 
-	//APDStorage *setupStorage(int iSS, int iChip, int iSpeed);
 	bool setup_storage(int iSS, int iChip, int iSpeed);
 	boolean init_app();
 

@@ -104,12 +104,15 @@ void APDWeb::initBlank()
 	uCCount = 0;
 	pwwwcp = NULL;           // pointer to the actual web client processor (depending on what request was made, a reader can be assigned to process server resp. if we care)
 	bWebClient = false;
-	pAPDSensors = NULL;
+	/*pAPDSensors = NULL;
 	pAPDControls = NULL;
 	pAPDRules = NULL;
 	iSensorCount = -1;
 	iControlCount = -1;
-	iRuleCount = -1;
+	iRuleCount = -1;*/
+	this->psa = NULL;
+	this->pca = NULL;
+	this->pra = NULL;
 
 	memset(szAPDUINO_API_KEY, 0, sizeof(szAPDUINO_API_KEY) );
 	memset(szCOSM_API_KEY, 0, sizeof(szCOSM_API_KEY) );
@@ -382,19 +385,22 @@ boolean APDWeb::setupThingSpeakLogging() {
 }
 
 
-void APDWeb::startWebServer(APDSensor **pSensors, int iSensorCount, APDControl **pControls, int iControlCount, APDRule **pRules, int iRuleCount)
-{
+//void APDWeb::startWebServer(APDSensor **pSensors, int iSensorCount, APDControl **pControls, int iControlCount, APDRule **pRules, int iRuleCount)
+void APDWeb::startWebServer(const APDSensorArray *pSA, const APDControlArray *pCA, const APDRuleArray *pRA) {
 	// todo log this
 	if (pwwwserver == NULL) {
 		// todo log this
 		pwwwserver = new EthernetServer(net.wwwPort);
 		pwwwserver->begin();
-		this->pAPDSensors = pSensors;
+		/*this->pAPDSensors = pSensors;
 		this->pAPDControls = pControls;
 		this->pAPDRules = pRules;
 		this->iSensorCount = iSensorCount;
 		this->iControlCount = iControlCount;
-		this->iRuleCount = iRuleCount;
+		this->iRuleCount = iRuleCount;*/
+		this->psa = (APDSensorArray *)pSA;
+		this->pca = (APDControlArray *)pCA;
+		this->pra = (APDRuleArray *)pRA;
 
 		this->setup_webclient();
 	} else {
@@ -403,61 +409,15 @@ void APDWeb::startWebServer(APDSensor **pSensors, int iSensorCount, APDControl *
 }
 
 // start a html page using image, css resources on the APDuino Online server
-// todo this code should be deprecated (or minimized) in favor of the JSON data + www server solution
+// todo this code is being deprecated (1st minimized) in favor of the JSON data + www server solution
 void APDWeb::web_startpage(EthernetClient *pClient, char *title,int refresh=0) {
-	if (*pClient) {
-		WCPrintP(pClient,"<html>\n");
-		WCPrintP(pClient,"<head><title>APDUINO - "); pClient->print(title); WCPrintP(pClient,"</title>\n");
-		WCPrintP(pClient,"<link rel=\"shortcut icon\" type=\"image/x-icon\" href=\"http://"); pClient->print(apduino_server_name); WCPrintP(pClient,"/images/apduino_icon.png\"/>\n");
-		if (refresh) {
-			WCPrintP(pClient,"<meta http-equiv=\"refresh\" content=\""); pClient->print(refresh); WCPrintP(pClient,"\"/>\n");
-		}
-		WCPrintP(pClient,"<link href=\"http://"); pClient->print(apduino_server_name); WCPrintP(pClient,"/devices/"); WCPrintP(pClient,"stylesheet?api_key=");  pClient->print(szAPDUINO_API_KEY); WCPrintP(pClient,"\" media=\"screen\" rel=\"stylesheet\" type=\"text/css\" />");
-		WCPrintP(pClient,"</head>\n"
-											"<body>\n");
-		//WCPrintP(pClient,"<img src=\"http://"); pClient->print(apduino_server_name); WCPrintP(pClient,"/images/apduino.png\" />"
-		WCPrintP(pClient,"<div class=\"apduino_header\">"
-										"<h1>APDuino: "); pClient->print(title);
-		WCPrintP(pClient,"</h1><hr/>\n");
-
-		WCPrintP(pClient,"<div class=\"stats\">"
-											"<sub>Version: "); pClient->print(APDUINO_VERSION); WCPrintP(pClient,"."); pClient->print(APDUINO_BUILD); WCPrintP(pClient,"</sub>");
-		WCPrintP(pClient,"<table>\n<tr><th>TimeStamp</th><th>Uptime</th><th>WWW Client</th><th>Net Fails</th><th>Net Restarts</th><th>RAM Free</th><th>SD Free</th></tr>\n");
-
-		WCPrintP(pClient,"<tr><td>");
-		char tbuf[20] = "";
-		strcpy_P(tbuf,PSTR("1970/01/01 00:00:00"));        // string used for timestamp
-		pClient->print(APDTime::nowS(tbuf));
-		WCPrintP(pClient,"</td><td>");
-		pClient->print(APDTime::get_uptime_str(tbuf));
-		WCPrintP(pClient,"</td><td>");
-		pClient->print(dtostrf(uCCount,5,0,tbuf));
-		WCPrintP(pClient,"</td><td>");
-		pClient->print(dtostrf(iFailureCount,5,0,tbuf));
-		WCPrintP(pClient,"</td><td>");
-		pClient->print(dtostrf(iRestartCount,5,0,tbuf));
-		WCPrintP(pClient,"</td><td>");
-		pClient->print(dtostrf(freeMemory(),5,0,tbuf));
-		WCPrintP(pClient,"</td><td>");
-		pClient->print(dtostrf(APDStorage::get_sd_free_cluster_bytes(),10,0,tbuf));
-		WCPrintP(pClient,"</td></tr>\n"
-									"</table></div>\n");
-
-		WCPrintP(pClient,"<hr/>"
-										"</div>");		// closing header
-
-		WCPrintP(pClient,"<div id=\"sidebar\"><ul>");							// sidebar
-		if (!(operational_state & OPSTATE_PAUSED)) { WCPrintP(pClient,"<li><a href=\"/\">Status</a></li>"); }
-		WCPrintP(pClient,"<li><a href=\"/sd/\">Files</a></li>");
-		if (!(operational_state & OPSTATE_PAUSED)) { WCPrintP(pClient,"<li><a href=\"/reconfigure\">Reload Config</a></li>");  }
-		if (!(operational_state & OPSTATE_PAUSED)) { WCPrintP(pClient,"<li><a href=\"/reset\">Soft Reset</a></li>");  }
-		WCPrintP(pClient,"<li><a href=\"/claimdevice\">Claim Device</a></li>");
-		WCPrintP(pClient,"</ul></div>");												  // closing sidebar
-
-	} else {
-		char sztmp[24]="";
-		APDDebugLog::log(APDUINO_ERROR_WWWNOCLIENT,strcpy_P(sztmp,PSTR("web_startpage")));
+	WCPrintP(pClient,"<html>\n");
+	WCPrintP(pClient,"<head><title>APDUINO - "); pClient->print(title); WCPrintP(pClient,"</title>\n");
+	WCPrintP(pClient,"<link rel=\"shortcut icon\" type=\"image/x-icon\" href=\"http://"); pClient->print(apduino_server_name); WCPrintP(pClient,"/images/apduino_icon.png\"/>\n");
+	if (refresh) {
+		WCPrintP(pClient,"<meta http-equiv=\"refresh\" content=\""); pClient->print(refresh); WCPrintP(pClient,"\"/>\n");
 	}
+	WCPrintP(pClient,"</head><body>\n");
 }
 
 // closes the HTML body and html tags
@@ -472,6 +432,7 @@ void APDWeb::web_endpage(EthernetClient *pClient) {
 
 // generates HTML code with a table line for status
 void APDWeb::webstatus_table_item(EthernetClient *pClient, const char *group, const int index, const char *name, const char *value, const char *logged ) {
+/*	deprecating
 	WCPrintP(pClient,"<tr class=\"line\">"
 										"<td class=\""); pClient->print(group); WCPrintP(pClient,"_name\">");
 	pClient->print(index); WCPrintP(pClient," : ");
@@ -483,12 +444,14 @@ void APDWeb::webstatus_table_item(EthernetClient *pClient, const char *group, co
 		WCPrintP(pClient," class=\""); pClient->print(group); WCPrintP(pClient,"-chart\" id=\"chart-"); pClient->print(name); WCPrintP(pClient,"\"");
 	}
 	WCPrintP(pClient,"></td></tr>");		// end row
+	*/
 }
 
 
 // list sensors on a html page
 // todo deprecate this in favor of the JSON api
 void APDWeb::web_status(EthernetClient *pClient) {
+	/* deprecating
 	if (*pClient) {
 		char tbuf[20] ="";
 		WCPrintP(pClient,"<div class=\"status\">"
@@ -496,8 +459,8 @@ void APDWeb::web_status(EthernetClient *pClient) {
 				"<table id=\"sensors_table\">");
 
 		//    SerPrintP("Output sensors...");
-		for (int i = 0; i < iSensorCount; i++) {
-			webstatus_table_item(pClient, "sensor", i, pAPDSensors[i]->config.label, pAPDSensors[i]->get_value_str(tbuf), (pAPDSensors[i]->config.sensor_log ? "1" : "0") );
+		for (int i = 0; i < this->psa->iSensorCount; i++) {
+			webstatus_table_item(pClient, "sensor", i, this->psa->pAPDSensors[i]->config.label, this->psa->pAPDSensors[i]->get_value_str(tbuf), (this->psa->pAPDSensors[i]->config.sensor_log ? "1" : "0") );
 		}
 
 		WCPrintP(pClient,"</table>"
@@ -506,8 +469,8 @@ void APDWeb::web_status(EthernetClient *pClient) {
 		WCPrintP(pClient,"<div class=\"controls\"><h1>Controls</h1>"
 				"<table id=\"controls_table\">");
 
-		for (int i = 0; i < iControlCount; i++) {
-			webstatus_table_item(pClient, "control", i, pAPDControls[i]->config.label, pAPDControls[i]->get_value_str(tbuf), (pAPDControls[i]->config.control_log ? "1" : "0") );
+		for (int i = 0; i < this->pca->iControlCount; i++) {
+			webstatus_table_item(pClient, "control", i, this->pca->pAPDControls[i]->config.label, this->pca->pAPDControls[i]->get_value_str(tbuf), (this->pca->pAPDControls[i]->config.control_log ? "1" : "0") );
 		}
 
 		WCPrintP(pClient,"</table>"
@@ -517,8 +480,8 @@ void APDWeb::web_status(EthernetClient *pClient) {
 		WCPrintP(pClient,"<div class=\"rules\"><h1>Rules</h1>"
 				"<table id=\"rules_table\">");
 
-		for (int i = 0; i < iRuleCount; i++) {
-			webstatus_table_item(pClient, "rule", i, pAPDRules[i]->config.label, pAPDRules[i]->get_value_str(tbuf), "0" );
+		for (int i = 0; i < this->pra->iRuleCount; i++) {
+			webstatus_table_item(pClient, "rule", i, this->pra->pAPDRules[i]->config.label, this->pra->pAPDRules[i]->get_value_str(tbuf), "0" );
 		}
 
 		WCPrintP(pClient,"</table>"
@@ -531,6 +494,7 @@ void APDWeb::web_status(EthernetClient *pClient) {
 		char sztmp[24] = "";
 		APDDebugLog::log(APDUINO_ERROR_WWWNOCLIENT,strcpy_P(sztmp,PSTR("web_status")));
 	}
+	*/
 }
 
 
@@ -697,14 +661,15 @@ void APDWeb::loop_server()
 		char clientline[RCV_BUFSIZ];
 		clientline[RCV_BUFSIZ-1]=0;      // a terminating 0 at the last position
 		int index = 0;
+		char *pc = clientline;		// pc is a temporary char pointer that may be used  \
+																	for finding places in the actual (execution point) \
+																	do not use it across the routine! do not write to the address pointed
 
 		EthernetClient client = pwwwserver->available();
 		if (client) {
 			uCCount++;                              // one more web client
 			boolean current_line_is_blank = true;      // an http request ends with a blank line
-
 			index = 0;                              // reset the input buffer
-
 			while (client.connected()) {            // as long as the client is connected
 				if (client.available()) {             // if there are bytes to read
 					char c = client.read();                // read 1 character
@@ -713,8 +678,14 @@ void APDWeb::loop_server()
 						clientline[index] = c;
 						index++;
 
-						if (index >= RCV_BUFSIZ)           // are we too big for the buffer? start tossing out data
-							index = RCV_BUFSIZ -1;
+						// are we too big for the buffer? shift left
+						if (index >= RCV_BUFSIZ-1) {
+							// low ram footprint chosen for shifting (vs. high footprint memcpy)
+							for (int i=0; i < RCV_BUFSIZ-1; i++) clientline[i] = clientline[i+1];
+							index = RCV_BUFSIZ -2;
+						}
+						//if (index >= RCV_BUFSIZ)           // are we too big for the buffer? start tossing out data
+						//	index = RCV_BUFSIZ -1;							// todo this is bs, SHIFT char array is the proper solution (both result data loss, but this even corrupts the data integrity)
 						continue;           							 // continue to read more data!
 					}
 					// got a \n or \r new line, which means the string is done
@@ -730,13 +701,11 @@ void APDWeb::loop_server()
 						}
 					} else if (strstr_P(clientline, PSTR("GET /sd/")) != 0) {		// no space after the /, so a filename is expected to follow
 						if (basicAuthorize(&client)) {
-							char *filename;
-
-							filename = clientline + 8; // pointer to after "GET /sd/"
+							char *file_path;		// will point to file path
+							file_path = clientline + 8; // pointer to string following "GET /sd/"
 							(strstr_P(clientline, PSTR(" HTTP")))[0] = 0;       // terminate string just before proto string
 							// todo log this
-							if (!ServeFile(client,filename)) web_notfound(&client);		// server file or 404 if serving returns false
-						//} else if ((strstr_P(clientline, PSTR("GET /status")) != 0 && strlen(clientline) == 11) ||		// /status
+							if (!ServeFile(client,file_path)) web_notfound(&client);		// server file or 404 if serving returns false
 						}
 					} else if (strstr_P(clientline, PSTR("GET /status ")) != 0 ||		// /status
 							(strstr_P(clientline, PSTR("GET / ")) != 0 && !ServeFile(client,"/index.htm"))) {				// also for www root
@@ -745,7 +714,7 @@ void APDWeb::loop_server()
 								// todo log this when enabled log levels
 								header(&client,CONTENT_TYPE_HTML);
 								web_startpage(&client,"status",20);
-								web_status(&client);
+								WCPrintP(&client,"you should get an index.html. this will be deprecated.");
 								web_endpage(&client);
 								// todo log this when enabled log levels
 							} else {
@@ -755,26 +724,38 @@ void APDWeb::loop_server()
 					} else if (strstr_P(clientline,PSTR("GET /reconfigure")) != 0) {
 						if (basicAuthorize(&client)) {
 							header(&client,CONTENT_TYPE_HTML);
-							web_startpage(&client,"reconfigure",0);
-							WCPrintP(&client,"Request acknowledged.");
-							web_endpage(&client);
+							// deprecating fancy responses, just an ok status
+							//web_startpage(&client,"reconfigure",0);
+							//WCPrintP(&client,"OK.");		// TODO
+							//web_endpage(&client);
 							this->dispatched_requests = DREQ_RECONF;		// APDuino should read it
 						}
 					} else if (strstr_P(clientline,PSTR("GET /reset")) != 0) {
 						if (basicAuthorize(&client)) {
 							header(&client,CONTENT_TYPE_HTML);
-							web_startpage(&client,"reset",0);
-							WCPrintP(&client,"Request acknowledged.");
-							web_endpage(&client);
+							// deprecating fancy responses, just an ok status
+							//web_startpage(&client,"reset",0);
+							//WCPrintP(&client,"OK.");		// TODO return all stuff as JSON + codes ref. apd_msg_codes.h - javascript can easily make the conversion
+							//web_endpage(&client);
 							this->dispatched_requests = DREQ_RESET;		// APDuino should read it
 						}
-					} else if (strstr_P(clientline,PSTR("GET /reloadrules")) != 0) {
+					}  else if (strstr_P(clientline,PSTR("GET /reloadrules")) != 0) {
 						if (basicAuthorize(&client)) {
 							header(&client,CONTENT_TYPE_HTML);
-							web_startpage(&client,"reload_rules",0);
-							WCPrintP(&client,"Request acknowledged.");
-							web_endpage(&client);
+							// deprecating fancy responses, just an ok status
+							//web_startpage(&client,"reload_rules",0);
+							//WCPrintP(&client,"OK.");
+							//web_endpage(&client);
 							this->dispatched_requests = DREQ_RELOADRULES;		// APDuino should read it
+						}
+					} else if (strstr_P(clientline,PSTR("GET /diags")) != 0) {
+						if (basicAuthorize(&client)) {
+							header(&client,CONTENT_TYPE_HTML);
+							// deprecating fancy responses, just an ok status
+							//web_startpage(&client,"diagnostics",0);
+							//WCPrintP(&client,"OK.");
+							//web_endpage(&client);
+							this->dispatched_requests = DREQ_DIAGNOSTICS;		// APDuino should read it
 						}
 					} else if (strstr_P(clientline, PSTR("GET /status.json")) != 0) {
 						if (basicAuthorize(&client)) {
@@ -802,6 +783,12 @@ void APDWeb::loop_server()
 								web_maintenance(&client);
 							}
 						}
+					} else if (strstr_P(clientline, PSTR("POST /controls/")) != 0) {
+						procControlReq(&client,clientline);		// shoult take care of all, including auth.
+					} else if (strstr_P(clientline, PSTR("POST /sensors/")) != 0) {
+						procSensorReq(&client,clientline);		// shoult take care of all, including auth.
+					} else if ((pc = strstr_P(clientline, PSTR("POST /systems/"))) != 0) {
+						procSystemReq(&client,clientline);		// -- " " --
 					} else {
 						// todo log this when enabled log levels
 						// everything else is a 404
@@ -811,7 +798,7 @@ void APDWeb::loop_server()
 							} else {
 								// 'GET / ' served already
 							}
-						}
+						}	// authorized
 					}
 					break;
 				}
@@ -890,12 +877,132 @@ void APDWeb::sendAuthRequest(EthernetClient *pclient, const char *szrealm) {
 	delay(1);
 }
 
-void APDWeb::forwardToMarker(EthernetClient *pclient, char *szBuf, char *szMarker) {
+void APDWeb::procControlReq(EthernetClient *pclient, char *clientline) {
+	bool ok = false;
+	char *pc = strstr_P(clientline, PSTR("POST /controls/"));
+
+	pc+=15;				      //skip to post 'POST /control/'
+	int ic = atoi(pc);	// get the control id -> from pc
+	APDDebugLog::log(APDUINO_MSG_WWWCONTROLACCESS,clientline);
+	if (basicAuthorize(pclient)) {
+		// return OK if done, // resource not available if invalid,// busy if in automatic mode
+		//header(&client,CONTENT_TYPE_JSON);
+		if (ic >= 0 && ic <= this->pca->iControlCount) {
+				pc += 6; // skip "value="
+			if (pc = forwardToMarker(pclient,clientline,"value=")) {
+				int iv = NAN;
+				if (pc = forwardToMarker(pclient,clientline,"&")) {
+					*pc = 0; // terminate string at '&'
+				}
+				iv = atoi(clientline);			// now we should have an integer /no error handling/
+				if (iv != NAN && (!this->pra->bProcRules ||											// if rule proc inactive,
+					(forwardToMarker(pclient,clientline,"force=")&&pclient->read()=='1'))) {// or force=1 flag given
+					// we can write the control
+					ok = true;
+					APDControl::apd_action_set_value(this->pca->find_control_by_index(ic), iv);
+
+					// log action
+					char sztmp[16]="";
+					sprintf_P(sztmp,PSTR("%d,%d"),ic,iv);
+					APDDebugLog::log(APDUINO_MSG_WWWCONTROLACCESS,sztmp);
+					// done
+				} else {
+					// should not write, todo log with levels enabled
+				}
+			}
+		}
+		if (ok) {
+			header(pclient,CONTENT_TYPE_HTML);
+			json_status(pclient);
+		} else {
+			web_notfound(pclient);
+		}
+	} // authorized
+}
+
+
+void APDWeb::procSensorReq(EthernetClient *pclient, char *clientline) {
+	bool ok = false;
+	char *pc = strstr_P(clientline, PSTR("POST /sensors/"));
+	pc+=14;				      	//skip to post 'POST /sensors/'
+	int ic = atoi(pc);		// get the control id -> from pc
+	APDDebugLog::log(APDUINO_MSG_WWWSENSORACCESS,clientline);
+	if (basicAuthorize(pclient)) {
+		// return OK if done, // resource not available if invalid,// busy if in automatic mode
+		if (ic >= 0 && ic <= this->psa->iSensorCount) {
+			APDDebugLog::log(APDUINO_MSG_WWWSENSORACCESS,NULL);
+			if (pc = forwardToMarker(pclient,clientline,"cmd=")) {
+				APDDebugLog::log(APDUINO_MSG_WWWSENSORACCESS,pc);
+				if (pc = forwardToMarker(pclient,clientline,"&")) {
+					*pc = 0; // terminate string at '&'
+				}
+				char *pcmd = clientline;			// now we should have an integer /no error handling/
+				APDDebugLog::log(APDUINO_MSG_WWWSENSORACCESS,pcmd);
+				if (strlen(pcmd) && (!this->pra->bProcRules ||											// if rule proc inactive,
+					(forwardToMarker(pclient,clientline,"force=")&&pclient->read()=='1'))) {// or force=1 flag given
+					// we "can" write the sensor
+					ok = true;
+					this->psa->pAPDSensors[ic]->command(pcmd);
+					// log action
+					char sztmp[16]="";
+					sprintf_P(sztmp,PSTR("s%d:%s."),ic,pcmd);
+					APDDebugLog::log(APDUINO_MSG_WWWSENSORACCESS,sztmp);		// TODO change code
+					// done
+				} else {
+					APDDebugLog::log(APDUINO_MSG_WWWSENSORACCESS,"RBLOCK");	// should not write, todo log with levels enabled
+				}
+			}
+		}
+		if (ok) {
+			header(pclient,CONTENT_TYPE_HTML);
+			json_status(pclient);
+		} else {
+			web_notfound(pclient);
+		}
+	} // authorized
+}
+
+void APDWeb::procSystemReq(EthernetClient *pclient, char *clientline) {
+	char *pc = strstr_P(clientline, PSTR("POST /systems/"));
+	pc+=14;								    //skip to post 'POST /systems/'
+	int ic = atoi(pc);				// get the system ctrl id
+	APDDebugLog::log(APDUINO_MSG_WWWSYSACCESS,clientline);
+	if (basicAuthorize(pclient)) {
+		// todo imlement a simple set value on system controls
+		APDDebugLog::log(APDUINO_MSG_WWWSYSACCESS,clientline);
+		switch (ic) {
+		case 8:					// for now a hardcoded 8 represents rule processing
+										// and we simply toggle, whatever the value param is
+			this->pra->toggle_processing();				// for now just toggle processing
+			header(pclient,CONTENT_TYPE_JSON);		// let's just send status ok and nothing
+			// todo write back the curr. val?
+			json_status(pclient);
+		default:
+			web_notfound(pclient);	// simply not found for now
+		}
+		// todo later implement force option to inject value into control even if there is a running ruleset
+	}	// authorized
+}
+
+
+// forwardToMarker
+// reads the input stream of the client into a character buffer (should be big enough)
+// szBuf - the character buffer (allocated by caller) that will be used to hold data read
+// todo: pass size of buffer to allow shifting, now a size >=RCV_BUFSIZ is ASSUMED
+// stops when marker found or when no more data from client
+// returns ptr to marker if found, NULL otherwise
+// Note: szBuf will hold whatever was read last. if NULL was returned, szBuf should contain
+// the last portion of data from the client, up to RCV_BUFSIZ chars (well: tail)
+// if marker found, than usually (unless marker was immediately read) marker at the end
+// and some data (up to RCV_BUFSIZ-marker length chars) that preceded the marker
+// (just in case... one should work with the return value, normally.)
+char *APDWeb::forwardToMarker(EthernetClient *pclient, char *szBuf, char *szMarker) {
 	//SerPrintP("FORWARD TO"); Serial.print(szMarker);
+	char *pszmark = NULL;			// will return a ptr to the marker if found
 	szBuf[0]=0;
 	int index = 0;
 	// forward to the data portion
-	while (pclient->available() && strstr(szBuf, szMarker)==0) {
+	while (pclient->available() && ((pszmark = strstr(szBuf, szMarker))==0)) {
 		char c = pclient->read();
 		szBuf[index] = c;
 		index++;
@@ -906,17 +1013,15 @@ void APDWeb::forwardToMarker(EthernetClient *pclient, char *szBuf, char *szMarke
 			index = RCV_BUFSIZ -2;
 		}
 #ifdef DEBUG
-		// continue to read more data!
-		Serial.print(c);
-		pclient->print(c);
+		Serial.print(c);		// dump to serial
+		pclient->print(c);	// dump to ethernet
+		// DO NOT EVER SEND (A BUNCH OF) INDIVIDUAL CHARS TO APDDebug::log!
 #endif
-		//continue;
 	}
 #ifdef DEBUG
 	SerPrintP("szBuf:"); Serial.println(szBuf);
 #endif
 }
-
 
 void APDWeb::processProvisioningRequest(EthernetClient *pclient, boolean brespond) {
 	uint8_t uProv=0;
@@ -945,13 +1050,10 @@ void APDWeb::processProvisioningRequest(EthernetClient *pclient, boolean brespon
 
 		while (pclient->available()) {
 
-			forwardToMarker(pclient,clientline,"destination=");		// TODO destination should go to PROGMEM
-
-			if (strstr_P(clientline, PSTR("destination="))) {
-				forwardToMarker(pclient,clientline,"&");				// reads to the next param (joined with &)
-
-				if (strstr(clientline, "&")) {
-					*strstr(clientline, "&") = 0;
+			if(forwardToMarker(pclient,clientline,"destination=")) {		// TODO use PROGMEM
+				if (forwardToMarker(pclient,clientline,"&")) {
+					// clientline should now contain the value following 'destination='
+					*strstr(clientline, "&") = 0;			// 'cut' string
 #ifdef DEBUG
 					if (brespond) {
 						WCPrintP(pclient, "<hr/><b>DESTINATION</b>=\n");
@@ -963,11 +1065,8 @@ void APDWeb::processProvisioningRequest(EthernetClient *pclient, boolean brespon
 				}
 
 				// forward to the data portion
-				forwardToMarker(pclient,clientline,"data=");
-
-				if (strstr(clientline, "data=")) {
+				if (forwardToMarker(pclient,clientline,"data=")) {
 					// todo log this ("Processing Data") when enabled log levels
-
 					// remove temp file if exists
 					if (APDStorage::p_sd->exists(provfile)) APDStorage::p_sd->remove(provfile);
 					SdFile tempFile(provfile, O_WRITE | O_CREAT );
@@ -1256,12 +1355,11 @@ void APDWeb::loop() {
       Ethernet.maintain();
   }*/
 	if (pwwwclient != NULL) {
-		//SerPrintP("WCLOOP\n");
 		loop_webclient();
 		if (!pwwwclient->connected()) {           // if no web client is active
 			if ((this->operational_state & OPSTATE_STARTED) && !(this->operational_state & OPSTATE_PAUSED)) {
 				iBusyCounter = 0;
-				if (this->iSensorCount>0 || this->iControlCount>0) {	// TODO fix this quick hack to see properly if there is anything to log
+				if (this->psa->iSensorCount>0 || this->pca->iControlCount>0) {	// TODO fix this quick hack to see properly if there is anything to log
 					if (this->pmetro != NULL && this->pmetro->check()) {
 						this->log_to_ApduinoOnline();
 						this->pmetro->reset();
@@ -1274,8 +1372,6 @@ void APDWeb::loop() {
 						this->tsmetro->reset();
 					}
 				}
-			} else {
-				// SerPrintP("Paused.");
 			}
 		} else {
 			//SerPrintP("WC busy...\n");
@@ -1333,12 +1429,12 @@ void APDWeb::get_lastlog_string(char *szLogBuf) {
 	pcLog+=8;
 	strcpy(pcLog,ts);
 	pcLog+=strlen(ts);
-	for (int i=0;i<iSensorCount;i++) {
-		if (pAPDSensors[i]->config.sensor_log && pAPDSensors[i]->fvalue != NAN) {          // if sensor to be logged
-			//strcpy(pcLog,pAPDSensors[i]->config.label);
-			//pcLog+=strlen(pAPDSensors[i]->config.label);
+	for (int i=0;i<this->psa->iSensorCount;i++) {
+		if (this->psa->pAPDSensors[i]->config.sensor_log && this->psa->pAPDSensors[i]->fvalue != NAN) {          // if sensor to be logged
+			//strcpy(pcLog,this->psa->pAPDSensors[i]->config.label);
+			//pcLog+=strlen(this->psa->pAPDSensors[i]->config.label);
 			*pcLog=','; pcLog++;// *pcLog = '\0';
-			pAPDSensors[i]->get_value_str(dataString);
+			this->psa->pAPDSensors[i]->get_value_str(dataString);
 			strcpy(pcLog,dataString);
 			pcLog+=strlen(dataString);
 		}
@@ -1352,23 +1448,23 @@ void APDWeb::get_cosmlog_string(char *szLogBuf) {
 	char *pcLog = szLogBuf;
 	char dataString[16]="";                // make a string for assembling the data to log:
 
-	for (int i=0;i<iSensorCount;i++) {
-		if (pAPDSensors[i]->config.sensor_log && pAPDSensors[i]->fvalue != NAN) {          // if sensor to be logged & has a valid value (todo use sensor states)
-			strcpy(pcLog,pAPDSensors[i]->config.label);
-			pcLog+=strlen(pAPDSensors[i]->config.label);
+	for (int i=0;i<this->psa->iSensorCount;i++) {
+		if (this->psa->pAPDSensors[i]->config.sensor_log && this->psa->pAPDSensors[i]->fvalue != NAN) {          // if sensor to be logged & has a valid value (todo use sensor states)
+			strcpy(pcLog,this->psa->pAPDSensors[i]->config.label);
+			pcLog+=strlen(this->psa->pAPDSensors[i]->config.label);
 			*pcLog=','; pcLog++;// *pcLog = '\0';
-			pAPDSensors[i]->get_value_str(dataString);
+			this->psa->pAPDSensors[i]->get_value_str(dataString);
 			strcpy(pcLog,dataString);
 			pcLog+=strlen(dataString);
 			*pcLog='\n'; pcLog++;
 		}
 	}
-	for (int i=0;i<iControlCount;i++) {
-		if (pAPDControls[i]->config.control_log) {          // if control to be logged
-			strcpy(pcLog,pAPDControls[i]->config.label);
-			pcLog+=strlen(pAPDControls[i]->config.label);
+	for (int i=0;i<this->pca->iControlCount;i++) {
+		if (this->pca->pAPDControls[i]->config.control_log) {          // if control to be logged
+			strcpy(pcLog,this->pca->pAPDControls[i]->config.label);
+			pcLog+=strlen(this->pca->pAPDControls[i]->config.label);
 			*pcLog=','; pcLog++;// *pcLog = '\0';
-			pAPDControls[i]->get_value_str(dataString);
+			this->pca->pAPDControls[i]->get_value_str(dataString);
 			strcpy(pcLog,dataString);
 			pcLog+=strlen(dataString);
 			*pcLog='\n'; pcLog++;
@@ -1383,8 +1479,8 @@ void APDWeb::get_thingspeaklog_string(char *szLogBuf) {
 	char *pcLog = szLogBuf;
 	char dataString[16]="";                // make a string for assembling the data to log:
 
-	for (int i=0;i<iSensorCount;i++) {
-		if (pAPDSensors[i]->config.sensor_log && pAPDSensors[i]->fvalue != NAN) {          // if sensor to be logged
+	for (int i=0;i<this->psa->iSensorCount;i++) {
+		if (this->psa->pAPDSensors[i]->config.sensor_log && this->psa->pAPDSensors[i]->fvalue != NAN) {          // if sensor to be logged
 			char szFN[16]="";
 			uSens++;
 			sprintf_P(szFN,PSTR("field%d"),uSens);
@@ -1395,7 +1491,7 @@ void APDWeb::get_thingspeaklog_string(char *szLogBuf) {
 			strcpy(pcLog,szFN);
 		  pcLog+=strlen(szFN);
 			*pcLog='='; pcLog++;// *pcLog = '\0';
-			pAPDSensors[i]->get_value_str(dataString);
+			this->psa->pAPDSensors[i]->get_value_str(dataString);
 			strcpy(pcLog,dataString);
 			pcLog+=strlen(dataString);
 			//*pcLog='\n'; pcLog++;
@@ -1742,23 +1838,24 @@ void APDWeb::json_status(EthernetClient *pClient) {
 		json_array_item(pClient,5,"netrestarts",dtostrf(iRestartCount,5,0,tbuf),"0");
 		json_array_item(pClient,6,"ramfree",dtostrf(freeMemory(),5,0,tbuf),"0");
 		json_array_item(pClient,7,"sdfree",dtostrf(APDStorage::get_sd_free_cluster_bytes(),16,0,tbuf),"0");
+		json_array_item(pClient,8,"auto",dtostrf(this->pra->bProcRules,16,0,tbuf),"0");
 		WCPrintP(pClient,"] },\n");  // End System data Array, System
 
 		WCPrintP(pClient,"{ \"name\": \"sensors\", \"data\": [");
-		for (int i = 0; i < iSensorCount; i++) {
-			json_array_item(pClient,i,pAPDSensors[i]->config.label,pAPDSensors[i]->get_value_str(tbuf),((pAPDSensors[i]->config.sensor_log) ? "1" : "0"));
+		for (int i = 0; i < this->psa->iSensorCount; i++) {
+			json_array_item(pClient,i,this->psa->pAPDSensors[i]->config.label,this->psa->pAPDSensors[i]->get_value_str(tbuf),((this->psa->pAPDSensors[i]->config.sensor_log) ? "1" : "0"));
 		}
 		WCPrintP(pClient,"] },\n");  // End Sensors data Array, Sensors
 
 		WCPrintP(pClient,"{ \"name\": \"controls\", \"data\": [");
-		for (int i = 0; i < iControlCount; i++) {
-			json_array_item(pClient,i,pAPDControls[i]->config.label,pAPDControls[i]->get_value_str(tbuf),((pAPDControls[i]->config.control_log) ? "1" : "0"));
+		for (int i = 0; i < this->pca->iControlCount; i++) {
+			json_array_item(pClient,i,this->pca->pAPDControls[i]->config.label,this->pca->pAPDControls[i]->get_value_str(tbuf),((this->pca->pAPDControls[i]->config.control_log) ? "1" : "0"));
 		}
 		WCPrintP(pClient,"] },\n");		// End Controls data Array, Controls
 
 		WCPrintP(pClient,"{ \"name\": \"rules\", \"data\": [");
-		for (int i = 0; i < iRuleCount; i++) {
-			json_array_item(pClient,i,pAPDRules[i]->config.label,pAPDRules[i]->get_value_str(tbuf),"0");
+		for (int i = 0; i < this->pra->iRuleCount; i++) {
+			json_array_item(pClient,i,this->pra->pAPDRules[i]->config.label,this->pra->pAPDRules[i]->get_value_str(tbuf),"0");
 		}
 		WCPrintP(pClient,"] }\n");	// End Rules data Array, Rules
 

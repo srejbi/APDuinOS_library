@@ -32,21 +32,20 @@
 
 #include <Arduino.h>
 #include <SPI.h>                 // SPI comms
-//#include <Base64.h>
+//#include <Base64.h>						// no need as using pre-encoding by javascript (maybe later, for some other purpose)
 #include <Ethernet.h>            // ethernet shield
 #include <MemoryFree.h>
 #include <Metro.h>
-#include "APDSensor.h"
-#include "APDControl.h"
-#include "APDRule.h"
+#include "APDSensorArray.h"
+#include "APDControlArray.h"
+#include "APDRuleArray.h"
 #include "APDStorage.h"
 #include "APDSerial.h"
 #include "APDTime.h"
 #include "APDLogWriter.h"
 
-const char USERAGENT[] = "APDuinOS";
+const char USERAGENT[] = "APDuinOS";						// todo incorp. version
 const char WEBLOG_URI[]="/devices/lastlog";      // see apduino online specs.
-//const char COSMLOG_URI[]="";                 // implement Patchube logging later as an option
 
 #define APDUINO_SERVER PSTR("apduino.com")
 #define APDUINO_SERVER_IP (byte []){204,12,228,115}
@@ -73,6 +72,7 @@ const char WEBLOG_URI[]="/devices/lastlog";      // see apduino online specs.
 #define DREQ_RECONF				1
 #define DREQ_RESET				2
 #define DREQ_RELOADRULES  3
+#define DREQ_DIAGNOSTICS  4
 
 // content types (used in header function)
 #define CONTENT_TYPE_TEXT				0
@@ -102,8 +102,8 @@ public:
   virtual
   ~APDWeb();
 
-  //void startWebServer(APDSensor **pSensors, int iSensorCount, APDControl **pControls, int iControlCount, APDRule **pRules, int iRuleCount, APDStorage *pAPDStorage);
-  void startWebServer(APDSensor **pSensors, int iSensorCount, APDControl **pControls, int iControlCount, APDRule **pRules, int iRuleCount);
+  //void startWebServer(APDSensor **pSensors, int iSensorCount, APDControl **pControls, int iControlCount, APDRule **pRules, int iRuleCount);
+  void startWebServer(const APDSensorArray *pSA, const APDControlArray *pCA, const APDRuleArray *pRA);
   void loop();
 
   bool pause_service();
@@ -127,19 +127,13 @@ private:
   EthernetClient *pwwwclient;
   unsigned int uCCount;                     // count WWW clients
   void (*pwwwcp)(APDWeb *);                 // pointer to the actual web client processor (depending on what request was made, a reader can be assigned to process server resp. if we care)
-  boolean bWebClient;												// if a client is known to be connected
 
+  boolean bWebClient;												// if a client is known to be connected
   boolean bEthConfigured;                   // will be true if we have an eth connection (DHCP or static)
 
-  //APDTime *pAPDTime;                        // timekeeping; will receive ptr. no need to free
-  //APDStorage *pAPDStorage;									// pointer to storage
-
-  APDSensor **pAPDSensors;
-  int iSensorCount;
-  APDControl **pAPDControls;
-  int iControlCount;
-  APDRule **pAPDRules;
-  int iRuleCount;
+  APDSensorArray *psa;
+  APDControlArray *pca;
+  APDRuleArray *pra;
 
   boolean bDHCP;                          // if DHCP was used
 
@@ -151,26 +145,26 @@ private:
   unsigned long wcb_millis;						  // measure the time from the 1st busy loop
 
   // online loggers
-  byte apduino_server_ip[4];           // apduino.localhost -- test server on LAN
-  char apduino_server_name[32];        // test APDuino server on LAN
-  unsigned int apduino_server_port;    // standard HTTP port
-  unsigned long apduino_logging_freq;		// how often to log (ms)
+  byte apduino_server_ip[4];           			// apduino.localhost -- test server on LAN
+  char apduino_server_name[32];        			// test APDuino server on LAN
+  unsigned int apduino_server_port;    			// standard HTTP port
+  unsigned long apduino_logging_freq;				// how often to log (ms)
 
-  byte cosm_server_ip[4];            // api.cosm.com 64.94.18.121
-  char cosm_server_name[32];         // api.cosm.com
-  unsigned int cosm_server_port;     // standard HTTP port
-  unsigned long cosm_feed_id;         // feed id
-  unsigned long cosm_logging_freq;    // logging freq
+  byte cosm_server_ip[4];           	 			// api.cosm.com 64.94.18.121
+  char cosm_server_name[32];         				// api.cosm.com
+  unsigned int cosm_server_port;     				// standard HTTP port
+unsigned long cosm_feed_id;         				// feed id
+  unsigned long cosm_logging_freq;    			// logging freq
 
-  byte thingspeak_server_ip[4];            // api.thingspeak.com  184.106.153.149
-  char thingspeak_server_name[32];         // api.thingspeak.com
-  unsigned int thingspeak_server_port;     // standard HTTP port
-  unsigned long thingspeak_logging_freq;    // logging freq
+  byte thingspeak_server_ip[4];            	// api.thingspeak.com  184.106.153.149
+  char thingspeak_server_name[32];         	// api.thingspeak.com
+  unsigned int thingspeak_server_port;     	// standard HTTP port
+  unsigned long thingspeak_logging_freq;   	// logging freq
 
   // API keys
   char szAPDUINO_API_KEY[65];               // the api key for apduino online
-  char szCOSM_API_KEY[65];               // the api key for Pachube
-  char szTHINGSPEAK_API_KEY[65];               // the api key for ThingSpeak
+  char szCOSM_API_KEY[65];               		// the api key for Pachube
+  char szTHINGSPEAK_API_KEY[65];            // the api key for ThingSpeak
 
   // Metros for loggers
   Metro *pmetro;                         // weblog metro
@@ -186,8 +180,11 @@ private:
 
   // www-processing helpers
   boolean basicAuthorize(EthernetClient *pclient);
+  void procControlReq(EthernetClient *pclient, char *clientline);
+  void procSensorReq(EthernetClient *pclient, char *clientline);
+  void procSystemReq(EthernetClient *pclient, char *clientline);
   void sendAuthRequest(EthernetClient *pclient, const char *szrealm);
-  void forwardToMarker(EthernetClient *pclient, char *szBuf, char *szMarker);
+  char *forwardToMarker(EthernetClient *pclient, char *szBuf, char *szMarker);
 
   // log string generators
   void get_lastlog_string(char *szLogBuf);

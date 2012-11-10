@@ -75,7 +75,7 @@ public:
 	static void apd_action_next_screen(APDControl *pAPDControl, int iReserved);
 	static void apd_action_sync_ntp(APDControl *pAPDControl, int iReserved);
 	static void apd_action_noop(APDControl *pAPDControl, int iReserved);
-	static void apd_write_control_pin(APDControl *pAPDControl, int iValue);
+	static void apd_type_spec_control_write(APDControl *pAPDControl, int iValue);
 	static void apd_action_set_on(APDControl *pAPDControl, int iValue);
 	static void apd_action_set_off(APDControl *pAPDControl, int iValue);
 	static void apd_action_switch(APDControl *pAPDControl, int iValue);

@@ -33,6 +33,7 @@ APDRuleArray::APDRuleArray()
   this->iRuleCount=0;
   this->bfIdle=NULL;
   this->lastCronMin = -1;
+  this->bProcRules = false;
   this->nextrunmillis = millis() + 1000;
 }
 
@@ -44,12 +45,21 @@ APDRuleArray::APDRuleArray(APDSensorArray *psa, APDControlArray *pca, float *bfi
   this->iRuleCount=0;
   this->bfIdle=bfidle;
   this->lastCronMin = -1;
+  this->bProcRules = false;
   this->nextrunmillis = millis() + 1000;
+  if (this->pSA) {
+  	this->pSA->pRA = this;
+  	this->pSA->pbProcRules = &(this->bProcRules);
+  }
 }
 
 APDRuleArray::~APDRuleArray()
 {
-  // TODO Auto-generated destructor stub
+	if (this->pSA && this->pSA->pRA == this) {	// if sensor array references rule array (normally)
+		this->pSA->pRA = NULL;		// remove references
+		this->pSA->pbProcRules = NULL;
+	}
+	this->bProcRules = false;
   if (this->pAPDRules != NULL) {
       for (int i=0; i<this->iRuleCount; i++) {
           if (this->pAPDRules[i] != NULL) {
@@ -61,7 +71,6 @@ APDRuleArray::~APDRuleArray()
       this->pAPDRules = NULL;
       this->iRuleCount=0;
   }
-  //delete(this->pcronMetro);
 }
 
 
@@ -91,27 +100,20 @@ void APDRuleArray::new_rule_parser(void *pRA, int iline, char *psz) {
       (rdc.pszconditions),
       (rdc.pszcron));
 
-if (iscand<13) {
-	// we have failed to scan some params; candidates: conditions, pszcron
-	// check if cron is in conditions (if config did not '_' empty strings)
-	if (rdc.pszconditions[0]=='@') {		// if conditions start with '@' then '_' for empty conditions was omitted
-		strcpy(rdc.pszcron, (const char *)(&rdc.pszconditions[1]));		// copy conditions after '@' to cron
-		rdc.pszconditions[0]=0; // blank conditions
+	if (iscand<13) {
+		// we have failed to scan some params; candidates: conditions, pszcron
+		// check if cron is in conditions (if config did not '_' empty strings)
+		if (rdc.pszconditions[0]=='@') {		// if conditions start with '@' then '_' for empty conditions was omitted
+			strcpy(rdc.pszcron, (const char *)(&rdc.pszconditions[1]));		// copy conditions after '@' to cron
+			rdc.pszconditions[0]=0; // blank conditions
+		}
 	}
-}
-  	// nice config should set '_' for empty strings
-  	if (rdc.pszconditions[0]=='_'&&rdc.pszconditions[0]==0) rdc.pszconditions[0]=0;
-    if (rdc.pszcron[0]=='_'&&rdc.pszcron[0]==0) rdc.pszcron[0]=0;
 
-    // todo log this when enabled log levels (iscand) (" parameters parsed\n") (rdc.label) " -> cron:") (rdc.pszcron) (", conditions:'") (rdc.pszconditions) ("'\n");
-// todo remove deprecated code
-    // }
+	// nice config should set '_' for empty strings
+	if (rdc.pszconditions[0]=='_'&&rdc.pszconditions[0]==0) rdc.pszconditions[0]=0;
+  if (rdc.pszcron[0]=='_'&&rdc.pszcron[0]==0) rdc.pszcron[0]=0;
 
-//  if (strlen(rdc.pszcron)) {		// TODO think about this; it will probably never be empty as it's followed by conditions(possibly). we likely have to enclose this...
-//  	for (int i=0; i<strlen(rdc.pszcron); i++) {
-//  		if (rdc.pszcron[i] == '_') rdc.pszcron[i] = ' ';		// "split" on underscores
-//  	}
-//  }
+  // todo log this when enabled log levels (iscand) (" parameters parsed\n") (rdc.label) " -> cron:") (rdc.pszcron) (", conditions:'") (rdc.pszconditions) ("'\n");
 
   ((APDRuleArray*)pRA)->pAPDRules[iline] = new APDRule(&rdc,((APDRuleArray*)pRA)->pSA, ((APDRuleArray*)pRA)->pCA);
   free(rdc.pszcron);						// no longer need the string buffer
@@ -166,32 +168,6 @@ int APDRuleArray::load_rules() {
             // mapping Control Array
             // todo log this when enabled log levels SerPrintP("Setting control idx"); Serial.print(pAPDRules[i]->config.rule_control_idx, DEC); SerPrintP("for rule "); Serial.println(i,DEC);
             pAPDRules[i]->pcontrol = (this->pCA->pAPDControls[pAPDRules[i]->config.rule_control_idx]);
-
-            // todo remove relocated (deprecated here) code block
-            //custom functions (only on true branch)
-  //          if (pAPDRules[i]->config.rule_true_action == APDRA_VIRT_CUST_FUNC) {
-  //              // THIS HAS TO BE SET ON THE APDUINO LEVEL
-  //              SerPrintP("Setting a custom function");
-  //              if (pAPDRules[i]->pcontrol != NULL && pAPDRules[i]->pcontrol->config.control_type == SOFTWARE_CONTROL ) {
-  //                  if (pAPDRules[i]->pcontrol->config.control_pin < 10 && pAPDRules[i]->pcontrol->config.control_pin > 0) {
-  //                      if (this->pcustfuncs[pAPDRules[i]->pcontrol->config.control_pin] != NULL) {
-  //                          // assign the custom function pointer to the control; take control's PIN as IDX
-  ////#ifdef DEBUG
-  //                          SerPrintP("SETTING CUSTOM FUCTION IDX "); Serial.print(pAPDRules[i]->pcontrol->config.control_pin);
-  //                          SerPrintP(" FOR CONTROL IDX"); Serial.print(pAPDRules[i]->config.rule_control_idx);
-  //                          SerPrintP(".\n");
-  ////#endif
-  //                          (pAPDRules[i]->pcontrol)->pcustfunc = this->pcustfuncs[pAPDRules[i]->pcontrol->config.control_pin];      // cvalue must hold the cfunc idx
-  //                      } else {
-  //                          SerPrintP("NO CUSTOM FUNCTION PTR AT SPECIFIED INDEX. DID YOU ADD CUSTOM FUNC?");
-  //                      }
-  //                  } else {
-  //                      SerPrintP("INVALID CUSTOM FUNCTION INDEX")
-  //                  }
-  //              } else {
-  //                  SerPrintP("INVALID CONTROL.")
-  //              }
-  //          }
           }       // end enumerating rules
           // todo remove invalid log message
           APDDebugLog::log(APDUINO_MSG_RULESPOSTPROCESSED,NULL);
@@ -260,9 +236,8 @@ void APDRuleArray::evaluate_sensor_rules(void *pra, APDSensor *pSensor) {
 				if (pRA->pAPDRules[i]->config.rf_sensor_idx == iSensorIndex || pRA->pAPDRules[i]->config.ra_sensor_idx == iSensorIndex) {    // if rule is bound to the sensor either as trigger or input value for control
 					if (pRA->pAPDRules[i]->config.rule_definition != RF_SCHEDULED) pRA->pAPDRules[i]->evaluate_rule();	// evaluate but scheduled rules
 				}  // evaluate if rule is for sensor
-			}  // loop rules
-		}
-		//this->pRuleMetro->reset();    // restart the metro
+			}  // for  loop rules
+		}	// if
 	} else {
 		// do nothing on NAN
 	}
@@ -283,18 +258,40 @@ void APDRuleArray::evaluate_rules_by_sensor_index(int iSensorIndex) {
   }
 }
 
-
+// process items in Rule Array
+// call this function regularly from APDuino's loop (if system is configured)
+// in order to inject decision making and action taking into the program flow
 void APDRuleArray::loop_rules() {
-	// todo log this when enabled log levels SerPrintP("loop rules\n");
-	evaluate_scheduled_rules();
-  for (int i=0; i < this->iRuleCount; i++) {      // loop through rules
-  	if (this->pAPDRules[i]->config.rule_definition != RF_SCHEDULED) {	// except scheduled rules
-  		this->pAPDRules[i]->evaluate_rule();
-  	}
-  }
+	// todo log this ONLY when enabled log levels SerPrintP("loop rules\n");
+	if (this->bProcRules) {				// if rule processing is enabled
+		evaluate_scheduled_rules();											// first check if any scheduled jobs to process
 
-  //pRuleMetro->reset();    // restart the metro
+		for (int i=0; i < this->iRuleCount; i++) {      // then loop through regular rules
+			if (this->pAPDRules[i]->config.rule_definition != RF_SCHEDULED) {	// except scheduled rules
+				this->pAPDRules[i]->evaluate_rule();
+			}
+		}		// for
+	} // if
+}	// loop_rules
+
+// switch rule processing
+boolean APDRuleArray::toggle_processing() {
+  bProcRules = (this->pAPDRules != NULL ? !bProcRules : false);
+  return bProcRules;
 }
+
+// enable processing
+boolean APDRuleArray::enable_processing() {
+  bProcRules = true;
+  return bProcRules;
+}
+
+// disable processing
+boolean APDRuleArray::disable_processing() {
+  bProcRules = false;
+  return bProcRules;
+}
+
 
 // sets the nextrunmillis to the millis remaining till the next minute 0s
 void APDRuleArray::adjust_next_cron_minute() {
@@ -308,6 +305,7 @@ void APDRuleArray::adjust_next_cron_minute() {
 // as this should be done 1x a minute, nextrunmillis is checked against millis
 // (and readjusted to next run if we did a check)
 void APDRuleArray::evaluate_scheduled_rules() {
+	// evaluate_scheduled_rules is *assuming* that the caller checked if rule processing is enabled...
 	if (this->nextrunmillis < millis()) {		// check if time's up
 		if (this->lastCronMin == -1) {					// if cron has been just started, we evaluate next 00:00
 			adjust_next_cron_minute();								// push nextrunmillis to next 0s

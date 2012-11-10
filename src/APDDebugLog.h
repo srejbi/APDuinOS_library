@@ -19,6 +19,8 @@
  *
  * APDDebugLog.cpp
  *
+ * TODO: add callback for display updates (allowing rerouting log to a hard display)
+ *
  *  Created on: Oct 15, 2012
  *      Author: George Schreiber
  */

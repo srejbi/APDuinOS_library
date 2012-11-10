@@ -64,7 +64,7 @@ public:
   virtual
   ~OneWireSensor();
 
-  void diagnostics();
+  void diagnose();
 
 private:
   void verify_address();

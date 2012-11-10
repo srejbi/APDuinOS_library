@@ -25,21 +25,18 @@
 
 #include "APDSensorArray.h"
 
-
-
 APDSensorArray::APDSensorArray()
 {
-  // TODO Auto-generated constructor stub
   pAPDSensors = NULL;
   iSensorCount = 0;
   iNextSensor = 0;
   pfruleeval = NULL;
   pRA = NULL;
+  pbProcRules = NULL;
 }
 
 APDSensorArray::~APDSensorArray()
 {
-  // TODO Auto-generated destructor stub
   if (this->pAPDSensors != NULL) {
       for (int i=0; i<this->iSensorCount; i++) {
           if (this->pAPDSensors[i] != NULL) {
@@ -83,7 +80,6 @@ int APDSensorArray::dumpToFile(char * pszFileName) {
   	// TODO log this ("E305 ('"); Serial.print(pszFileName); SerPrintP("')\n");			// E305 - error opening dump file
   }
 }
-
 
 
 
@@ -298,14 +294,16 @@ char *APDSensorArray::valueS(int iSensorIdx, char *szvalue) {
 }
 
 
-void APDSensorArray::pollSensors(boolean bProcessRules) {
-	// todo log this when enabled log levels ("POLL APD SENSOR..."); Serial.print(iNextSensor); \
+//void APDSensorArray::pollSensors(boolean bProcessRules) {
+void APDSensorArray::pollSensors() {
+	// todo log this ONLY when enabled log levels ("POLL APD SENSOR..."); Serial.print(iNextSensor); \
   Serial.print(iSensorCount); SerPrintP(" SENSORS IN TOTAL, CHECKING "); Serial.println(iNextSensor);
 
 	if (iNextSensor >= 0 && iNextSensor < this->iSensorCount && pAPDSensors != NULL)                // check if we have sensors
     if (pAPDSensors[iNextSensor]->check()) {
-    	if (bProcessRules == true && this->pfruleeval != NULL && this->pRA != NULL) {
-    		// todo log this when enabled log levels ("early eval");
+    	// todo make rule array static will allow easier checking the rule processing state, remove the hack then
+    	if (this->pRA != NULL && this->pbProcRules != NULL && *(this->pbProcRules) && this->pfruleeval != NULL) {
+    		// todo log this ONLY when enabled log levels ("early eval");
     	  if (pAPDSensors[iNextSensor]->fvalue != NAN) {	// todo add an option to run rules on NAN?
     	  	(*this->pfruleeval)(this->pRA,pAPDSensors[iNextSensor]);
     	  } else {
@@ -320,6 +318,6 @@ void APDSensorArray::pollSensors(boolean bProcessRules) {
 
 void APDSensorArray::diagnostics() {
   for (int i=0; i<this->iSensorCount; i++) {
-      this->pAPDSensors[i]->diagnostics();
+      this->pAPDSensors[i]->diagnose();
   }
 }

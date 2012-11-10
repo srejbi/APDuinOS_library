@@ -41,17 +41,18 @@
 #define ATLAS_BAUD_RATE		38400			// AtlasScientific hw. baud rate
 
 struct ASENC {	// AtlasScientific serial connection encapsulation struct
-	void *serialport;	// holds a pointer to a Serial or to a SoftwareSerial
+	void *serialport;	// holds a pointer to a HardwareSerial or to a SoftwareSerial
     byte S0;			// channel select pin 1 (!=0 if softser)
     byte S1;			// channel select pin 2 (!=0 if softser)
     byte E;				// enable pin (!= 0 if softser & not hw pulled low)
+    int csel;			// the currently selected channel -> do not re-set if selected because selection sends \r
 
 	byte state;			// state of the port
 };
 
 struct ASSENS {
   ASENC *asenc;
-  int channel;		// -1 - unused, 0-3 YN
+  int channel;		// NAN - unused, 0-3 YN
   float value;
 };
 
@@ -63,11 +64,11 @@ public:
 
 	boolean perform_check();
 
-	void diagnostics();
-	void calibrate();
+	void command(const void *cmd);
 
 private:
-	bool is_soft_serial();
+	bool is_hw_serial();
+	bool is_demux();
 	void openChannel(short channel);
 	void openChannel();
 	bool selectHWSerial();

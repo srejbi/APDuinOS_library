@@ -88,6 +88,9 @@ struct SDCONF {
 #define STATE_WAIT          0x02             // 0010
 #define STATE_READ          0x04             // 0100
 #define STATE_WRITE         0x08             // 1000
+#define STATE_CALIB         0x0C             // 1100
+#define STATE_CALIB_BUSY    0x0D             // 1101
+#define STATE_CALIB_DONE    0x0E             // 1110
 
 // concept:
 // for sensors that need a longer delay between cmd and read, they should adjust their metro
@@ -116,26 +119,31 @@ public:
 
   boolean check();
 
-  virtual boolean perform_check();
-  virtual char *get_value_str(char *strdest);
-  virtual void diagnostics();
+  virtual boolean perform_check();  // stub for sensor read/check function: "drivers" should implement it according to the hardware they're talking to
+  virtual void diagnose();					// stub for sensor diagnostics function: "drivers" should/or not (report 'not implemented/supported'), implement diagnostics
+  virtual void calibrate();					// stub for sensor calibration function: "drivers" should/or not (report 'not implemented/supported'), implement calibration /using sensor state!/
+  virtual void command(const void *cmd);   // stub for sensor command function: "drivers" should/or not (report 'not implemented/supported'), implement arbitrary commands for managing sensor hardware (AtlasScientific)
 
-  int iValue();
-  float fValue();
+  virtual char *get_value_str(char *strdest);	// todo why is this virtual?... standardize value types and implement type specific string conversion here...
 
+  int iValue();					// return value as integer
+  float fValue();				// return value as float
+
+  // todo review in one of the next releases throughout the project
 //private:
 protected:
   float fvalue;
-  Metro *pmetro;   // we will metro according to config.sensor_freq ...
-  byte _state;      // sensor state
+  Metro *pmetro;   			// we will metro according to config.sensor_freq ...
+  byte _state;      		// sensor state
 
   void initSensor();
   void initSensor(SDCONF *sdc);
 
-  friend class APDSensorArray;
-  friend class APDRule;
-  friend class APDRuleArray;
-  friend class APDWeb;
+  friend class APDSensorArray;					// Sensor Array needs access to private stuff
+  friend class APDRule;									// Rules need access to currently private stuff
+  friend class APDRuleArray;						// also the Rule Array, to perform evaluations
+  friend class APDuino;                 // main APDuinOS class
+  friend class APDWeb;									// HTTP interface
 };
 
 

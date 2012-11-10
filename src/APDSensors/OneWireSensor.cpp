@@ -299,7 +299,7 @@ float OneWireSensor::ow_temperature_read()
 }
 
 
-void OneWireSensor::diagnostics()
+void OneWireSensor::diagnose()
 {
 	char sztmp[64] = "";
 	sprintf_P(sztmp, PSTR("'%s' (pin %d)"), this->config.label, this->config.sensor_pin);		// construct debug log string part

@@ -59,7 +59,8 @@ private:
   void **pcustfuncs;
 
   friend class APDRuleArray;
-  friend class APDuino;                 // FIXME don't want direct acces
+  friend class APDuino;                 // main APDuinOS class
+  friend class APDWeb;									// HTTP interface
 };
 
 #endif /* APDCONTROLARRAY_H_ */

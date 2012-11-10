@@ -60,7 +60,8 @@ public:
 
   static void new_sensor_parser(void *pSA, int iline, char *psz);
   int loadSensors();
-  void pollSensors(boolean bProcessRules);
+  //void pollSensors(boolean bProcessRules);
+  void pollSensors();
   void diagnostics();
 
   int count();
@@ -69,8 +70,10 @@ public:
 
 private:
   int iNextSensor;
+
   void (*pfruleeval)(void *,APDSensor *);        // rule_array as void ptr, value
   void *pRA;														// pointer to rule array
+  boolean *pbProcRules;									// pointer to the rule array exec state (will be set by rule array)
 
   friend class APDRuleArray;
 };

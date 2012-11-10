@@ -56,7 +56,7 @@ public:
   boolean perform_check();
   virtual
   ~BMPSensor();
-  void diagnostics();
+  void diagnose();
 
 private:
   float read_pressure();

@@ -55,18 +55,25 @@ public:
   void loop_rules();
   void evaluate_scheduled_rules();
 
+  boolean toggle_processing();
+  boolean enable_processing();
+  boolean disable_processing();
+
 private:
   void adjust_next_cron_minute();
 
   APDSensorArray *pSA;
   APDControlArray *pCA;
   APDRule** pAPDRules;
-  int iRuleCount;
+  boolean bProcRules;							// controls if rule processing is on/off
+  int iRuleCount;									// array item counter
   float *bfIdle;
   unsigned long nextrunmillis;
   int lastCronMin;
-  friend class APDuino;         //FIXME if needed
+
   friend class APDSensorArray;
+  friend class APDuino;                 // main APDuinOS class
+  friend class APDWeb;									// HTTP interface
 };
 
 

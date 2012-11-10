@@ -42,28 +42,20 @@ APDControl::APDControl(CDCONF *cdc, APDControl *preusablecontrol) {
   // allocate ram for the control object/struct, as needed - depending on the type
   switch (this->config.control_type) {
     case ANALOG_CONTROL:
-#ifdef VERBOSE
-      SerPrintP("ANALOG CONTROL");
-#endif
+    	// todo DEBUG when levels enabled SerPrintP("ANALOG CONTROL");
       apd_action_set_value(this,this->config.initial_value);
       break;
     case DIGITAL_CONTROL:
-#ifdef VERBOSE
-      SerPrintP("DIGITAL CONTROL");
-#endif
+    	// todo DEBUG when levels enabled  SerPrintP("DIGITAL CONTROL");
       apd_action_set_value(this,this->config.initial_value);
       break;
     case RCSWITCH_CONTROL:
-#ifdef VERBOSE
-    	SerPrintP("RCSWITCH CONTROL");
-#endif
+    	// todo DEBUG when levels enabled  	SerPrintP("RCSWITCH CONTROL");
       {
 				this->psharedclass = (void *)(new RCSwitch());
 				RCSwitch *pswitch = (RCSwitch *)this->psharedclass;
 				pswitch->enableTransmit(this->config.control_pin);
-#ifdef VERBOSE
-				SerPrintP("Enabled transmission.\n");
-#endif
+				// todo DEBUG when levels enabled SerPrintP("Enabled transmission.\n");
 				//TODO enable the optional parameters via the extra config
 			// Optional set pulse length.
 			// pswitch->setPulseLength(320);
@@ -76,9 +68,7 @@ APDControl::APDControl(CDCONF *cdc, APDControl *preusablecontrol) {
 			}
       break;
     case RCPLUG_CONTROL:
-#ifdef VERBOSE
-    	SerPrintP("RCPLUG CONTROL");
-#endif
+    	// todo DEBUG when levels enabled SerPrintP("RCPLUG CONTROL");
       {
     		if (preusablecontrol != NULL) {	// reuse existing RCSwitch
     			this->primary = false;
@@ -88,9 +78,8 @@ APDControl::APDControl(CDCONF *cdc, APDControl *preusablecontrol) {
     			this->psharedclass = (void *)(new RCSwitch());
 					RCSwitch *pswitch = (RCSwitch *)this->psharedclass;
 					pswitch->enableTransmit(this->config.control_pin);
-#ifdef VERBOSE
-					SerPrintP("Enabled transmission.\n");
-#endif
+					// todo DEBUG when levels enabled 	SerPrintP("Enabled transmission.\n");
+
 					//TODO enable the optional parameters via the extra config
 				// Optional set pulse length.
 				// pswitch->setPulseLength(320);
@@ -104,9 +93,7 @@ APDControl::APDControl(CDCONF *cdc, APDControl *preusablecontrol) {
 			}
       break;
     case SOFTWARE_CONTROL:
-#ifdef VERBOSE
-      SerPrintP("SOFTWARE CONTROL");
-#endif
+    	// todo DEBUG when levels enabled  SerPrintP("SOFTWARE CONTROL");
       //TODO implement
       //apd_action_set_value(this,this->config.initial_value);
       break;
@@ -132,9 +119,7 @@ APDControl::~APDControl() {
 			break;
 		default:
 			;
-#ifdef VERBOSE
-			SerPrintP("Who allocated pextra??!");
-#endif
+			// todo DEBUG when levels enabled ("Who allocated pextra??!");
 		}
 	}
 }
@@ -189,84 +174,58 @@ void APDControl::apd_action_noop(APDControl *pAPDControl, int iReserved) {
 }
 
 
-void APDControl::apd_write_control_pin(APDControl *pAPDControl, int iNVal) {
-#ifdef DEBUG
-  SerPrintP("WR CONTROL PIN ");
-#endif
+void APDControl::apd_type_spec_control_write(APDControl *pAPDControl, int iNVal) {
   int iPin = pAPDControl->config.control_pin;
-#ifdef DEBUG
-  Serial.print(iPin);
-#endif
+  // todo debug when levels enabled SerPrintP("WR CONTROL PIN "); Serial.print(iPin);, control type and so
   int iNewValue = -1;
   switch (pAPDControl->config.control_type) {
     case ANALOG_CONTROL:
-#ifdef DEBUG
-      SerPrintP(" ANAL ");
-#endif
       iNewValue = (iNVal<0 ? 0 : (iNVal>255 ? 255 : iNVal));
       if (iNewValue != pAPDControl->iValue) {
-#ifdef DEBUG
-        Serial.print(iNewValue,DEC);
-#endif
         analogWrite(iPin, iNewValue );
         pAPDControl->iValue = iNewValue;
       } else {
-#ifdef DEBUG
-        SerPrintP("NOCH-NOWR");
-#endif
+      	// not updating if value does not differ
       }
       break;
     case DIGITAL_CONTROL:
-#ifdef DEBUG
-      SerPrintP(" DIGI ");
-#endif
       iNewValue = iNVal > 0 ? HIGH : LOW;
       if (iNewValue != pAPDControl->iValue) {
-#ifdef DEBUG
-        Serial.print(iNewValue,DEC);
-#endif
         pinMode(iPin,OUTPUT);
         digitalWrite(iPin, iNewValue);
         pAPDControl->iValue = iNewValue;
       } else  {
-#ifdef DEBUG
-        SerPrintP("NOCH-NOWR");
-#endif
+      	// - " -
       }
       break;
+    case RCPLUG_CONTROL:		// relay this op. to rcplugs
+      apd_action_rc_plug_set_value(pAPDControl, iNVal);
+      break;
+      //todo add SERVO_CONTROL
+      //todo add PULSE_CONTROL
   }
-#ifdef DEBUG
-  SerPrintP(" DONE.\n");
-#endif
+  // todo debug "done" when debug levels enabled
 }
 
 
 void APDControl::apd_action_set_on(APDControl *pAPDControl, int iValue) {
-#ifdef DEBUG
-  SerPrintP("EXEC SET ON");
-#endif
-  apd_write_control_pin(pAPDControl, 255);
+	// todo DEBUG when levels enabled SerPrintP("EXEC SET ON");
+  apd_type_spec_control_write(pAPDControl, 255);
 }
 
 void APDControl::apd_action_set_off(APDControl *pAPDControl, int iValue) {
-#ifdef DEBUG
-  SerPrintP("EXEC SET OFF");
-#endif
-  apd_write_control_pin(pAPDControl, 0);
+ // todo DEBUG when levels SerPrintP("EXEC SET OFF");
+  apd_type_spec_control_write(pAPDControl, 0);
 }
 
 void APDControl::apd_action_switch(APDControl *pAPDControl, int iValue) {
-#ifdef DEBUG
-  SerPrintP("EXEC SET SWITCH");
-#endif
-  apd_write_control_pin(pAPDControl, ((int)!(((APDControl*)pAPDControl)->iValue) * 255));
+	// todo DEBUG when levels enabled SerPrintP("EXEC SET SWITCH");
+  apd_type_spec_control_write(pAPDControl, ((int)!(((APDControl*)pAPDControl)->iValue) * 255));
 }
 
 void APDControl::apd_action_set_value(APDControl *pAPDControl, int iValue) {
-#ifdef DEBUG
-  SerPrintP("EXEC SET VAL");
-#endif
-  apd_write_control_pin(pAPDControl, iValue);
+	// todo log when levels enabled  SerPrintP("EXEC SET VAL");
+  apd_type_spec_control_write(pAPDControl, iValue);
 }
 
 /** action that calls a custom function
@@ -277,21 +236,12 @@ void APDControl::apd_action_set_value(APDControl *pAPDControl, int iValue) {
  *
  */
 void APDControl::apd_action_custom_function(APDControl *pAPDControl, int iReserved) {
-#ifdef DEBUG
-  SerPrintP("CALLING CUSTOM FUNCTION\n");
-  delay(100);
-#endif
-
+	// todo DEBUG when levels enabled  SerPrintP("CALLING CUSTOM FUNCTION\n");
   if (pAPDControl != NULL && pAPDControl->pcustfunc != NULL && pAPDControl->config.control_type == SOFTWARE_CONTROL) {
-#ifdef DEBUG
-      SerPrintP("Calling custfunc @ "); Serial.print((unsigned int)(pAPDControl->pcustfunc),DEC);SerPrintP(".\n");
-      delay(300);
-#endif
+  	// todo DEBUG when levels enabled   SerPrintP("Calling custfunc @ "); Serial.print((unsigned int)(pAPDControl->pcustfunc),DEC);SerPrintP(".\n");  delay(300);
       (*(pAPDControl->pcustfunc))();            // call the custom function
   }
-#ifdef DEBUG
-  SerPrintP("CUSTFUNC DONE.");
-#endif
+  // todo DEBUG when levels enabled  SerPrintP("CUSTFUNC DONE.");
 }
 
 /** action that causes rc-switch control to send the on signal on a given channel
@@ -304,25 +254,16 @@ void APDControl::apd_action_rc_switch_on(APDControl *pAPDControl, int iControl) 
 	if (pAPDControl->config.control_type == RCSWITCH_CONTROL) {
 	  RCSwitch *pswitch = (RCSwitch *)pAPDControl->psharedclass;
 	  if (pswitch != NULL) {
-#ifdef VERBOSE
-	  SerPrintP("Switch On :");
-#endif
-	  uint8_t uac = highByte(iControl);
-	  uint8_t ucc = lowByte(iControl);
-	  pswitch->switchOn(uac,ucc);
-#ifdef VERBOSE
-	  Serial.print((int)uac, DEC); SerPrintP("-"); Serial.print((int)ucc,DEC); SerPrintP("\n");
-#endif
-
+	  	// todo DEBUG when levels enabled  SerPrintP("Switch On :");
+			uint8_t uac = highByte(iControl);
+			uint8_t ucc = lowByte(iControl);
+			pswitch->switchOn(uac,ucc);
+			// todo DEBUG when levels enabled Serial.print((int)uac, DEC); SerPrintP("-"); Serial.print((int)ucc,DEC); SerPrintP("\n");
 	  } else {
-#ifdef VERBOSE
-		  SerPrintP("Missing RC-Switch object!\n");
-#endif
+	  	// todo DEBUG when levels enabled  SerPrintP("Missing RC-Switch object!\n");
 	  }
 	} else {
-#ifdef VERBOSE
-		SerPrintP("Wrong control type.\n");
-#endif
+		// todo DEBUG when levels enabled SerPrintP("Wrong control type.\n");
 	}
 }
 
@@ -336,25 +277,17 @@ void APDControl::apd_action_rc_switch_off(APDControl *pAPDControl, int iControl)
 	if (pAPDControl->config.control_type == RCSWITCH_CONTROL) {
 	  RCSwitch *pswitch = (RCSwitch *)pAPDControl->psharedclass;
 	  if (pswitch != NULL) {
-#ifdef VERBOSE
-	  SerPrintP("Switch Off: ");
-#endif
-	  uint8_t uac = highByte(iControl);
-	  uint8_t ucc = lowByte(iControl);
+	  	// todo DEBUG when levels enabled SerPrintP("Switch Off: ");
+			uint8_t uac = highByte(iControl);
+			uint8_t ucc = lowByte(iControl);
 
-	  pswitch->switchOff(uac,ucc);
-#ifdef VERBOSE
-	  Serial.print((int)uac, DEC); SerPrintP("-"); Serial.print((int)ucc,DEC); SerPrintP("\n");
-#endif
-	  } else {
-#ifdef VERBOSE
-		  SerPrintP("Missing RC-Switch object!\n");
-#endif
+			pswitch->switchOff(uac,ucc);
+			// todo DEBUG when levels enabled Serial.print((int)uac, DEC); SerPrintP("-"); Serial.print((int)ucc,DEC); SerPrintP("\n");
+		} else {
+			// todo DEBUG when levels enabled SerPrintP("Missing RC-Switch object!\n");
 	  }
 	} else {
-#ifdef VERBOSE
-		SerPrintP("Wrong control type.\n");
-#endif
+		// todo DEBUG when levels enabled SerPrintP("Wrong control type.\n");
 	}
 }
 
@@ -370,40 +303,29 @@ void APDControl::apd_action_rc_plug_set_value(APDControl *pAPDControl, int iValu
 	  int iControl = 0;
 	  int iscand = sscanf(pAPDControl->config.extra_data,"%d",&iControl);
 	  if (iscand) {
-			uint8_t uac = highByte(iControl);
-			uint8_t ucc = lowByte(iControl);
+			uint8_t uac = highByte(iControl);	// extract rc-group id
+			uint8_t ucc = lowByte(iControl);	// extract rc-control id
 
 			if (pswitch != NULL) {
 
 				if (iValue == 0) {
-#ifdef VERBOSE
-					SerPrintP("Switch Off :");
-#endif
+					// todo VERBOSE with level SerPrintP("Switch Off :");
 					pswitch->switchOff(uac,ucc);
 				} else {
-#ifdef VERBOSE
-					SerPrintP("Switch On :");
-#endif
+					// todo VERBOSE with level SerPrintP("Switch On :");
 					pswitch->switchOn(uac,ucc);
 				}
+				// todo verbose with level Serial.println(pAPDControl->iValue);
 				pAPDControl->iValue = (int)(iValue != 0);
-#ifdef VERBOSE
-				Serial.print((int)uac, DEC); SerPrintP("-"); Serial.print((int)ucc,DEC); SerPrintP("\n");
-#endif
+				// todo VERBOSE	Serial.print((int)uac, DEC); SerPrintP("-"); Serial.print((int)ucc,DEC); SerPrintP("\n");
 			} else {
-#ifdef VERBOSE
-				SerPrintP("Missing RC-Switch object!\n");
-#endif
+				// todo VERBOSE	SerPrintP("Missing RC-Switch object!\n");
 			}
 	  } else {
-#ifdef VERBOSE
-	  	SerPrintP("Missing RC-Plug data!\n")
-#endif
+			// todo VERBOSE	SerPrintP("Missing RC-Plug data!\n")
 	  }
 	} else {
-#ifdef VERBOSE
-		SerPrintP("Wrong control type.\n");
-#endif
+		// todo VERBOSE SerPrintP("Wrong control type.\n");
 	}
 }
 

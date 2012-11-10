@@ -43,7 +43,7 @@ APDuino::APDuino() {
 
 APDuino::~APDuino() {
 	SdBaseFile::dateTimeCallbackCancel();			// cancel any callback might have been set for storage datetime
-  this->bProcessRules = false;
+  // todo remove: this->bProcessRules = false;
   free(this->pra);
   free(this->pca);
   free(this->psa);
@@ -85,7 +85,6 @@ void APDuino::init(long baudrate) {
 
   bFirstLoopDone = false;
   bInitialized = false;
-  bProcessRules = false;
 
   SerPrintP("\n\nAPDuinOS "); SerPrintP(APDUINO_VERSION);   SerPrintP("."); SerPrintP(APDUINO_BUILD);   SerPrintP(" starting up...\n");
   Serial.print( freeMemory(), DEC); SerPrintP(" RAM free.\n");
@@ -333,22 +332,9 @@ void APDuino::loop() {
     if (this->bFirstLoopDone == false ) { //&& bProcessRules == false) {
     	APDDebugLog::log(APDUINO_MSG_ENABLERULEPROC,NULL);
 
-    	this->bFirstLoopDone = true;
-    	this->bProcessRules = true;
-    } //else {
-     //SerPrintP("FR:"); Serial.print(this->bFirstLoopDone); SerPrintP("PR:"); Serial.print(this->bProcessRules); SerPrintP("---");
-    //}
-#ifdef DEBUG
-    else {
-    	if (this->bProcessRules) {
-    		SerPrintP("PROC RULES");
-    	}
-    	if (this->bFirstLoopDone) {
-				SerPrintP("NOTFIRSTRUN");
-			} else
-    	delay(100);
-    }
-#endif
+    	this->bFirstLoopDone = true;		// first round of check done
+    	this->pra->enable_processing(); // enable rule processing  this->bProcessRules = true;
+    } //else { SerPrintP("FR:"); Serial.print(this->bFirstLoopDone); SerPrintP("PR:"); Serial.print(this->bProcessRules); SerPrintP("---"); }
     delay(1);
   } else {
 #ifdef DEBUG
@@ -359,15 +345,15 @@ void APDuino::loop() {
 }
 
 void APDuino::loop_core() {
-//  sercom();           // loop serial control
+	// todo take care of overflows in case of long uptimes: \
+					in worst case issue JMP 0 but if possible work around it
+	// sercom();           // loop serial control
 	APDLogWriter::write_debug_log();			// write out any messages
 	// TODO : periodically rotate log files if size exceeded max
 	// APDStorage::rotate_file(APDLogWriter::szlogfname,MAX_LOG_SIZE);		// rotate debug log if needed
 	// APDStorage::rotate_file("APDUINO.LOG",MAX_LOG_SIZE);		// rotate debug log if needed
 
-
   if (pAPDWeb != NULL) {
-
     pAPDWeb->loop();          // loop www services
 
     if (pAPDWeb->dispatched_requests) {					// process dispatched request buffer
@@ -383,6 +369,9 @@ void APDuino::loop_core() {
     	case DREQ_RELOADRULES:
     		this->reload_rules();
     		break;
+    	case DREQ_DIAGNOSTICS:
+				this->psa->diagnostics();
+				break;
     	default:
     		APDDebugLog::log(APDUINO_WARN_UNKNOWNREQUEST,NULL);
     	}
@@ -391,65 +380,48 @@ void APDuino::loop_core() {
   delay(1);
 }
 
-
+// loop_operations()
+//
+// executes the userspace programs:
+// ** polling of sensors (includes calls to evaluate early rules where sensor is input)
+// ** polling of rules -- evaluation of all rules, ticks and execution of scheduled rules
+// ** data logging
+//
+// todo:
+// ** should re-enable callbacks for display (implemented outside of APDuino)
+//
+// Note:
+// assuming to be called when app is configured therefore deprecated checks on pointers.
+// caller is responsible that Sensor Array, Control Array and Rule Array is set up
+// properly and configured in APDuino.
 void APDuino::loop_operations() {
   unsigned long ms=millis();
-
-  // TODO selectLayout (callback)
-  //select_layout(); // will check if selection must be made (set selectLayout to the desired layout, or bRepaint for repaint)
-
-  // TODO screen_update (callback)
-  //screen_update();
+  // screen_update();   					// TODO screen_update (callback) | maybe unneccessary as APDuino is looped from outside
 
   if (pIdleMetro != NULL && pIdleMetro->check()) {
-#ifdef DEBUG
-    SerPrintP("IDLING...\n");
-#endif
+  	// todo log this when enabled log levels    SerPrintP("IDLING...\n");
     this->idle_device();
-  }
+  }	// idling
 
-  //if (pAPDSensors != NULL ) {  // do we really need a metro here? or only the individual metros ... && pSensorMetro != NULL && pSensorMetro->check()) {
-  if (psa != NULL ) {  // do we really need a metro here? or only the individual metros ... && pSensorMetro != NULL && pSensorMetro->check()) {
-    //SerPrintP("SENSORCHECK -> ");
-    //delay(20);
-#ifdef DEBUG
-    char tbuf[11] = "";
-    sprintf(tbuf,"SENS(%d)",iNextSensor);
-    Serial.println(tbuf);
-#endif
-    //glcd_debug_update(tbuf);
-    this->psa->pollSensors(this->bProcessRules);
-//    SerPrintP("SENSORCHKDONE");
-  }// else
-  delay(1);
-  //if (pAPDRules != NULL && iRuleCount > 0)  loop_apd_rules();
-  if (this->pra != NULL && this->bProcessRules == true) {
-  	//SerPrintP("RULEEVAL");
-  	this->pra->loop_rules();
-  }
-#ifdef DEBUG
-  else {
-  	SerPrintP("NOT LOOPING RULES!");
-  }
-#endif
+	this->psa->pollSensors();
+	this->pra->loop_rules();
 
-  if (pLoggingMetro != NULL && pLoggingMetro->check()) {
-    //glcd_debug_update("LOGGING");
+	if (pLoggingMetro != NULL && pLoggingMetro->check()) {
     this->log_data();
   }
 }
 
-//APDStorage *APDuino::setupStorage(int iSS, int iChip, int iSpeed) {
+// sets up storage
+// returns true on success, false otherwise
 bool APDuino::setup_storage(int iSS, int iChip, int iSpeed) {
 	boolean bret = false;
-	SerPrintP("Storage ");
+	//SerPrintP("Storage ");
 	if (bret = APDStorage::begin(iSS,iChip,iSpeed)) {
-		// set time callback for SDFatLib
-		SdBaseFile::dateTimeCallback( &(APDTime::SdDateTimeCallback) );
-	} else {
+		SdBaseFile::dateTimeCallback( &(APDTime::SdDateTimeCallback) ); // set time callback for SDFatLib
+	} /*else {
 			SerPrintP("Not ");
 	}
-	SerPrintP("Ready.\n");
+	SerPrintP("Ready.\n");*/
 	return bret;
 }
 
@@ -494,35 +466,33 @@ int APDuino::add_custom_function(int iPos, void (*pcf)()){
   return -1;
 }
 
-// turn on/off rule processing
+// turn on/off rule processing wrapper
 boolean APDuino::toggleRuleProcessing() {
-  bProcessRules = (this->pra->pAPDRules != NULL ? !bProcessRules : false);
-  return bProcessRules;
+  return this->pra->toggle_processing();
 }
 
-// enable execution of rules
+// enable execution of rules wrapper
 boolean APDuino::enableRuleProcessing() {
-  bProcessRules = true;
-  return bProcessRules;
+  return this->pra->enable_processing();
 }
 
-// disable execution of rules
+// disable execution of rules wrapper
 boolean APDuino::disableRuleProcessing() {
-  bProcessRules = false;
-  return bProcessRules;
+  return this->pra->disable_processing();
 }
 
 boolean APDuino::reconfigure() {
 	boolean retcode = false;
 	// todo log this when enabled log levels ("\nRECONREQ...\n");
+	APDDebugLog::log(APDUINO_MSG_RECONF,NULL);
   delay(100);
 
   // put APDWeb in maintenance mode to PREVENT ACCESS TO sensors, controls, rules
   if (this->pAPDWeb->pause_service()) {
-  	boolean bProcRulesOld = bProcessRules;			// store old rule processing state
-    bProcessRules = false;
-    unsigned long ulRam = freeMemory();
+  	boolean bProcRulesOld = this->pra->bProcRules;			// store old rule processing state
+    this->pra->disable_processing();
 
+    unsigned long ulRam = freeMemory();									// todo just using for debug/tests
     // todo log this when enabled log levels ("Reconfiguring Arrays!\n");	Serial.print( ulRam, DEC); SerPrintP(" RAM free.\n");
 		this->iNextSensor = -1;				// invalidate next sensor index
 
@@ -535,35 +505,25 @@ boolean APDuino::reconfigure() {
 							SerPrintP("Deleted Arrays!\n"); \
 							Serial.print( freeMemory(), DEC); SerPrintP(" RAM free.\n");
 
-
 		psa = new APDSensorArray();
 		pca = new APDControlArray(&pcustfuncs);
 		pra = new APDRuleArray(psa,pca,&(this->bfIdle));
-		// todo log this when enabled log levels ("Reallocated Arrays!\n");  ( freeMemory(), DEC) (" RAM free.\n"); ("\ninit sensors\n");
+
+		//APDDebugLog::log(APDUINO_MSG_....,NULL); todo log this when enabled log levels ("Reallocated Arrays!\n");  ( freeMemory(), DEC) (" RAM free.\n"); ("\ninit sensors\n");
   	this->psa->loadSensors();
-  	// todo log this when enabled log levels ("APD Sensors - ok.\n");
-		//GLCD.Puts(".");
-
-  	// todo log this when enabled log levels("\ninit controls\n");
-
+  	//APDDebugLog::log(APDUINO_MSG_....,NULL); todo log this when enabled log levels ("APD Sensors - ok.\n");
 		this->pca->load_controls();
-		//SerPrintP("APD Controls - ok.\n");
-		//GLCD.Puts(".");
-
-		// todo log this when enabled log levels ("init rules\n"); delay(10);
-
+		//APDDebugLog::log(APDUINO_MSG_....,NULL); todo log this when enabled log levels ("init rules\n"); delay(10);
 	  this->pra->load_rules();
 	  // todo log this when enabled log levels ("APD Rules - ok.\n");
 
 		// Update pointers in APDWeb
-		this->pAPDWeb->pAPDRules = this->pra->pAPDRules;
-		this->pAPDWeb->iRuleCount = this->pra->iRuleCount;
-		this->pAPDWeb->pAPDControls = this->pca->pAPDControls;
-		this->pAPDWeb->iControlCount = this->pca->iControlCount;
-		this->pAPDWeb->pAPDSensors = this->psa->pAPDSensors;
-		this->pAPDWeb->iSensorCount = this->psa->iSensorCount;
+	  this->pAPDWeb->psa = this->psa;			// Update Sensor Array address (todo make sensor array and other arrays static)
+	  this->pAPDWeb->pca = this->pca;			// Update Control Array address
+	  this->pAPDWeb->pra = this->pra;			// Update Rule Array address
 
 #ifdef DEBUG
+		//APDDebugLog::log(APDUINO_MSG_....,NULL);
 	  	SerPrintP("Reconfigured Arrays!\n");
 	  	Serial.print( freeMemory(), DEC); SerPrintP(" RAM free.\n");
 	  	delay(10);
@@ -582,7 +542,8 @@ boolean APDuino::reconfigure() {
 		this->bAPDuinoConfigured =  APDStorage::ready() && (this->psa->iSensorCount > 0  || this->pca->iControlCount > 0); // && this->pra->iRuleCount > 0;
 
 		this->bFirstLoopDone = false;									// we have not yet looped with the new config (no sensor values)
-		bProcessRules = bProcRulesOld;								// restore old rule processing state
+		//bProcessRules = bProcRulesOld;								// restore old rule processing state
+		if (bProcRulesOld) this->pra->enable_processing();			// restore processing state if it was on
 		retcode = this->pAPDWeb->continue_service();	// return if web server continues processing
   } else {
   	APDDebugLog::log(APDUINO_ERROR_COULDNOTPAUSEWWW,NULL);
@@ -598,9 +559,10 @@ boolean APDuino::reload_rules() {
 
   // put APDWeb in maintenance mode to PREVENT ACCESS TO sensors, controls, rules
   if (this->pAPDWeb->pause_service()) {
-  	boolean bProcRulesOld = bProcessRules;			// store old rule processing state
-    bProcessRules = false;
-    unsigned long ulRam = freeMemory();
+  	boolean bProcRulesOld = this->pra->bProcRules;			// store old rule processing state
+    this->pra->disable_processing();
+
+    unsigned long ulRam = freeMemory();									// debug possible memory leaks
 
     // todo log this when enabled log levels("Reconfiguring Arrays!\n") ( ulRam, DEC); SerPrintP(" RAM free.\n");
 		this->iNextSensor = -1;				// invalidate next sensor index
@@ -611,8 +573,7 @@ boolean APDuino::reload_rules() {
 	  // todo log this when enabled log levels ("APD Rules - ok.\n");
 
 		// Update pointers in APDWeb
-		this->pAPDWeb->pAPDRules = this->pra->pAPDRules;
-		this->pAPDWeb->iRuleCount = this->pra->iRuleCount;
+	  this->pAPDWeb->pra = this->pra;			// Update Rule Array address
 
 		// todo log this when enabled log levels ("Reconfigured Arrays!\n");	Serial.print( freeMemory(), DEC); SerPrintP(" RAM free.\n"); \
 	  	if (ulRam == freeMemory()) { \
@@ -629,7 +590,7 @@ boolean APDuino::reload_rules() {
 		this->bAPDuinoConfigured =  APDStorage::ready() && (this->psa->iSensorCount > 0  || this->pca->iControlCount > 0); // && this->pra->iRuleCount > 0;
 
 		this->bFirstLoopDone = false;									// we have not yet looped with the new config (no sensor values)
-		bProcessRules = bProcRulesOld;								// restore old rule processing state
+		if (bProcRulesOld) this->pra->enable_processing();			// restore processing state if it was on
 		retcode = this->pAPDWeb->continue_service();	// return if web server continues processing
   } else {
   	APDDebugLog::log(APDUINO_ERROR_COULDNOTPAUSEWWW,NULL);
@@ -638,7 +599,7 @@ boolean APDuino::reload_rules() {
   return retcode;
 }
 
-
+// todo recheck, update if needed then decorate
 void APDuino::new_ethconf_parser(void *pAPD, int iline, char *psz) {
   NETCONF nc;
   // todo log this when enabled log levels ("NETCONF READ: "); Serial.print(psz);
@@ -701,7 +662,8 @@ boolean APDuino::start_webserver() {
   // todo log this when enabled log levels ("WWWS...");
   if (pAPDWeb != NULL) {
   	// todo log this when enabled log levels ("starting ...");
-      pAPDWeb->startWebServer(this->psa->pAPDSensors,this->psa->iSensorCount,this->pca->pAPDControls,this->pca->iControlCount,this->pra->pAPDRules,this->pra->iRuleCount);
+    //pAPDWeb->startWebServer(this->psa->pAPDSensors,this->psa->iSensorCount,this->pca->pAPDControls,this->pca->iControlCount,this->pra->pAPDRules,this->pra->iRuleCount);
+  	pAPDWeb->startWebServer(this->psa,this->pca,this->pra);
       retcode = (pAPDWeb != NULL && pAPDWeb->pwwwserver != NULL && pAPDWeb->pwwwclient !=NULL);
   } else {
   	APDDebugLog::log(APDUINO_ERROR_NONETFORWWW,NULL);

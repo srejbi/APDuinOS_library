@@ -59,6 +59,8 @@
 #define APDUINO_MSG_TIMEADJUST		        0x0127	// Adjusting clock...
 #define APDUINO_MSG_TIMEADJUSTED		      0x0128	// Adjusted clock
 
+#define APDUINO_MSG_RECONF								0x012A  // Performing reconfiguration
+
 #define APDUINO_MSG_ETHSTARTED            0x0130	// Ethernet started
 #define APDUINO_MSG_CONFETHSTARTED	      0x0131  // Ethernet started from config
 #define APDUINO_MSG_NETOK                 0x0132	// Ethernet looks ok
@@ -79,16 +81,20 @@
 #define APDUINO_MSG_COSMLOGSTARTED        0x0146	// Cosm logging started
 #define APDUINO_MSG_PROCPROVREQ           0x0147	// Processing provisioning request
 #define APDUINO_MSG_PROVFILE           	  0x0148	// Provisioning file %s
-#define APDUINO_MSG_WWWFILEACCESS		  0x0149  // WWW File Access %s
-#define APDUINO_MSG_AOSELFREG		      0x014A	// APDuino Online: self registering: %s
-#define APDUINO_MSG_AOSRRESPPROC		  0x014B  // APDuino Online self-registration response processing
+#define APDUINO_MSG_WWWFILEACCESS		      0x0149  // WWW File Access %s
+#define APDUINO_MSG_AOSELFREG		          0x014A	// APDuino Online: self registering: %s
+#define APDUINO_MSG_AOSRRESPPROC		      0x014B  // APDuino Online self-registration response processing
 #define APDUINO_MSG_AOSRRESPJOINTPROV     0x014C  // APDuino Online self-registration %d bytes left to scan for joint configuration provisioning
-
+#define APDUINO_MSG_WWWSYSACCESS          0x014D	// WWW: System Access via HTTP
+#define APDUINO_MSG_WWWSENSORACCESS	      0x014E	// WWW: Sensor Access via HTTP
+#define APDUINO_MSG_WWWCONTROLACCESS      0x014F	// WWW: Control Access via HTTP
 
 #define APDUINO_MSG_LOADINGSENSORS        0x0150	// Sensor Array loading Sensors from config
 #define APDUINO_MSG_SENSORCOUNT 	        0x0151	// Sensor Array counted %d lines in SENSORS.CFG
 #define APDUINO_MSG_SENSORSLOADING        0x0152	// Loading Sensor Array from config %s
 #define APDUINO_MSG_SENSORSLOADED         0x0153	// Sensor Array loaded
+#define APDUINO_MSG_SENSORDIAG         		0x015A	// Sensor Diagnostics Requested
+
 
 #define APDUINO_MSG_LOADINGCONTROLS       0x0160	// Control Array loading Controls from config %s
 #define APDUINO_MSG_CONTROLCOUNT 	        0x0161	// Control Array counted %d lines in CONTROLS.CFG
@@ -105,7 +111,7 @@
 #define APDUINO_MSG_CRONRUN               0x01A2	// Cron schedule met, running job
 
 #define APDUINO_MSG_OWADDRVERIFY  				0x01C0	// 1-Wire sensor: address verification for %s
-#define APDUINO_MSG_OWSEARCHING						0x01C1	// 1-Wire sensor: continue search on wire...
+#define APDUINO_MSG_OWSEARCHING						0x01C1	// 1-Wire sensor: continue search on wire
 #define APDUINO_MSG_OWADDRFOUND						0x01C2	// 1-Wire sensor: address found
 #define APDUINO_MSG_OWFIRSTADDRSAVED			0x01C3	// 1-Wire sensor: first address found was saved
 #define APDUINO_MSG_OWDS18S20							0x01C4	// 1-Wire sensor: DS18S20 chip
@@ -116,6 +122,21 @@
 #define APDUINO_MSG_OWADDRVERDONE  			  0x01C9	// 1-Wire sensor: address enumeration complete.
 #define APDUINO_MSG_OWDIAGNOSTICS			    0x01CA	// 1-Wire sensor: diagnostics running.
 #define APDUINO_MSG_OWDIAGNOSTICSDONE	    0x01CB	// 1-Wire sensor: diagnostics done.
+
+#define APDUINO_MSG_ATLAS							    0x01D0	// AtlasSensor: diagnostics done.
+#define APDUINO_MSG_ATLAS_CO							0x01D1	// AtlasSensor: DEMUXER SW serial channel %d
+#define APDUINO_MSG_ATLAS_RX  				    0x01D2	// AtlasSensor: data received "%s"
+#define APDUINO_MSG_ATLAS_STO  				    0x01D3	// AtlasSensor: storing "%s"
+#define APDUINO_MSG_ATLAS_TX					    0x01D4	// AtlasSensor: data sent at %ul
+#define APDUINO_MSG_ATLAS_HW  				    0x01D5	// AtlasSensor: hardware serial prints "%s"
+#define APDUINO_MSG_ATLAS_SW					    0x01D6	// AtlasSensor: software serial prints "%s"
+#define APDUINO_MSG_ATLAS_HWP  				    0x01D7	// AtlasSensor: hardware serial prints "%s"
+#define APDUINO_MSG_ATLAS_SWP					    0x01D8	// AtlasSensor: software serial prints "%s"
+#define APDUINO_MSG_ATLAS_HWPC 				    0x01D9	// AtlasSensor: hardware serial prints '%c'
+#define APDUINO_MSG_ATLAS_SWPC				    0x01DA	// AtlasSensor: software serial prints '%c'
+
+#define APDUINO_MSG_ATLAS_BUSY				    0x01DF	// AtlasSensor: sensor busy
+
 
 #define APDUINO_MSG_VIBSENDEFAULTRC 	    0x01E0	// Vibration Sensor: using default read count (10)
 
@@ -174,7 +195,7 @@
 #define APDUINO_ERROR_JSNOCLIENT          0x0241	// JSON Status: no web client pointer
 #define APDUINO_ERROR_COSMDUMPOPEN        0x0242	// Cosm dump file open failed: %s
 #define APDUINO_ERROR_BROKENHEXCODE       0x0243	// Broken hex code in http request
-#define APDUINO_ERROR_AOSELFREG		      0x0244	// APDuino Online: error self registering: %s
+#define APDUINO_ERROR_AOSELFREG		        0x0244	// APDuino Online: error self registering: %s
 #define APDUINO_ERROR_WWWAUTHFAIL         0x0245	// WWW Authentication Failed %s
 #define APDUINO_ERROR_WWWUNAUTH           0x0246	// WWW Unauthorized, authentication requested
 #define APDUINO_ERROR_WWWNOCLIENT         0x0247	// WWW : no client connection in %s
@@ -210,7 +231,13 @@
 #define APDUINO_ERROR_OWNOTDS18X20				0x02C4	// 1-Wire sensor: not a DS18x20 family chipset
 #define APDUINO_ERROR_OWNOADDRESSES				0x02C5	// 1-Wire sensor: no addresses found on wire
 
-#define APDUINO_ERROR_DHTINVALIDCLASS     0x02D0  // DHT sensor: invalid sensor class %d
+#define APDUINO_ERROR_ATLAS     				  0x02D0	// AtlasSensor: error "%s"
+#define APDUINO_ERROR_ATLAS_DEMUX					0x02D1	// AtlasSensor: DEMUXER config ERROR
+#define APDUINO_ERROR_ATLAS_DATA      		0x02D2	// AtlasSensor: DEMUXER config ERROR
+#define APDUINO_ERROR_ATLAS_HW  				  0x02D4	// AtlasSensor: hardware serial error "%s"
+#define APDUINO_ERROR_ATLAS_SW  				  0x02D5	// AtlasSensor: software serial error "%s"
+
+#define APDUINO_ERROR_DHTINVALIDCLASS     0x02E0  // DHT sensor: invalid sensor class %d
 
 #define APDUINO_ERROR_SONSENCALIBRATION   0x02E0	// Sonar Sensor: calibration error
 
@@ -225,7 +252,10 @@
 #define APDUINO_WARN_NETCONFDHCPFALLBACK  0x0321	// Failed to start Ethernet with static configuration. Fallback to DHCP.
 
 #define APDUINO_WARN_CTYPEINVALID	        0x0390	// Invalid control type
+
 #define APDUINO_WARN_RULEINVALIDCONTROL   0x03A0	// Invalid or NULL Control referenced in Rule
 
-#define APDUINO_WARN_OWBADADDRFOUND		    0x03A0	// 1-Wire sensor: unexpected address found
+#define APDUINO_WARN_OWBADADDRFOUND		    0x03C0	// 1-Wire sensor: unexpected address found
+
+#define APDUINO_WARN_ATLAS     				    0x03D0	// AtlasSensor: warning "%s"
 #endif /* APD_MSG_CODES_H_ */

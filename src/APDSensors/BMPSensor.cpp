@@ -107,7 +107,7 @@ float BMPSensor::read_altitude() {
 
 
 //test BMP085
-void BMPSensor::diagnostics() {
+void BMPSensor::diagnose() {
   float fpressure =0;
   // todo log this when enabled log
   SerPrintP("Temp: ");  Serial.print(((BMPSENS*)this->sensor)->pbmp->readTemperature());

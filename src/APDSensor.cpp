@@ -78,14 +78,6 @@ void APDSensor::initSensor(SDCONF *sdc) {
 }
 
 
-char *APDSensor::get_value_str(char *strdest) {
-  char *retstr = NULL;			// returns NULL on error
-  // todo make the formatstring customizable to allow higher precision on demand (requires revision of references and making sure buffer is large enough for receiving more digits)
-  if (sprintf_P(strdest,PSTR("%3.1f"),this->fvalue) != EOF) retstr = strdest;		// return the pointer to the buffer unless EOF was recived (error)
-  return retstr;
-}
-
-
 boolean APDSensor::check() {
   boolean retcode = false;
   if (this->pmetro != NULL && this->pmetro->check()) {
@@ -104,16 +96,39 @@ boolean APDSensor::check() {
   return retcode;
 }
 
-
-
 // stub for method that performs the check
 boolean APDSensor::perform_check() {
   // implement the sensor-specific check: put all code here needed for communication with sensor
 }
 
 // stub for method that performs diagnostics on sensor
-void APDSensor::diagnostics() {
+void APDSensor::diagnose() {
   // implement the sensor-specific check, if supported
+	// diagnose should output extended logs via APDDebug
+	APDDebugLog::log(APDUINO_MSG_SENSORDIAG,this->config.label);
+}
+
+// stub for method that performs diagnostics on sensor
+void APDSensor::calibrate() {		// calibration data should be available from sensor definition
+  // implement the sensor-specific calibration code, if supported
+	// implementation should take care of setting sensor state,
+	// if calibration is done in more than a single control cycle
+}
+
+// stub for method that sends a command to a sensor
+void APDSensor::command(const void *cmd) {		// command data should come from userspace via web (likely)
+  // implement the sensor-specific command code, if supported
+	// cast cmd to whatever is expected (char *)
+	// implementation should take care of setting sensor state,
+	// if calibration is done in more than a single control cycle
+}
+
+
+char *APDSensor::get_value_str(char *strdest) {
+  char *retstr = NULL;			// returns NULL on error
+  // todo make the formatstring customizable to allow higher precision on demand (requires revision of references and making sure buffer is large enough for receiving more digits)
+  if (sprintf_P(strdest,PSTR("%3.1f"),this->fvalue) != EOF) retstr = strdest;		// return the pointer to the buffer unless EOF was recived (error)
+  return retstr;
 }
 
 // returns the sensor value as integer (may overflow)
