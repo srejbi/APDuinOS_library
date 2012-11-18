@@ -49,6 +49,8 @@
 
 const int NTP_PACKET_SIZE= 48;                   // NTP time stamp is in the first 48 bytes of the message
 
+#define DEFAULT_TIMESERVER_IP (byte []){193,225,14,181}
+
 class APDTime {
 public:
 	static void begin();
@@ -65,7 +67,8 @@ public:
 	static void SdDateTimeCallback(uint16_t* date, uint16_t* time);
 
 	static void sync_to_ntp();
-	static void setup_ntp_sync(int UDPPort, byte *TimeServer, int iTZ, int iDST );
+	static void setup_ntp_sync(int UDPPort); //(int UDPPort, byte *TimeServer );
+	static void new_timeconf_parser(void *pAPD, int iline, char *psz);
 	static unsigned long send_ntp_packet(byte *address);
 
 	static int time_zone;

@@ -187,6 +187,7 @@
 
 #define APDUINO_LOG_HWRTCOK               0x4020	// HW RTC running OK
 #define APDUINO_LOG_SWRTCOK               0x4021	// SW RTC running OK
+#define APDUINO_LOG_NTPSYNCOK							0x4070	// Clock synced to NTP
 
 #define APDUINO_LOG_RECONF								0x4ABC  // Performing reconfiguration
 

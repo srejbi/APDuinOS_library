@@ -111,6 +111,7 @@ public:
 
 	/* start config line parser callbacks */
 	static void new_ethconf_parser(void *pAPD, int iline, char *psz);
+	//static void new_timeconf_parser(void *pAPD, int iline, char *psz);
 	/* end config line parser callbacks */
 
 	void print(char *string);

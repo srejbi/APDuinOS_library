@@ -19,6 +19,9 @@
  *
  * apd_msg_codes.h
  *
+ * todo ongoing effort to organize log message codes in the proper groups
+ *
+ *
  *  Created on: Oct 2, 2012
  *      Author: George Schreiber
  */
@@ -38,10 +41,16 @@
 
 // DEBUG				1
 #define APDUINO_DEBUG_STORAGESTART        0x1011	// Starting Storage
+#define APDUINO_DEBUG_AOLOGCALLED         0x1036	// APDuino Online logging...
+#define APDUINO_DEBUG_AOLOGGING           0x1037	// APDuino Online logging %d chars.
+#define APDUINO_DEBUG_COSMLOGCALLED       0x1039	// Cosm logging...
+#define APDUINO_DEBUG_COSMLOGGING         0x1040	// Cosm logging %d chars.
+#define APDUINO_DEBUG_TSLOGCALLED         0x1042	// ThingSpeak logging started
+#define APDUINO_DEBUG_TSLOGGING           0x1043	// ThingSpeak logging %d chars.
+
 
 // MESSAGES			2
 #define APDUINO_MSG_SERIAL_INIT		        0x2001	// Serial port initialized
-#define APDUINO_MSG_ENABLERULEPROC        0x2002	// Enabled rule processing
 
 #define APDUINO_MSG_SDLOGGING             0x2005	// Logging to SD card %d chars
 #define APDUINO_MSG_SDLOGRESCHED			    0x2006	// SD logging interval reconfigured
@@ -69,7 +78,6 @@
 #define APDUINO_MSG_TIMEADJUST		        0x2027	// Adjusting clock...
 #define APDUINO_MSG_TIMEADJUSTED		      0x2028	// Adjusted clock
 
-#define APDUINO_MSG_RECONF								0x202A  // Performing reconfiguration
 
 #define APDUINO_MSG_ETHSTARTED            0x2030	// Ethernet started
 #define APDUINO_MSG_CONFETHSTARTED	      0x2031  // Ethernet started from config
@@ -78,14 +86,8 @@
 #define APDUINO_MSG_TRYINGDHCPIP          0x2033	// Trying to start ethernet with DHCP
 #define APDUINO_MSG_DHCPLEASED            0x2034	// DHCP Lease obtained
 #define APDUINO_MSG_NETFAILSRESTART       0x2035	// Network failure count triggers attempt to restart net
-#define APDUINO_MSG_AOLOGCALLED           0x2036	// APDuino Online logging...
-#define APDUINO_MSG_AOLOGGING             0x2037	// APDuino Online logging %d chars.
 #define APDUINO_MSG_AOLOGDONE             0x2038	// APDuino Online logging done
-#define APDUINO_MSG_COSMLOGCALLED         0x2039	// Cosm logging...
-#define APDUINO_MSG_COSMLOGGING           0x2040	// Cosm logging %d chars.
 #define APDUINO_MSG_COSMLOGDONE           0x2041	// Cosm logging done
-#define APDUINO_MSG_TSLOGCALLED           0x2042	// ThingSpeak logging started
-#define APDUINO_MSG_TSLOGGING             0x2043	// ThingSpeak logging %d chars.
 #define APDUINO_MSG_TSLOGDONE             0x2044	// ThingSpeak logging done
 #define APDUINO_MSG_AOLOGSTARTED          0x2045	// APDuino Online logging started
 #define APDUINO_MSG_COSMLOGSTARTED        0x2046	// Cosm logging started
@@ -178,18 +180,28 @@
 
 
 // LOGS (SYSTEM MESSAGES) 4
-#define APDUINO_LOG_LOGLEVEL					    0x4000	// System loglevel is %d
+#define APDUINO_LOG_START   					    0x4000	// APDuinOS version %s starting,free ram:
+#define APDUINO_LOG_LOGLEVEL					    0x4002	// System loglevel is %d
 #define APDUINO_LOG_SDLOGOK					      0x4003	// Logging to SD prepared
 #define APDUINO_LOG_TIMESTAMP		        	0x4004	// Current system timestamp: %s
 
-#define APDUINO_MSG_HWRTCOK               0x2020	// HW RTC running OK
-#define APDUINO_MSG_SWRTCOK               0x2021	// SW RTC running OK
+#define APDUINO_LOG_HWRTCOK               0x4020	// HW RTC running OK
+#define APDUINO_LOG_SWRTCOK               0x4021	// SW RTC running OK
+#define APDUINO_LOG_NTPSYNCOK							0x4070	// Clock synced to NTP
 
-#define APDUINO_LOG_AOSELFREG		          0x404A	// APDuino Online: self registering: %s
-#define APDUINO_LOG_WWWSYSACCESS          0x404D	// WWW: System Access via HTTP: %s
-#define APDUINO_LOG_WWWSENSORACCESS	      0x404E	// WWW: Sensor Access via HTTP: %s
-#define APDUINO_LOG_WWWCONTROLACCESS      0x404F	// WWW: Control Access via HTTP: %s
+#define APDUINO_LOG_RECONF								0x4ABC  // Performing reconfiguration
 
+#define APDUINO_LOG_ENABLERULEPROC        0x4AA1	// Enabled rule processing
+#define APDUINO_LOG_DISABLERULEPROC       0x4AA0	// Disabled rule processing
+
+#define APDUINO_LOG_AOSELFREG		          0x4E4A	// APDuino Online: self registering: %s
+#define APDUINO_LOG_AOSELFREGREQSENT		  0x4E4B	// APDuino Online: self register request sent with key %s
+#define APDUINO_LOG_AOSELFREGOK		        0x4E4C	// APDuino Online: self register succeeded.
+#define APDUINO_LOG_WWWSYSACCESS          0x4E4D	// WWW: System Access via HTTP: %s
+#define APDUINO_LOG_WWWSENSORACCESS	      0x4E4E	// WWW: Sensor Access via HTTP: %s
+#define APDUINO_LOG_WWWCONTROLACCESS      0x4E4F	// WWW: Control Access via HTTP: %s
+#define APDUINO_LOG_WWWDEBUGLEVEL		      0x4E50	// WWW: Debug Level Change
+#define APDUINO_LOG_WWWCONTROLSET         0x4E5F	// WWW: Control was set: %d, value: %d
 
 // ERRORS	 			5
 #define APDUINO_ERROR_UNKNOWN		          0x5000	// Unknown/undefined error.

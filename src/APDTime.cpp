@@ -153,15 +153,32 @@ char *APDTime::get_uptime_str(char *psz_uptime) {
   return psz_uptime;
 }
 
+void APDTime::new_timeconf_parser(void *pAPD, int iline, char *psz) {
+	int iTimeZone = 0;
+	int iDST = 0;
+	byte tsIP[4] = {0,0,0,0};
+	int iscand = sscanf_P( psz, PSTR("%d %d %2x%2x%2x%2x"),	&(iTimeZone), &(iDST),
+															&(tsIP[0]), &(tsIP[1]), &(tsIP[2]), &(tsIP[3]));
+	if ( iscand > 0) time_zone = iTimeZone;
+	if ( iscand > 1) dst = (iDST != 0);
+	if ( iscand > 5) {
+		memcpy(timeServer,tsIP,4);
+	} else {
+		SerPrintP("DEFAULT TIME SRV.")
+		memcpy(timeServer,DEFAULT_TIMESERVER_IP,4);
+	}
+}
+
+
 // TODO return whatever udp would return
-void APDTime::setup_ntp_sync(int UDPPort, byte *TimeServer, int iTZ, int iDST ) {
+void APDTime::setup_ntp_sync(int UDPPort) { // (int UDPPort, byte *TimeServer ) {
   // check if not in use...
 	APDDebugLog::log(APDUINO_MSG_SETUPUDPFORNTP,NULL);
 	// todo log this when enabled log levels ("SETUP UDP 4 NTP\n");
   if (pUdp==NULL) {
-    memcpy(timeServer,TimeServer,4);
-    dst = iDST;
-    time_zone = iTZ;
+    //memcpy(timeServer,TimeServer,4);
+    //dst = iDST;
+    //time_zone = iTZ;
     localPort = UDPPort;
     pUdp = new EthernetUDP;
     if (pUdp != NULL) {				// if we have UDP
@@ -379,11 +396,11 @@ void APDTime::sync_to_ntp()
 						} \
 						SerPrintP("APDTime will give time:"); \
 						PrintDateTime(now()); \
-						SerPrintP("\ndone ...\n"); \
+						SerPrintP("\ndone ...\n");
 
-    }
-    else
-    {
+      APDDebugLog::log(APDUINO_LOG_NTPSYNCOK,NULL);
+
+    } else {
     	APDDebugLog::log(APDUINO_ERROR_NTPNOUDP,NULL);
     }
   } else {

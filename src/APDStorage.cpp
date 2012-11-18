@@ -221,11 +221,11 @@ int APDStorage::read_file_with_parser(char *szFile, void (*pParserFunc)(void *, 
     }
     dataFile.close();
     retcode = i;
-    APDDebugLog::enable_sync_writes();						// enable log writer
+    //APDDebugLog::enable_sync_writes();						// enable log writer
   } else {
-  	// error opening file - if we are on this branch, sync writes should be and stay disabled
-  	APDDebugLog::log(APDUINO_ERROR_FILEOPEN,szFile);
+  	APDDebugLog::log(APDUINO_ERROR_FILEOPEN,szFile); //  log error opening file
   }
+  APDDebugLog::enable_sync_writes();						// re-enable log writer (otherwise soon run out of ram)
   return retcode;
 }
 

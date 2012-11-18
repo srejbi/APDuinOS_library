@@ -105,18 +105,13 @@ void APDuino::init(long baudrate) {
   bAPDuinoConfigured = false;
 
   // now comes the setup
-#ifdef DEBUG
-  SerPrintP("Initializing...\n");
-#endif
+  // TODO debug log SerPrintP("Initializing...\n");
 #ifdef ENABLE_DISPLAY
   display_callback("Initializing...");
 #endif
   delay(30);		// allow hw to power-up
-
-//  setupWithStorage(iChip,iSpeed);					// set up Time, SD, Ethernet, load SA,CA,RA
 	// end of setup / initialization
 }
-
 
 boolean APDuino::init_app() {
 	// we need storage!
@@ -124,6 +119,7 @@ boolean APDuino::init_app() {
 		// enable sending debug log to SD card
 		APDLogWriter::begin();							// this starts the DEBUG log writer (not the data log!)
 		APDLogWriter::write_debug_log();		// write any buffered messages
+
 
 		this->setup_timekeeping();
 		delay(50);
@@ -135,33 +131,19 @@ boolean APDuino::init_app() {
 		bInitialized = (pAPDWeb != NULL);
 
 		// TODO - hardcoded NTP address - allow user to set NTP server
-		//byte hackts[4] = ;
-
-		//this->pAPDTime->setupNTPSync(8888, DEFAULT_TIMESERVER_IP,1,1);
-		APDTime::setup_ntp_sync(8888, DEFAULT_TIMESERVER_IP,1,1);
+		//APDTime::setup_ntp_sync(8888, DEFAULT_TIMESERVER_IP,1,1);
+		APDTime::setup_ntp_sync(pAPDWeb->net.localPort); //, DEFAULT_TIMESERVER_IP);
 		this->check_timekeeping();
-	#ifdef DEBUG
-		SerPrintP("\ninit sensors\n");
-	#endif
-		//this->setupSensors();
+
+		// TODO debug SerPrintP("\ninit sensors\n");
 		this->psa->loadSensors();
-		//SerPrintP("APD Sensors - ok.\n");
-		//GLCD.Puts(".");
-	#ifdef DEBUG
-		//setup_apd_controls();
-		SerPrintP("\ninit controls\n");
-	#endif
-		//this->setupControls();
+
+		// TODO debug SerPrintP("\ninit controls\n");
 		this->pca->load_controls();
-		//SerPrintP("APD Controls - ok.\n");
-		//GLCD.Puts(".");
-	#ifdef DEBUG
-		//setup_apd_rules();
-		SerPrintP("init rules\n");
-	#endif
-		//this->setupRules();
+
+		//TODO debug SerPrintP("init rules\n");
 		this->pra->load_rules();
-		//SerPrintP("APD Rules - ok.\n");
+
 
 		// enable "real-time" rule evaluation
 		this->psa->enableRuleEvaluation(&(APDRuleArray::evaluate_sensor_rules),(void *)this->pra);
@@ -194,19 +176,19 @@ boolean APDuino::init_app() {
 		SerPrintP("\n");
 #endif
 
-		//SerPrintP("APD: APDUINO ONLINE...\n");
+		// todo debug SerPrintP("APD: APDUINO ONLINE...\n");
 		if (this->pAPDWeb->setupAPDuinoOnline()) { //  && this->bConfigured()
 //				SerPrintP("OK.");
 //		} else {
 //				SerPrintP("ERR.");
 		}
-		//SerPrintP("APD: COSM...\n");
+		// todo debug SerPrintP("APD: COSM...\n");
 		if (this->pAPDWeb->setupCosmLogging()){
 		//		SerPrintP("OK.");
 		//} else {
 		//		SerPrintP("ERR.");
 		}
-		//SerPrintP("APD: THINGSPEAK...\n");
+		// todo debug SerPrintP("APD: THINGSPEAK...\n");
 		if (this->pAPDWeb->setupThingSpeakLogging()){
 //				SerPrintP("OK.");
 //		} else {
@@ -220,7 +202,7 @@ boolean APDuino::init_app() {
 
 		if (bConfigured()) {
 			APDDebugLog::set_loglevel(LOG_LEVEL_LOG);			// if configured, go for less verbosity
-			//SerPrintP("APD: LOGGING...");
+			// todo debug SerPrintP("APD: LOGGING...");
 			if (this->start_logging(DEFAULT_ONLINE_LOG_FREQ)) {		// TODO revise, this should be configurable
 //					SerPrintP("OK.\n");
 //			} else {
@@ -260,29 +242,21 @@ boolean APDuino::storage_ready() {
 
 
 void APDuino::setup_timekeeping() {
-#ifdef DEBUG
-  SerPrintP("Time...");
-#endif
-//  if (this->pAPDTime == NULL) {
-    if (!APDTime::started()) {
-//      this->pAPDTime = new APDTime(true);       // try with RTC
+  if (!APDTime::started()) {
   		APDTime::begin(true);       // try with RTC
+  		APDStorage::read_file_with_parser("TIME.CFG",&(APDTime::new_timeconf_parser), (void*)this);
   } else {
   	APDDebugLog::log(APDUINO_WARN_TIMEALREADYSETUP,NULL);
   }
 }
 
 void APDuino::check_timekeeping() {
-#ifdef DEBUG
-  SerPrintP("Time check...");
-#endif
-  //if (this->pAPDTime != NULL) {
   if (APDTime::started()) {
       // TODO add NTP switch
       APDTime::sync_to_ntp();
-      SerPrintP("check@:"); Serial.print((unsigned long)APDTime::now().unixtime(),DEC);
-      char tbuf[20] = "1970/01/01 00:00:00";
-      SerPrintP("now: "); Serial.print(APDTime::nowS(tbuf)); SerPrintP("...");
+      // todo debug log SerPrintP("check@:"); Serial.print((unsigned long)APDTime::now().unixtime(),DEC);
+      // todo for debugging // char tbuf[20] = "1970/01/01 00:00:00";
+      // todo debug log SerPrintP("now: "); Serial.print(APDTime::nowS(tbuf)); SerPrintP("...");
   } else {
   	APDDebugLog::log(APDUINO_ERROR_NOTIMEOBJECT,NULL);
   }
@@ -292,7 +266,7 @@ DateTime APDuino::timeNow() {
   return APDTime::now();
 }
 
-
+/*
 
 void APDuino::print(char *string){
  if (pAPDSerial != NULL) {
@@ -314,7 +288,7 @@ void APDuino::debugP(void *Pstring, int iMsgLevel) {
      pAPDSerial->printP(Pstring);
    }
 }
-
+*/
 
 
 

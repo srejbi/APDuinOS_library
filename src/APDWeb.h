@@ -54,8 +54,6 @@ const char WEBLOG_URI[]="/devices/lastlog";      // see apduino online specs.
 #define COSM_SERVER		PSTR("api.cosm.com")
 #define COSM_SERVER_IP (byte []){216,52,233,122}
 
-#define DEFAULT_TIMESERVER_IP (byte []){193,225,14,181}
-
 #define WEBCLIENT_BUSY_TIMEOUT_MS				30000
 #define MAX_WEBCLIENT_BUSY_LOOPS			  10000
 #define MAX_NET_FAILURES                3
@@ -86,12 +84,12 @@ const char WEBLOG_URI[]="/devices/lastlog";      // see apduino online specs.
 
 struct NETCONF {
   byte mac[6];            //TODO generate random mac, more than 1 APDuino can have collisions
-  byte ip[4];                          // ip address
-  byte gateway[4];                     // gateway
-  byte subnet[4];                      // subnet mask
-  byte pridns[4];                      // primary dns
-  unsigned int localPort;                       // local port to listen for UDP packets (NTP communications)
-  unsigned int wwwPort;                           // local port to listen on with WWW server
+  byte ip[4];                 // ip address
+  byte gateway[4];            // gateway
+  byte subnet[4];             // subnet mask
+  byte pridns[4];             // primary dns
+  unsigned int localPort;     // local port to listen for UDP packets (NTP communications)
+  unsigned int wwwPort;       // local port to listen on with WWW server
 };
 
 class APDWeb
