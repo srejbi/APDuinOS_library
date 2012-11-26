@@ -576,6 +576,20 @@ boolean APDuino::reload_rules() {
   return retcode;
 }
 
+/*
+void APDuino::new_timeconf_parser(void *pAPD, int iline, char *psz) {
+	SerPrintP("Parsing time cfg...");
+	int iTimeZone = 0;
+	int iDST = 0;
+	byte tsIP[4] = DEFAULT_TIMESERVER_IP;
+	int iscand = sscanf_P( psz, PSTR("%d %d %2x%2x%2x%2x"),	&(iTimeZone), &(iDST),
+															&(tsIP[0]), &(tsIP[1]), &(tsIP[2]), &(tsIP[3]));
+	if ( iscand > 0) APDTime::time_zone = iTimeZone;
+	if ( iscand > 1) APDTime::dst = (iDST != 0);
+	if ( iscand > 5) APDTime::memcpy(timeServer,tsIP,4);
+}
+*/
+
 // todo recheck, update if needed then decorate
 void APDuino::new_ethconf_parser(void *pAPD, int iline, char *psz) {
   NETCONF nc;
@@ -619,6 +633,8 @@ void APDuino::setup_networking() {
   if (pAPDWeb == NULL) {      // replace with check if IP config is present
   	// todo log this when enabled log levels ("trying to load config...");
     if (APDStorage::ready()) {
+    	//APDStorage::read_file_with_parser("A.CFG",&new_ethconf_parser,(void*)this);
+    	//APDStorage::read_file_with_parser("B.CFG",&new_ethconf_parser,(void*)this);
         if ((APDStorage::read_file_with_parser("ETHERNET.CFG",&new_ethconf_parser,(void*)this)) <= 0) {	// check for errors (0 - no lines, -1 - error)
         	APDDebugLog::log(APDUINO_ERROR_BADNETCONFIG,NULL);
         }

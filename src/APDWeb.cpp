@@ -671,136 +671,143 @@ void APDWeb::loop_server()
 			boolean current_line_is_blank = true;      // an http request ends with a blank line
 			index = 0;                              // reset the input buffer
 			while (client.connected()) {            // as long as the client is connected
-				if (client.available()) {             // if there are bytes to read
-					char c = client.read();                // read 1 character
+				if (!(this->operational_state & OPSTATE_PAUSED)) {
+					if (client.available()) {             // if there are bytes to read
+						char c = client.read();                // read 1 character
 
-					if (c != '\n' && c != '\r') {         // If it isn't a new line, add the character to the buffer
-						clientline[index] = c;
-						index++;
+						if (c != '\n' && c != '\r') {         // If it isn't a new line, add the character to the buffer
+							clientline[index] = c;
+							index++;
 
-						// are we too big for the buffer? shift left
-						if (index >= RCV_BUFSIZ-1) {
-							// low ram footprint chosen for shifting (vs. high footprint memcpy)
-							for (int i=0; i < RCV_BUFSIZ-1; i++) clientline[i] = clientline[i+1];
-							index = RCV_BUFSIZ -2;
+							// are we too big for the buffer? shift left
+							if (index >= RCV_BUFSIZ-1) {
+								// low ram footprint chosen for shifting (vs. high footprint memcpy)
+								for (int i=0; i < RCV_BUFSIZ-1; i++) clientline[i] = clientline[i+1];
+								index = RCV_BUFSIZ -2;
+							}
+							//if (index >= RCV_BUFSIZ)           // are we too big for the buffer? start tossing out data
+							//	index = RCV_BUFSIZ -1;							// todo this is bs, SHIFT char array is the proper solution (both result data loss, but this even corrupts the data integrity)
+							continue;           							 // continue to read more data!
 						}
-						//if (index >= RCV_BUFSIZ)           // are we too big for the buffer? start tossing out data
-						//	index = RCV_BUFSIZ -1;							// todo this is bs, SHIFT char array is the proper solution (both result data loss, but this even corrupts the data integrity)
-						continue;           							 // continue to read more data!
-					}
-					// got a \n or \r new line, which means the string is done
-					clientline[index] = 0;
+						// got a \n or \r new line, which means the string is done
+						clientline[index] = 0;
 
-					// Look for substring such as a request to get the root file
-					if (strstr_P(clientline, PSTR("GET /status.json")) != 0) {
-						if (basicAuthorize(&client)) {
-							header(&client,CONTENT_TYPE_JSON);
-							json_status(&client);
-						}
-					} else if (strstr_P(clientline, PSTR("POST /controls/")) != 0) {
-						procControlReq(&client,clientline);		// shoult take care of all, including auth.
-					} else if (strstr_P(clientline, PSTR("POST /sensors/")) != 0) {
-						procSensorReq(&client,clientline);		// shoult take care of all, including auth.
-					} else if ((pc = strstr_P(clientline, PSTR("POST /systems/"))) != 0) {
-						procSystemReq(&client,clientline);		// -- " " --
-					} else if (strstr_P(clientline, PSTR("GET /sd/ ")) != 0) { // print all the files, use a helper to keep it clean
-						if (basicAuthorize(&client)) {
-							header(&client,CONTENT_TYPE_HTML);	// send a standard http response header for html page
-							web_startpage(&client,"files");
-							ListFiles(client, NULL, LS_DATE | LS_SIZE);		// list root
-							web_endpage(&client);
-						}
-					} else if (strstr_P(clientline, PSTR("GET /sd/")) != 0) {		// no space after the /, so a filename is expected to follow
-						if (basicAuthorize(&client)) {
-							char *file_path;		// will point to file path
-							file_path = clientline + 8; // pointer to string following "GET /sd/"
-							(strstr_P(clientline, PSTR(" HTTP")))[0] = 0;       // terminate string just before proto string
-							// todo log this
-							if (!ServeFile(client,file_path)) web_notfound(&client);		// server file or 404 if serving returns false
-						}
-					} else if (strstr_P(clientline, PSTR("GET /status ")) != 0 ||		// /status
-							(strstr_P(clientline, PSTR("GET / ")) != 0 && !ServeFile(client,"/index.htm"))) {				// also for www root
-						if (!(this->operational_state & OPSTATE_PAUSED)) {
+						// Look for substring such as a request to get the root file
+						if (strstr_P(clientline, PSTR("GET /status.json")) != 0) {
 							if (basicAuthorize(&client)) {
-								// todo log this when enabled log levels
-								header(&client,CONTENT_TYPE_HTML);
-								web_startpage(&client,"status",20);
-								WCPrintP(&client,"you should get an index.html. this will be deprecated.");
+								header(&client,CONTENT_TYPE_JSON);
+								json_status(&client);
+							}
+						} else if (strstr_P(clientline, PSTR("POST /controls/")) != 0) {
+							procControlReq(&client,clientline);		// shoult take care of all, including auth.
+						} else if (strstr_P(clientline, PSTR("POST /sensors/")) != 0) {
+							procSensorReq(&client,clientline);		// shoult take care of all, including auth.
+						} else if ((pc = strstr_P(clientline, PSTR("POST /systems/"))) != 0) {
+							procSystemReq(&client,clientline);		// -- " " --
+						} else if (strstr_P(clientline, PSTR("GET /sd/ ")) != 0) { // print all the files, use a helper to keep it clean
+							if (basicAuthorize(&client)) {
+								header(&client,CONTENT_TYPE_HTML);	// send a standard http response header for html page
+								web_startpage(&client,"files");
+								ListFiles(client, NULL, LS_DATE | LS_SIZE);		// list root
 								web_endpage(&client);
-								// todo log this when enabled log levels
-							} else {
-								web_maintenance(&client);
 							}
-						}
-					} else if (strstr_P(clientline,PSTR("GET /reconfigure")) != 0) {
-						if (basicAuthorize(&client)) {
-							header(&client,CONTENT_TYPE_HTML);
-							// deprecating fancy responses, just an ok status
-							//web_startpage(&client,"reconfigure",0);
-							//WCPrintP(&client,"OK.");		// TODO
-							//web_endpage(&client);
-							this->dispatched_requests = DREQ_RECONF;		// APDuino should read it
-						}
-					} else if (strstr_P(clientline,PSTR("GET /reset")) != 0) {
-						if (basicAuthorize(&client)) {
-							header(&client,CONTENT_TYPE_HTML);
-							// deprecating fancy responses, just an ok status
-							//web_startpage(&client,"reset",0);
-							//WCPrintP(&client,"OK.");		// TODO return all stuff as JSON + codes ref. apd_msg_codes.h - javascript can easily make the conversion
-							//web_endpage(&client);
-							this->dispatched_requests = DREQ_RESET;		// APDuino should read it
-						}
-					}  else if (strstr_P(clientline,PSTR("GET /reloadrules")) != 0) {
-						if (basicAuthorize(&client)) {
-							header(&client,CONTENT_TYPE_HTML);
-							// deprecating fancy responses, just an ok status
-							//web_startpage(&client,"reload_rules",0);
-							//WCPrintP(&client,"OK.");
-							//web_endpage(&client);
-							this->dispatched_requests = DREQ_RELOADRULES;		// APDuino should read it
-						}
-					} else if (strstr_P(clientline,PSTR("GET /diags")) != 0) {
-						if (basicAuthorize(&client)) {
-							header(&client,CONTENT_TYPE_HTML);
-							// deprecating fancy responses, just an ok status
-							//web_startpage(&client,"diagnostics",0);
-							//WCPrintP(&client,"OK.");
-							//web_endpage(&client);
-							this->dispatched_requests = DREQ_DIAGNOSTICS;		// APDuino should read it
-						}
-					} else if (strstr_P(clientline,PSTR("GET /claimdevice")) != 0) {
-						if (basicAuthorize(&client)) {
-							header(&client,CONTENT_TYPE_HTML);
-							web_startpage(&client,"claimdevice",0);
-							claim_device_link(&client);
-							web_endpage(&client);
-						}
-				// TODO investigate/research why the Reset_AVR messes up the device
-				/* } else if (strstr_P(filename,PSTR("reset")) != 0) {
-				  	if (basicAuthorize(&client)) {
-							// todo log this
-							Reset_AVR();
-					  }*/
-					} else if (strstr_P(clientline, PSTR("POST /provisioning")) != 0) {
-						if (basicAuthorize(&client)) {
-							if (!(this->operational_state & OPSTATE_PAUSED)) {
-								this->processProvisioningRequest(&client, true);
-							} else {
-								web_maintenance(&client);
+						} else if (strstr_P(clientline, PSTR("GET /sd/")) != 0) {		// no space after the /, so a filename is expected to follow
+							// retrieve the filename before authentication (as that would throw our buffer away)
+							char *pfile_path;		// will point to file path
+							pfile_path = clientline + 8; // pointer to string following "GET /sd/"
+							(strstr_P(clientline, PSTR(" HTTP")))[0] = 0;       // terminate string just before proto string
+							char file_path[128] = "";		// a temp. buffer hopefully large enough for any files (overkill for the current dir. layout)
+							file_path[127] = 0;					// make sure the string will be null terminated
+							strncpy(file_path,pfile_path,127);	// strncpy would not null terminate if reaching max. (but null pads if < max)
+							// todo log file access ATTEMPT
+							if (basicAuthorize(&client)) {		// now (that we have the file) Authenticate
+								// todo log this
+								if (!ServeFile(client,file_path)) web_notfound(&client);		// server file or 404 if serving returns false
 							}
-						}
-					} else {
-						// todo log this when enabled log levels
-						// everything else is a 404
-						if (basicAuthorize(&client)) {
-							if (strstr_P(clientline, PSTR("GET / ")) == 0) {		// if not root url
-								web_notfound(&client);
-							} else {
-								// 'GET / ' served already
+						} else if (strstr_P(clientline, PSTR("GET /status ")) != 0 ||		// /status
+												strstr_P(clientline, PSTR("GET / ")) != 0) {				// also for www root
+							if (basicAuthorize(&client)) {
+								if (!ServeFile(client,"/index.htm")) {
+										// todo log this when enabled log levels
+										header(&client,CONTENT_TYPE_HTML);
+										web_startpage(&client,"status",20);
+										WCPrintP(&client,"Get an UI from APDuino Online.");
+										web_endpage(&client);
+										// todo log this when enabled log levels
+								}
 							}
-						}	// authorized
+						} else if (strstr_P(clientline,PSTR("GET /reconfigure")) != 0) {
+							if (basicAuthorize(&client)) {
+								header(&client,CONTENT_TYPE_HTML);
+								// deprecating fancy responses, just an ok status
+								//web_startpage(&client,"reconfigure",0);
+								//WCPrintP(&client,"OK.");		// TODO
+								//web_endpage(&client);
+								this->dispatched_requests = DREQ_RECONF;		// APDuino should read it
+							}
+						} else if (strstr_P(clientline,PSTR("GET /reset")) != 0) {
+							if (basicAuthorize(&client)) {
+								header(&client,CONTENT_TYPE_HTML);
+								// deprecating fancy responses, just an ok status
+								//web_startpage(&client,"reset",0);
+								//WCPrintP(&client,"OK.");		// TODO return all stuff as JSON + codes ref. apd_msg_codes.h - javascript can easily make the conversion
+								//web_endpage(&client);
+								this->dispatched_requests = DREQ_RESET;		// APDuino should read it
+							}
+						}  else if (strstr_P(clientline,PSTR("GET /reloadrules")) != 0) {
+							if (basicAuthorize(&client)) {
+								header(&client,CONTENT_TYPE_HTML);
+								// deprecating fancy responses, just an ok status
+								//web_startpage(&client,"reload_rules",0);
+								//WCPrintP(&client,"OK.");
+								//web_endpage(&client);
+								this->dispatched_requests = DREQ_RELOADRULES;		// APDuino should read it
+							}
+						} else if (strstr_P(clientline,PSTR("GET /diags")) != 0) {
+							if (basicAuthorize(&client)) {
+								header(&client,CONTENT_TYPE_HTML);
+								// deprecating fancy responses, just an ok status
+								//web_startpage(&client,"diagnostics",0);
+								//WCPrintP(&client,"OK.");
+								//web_endpage(&client);
+								this->dispatched_requests = DREQ_DIAGNOSTICS;		// APDuino should read it
+							}
+						} else if (strstr_P(clientline,PSTR("GET /claimdevice")) != 0) {
+							if (basicAuthorize(&client)) {
+								header(&client,CONTENT_TYPE_HTML);
+								web_startpage(&client,"claimdevice",0);
+								claim_device_link(&client);
+								web_endpage(&client);
+							}
+					// TODO investigate/research why the Reset_AVR messes up the device
+					/* } else if (strstr_P(filename,PSTR("reset")) != 0) {
+							if (basicAuthorize(&client)) {
+								// todo log this
+								Reset_AVR();
+							}*/
+						} else if (strstr_P(clientline, PSTR("POST /provisioning")) != 0) {
+							if (basicAuthorize(&client)) {
+								if (!(this->operational_state & OPSTATE_PAUSED)) {
+									this->processProvisioningRequest(&client, true);
+								} else {
+									web_maintenance(&client);
+								}
+							}
+						} else {
+							// todo log this when enabled log levels
+							// everything else is a 404
+							if (basicAuthorize(&client)) {
+								if (strstr_P(clientline, PSTR("GET / ")) == 0) {		// if not root url
+									web_notfound(&client);
+								} else {
+									// 'GET / ' served already
+								}
+							}	// authorized
+						}
+						break;
 					}
-					break;
+				} else {			// OPSTATE_PAUSED (not 'likely' in a single threaded env. , eh...:))
+					web_maintenance(&client);
 				}
 			}
 

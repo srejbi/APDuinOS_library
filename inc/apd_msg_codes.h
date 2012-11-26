@@ -48,6 +48,12 @@
 #define APDUINO_DEBUG_TSLOGCALLED         0x1042	// ThingSpeak logging started
 #define APDUINO_DEBUG_TSLOGGING           0x1043	// ThingSpeak logging %d chars.
 
+#define APDUINO_DEBUG_SETUPUDPFORNTP      0x1020	// Setting up UDP for NTP
+#define APDUINO_DEBUG_UDPFORNTPOK         0x1021 	// UDP networking prepared for NTP
+#define APDUINO_DEBUG_USING_DEFAULTNTP    0x1022  // Using default NTP server
+#define APDUINO_DEBUG_RTCADJUST						0x1025  // Adjusting Hardware RTC
+#define APDUINO_DEBUG_NTPSYNC							0x1026  // Starting NTP Sync
+#define APDUINO_DEBUG_NTPUDPPACKPREP        0x2027	// Preparing NTP packet for sync
 
 // MESSAGES			2
 #define APDUINO_MSG_SERIAL_INIT		        0x2001	// Serial port initialized
@@ -71,9 +77,6 @@
 
 
 #define APDUINO_MSG_SWRTCSTART            0x2022	// Starting SW clock
-#define APDUINO_MSG_SETUPUDPFORNTP        0x2023	// Setting up UDP for NTP
-#define APDUINO_MSG_UDPFORNTPOK           0x2024 	// UDP networking prepared for NTP
-#define APDUINO_MSG_NTPUDPPACKPREP        0x2025	// Preparing NTP packet for sync
 #define APDUINO_MSG_NTPUDPPACKSEND        0x2026	// Sending NTP packet for sync
 #define APDUINO_MSG_TIMEADJUST		        0x2027	// Adjusting clock...
 #define APDUINO_MSG_TIMEADJUSTED		      0x2028	// Adjusted clock
@@ -278,6 +281,7 @@
 #define APDUINO_ERROR_RANORULES           0x5501	// Rule Array : no rules defined
 #define APDUINO_ERROR_RAALLOCFAIL         0x5502	// Rule Array allocation failure
 #define APDUINO_ERROR_RADUMPOPENFAIL		  0x5503	// Rule Array: error opening dump file
+#define APDUINO_ERROR_EVALNOTSUPPORTED    0x5550  // Rule Evaluation: Evaluation function not supported
 
 #define APDUINO_ERROR_RDEFINVALID         0x5510	// Invalid Rule definition
 #define APDUINO_ERROR_RMETROALLOCFAIL     0x5511	// Failed to allocate Rule Metro

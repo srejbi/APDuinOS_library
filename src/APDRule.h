@@ -43,17 +43,17 @@
 #define RF_METRO              3				// Rule will go on true branch (unless expression evaluates false) every N milliseconds
 #define RF_SCHEDULED          4				// Rule will go on true branch (unless expression evaluates false) as per cron-like time specification, false every other minute
 #define RF_IDLE_CHECK         5				// Rule will go on true if device is idle, false if not (used for hardware UI)
-#define RF_RAM_CHECK          6				// Rule not implemented
+#define RF_RAM_CHECK          6				// NOT IMPLEMENTED: Rule evals true if more RAM available than Test Value
 #define RF_SENSOR_GT          64			// Rule will go on true if sensor value is greater than test value, false otherwise
 #define RF_SENSOR_GTE         65			// Rule will go on true if sensor value is greater than or equal to test value, false otherwise
 #define RF_SENSOR_LT          66			// Rule will go on true if sensor value is less than test value, false otherwise
 #define RF_SENSOR_LTE         67			// Rule will go on true if sensor value is less than or equal to test value, false otherwise
 #define RF_SENSOR_EQ          68			// Rule will go on true if sensor value is equal to the test value, false otherwise
-#define RF_SENSOR_GT_SENSOR   128			// Rule will go on true if sensor value is greater than the reference sensor value, false otherwise
-#define RF_SENSOR_GTE_SENSOR  129			// Rule will go on true if sensor value is greater than or equal to the reference sensor value, false otherwise
-#define RF_SENSOR_LT_SENSOR   130			// Rule will go on true if sensor value is less than the reference sensor value, false otherwise
-#define RF_SENSOR_LTE_SENSOR  131			// Rule will go on true if sensor value is less than or equal to the reference sensor value, false otherwise
-#define RF_SENSOR_EQ_SENSOR   132			// Rule will go on true if sensor value is equal to the reference sensor value, false otherwise
+#define RF_SENSOR_GT_SENSOR   128			// NOT IMPLEMENTED: Rule will go on true if sensor value is greater than the reference sensor value, false otherwise
+#define RF_SENSOR_GTE_SENSOR  129			// NOT IMPLEMENTED: Rule will go on true if sensor value is greater than or equal to the reference sensor value, false otherwise
+#define RF_SENSOR_LT_SENSOR   130			// NOT IMPLEMENTED: Rule will go on true if sensor value is less than the reference sensor value, false otherwise
+#define RF_SENSOR_LTE_SENSOR  131			// NOT IMPLEMENTED: Rule will go on true if sensor value is less than or equal to the reference sensor value, false otherwise
+#define RF_SENSOR_EQ_SENSOR   132			// NOT IMPLEMENTED: Rule will go on true if sensor value is equal to the reference sensor value, false otherwise
 #define RF_EVALUATE						127			// Rule will evaluate expression and go to the true/false action accordingly
 
 //APDuino Rule Actions
@@ -157,7 +157,9 @@ public:
   static boolean apd_rule_ram_check(APDRule *pRule);
   static boolean apd_rule_sensor_equ(APDRule *pRule);
   static boolean apd_rule_sensor_lt(APDRule *pRule);
+  static boolean apd_rule_sensor_lte(APDRule *pRule);
   static boolean apd_rule_sensor_gt(APDRule *pRule);
+  static boolean apd_rule_sensor_gte(APDRule *pRule);
   static boolean apd_rule_eval_conditions(APDRule *pRule);
 
   static boolean cronposeval(int curval,const char*pcpos);

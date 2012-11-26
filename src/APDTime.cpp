@@ -164,8 +164,8 @@ void APDTime::new_timeconf_parser(void *pAPD, int iline, char *psz) {
 	if ( iscand > 5) {
 		memcpy(timeServer,tsIP,4);
 	} else {
-		SerPrintP("DEFAULT TIME SRV.")
 		memcpy(timeServer,DEFAULT_TIMESERVER_IP,4);
+		APDDebugLog::log(APDUINO_DEBUG_USING_DEFAULTNTP,NULL);
 	}
 }
 
@@ -173,8 +173,7 @@ void APDTime::new_timeconf_parser(void *pAPD, int iline, char *psz) {
 // TODO return whatever udp would return
 void APDTime::setup_ntp_sync(int UDPPort) { // (int UDPPort, byte *TimeServer ) {
   // check if not in use...
-	APDDebugLog::log(APDUINO_MSG_SETUPUDPFORNTP,NULL);
-	// todo log this when enabled log levels ("SETUP UDP 4 NTP\n");
+	APDDebugLog::log(APDUINO_DEBUG_SETUPUDPFORNTP,NULL);
   if (pUdp==NULL) {
     //memcpy(timeServer,TimeServer,4);
     //dst = iDST;
@@ -183,7 +182,7 @@ void APDTime::setup_ntp_sync(int UDPPort) { // (int UDPPort, byte *TimeServer ) 
     pUdp = new EthernetUDP;
     if (pUdp != NULL) {				// if we have UDP
       if (pUdp->begin(localPort)) {			// if opening localPort for UDP succeeds
-      	APDDebugLog::log(APDUINO_MSG_UDPFORNTPOK,NULL);
+      	APDDebugLog::log(APDUINO_DEBUG_UDPFORNTPOK,NULL);
       } else {													// failed to start UDP on localport
       	APDDebugLog::log(APDUINO_WARN_NOUDPFORNTP,NULL);
 				free(pUdp);			// free the EthernetUDP
@@ -229,7 +228,7 @@ unsigned long APDTime::send_ntp_packet(byte *address)
 {
   unsigned long ulret = 0;
   if (pUdp != NULL) {
-  	APDDebugLog::log(APDUINO_MSG_NTPUDPPACKPREP,NULL);
+  	APDDebugLog::log(APDUINO_DEBUG_NTPUDPPACKPREP,NULL);
 
   	memset(pb, 0, NTP_PACKET_SIZE);		// blank packet
     // Initialize values needed to form NTP request
@@ -268,7 +267,7 @@ unsigned long APDTime::send_ntp_packet(byte *address)
 void APDTime::adjust(DateTime dt) {
 	APDDebugLog::log(APDUINO_MSG_TIMEADJUST,NULL);
   if (pRTC != NULL && pRTC->isrunning()) {
-  // todo log this when enabled log levelsSerPrintP("RTC,");
+  	  APDDebugLog::log(APDUINO_DEBUG_RTCADJUST,NULL);
 
       pRTC->adjust(dt);
   }
@@ -296,8 +295,9 @@ void APDTime::sync_to_ntp()
 		APDDebugLog::log(APDUINO_ERROR_NTPNOUDP,NULL);
 		return;
 	}
-	// todo log this when enabled log levels ("\nNTP SYNC!\n");
+	APDDebugLog::log(APDUINO_DEBUG_NTPSYNC,NULL);
   if (pRTCm != NULL && timeServer[0] != 0) {
+  	APDDebugLog::log(APDUINO_DEBUG_NTPSYNC,NULL);
   	// todo log this when enabled log levels0("\nSW:");  PrintDateTime(pRTCm->now()); \
     if (pRTC != NULL && pRTC->isrunning()) { \
         SerPrintP("\nHW:"); \

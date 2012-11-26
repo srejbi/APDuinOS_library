@@ -27,5 +27,5 @@
 #define APD_VERSION_H_
 
 #include "apd_msg_codes.h"
-#define APDUINO_VERSION_STRING    PSTR("0.71.%04d%02d%02d%02d%02d%02d")
+#define APDUINO_VERSION_STRING    PSTR("0.72.%04d%02d%02d%02d%02d%02d")
 #endif /* APD_VERSION_H_ */

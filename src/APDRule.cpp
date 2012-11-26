@@ -167,16 +167,19 @@ APDRule::APDRule(RDCONF *rdc, APDSensorArray *pSA, APDControlArray *pCA) {
           break;
         case RF_SENSOR_GT:
         	// todo log this when enabled log levels ("SENSOR GT VAL Rule")
-			this->prulefunc = (&apd_rule_sensor_gt);
-			break;
+					this->prulefunc = (&apd_rule_sensor_gt);
+					break;
         case RF_SENSOR_GTE:
+        	// todo log this when enabled log levels ("SENSOR GT VAL Rule")
+					this->prulefunc = (&apd_rule_sensor_gte);
         	break;
         case RF_SENSOR_LT:
         	// todo log this when enabled log levels ("SENSOR LT VAL Rule")
-            this->prulefunc = (&apd_rule_sensor_lt);
-            break;
+					this->prulefunc = (&apd_rule_sensor_lt);
+					break;
         case RF_SENSOR_LTE:
-        	// todo log this when enabled log levels ("NOT SUPPORTED")
+        	// todo log this when enabled log levels ("SENSOR LTE VAL Rule")
+        	this->prulefunc = (&apd_rule_sensor_lte);
           break;
         case RF_SENSOR_EQ:
         	// todo log this when enabled log levels ("SENSOR EQ VAL Rule")
@@ -188,6 +191,7 @@ APDRule::APDRule(RDCONF *rdc, APDSensorArray *pSA, APDControlArray *pCA) {
         case RF_SENSOR_LTE_SENSOR:
         case RF_SENSOR_EQ_SENSOR:
         	// todo log this when enabled log levels("NOT SUPPORTED")
+        	APDDebugLog::log(APDUINO_ERROR_EVALNOTSUPPORTED,NULL);
           break;
         case RF_EVALUATE:
         	// todo log this when enabled log levels ("EVALUATE CONDITIONS")
@@ -470,7 +474,7 @@ boolean APDRule::apd_rule_sensor_equ(APDRule *pRule) {
 
   // simplified rule checking : take fvalue from the sensor
   // todo revise type conversions here!
-  return ((int)ps->fvalue == (int)*((float *)(pr->pvalue)));
+  return (ps->fvalue == *((float *)(pr->pvalue)));
 
   // todo remove type specific checks deprecated code
 /*  switch(ps->config.sensor_type) {
@@ -499,15 +503,27 @@ boolean APDRule::apd_rule_sensor_equ(APDRule *pRule) {
   //return false;
 }
 
-// sensor baéir less than
+// sensor value less than
 boolean APDRule::apd_rule_sensor_lt(APDRule *pRule) {
 	// todo log this when enabled log levels ("SENSOR LT CHK");
   APDRule *pr = (APDRule*)pRule;
   APDSensor *ps = pr->psensor;
 
   // simplified rule checking : take fvalue from the sensor
-  return ((int)ps->fvalue < (int)*((float *)(pr->pvalue)));
+  return (ps->fvalue < *((float *)(pr->pvalue)));
 }
+
+
+// sensor value less than or equal
+boolean APDRule::apd_rule_sensor_lte(APDRule *pRule) {
+	// todo log this when enabled log levels ("SENSOR LT CHK");
+  APDRule *pr = (APDRule*)pRule;
+  APDSensor *ps = pr->psensor;
+
+  // simplified rule checking : take fvalue from the sensor
+  return (ps->fvalue <= *((float *)(pr->pvalue)));
+}
+
 
 // sensor value greater than
 boolean APDRule::apd_rule_sensor_gt(APDRule *pRule) {
@@ -516,7 +532,17 @@ boolean APDRule::apd_rule_sensor_gt(APDRule *pRule) {
   APDSensor *ps = pr->psensor;
 
   // simplified rule checking : take fvalue from the sensor
-  return ((int)ps->fvalue > (int)*((float *)(pr->pvalue)));
+  return (ps->fvalue > *((float *)(pr->pvalue)));
+}
+
+// sensor value greater than or equal
+boolean APDRule::apd_rule_sensor_gte(APDRule *pRule) {
+	// todo log this when enabled log levels ("SENSOR GT CHK")
+  APDRule *pr = (APDRule*)pRule;
+  APDSensor *ps = pr->psensor;
+
+  // simplified rule checking : take fvalue from the sensor
+  return (ps->fvalue >= *((float *)(pr->pvalue)));
 }
 
 // evaluate the expression provided
