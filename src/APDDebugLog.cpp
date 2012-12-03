@@ -48,27 +48,32 @@ void APDDebugLog::serialprint(uint16_t code, const char *psz_logstring){
 }
 
 LOGITEM *APDDebugLog::makelog(uint16_t code, const char *psz_logstring){
+	LOGITEM *newlog = NULL;
 	if (logtoserial) serialprint(code,psz_logstring);
-	LOGITEM *newlog = (LOGITEM*)malloc(sizeof(LOGITEM));
-	if (newlog) {
-		if (logtoserial) SerPrintP(">");
-		unsigned long tsmillis = millis();
-		newlog->psz_logstring = (char *)malloc(sizeof(char)*((psz_logstring ? strlen(psz_logstring) : 0)+LOG_MESSAGE_HEADER_LEN));
-		newlog->pnext = NULL;
+	if (freeMemory() < (MIN_FREE_RAM + strlen(psz_logstring) + sizeof(LOGITEM))) {
+		newlog = (LOGITEM*)malloc(sizeof(LOGITEM));
+		if (newlog) {
+			if (logtoserial) SerPrintP(">");
+			unsigned long tsmillis = millis();
+			newlog->psz_logstring = (char *)malloc(sizeof(char)*((psz_logstring ? strlen(psz_logstring) : 0)+LOG_MESSAGE_HEADER_LEN));
+			newlog->pnext = NULL;
 
-		if (newlog->psz_logstring) {
-			if (logtoserial) SerPrintP("@");
-			sprintf_P(newlog->psz_logstring,PSTR("%lu:0x%04x"), tsmillis, code);
-			if (psz_logstring) {
-				strcat_P(newlog->psz_logstring, PSTR(":"));
-				strcat(newlog->psz_logstring, psz_logstring);
+			if (newlog->psz_logstring) {
+				if (logtoserial) SerPrintP("@");
+				sprintf_P(newlog->psz_logstring,PSTR("%lu:0x%04x"), tsmillis, code);
+				if (psz_logstring) {
+					strcat_P(newlog->psz_logstring, PSTR(":"));
+					strcat(newlog->psz_logstring, psz_logstring);
+				}
+				if (logtoserial) { Serial.print(newlog->psz_logstring); SerPrintP("..."); }
+			} else {
+				serialprint(APDUINO_ERROR_LOGMSGOUTOFMEM,NULL);
 			}
-			if (logtoserial) { Serial.print(newlog->psz_logstring); SerPrintP("..."); }
 		} else {
-			serialprint(APDUINO_ERROR_LOGMSGOUTOFMEM,NULL);
+			serialprint(APDUINO_ERROR_LOGITEMOUTOFMEM,NULL);
 		}
 	} else {
-		serialprint(APDUINO_ERROR_LOGITEMOUTOFMEM,NULL);
+		serialprint(APDUINO_ERROR_LOGITEMLOWRAMFAIL,NULL);
 	}
 	return newlog;
 }
@@ -81,7 +86,8 @@ LOGITEM *APDDebugLog::makelog(uint16_t code, const char *psz_logstring){
 // and flush messages via APDLogWriter (or via pushing a new log message)
 void APDDebugLog::log(uint16_t code, const char *psz_logstring) {
 	if (highByte(code) >= (loglevel*16)) {		// if msg exceeds log level
-		if (freeMemory() < MIN_FREE_RAM && bufstart) {		// if low RAM, then FIFO flush
+		// flush logs more aggressively than before + check for free memory
+		while (freeMemory() < (MIN_FREE_RAM + strlen(psz_logstring) + sizeof(LOGITEM)) && bufstart) {		// if low RAM, then FIFO flush
 			flush_first();
 			lostmessages++;				// keep track of dropped messages
 			if (logtoserial) SerPrintP("x");
@@ -110,8 +116,8 @@ void APDDebugLog::log(uint16_t code, const char *psz_logstring) {
 				if (logtoserial) SerPrintP("+");
 			}
 		} else {
+			lostmessages++;
 			serialprint(APDUINO_ERROR_LOGITEMOUTOFMEM,NULL);
-			// todo toss out messages and retry
 		}
 		if (logtoserial) Serial.println();
 	}	// end if loglevel

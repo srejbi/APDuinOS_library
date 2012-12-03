@@ -41,6 +41,7 @@
 
 // DEBUG				1
 #define APDUINO_DEBUG_STORAGESTART        0x1011	// Starting Storage
+#define APDUINO_DEBUG_LOGROTATE_DEL       0x1018	// Logrotate performed simple delete
 #define APDUINO_DEBUG_AOLOGCALLED         0x1036	// APDuino Online logging...
 #define APDUINO_DEBUG_AOLOGGING           0x1037	// APDuino Online logging %d chars.
 #define APDUINO_DEBUG_COSMLOGCALLED       0x1039	// Cosm logging...
@@ -190,6 +191,8 @@
 
 #define APDUINO_LOG_HWRTCOK               0x4020	// HW RTC running OK
 #define APDUINO_LOG_SWRTCOK               0x4021	// SW RTC running OK
+#define APDUINO_LOG_NETRESTART            0x403E	// Attempting to restart network interface
+#define APDUINO_LOG_NETRESTARTED          0x403F	// Network interface restarted
 #define APDUINO_LOG_NTPSYNCOK							0x4070	// Clock synced to NTP
 
 #define APDUINO_LOG_RECONF								0x4ABC  // Performing reconfiguration
@@ -222,7 +225,7 @@
 #define APDUINO_ERROR_SUSPECTSTORAGEERR   0x500C	// Suspected storage error in net setup
 #define APDUINO_ERROR_NETALREADYSTARTED   0x500D	// Net already started?
 #define APDUINO_ERROR_NONETFORWWW         0x500E	// No network interface set up for WWW server
-
+#define APDUINO_ERROR_NETRESTARTFAIL      0x5030  // Failed to restart network interface
 
 #define APDUINO_ERROR_SDFATSTARTERR       0x5080	// Error starting SD FAT
 #define APDUINO_ERROR_FILEOPEN            0x5081	// Error opening file '%s'
@@ -231,6 +234,7 @@
 #define APDUINO_ERROR_LOGROTATEOUTOFMEM   0x5084	// Logrotate failed to allocate RAM
 #define APDUINO_ERROR_LOGMSGOUTOFMEM      0x5085	// Debug logger failed to allocate RAM for message string
 #define APDUINO_ERROR_LOGITEMOUTOFMEM     0x5086	// Logrotate failed to allocate RAM for log item
+#define APDUINO_ERROR_LOGITEMLOWRAMFAIL   0x5087	// Logrotate detected low RAM conditions, skipping item
 
 #define APDUINO_ERROR_RTCALLOCFAIL        0x5090	// Failed to allocate RTC
 #define APDUINO_ERROR_RTCALREADYINIT      0x5091	// RTC already initialized
@@ -248,22 +252,22 @@
 #define APDUINO_ERROR_AKSAVEIOERR         0x50E9 	//  API Key save IO Error
 #define APDUINO_ERROR_AKSAVESTORAGE       0x50EA 	// API key save error - No storage
 #define APDUINO_ERROR_WWWFSNOSTORAGE      0x5037	// Error listing SD card, no storage
+#define APDUINO_ERROR_JSNOCLIENT          0x5E01	// JSON Status: no web client pointer
+#define APDUINO_ERROR_COSMDUMPOPEN        0x5E02	// Cosm dump file open failed: %s
+#define APDUINO_ERROR_BROKENHEXCODE       0x5E03	// Broken hex code in http request
 #define APDUINO_ERROR_WWWCLIENTOCCUPIED   0x5EE0	// APDuino Online: web client taken by another process
 #define APDUINO_ERROR_WWWCANTCONNECTAO    0x5EE1	// APDuino Online: connection error
 #define APDUINO_ERROR_WWWCLIENTBUSY       0x5EE2	// APDuino Online: client busy
 #define APDUINO_ERROR_AONOWEBCLIENT       0x5EE3	// APDuino Online: no web client
 #define APDUINO_ERROR_AOLOGNOWEBCLIENT    0x5EE4	// APDuino Online: no web client for logger
+#define APDUINO_ERROR_AOSELFREG		        0x5EE5	// APDuino Online: error self registering: %s
 #define APDUINO_ERROR_CLOGNOWEBCLIENT     0x5EF0	// Cosm Logging: no web client for logger
 #define APDUINO_ERROR_CLOGCONNFAIL        0x5EF1	// Cosm Logging: connection failure
 #define APDUINO_ERROR_TSLOGCONNFAIL       0x5EF5	// ThingSpeak Logging: connection failure
 #define APDUINO_ERROR_PRINTCLIENTOUTOFMEM 0x5EEE	// APDWeb: out of RAM when printing progmem string
-#define APDUINO_ERROR_JSNOCLIENT          0x5E01	// JSON Status: no web client pointer
-#define APDUINO_ERROR_COSMDUMPOPEN        0x5E02	// Cosm dump file open failed: %s
-#define APDUINO_ERROR_BROKENHEXCODE       0x5E03	// Broken hex code in http request
-#define APDUINO_ERROR_AOSELFREG		        0x5EE5	// APDuino Online: error self registering: %s
-#define APDUINO_ERROR_WWWAUTHFAIL         0x5EF0	// WWW Authentication Failed %s
-#define APDUINO_ERROR_WWWUNAUTH           0x5EF1	// WWW Unauthorized, authentication requested
-#define APDUINO_ERROR_WWWNOCLIENT         0x5EFF	// WWW : no client connection in %s
+#define APDUINO_ERROR_WWWAUTHFAIL         0x5FF0	// WWW Authentication Failed %s
+#define APDUINO_ERROR_WWWUNAUTH           0x5FF1	// WWW Unauthorized, authentication requested
+#define APDUINO_ERROR_WWWNOCLIENT         0x5FF2	// WWW : no client connection in %s
 
 #define APDUINO_ERROR_UNKNOWNSENSORTYPE   0x5300	// Unknown sensor type
 #define APDUINO_ERROR_SAALLOCFAIL         0x5301	// Failed to allocate Sensor Array

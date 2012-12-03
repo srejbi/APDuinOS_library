@@ -708,7 +708,7 @@ boolean APDuino::start_logging(unsigned long ulLoggingFreq) {
   boolean bLogging = false;
   if (bAPDuinoConfigured && APDStorage::ready() ) {    // check storage status
   	// APDLogWriter::enable_sync_writes(); // enabled by begin(), just to remember enable/disable after/before SD ops
-  	if (APDStorage::rotate_file("APDLOG.TXT", MAX_LOG_SIZE) >= 0) {
+  	if (APDStorage::rotate_file("APDLOG.TXT", MAX_LOG_BACKUP_COUNT, MAX_LOG_SIZE) >= 0) {			// TODO make MAX_LOG_BACKUP_COUNT user configurable later on
   			APDDebugLog::log(APDUINO_LOG_SDLOGOK,NULL);
       } else {
       	APDDebugLog::log(APDUINO_ERROR_LOGUNKNOWN,NULL);

@@ -85,6 +85,8 @@
 #include "APDTime.h"
 #include "APDWeb.h"
 
+#define MAX_LOG_BACKUP_COUNT		100		// maximum amount of data log backups to keep when rotating (keep to a reasonable level, rotating too many files can take a while)
+
 
 class APDuino {
 public:

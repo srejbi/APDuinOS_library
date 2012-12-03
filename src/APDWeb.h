@@ -47,6 +47,8 @@
 const char USERAGENT[] = "APDuinOS";						// todo incorp. version
 const char WEBLOG_URI[]="/devices/lastlog";      // see apduino online specs.
 
+#define MAX_PROVISION_BACKUP_COUNT				5     // the number of backups to keep of any file being provisioned //TODO make MAX_PROVISION_BACKUP_COUNT configurable later on (keep it to a reasonable low number! too many rotates take a long time)
+
 #define APDUINO_SERVER PSTR("apduino.com")
 #define APDUINO_SERVER_IP (byte []){204,12,228,115}
 #define DEFAULT_ONLINE_LOG_FREQ		60000

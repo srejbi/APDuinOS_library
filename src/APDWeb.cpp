@@ -191,6 +191,7 @@ boolean APDWeb::start() {
 // works around connection issues..
 // TODO: investigate server stopping
 boolean APDWeb::restart() {
+	APDDebugLog::log(APDUINO_LOG_NETRESTART,NULL);
 	// if running in a multithreading environment, we should lock the APDWeb with a semaphore here...
 	if (bEthConfigured) {
 		if (pwwwclient) {
@@ -202,9 +203,11 @@ boolean APDWeb::restart() {
 		operational_state = OPSTATE_BLANK;
 		if (this->start()) {
 			this->self_register();
+			APDDebugLog::log(APDUINO_LOG_NETRESTARTED,NULL);
 		} else {
 			operational_state |= OPSTATE_ERROR;
 			this->failure();
+			APDDebugLog::log(APDUINO_ERROR_NETRESTARTFAIL,NULL);
 		}
 	} else {
 		return false;
@@ -1159,7 +1162,7 @@ void APDWeb::processProvisioningRequest(EthernetClient *pclient, boolean brespon
 						APDDebugLog::log(APDUINO_MSG_PROVFILE,destfile);
 
 						if (APDStorage::p_sd->exists(destfile)) {
-							APDStorage::rotate_file(destfile,0);		// make backup
+							APDStorage::rotate_file(destfile,MAX_PROVISION_BACKUP_COUNT,0);		// make backup // TODO make MAX_PROVISION_BACKUP_COUNT user configurable later on
 							APDStorage::p_sd->remove(destfile);
 						}
 						APDStorage::p_sd->rename(provfile,destfile);

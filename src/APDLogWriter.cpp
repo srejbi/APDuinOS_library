@@ -32,7 +32,7 @@ char APDLogWriter::szlogfname[13] = "";
 void APDLogWriter::begin() {
 	strcpy_P(szlogfname,PSTR("APDDEBUG.LOG"));
 	// todo should allocate filename iso static, and copy szFileName
-	APDStorage::rotate_file(szlogfname,0);
+	APDStorage::rotate_file(szlogfname,MAX_DEBUG_LOG_COUNT,0);
 	delay(200);
 	if (APDStorage::ready()) {
 		APDDebugLog::setlogwriter(&(APDLogWriter::log_writer_function));

@@ -36,6 +36,8 @@
 #include "APDStorage.h"
 #include "apd_utils.h"
 
+#define MAX_DEBUG_LOG_COUNT     10				// How many debug logs to keep when rotating //TODO allow this to be configured later on
+
 class APDLogWriter {
 public:
 	static char szlogfname[13];

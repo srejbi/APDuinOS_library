@@ -55,7 +55,7 @@ public:
 	static boolean ready();
 	static void stop();
 
-	static int rotate_file(const char *szLogFile, unsigned long maxsize);
+	static int rotate_file(const char *szLogFile, int backups, unsigned long maxsize);
 	static void write_log_line(const char *szLogFile, const char *szLogLine);
 
 	static int read_file_with_parser(char *szFile, void (*pParserFunc)(void*, int, char*), void *pAPD  );

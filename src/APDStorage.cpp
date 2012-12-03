@@ -102,8 +102,11 @@ void APDStorage::stop() {
 }
 
 // Rotate log files.
+// szLogFile - the log file to be rotated
+// backups - the number of backup copies to keep (0-1000)
+// maxsize - rotate if log file size exceeds maxsize (0 to rotate anyway)
 // \return the number of files rotated
-int APDStorage::rotate_file(const char *szLogFile, unsigned long maxsize) {
+int APDStorage::rotate_file(const char *szLogFile, int backups, unsigned long maxsize) {
   int iRetCode = -1;	// something wrong
   if (bReady) {
       // rename any old log file(s) -- logrotate
@@ -118,7 +121,7 @@ int APDStorage::rotate_file(const char *szLogFile, unsigned long maxsize) {
 
 					// todo log this when enabled log levels (fSize); SerPrintP(" bytes...\n");				// TODO remove debug
 					// size check
-					if (fSize >= maxsize ) {											// TODO move max size to param
+					if (fSize >= maxsize && backups >= 0 && backups < 1000) {											// TODO move max size to param
 						APDDebugLog::log(APDUINO_MSG_LOGROTATENEEDED,NULL);
 
 						char *fname = (char *)malloc(sizeof(char)*strlen(szLogFile)+5);		// +5 to support appending if stg. like 'a' is sent, where we'll want to append ext
@@ -131,7 +134,7 @@ int APDStorage::rotate_file(const char *szLogFile, unsigned long maxsize) {
 
 							if (pszext==NULL) {								// if no rightmost '.' find a suitable place for ext.
 								//SerPrintP("No extension found in "); Serial.println(fname);
-								if (strlen(szLogFile) < 9) {
+								if (strlen(szLogFile) < 9) {			// TODO replace 9 with a calculated value that takes into account '/'-es (for longer paths)
 									pszext = (char *)(fname+strlen(fname));		// append the string
 								} else {
 									pszext = (char *)(fname+(strlen(fname)-5));		// overwrite the last part of the filename
@@ -142,16 +145,17 @@ int APDStorage::rotate_file(const char *szLogFile, unsigned long maxsize) {
 							sprintf_P(pszext, PSTR(".%03d"), ibak);
 
 							// do check for the last backup
-							for (ibak = 0; ibak < 999 && p_sd->exists(fname); sprintf_P(pszext, PSTR(".%03d"), ++ibak)) {
+							for (ibak = 0; ibak < backups-1 && p_sd->exists(fname); sprintf_P(pszext, PSTR(".%03d"), ++ibak)) {
 								// todo log this when enabled log levels (fname); SerPrintP(" exists already.\n");
 							}
 							// todo log this when enabled log levels (fname); "should be the last log file. Rotating...\n"
 
 							APDDebugLog::log(APDUINO_MSG_LOGROTATE,NULL);
-
+              // now we should the last backup's name in fname
 							if (p_sd->exists(fname)) {
 									p_sd->remove(fname);
 							}
+							// loop through backup files reverse order, renaming 'N-1' -> 'N'
 							while (ibak > 0) {
 								sprintf_P((char*)(ofname+(int)(pszext-fname)),PSTR(".%03d"),ibak-1);
 								sprintf_P(pszext,PSTR(".%03d"),ibak);
@@ -161,11 +165,16 @@ int APDStorage::rotate_file(const char *szLogFile, unsigned long maxsize) {
 								ibak--;
 								iRetCode++;			// number of logs that will be rotated
 							}
-							// rename APDLOG.TXT to APDLOG.000 using PSTRINGS for filenames to save on RAM
-							strcpy(ofname,szLogFile);								// move the original file
-							strcpy_P(pszext,PSTR(".000"));					// to original.000
+							if (backups > 0) {		// if any backups were requested to keep
+								// rename APDLOG.TXT to APDLOG.000 using PSTRINGS for filenames to save on RAM
+								strcpy(ofname,szLogFile);								// move the original file
+								strcpy_P(pszext,PSTR(".000"));					// to original.000
 
-							p_sd->rename(ofname,fname);							// make the move
+								p_sd->rename(ofname,fname);							// move the original log to .000
+							} else {							// if no backups were requested
+								p_sd->remove(ofname);										// simply remove the original log
+								APDDebugLog::log(APDUINO_DEBUG_LOGROTATE_DEL, ofname);
+							}
 							iRetCode++;				//+1
 							APDDebugLog::log(APDUINO_MSG_LOGROTATED,itoa(iRetCode,ofname,10));		// reusing ofname as a temp buffer
 						} else {
