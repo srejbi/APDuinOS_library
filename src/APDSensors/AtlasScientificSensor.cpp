@@ -126,10 +126,16 @@ AtlasScientificSensor::AtlasScientificSensor(SDCONF *sdc, void *assensor)
 					}
 					// todo halt?
 				} else {			// Software Serial (3 or 4 SW serial params scanned)
+#ifdef ATLAS_SOFTSERIAL
 					if (this->selectSWSerial()) {
+
 						((SoftwareSerial*)(((ASSENS*)(this->sensor))->asenc->serialport))->begin(ATLAS_BAUD_RATE);
 						APDDebugLog::log(APDUINO_MSG_ATLAS_SW,NULL);	// todo this should be DEBUG level
-					} else {
+					} else
+#else
+						// TODO log not supported
+#endif
+					{
 						// todo log this when enabled log levels  ERROR selecting sw serial
 						APDDebugLog::log(APDUINO_ERROR_ATLAS_SW,NULL);	// todo this should be DEBUG level
 					}
@@ -162,11 +168,15 @@ AtlasScientificSensor::~AtlasScientificSensor() {
 						sp->end();
 						// HW serial was NOT created just addressed, not freeing mem
 					} else {
+#ifdef ATLAS_SOFTSERIAL
 						SoftwareSerial *sp = (SoftwareSerial *)(this->sensor->asenc->serialport);
 						//sp->end();			// SoftwareSerial destructor will end
 						delete(sp);
 						// todo log this when enabled log levels
 						APDDebugLog::log(APDUINO_MSG_ATLAS,"SWD");
+#else
+						// TODO log not supported
+#endif
 					}
 					this->sensor->asenc->serialport = NULL;			// reset serialport to NULL
 				}
@@ -253,8 +263,12 @@ void AtlasScientificSensor::openChannel(short channel) {
 		HardwareSerial *sp = (HardwareSerial *)this->sensor->asenc->serialport;
 		sp->print('\r');
 	} else {
+#ifdef ATLAS_SOFTSERIAL
 		SoftwareSerial *sp = (SoftwareSerial *)this->sensor->asenc->serialport;
 		sp->print('\r');
+#else
+		// TODO log not supported
+#endif
 	}
 	return;
 }
@@ -313,7 +327,7 @@ bool AtlasScientificSensor::selectHWSerial()
 	return bRetCode;
 }
 
-
+#ifdef ATLAS_SOFTSERIAL
 // opens the sw serial port specified by the sensor pin
 bool AtlasScientificSensor::selectSWSerial()
 {
@@ -337,7 +351,7 @@ bool AtlasScientificSensor::selectSWSerial()
 	}
 	return bRetCode;
 }
-
+#endif
 
 boolean AtlasScientificSensor::perform_check()
 {
@@ -466,9 +480,13 @@ size_t AtlasScientificSensor::print(const char *psz) {
 		HardwareSerial *sp = (HardwareSerial *)this->sensor->asenc->serialport;
 		return sp->print(psz);
 	} else {
+#ifdef ATLAS_SOFTSERIAL
 		APDDebugLog::log(APDUINO_MSG_ATLAS_SWP,psz);		// TODO DEBUG LEVEL
 		SoftwareSerial *sp = (SoftwareSerial *)this->sensor->asenc->serialport;
 		return sp->print(psz);
+#else
+		// TODO log not supported
+#endif
 	}
 }
 
@@ -482,9 +500,13 @@ size_t AtlasScientificSensor::print(const char pc) {
 		HardwareSerial *sp = (HardwareSerial *)this->sensor->asenc->serialport;
 		return sp->print(pc);
 	} else {
+#ifdef ATLAS_SOFTSERIAL
 		APDDebugLog::log(APDUINO_MSG_ATLAS_SWPC,szlog);		// TODO DEBUG LEVEL
 		SoftwareSerial *sp = (SoftwareSerial *)this->sensor->asenc->serialport;
 		return sp->print(pc);
+#else
+		// TODO log not supported
+#endif
 	}
 }
 
@@ -515,7 +537,11 @@ int AtlasScientificSensor::available() {
 	if (this->sensor && this->sensor->asenc && this->sensor->asenc->serialport) {
 		bytes_available = ( this->is_hw_serial() ?
 				(((HardwareSerial *)this->sensor->asenc->serialport)->available()) :
+#ifdef ATLAS_SOFTSERIAL
 				(((SoftwareSerial *)this->sensor->asenc->serialport)->available()) );
+#else
+		    NAN);		// Software serial not supported
+#endif
 	}
 	return bytes_available;
 }
@@ -528,7 +554,11 @@ int AtlasScientificSensor::read() {
 	if (this->sensor && this->sensor->asenc && this->sensor->asenc->serialport) {
 		iread = this->is_hw_serial() ?
 				((HardwareSerial *)this->sensor->asenc->serialport)->read() :
+#ifdef ATLAS_SOFTSERIAL
 				((SoftwareSerial *)this->sensor->asenc->serialport)->read();
+#else
+				NAN;		// Software Serial not supported
+#endif
 	}
 	return iread;
 }

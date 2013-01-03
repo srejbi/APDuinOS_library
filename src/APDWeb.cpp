@@ -85,16 +85,20 @@ void APDWeb::initBlank()
 	apduino_server_port = 80;                 										// standard HTTP port
 	apduino_logging_freq = DEFAULT_ONLINE_LOG_FREQ;
 
+#ifdef COSM_ENABLED
 	memcpy(&cosm_server_ip,COSM_SERVER_IP,4*sizeof(byte));           // set cosm ip
 	strcpy_P(cosm_server_name, COSM_SERVER );												// set cosm hostname
 	cosm_server_port = 80;     // standard HTTP port
 	cosm_feed_id = 0;         // TODO reset feed id
 	cosm_logging_freq = DEFAULT_ONLINE_LOG_FREQ;    // 1 min
+#endif
 
+#ifdef THINGSPEAK_ENABLED
 	memcpy(&thingspeak_server_ip,(byte[]){184, 106, 153, 149},4*sizeof(byte)); // api.thingspeak.com  184.106.153.149
 	strcpy_P(thingspeak_server_name, PSTR("api.thingspeak.com") );
 	thingspeak_server_port = 80;     // standard HTTP port
 	thingspeak_logging_freq = DEFAULT_ONLINE_LOG_FREQ;    // 1 min
+#endif
 
 	net.localPort = 8888;                         // local port to listen for UDP packets (NTP communications)
 	net.wwwPort = 80;
@@ -104,22 +108,22 @@ void APDWeb::initBlank()
 	uCCount = 0;
 	pwwwcp = NULL;           // pointer to the actual web client processor (depending on what request was made, a reader can be assigned to process server resp. if we care)
 	bWebClient = false;
-	/*pAPDSensors = NULL;
-	pAPDControls = NULL;
-	pAPDRules = NULL;
-	iSensorCount = -1;
-	iControlCount = -1;
-	iRuleCount = -1;*/
+
 	this->psa = NULL;
 	this->pca = NULL;
 	this->pra = NULL;
 
 	memset(szAPDUINO_API_KEY, 0, sizeof(szAPDUINO_API_KEY) );
+#ifdef COSM_ENABLED
 	memset(szCOSM_API_KEY, 0, sizeof(szCOSM_API_KEY) );
-	memset(szTHINGSPEAK_API_KEY, 0, sizeof(szTHINGSPEAK_API_KEY) );
-	pmetro = NULL;
 	phmetro = NULL;
+#endif
+#ifdef THINGSPEAK_ENABLED
+	memset(szTHINGSPEAK_API_KEY, 0, sizeof(szTHINGSPEAK_API_KEY) );
 	tsmetro = NULL;
+#endif
+	pmetro = NULL;
+
 	bDHCP = true;
 
 	iFailureCount = 0;
@@ -167,10 +171,10 @@ boolean APDWeb::start() {
 		memcpy((void *)(byte *)net.subnet, (void *)&ipaddr, sizeof(byte)*4);
 		ipaddr = (uint32_t)Ethernet.gatewayIP();
 		memcpy((void *)(byte *)net.gateway, (void *)&ipaddr, sizeof(byte)*4);
-		// TODO what about DNS? (not using right now, resolving IP's manually in config)
-#if (ARDUINO >= 101)
+#if (ARDUINO >= 100)
 		ipaddr = Ethernet.dnsServerIP();
 		memcpy((void *)(byte *)net.pridns, (void *)&ipaddr, sizeof(byte)*4);
+		//SerPrintP("DNS SERVER: "); SerDumpIP((byte *)&ipaddr);
 #endif
 		// TODO log this with net.ip, net.subnet, net.gateway, net.pridns
 
@@ -184,7 +188,42 @@ boolean APDWeb::start() {
 	iBusyCounter = 0;
 	wcb_millis = 0;
 
+	// we're started. let's resolve DNS if needed
+	resolveAPDuinoOnlineHostName();
+
 	return true;
+}
+
+int APDWeb::resolveAPDuinoOnlineHostName() {
+	int iret = 0;
+	char sztmp[64]="";
+	if (apduino_server_ip[0]==0) {		// if 0.0.0.0 address provided as IP
+		// Look up the host first
+		DNSClient dns;
+		IPAddress remote_addr;
+
+		sprintf_P(sztmp,PSTR("%d.%d.%d.%d"),net.pridns[0],net.pridns[1],net.pridns[2],net.pridns[3]);
+	  APDDebugLog::log(APDUINO_LOG_DNSIP,sztmp);
+		//dns.begin(Ethernet.dnsServerIP());
+		dns.begin(net.pridns);
+		iret = dns.getHostByName(apduino_server_name, remote_addr);
+		if (iret == 1) {
+			uint32_t ipr = (uint32_t)remote_addr;
+			memcpy((void *)(byte *)apduino_server_ip, (void *)(&ipr), sizeof(byte)*4);
+		  APDDebugLog::log(APDUINO_LOG_AOIPRESOLVED,NULL);
+		} else {
+			sprintf_P(sztmp,PSTR("%d"),iret);
+			APDDebugLog::log(APDUINO_ERROR_FAILEDNAMERES,sztmp);
+		}
+	} else {
+
+		APDDebugLog::log(APDUINO_MSG_SERVERIPPROVIDED,sztmp);
+	}
+
+	sprintf_P(sztmp,PSTR("%s @ %d.%d.%d.%d"),apduino_server_name,apduino_server_ip[0],apduino_server_ip[1],apduino_server_ip[2],apduino_server_ip[3]);
+  APDDebugLog::log(APDUINO_LOG_AOIPCONF,sztmp);
+
+	return iret;
 }
 
 // a fake restart, it is only stopping clients, not the server
@@ -257,7 +296,9 @@ boolean APDWeb::setupAPDuinoOnline() {
 		}
 		// todo log this with apduino_server_name apduino_server_ip when enabled log levels
 
-		if (apduino_server_ip[0]>0) {                            // if we have a server name
+		resolveAPDuinoOnlineHostName(); // resolve the apduino server IP if 0.0.0.0
+
+		if (apduino_server_ip[0]>0) {                            // if we have a server IP
 			loadAPIkey(szAPDUINO_API_KEY,"APIKEY.CFG");             // load api key for apduino.com
 			// todo log this when enabled log levels
 			self_register();								// this will get a server-generated key
@@ -333,60 +374,6 @@ boolean APDWeb::startWebLogging(unsigned long uWWWLoggingFreq) {
 }
 
 // setup lohhomh to Cosm
-boolean APDWeb::setupCosmLogging() {
-	boolean retcode = false;
-	szCOSM_API_KEY[0] = 0;
-	if (bEthConfigured && APDStorage::ready() && this->phmetro == NULL) {
-		if (APDStorage::read_file_with_parser("PACHUBE.CFG",&new_cosmconf_parser,(void*)this) > 0) {
-			// todo log this when enabled log levels
-			if (cosm_server_ip[0]>0) {                            // if we have a server name
-				loadAPIkey(szCOSM_API_KEY,"PACHUBE.KEY");             // TODO -> load api key for ; allow multiple keys for different services
-				Serial.print(szCOSM_API_KEY);
-				delay(20);
-
-			} else {
-				// todo log this when enabled log levels
-			}
-			this->phmetro = new Metro(cosm_logging_freq, true);                     // TODO check this
-			APDDebugLog::log(APDUINO_MSG_COSMLOGSTARTED, cosm_server_name); // todo include IP in log -- SerDumpIP(cosm_server_ip);
-			retcode = true;
-
-		} else {
-			// todo log this when enabled log levels
-		}
-
-	} else {
-		// todo log this when enabled log levels
-	}
-	return retcode;
-}
-
-
-boolean APDWeb::setupThingSpeakLogging() {
-	boolean retcode = false;
-	// todo log this
-	szTHINGSPEAK_API_KEY[0] = 0;
-	if (bEthConfigured && APDStorage::ready() && this->tsmetro == NULL) {
-		if (APDStorage::read_file_with_parser("THINGSPK.CFG",&new_thingspeakconf_parser,(void*)this) > 0) {
-			// todo log this w/ server name
-			if (thingspeak_server_ip[0]>0) {                            // if we have a server name
-				loadAPIkey(szTHINGSPEAK_API_KEY,"THINGSPK.KEY");
-				// todo log this with szTHINGSPEAK_API_KEY
-			} else {
-				// todo log this
-			}
-			// todo log this
-			this->tsmetro = new Metro(thingspeak_logging_freq, true);                     // TODO check this
-			retcode = true;
-		} else {
-			// todo log this
-		}
-	} else {
-		// todo log this
-	}
-	return retcode;
-}
-
 
 //void APDWeb::startWebServer(APDSensor **pSensors, int iSensorCount, APDControl **pControls, int iControlCount, APDRule **pRules, int iRuleCount)
 void APDWeb::startWebServer(const APDSensorArray *pSA, const APDControlArray *pCA, const APDRuleArray *pRA) {
@@ -395,12 +382,7 @@ void APDWeb::startWebServer(const APDSensorArray *pSA, const APDControlArray *pC
 		// todo log this
 		pwwwserver = new EthernetServer(net.wwwPort);
 		pwwwserver->begin();
-		/*this->pAPDSensors = pSensors;
-		this->pAPDControls = pControls;
-		this->pAPDRules = pRules;
-		this->iSensorCount = iSensorCount;
-		this->iControlCount = iControlCount;
-		this->iRuleCount = iRuleCount;*/
+
 		this->psa = (APDSensorArray *)pSA;
 		this->pca = (APDControlArray *)pCA;
 		this->pra = (APDRuleArray *)pRA;
@@ -433,6 +415,7 @@ void APDWeb::web_endpage(EthernetClient *pClient) {
 	}
 }
 
+#ifdef DEPRECATED
 // generates HTML code with a table line for status
 void APDWeb::webstatus_table_item(EthernetClient *pClient, const char *group, const int index, const char *name, const char *value, const char *logged ) {
 /*	deprecating
@@ -449,8 +432,9 @@ void APDWeb::webstatus_table_item(EthernetClient *pClient, const char *group, co
 	WCPrintP(pClient,"></td></tr>");		// end row
 	*/
 }
+#endif
 
-
+#ifdef DEPRECATED
 // list sensors on a html page
 // todo deprecate this in favor of the JSON api
 void APDWeb::web_status(EthernetClient *pClient) {
@@ -499,7 +483,7 @@ void APDWeb::web_status(EthernetClient *pClient) {
 	}
 	*/
 }
-
+#endif
 
 // return HTTP 503 - Service unavailable
 void APDWeb::web_maintenance(EthernetClient *pClient) {
@@ -1321,7 +1305,8 @@ boolean APDWeb::self_register() {
 			char sztmp[20]="";
 			sprintf_P(www_postdata,PSTR("lan_ip=%d.%d.%d.%d&v=%s"),net.ip[0],net.ip[1],net.ip[2],net.ip[3],apduino_fullversion(sztmp));
 			APDDebugLog::log(APDUINO_LOG_AOSELFREG,www_postdata);
-			if( pwwwclient->connect(apduino_server_ip, apduino_server_port) ) {
+			//if( pwwwclient->connect(apduino_server_name, apduino_server_port) ) { // resolves name each time
+			if( pwwwclient->connect(apduino_server_ip, apduino_server_port) ) {			// apduino_server_ip should contain a statically provided or dynamically resolved IP
 				// send the HTTP PUT request:
 				WCPrintP(pwwwclient,"PUT /devices/self_register HTTP/1.1\n");
 				WCPrintP(pwwwclient,"Host: ");    pwwwclient->println(apduino_server_name);
@@ -1389,14 +1374,20 @@ void APDWeb::loop() {
 					if (this->pmetro != NULL && this->pmetro->check()) {
 						this->log_to_ApduinoOnline();
 						this->pmetro->reset();
-					} else if ( this->phmetro != NULL && this->phmetro->check()) {
+					}
+#ifdef COSM_ENABLED
+					else if ( this->phmetro != NULL && this->phmetro->check()) {
 						this->log_to_Cosm();
 						delay(10);
 						this->phmetro->reset();
-					} else if ( this->tsmetro != NULL && this->tsmetro->check()) {
+					}
+#endif
+#ifdef THINGSPEAK_ENABLED
+					else if ( this->tsmetro != NULL && this->tsmetro->check()) {
 						this->log_to_ThingSpeak();
 						this->tsmetro->reset();
 					}
+#endif
 				}
 			}
 		} else {
@@ -1445,32 +1436,6 @@ bool APDWeb::continue_service() {
 
 // TODO: add size control, avoid writing to random places
 void APDWeb::get_lastlog_string(char *szLogBuf) {
-	char ts[20] = "";
-	strcpy_P(ts,PSTR("1970/01/01 00:00:00"));        // string used for timestamp
-	APDTime::nowS(ts);                 // pull correct time
-	char *pcLog = szLogBuf;
-	char dataString[16]="";                // make a string for assembling the data to log:
-
-	strcpy_P(pcLog,PSTR("datarow="));
-	pcLog+=8;
-	strcpy(pcLog,ts);
-	pcLog+=strlen(ts);
-	for (int i=0;i<this->psa->iSensorCount;i++) {
-		if (this->psa->pAPDSensors[i]->config.sensor_log && this->psa->pAPDSensors[i]->fvalue != NAN) {          // if sensor to be logged
-			//strcpy(pcLog,this->psa->pAPDSensors[i]->config.label);
-			//pcLog+=strlen(this->psa->pAPDSensors[i]->config.label);
-			*pcLog=','; pcLog++;// *pcLog = '\0';
-			this->psa->pAPDSensors[i]->get_value_str(dataString);
-			strcpy(pcLog,dataString);
-			pcLog+=strlen(dataString);
-		}
-	}
-	*pcLog='\n'; pcLog++; *pcLog='\0'; // \n\0
-}
-
-
-// TODO: add size control, avoid writing to random places
-void APDWeb::get_cosmlog_string(char *szLogBuf) {
 	char *pcLog = szLogBuf;				// write pointer on the buf
 	char dataString[32]="";                // make a string for assembling the data to log:
 
@@ -1499,39 +1464,14 @@ void APDWeb::get_cosmlog_string(char *szLogBuf) {
 	*pcLog='\n'; pcLog++; *pcLog='\0'; // \n\0
 }
 
-// TODO: add size control, avoid writing to random places
-void APDWeb::get_thingspeaklog_string(char *szLogBuf) {
-	uint8_t uSens=0;
-	char *pcLog = szLogBuf;
-	char dataString[16]="";                // make a string for assembling the data to log:
 
-	for (int i=0;i<this->psa->iSensorCount;i++) {
-		if (this->psa->pAPDSensors[i]->config.sensor_log && this->psa->pAPDSensors[i]->fvalue != NAN) {          // if sensor to be logged
-			char szFN[16]="";
-			uSens++;
-			sprintf_P(szFN,PSTR("field%d"),uSens);
-			if (pcLog > szLogBuf) {
-				*pcLog='&'; pcLog++;
-			}
-
-			strcpy(pcLog,szFN);
-		  pcLog+=strlen(szFN);
-			*pcLog='='; pcLog++;// *pcLog = '\0';
-			this->psa->pAPDSensors[i]->get_value_str(dataString);
-			strcpy(pcLog,dataString);
-			pcLog+=strlen(dataString);
-			//*pcLog='\n'; pcLog++;
-		}
-	}
-	*pcLog='\n'; pcLog++; *pcLog='\0'; // \n\0
-}
 
 
 // requires Ethernet connection to be started already
 void APDWeb::log_to_ApduinoOnline() {
 	APDDebugLog::log(APDUINO_DEBUG_AOLOGCALLED,NULL);
 	//APDDebugLog::disable_sync_writes();
-	char www_logdata[256];
+	char www_logdata[640];
 	if ( pwwwclient ) {           // TODO check if we're registered
 		if ( !pwwwclient->connected() ) {
 			get_lastlog_string(www_logdata);
@@ -1540,7 +1480,8 @@ void APDWeb::log_to_ApduinoOnline() {
 			APDDebugLog::log(APDUINO_DEBUG_AOLOGGING,ultoa(strlen(www_logdata),sztmp,10));		// logdata has \n
 			// todo log this when enabled log levels (this->pstr_APDUINO_API_KEY) (www_logdata)
 
-			if( pwwwclient->connect(apduino_server_ip, apduino_server_port) ) {
+			if( pwwwclient->connect(apduino_server_ip, apduino_server_port) ) {			// use pre-resolved IP
+			//if( pwwwclient->connect(apduino_server_name, apduino_server_port) ) {		// DNS query each time
 				// todo log this when enabled log levels
 				// send the HTTP PUT request:
 				WCPrintP(pwwwclient,"PUT "); pwwwclient->print(WEBLOG_URI); WCPrintP(pwwwclient," HTTP/1.1\n");
@@ -1548,7 +1489,8 @@ void APDWeb::log_to_ApduinoOnline() {
 				// TODO fix api key
 				WCPrintP(pwwwclient,"X-APDuinoApiKey: ");   pwwwclient->println(szAPDUINO_API_KEY);
 				WCPrintP(pwwwclient,"User-Agent: "); pwwwclient->println(USERAGENT);
-				WCPrintP(pwwwclient,"Content-Type: application/x-www-form-urlencoded\n");
+        //WCPrintP(pwwwclient,"Content-Type: application/x-www-form-urlencoded\n");
+				WCPrintP(pwwwclient,"Content-Type: text/csv\n");
 				WCPrintP(pwwwclient,"Content-Length: ");
 
 				// calculate the length of the sensor reading in bytes:
@@ -1577,99 +1519,6 @@ void APDWeb::log_to_ApduinoOnline() {
 	bWebClient = (pwwwclient!=0) && pwwwclient->connected();
 }
 
-void APDWeb::log_to_Cosm() {
-	APDDebugLog::log(APDUINO_DEBUG_COSMLOGCALLED,NULL);
-	//APDDebugLog::disable_sync_writes();
-	if ( pwwwclient ) {           // TODO check if we're registered
-		if ( !pwwwclient->connected() ) {
-			char feedUrl[64] = "";
-			char www_logdata[640]="";
-			get_cosmlog_string(www_logdata);
-
-			char sztmp[11] = "";
-			APDDebugLog::log(APDUINO_DEBUG_COSMLOGGING,ultoa(strlen(www_logdata),sztmp,10));		// logdata has \n
-
-			sprintf_P(feedUrl,PSTR("/v2/feeds/%lu.csv"),cosm_feed_id);
-			// todo log this when enabled log levels with (cosm_server_name) (feedUrl)
-			if( pwwwclient->connect(cosm_server_ip, cosm_server_port) ) {
-				// send the HTTP PUT request:
-				WCPrintP(pwwwclient,"PUT "); pwwwclient->print(feedUrl); WCPrintP(pwwwclient," HTTP/1.1\n");
-				WCPrintP(pwwwclient,"Host: ");    pwwwclient->println(cosm_server_name);
-				WCPrintP(pwwwclient,"X-ApiKey: ");   pwwwclient->println(szCOSM_API_KEY);
-				WCPrintP(pwwwclient,"User-Agent: "); pwwwclient->println(USERAGENT);
-				WCPrintP(pwwwclient,"Content-Type: text/csv\n");
-				WCPrintP(pwwwclient,"Content-Length: ");
-
-				// calculate the length of the sensor reading in bytes:
-				// 8 bytes for "sensor1," + number of digits of the data:
-				unsigned long thisLength = strlen(www_logdata);
-				pwwwclient->println(thisLength);
-
-				// last pieces of the HTTP PUT request:
-				WCPrintP(pwwwclient,"Connection: close\n\n");
-
-				// here's the actual content of the PUT request:
-				pwwwclient->println(www_logdata);
-
-				APDDebugLog::log(APDUINO_MSG_COSMLOGDONE,NULL);		// debug
-			} else {
-				APDDebugLog::log(APDUINO_ERROR_CLOGCONNFAIL,NULL);
-				pwwwclient->stop();          // stop client now
-				this->failure();
-			}
-		}
-	}	else {
-		APDDebugLog::log(APDUINO_ERROR_CLOGNOWEBCLIENT,NULL);
-		this->failure();
-	}
-	//APDDebugLog::enable_sync_writes();
-	bWebClient = (pwwwclient!=0) && pwwwclient->connected();
-}
-
-
-void APDWeb::log_to_ThingSpeak() {
-	APDDebugLog::log(APDUINO_DEBUG_TSLOGCALLED,NULL);
-	if ( pwwwclient ) {           // TODO check if we're registered
-		if ( !pwwwclient->connected() ) {
-			char feedUrl[64] = "";
-			char www_logdata[256];
-			get_thingspeaklog_string(www_logdata);
-
-			char sztmp[11] = "";
-			APDDebugLog::log(APDUINO_DEBUG_TSLOGGING,ultoa(strlen(www_logdata),sztmp,10));
-			// todo log this when enabled log levels (www_logdata) (thingspeak_server_name) (feedUrl)
-			if( pwwwclient->connect(thingspeak_server_ip, thingspeak_server_port) ) {
-				// send the HTTP PUT request:
-				WCPrintP(pwwwclient,"POST /update HTTP/1.1\n");
-				WCPrintP(pwwwclient,"Host: ");    pwwwclient->println(thingspeak_server_name);
-				WCPrintP(pwwwclient,"X-THINGSPEAKAPIKEY: ");   pwwwclient->println(szTHINGSPEAK_API_KEY);
-				WCPrintP(pwwwclient,"User-Agent: "); pwwwclient->println(USERAGENT);
-				WCPrintP(pwwwclient,"Content-Type: application/x-www-form-urlencoded\n");
-				WCPrintP(pwwwclient,"Content-Length: ");
-
-				// calculate the length of the sensor reading in bytes:
-				// 8 bytes for "sensor1," + number of digits of the data:
-				int thisLength = strlen(www_logdata);
-				pwwwclient->println(thisLength);
-
-				// last pieces of the HTTP PUT request:
-				WCPrintP(pwwwclient,"Connection: close\n");
-				pwwwclient->println();
-
-				// here's the actual content of the PUT request:
-				pwwwclient->println(www_logdata);
-				//APDDebugLog::log(APDUINO_MSG_TSLOGDONE,NULL);		// debug
-			} else {
-				//APDDebugLog::log(APDUINO_ERROR_TSLOGCONNFAIL,NULL);
-				pwwwclient->stop();          // stop client now
-				this->failure();
-			}
-		}
-	}	else {
-		// todo log this when enabled log levels
-	}
-	bWebClient = (pwwwclient!=0) && pwwwclient->connected();
-}
 
 // could read anything (any request)
 // now used for the web logging
@@ -1744,6 +1593,124 @@ void APDWeb::new_apduinoconf_parser(void *pAPDWeb, int iline, char *psz) {
 }
 
 
+#ifdef THINGSPEAK_ENABLED
+void APDWeb::new_thingspeakconf_parser(void *pAPDWeb, int iline, char *psz) {
+	APDWeb *pw = (APDWeb*)pAPDWeb;
+	char szhost[32];
+	// todo log this when enabled log levels
+	//        hostname  |IP4     |Port|feedid
+	sscanf_P( psz, PSTR("%s %2x%2x%2x%2x,%d,%lu,%lu"),
+			szhost,
+			&(pw->thingspeak_server_ip[0]),&(pw->thingspeak_server_ip[1]),&(pw->thingspeak_server_ip[2]),&(pw->thingspeak_server_ip[3]),
+			&(pw->thingspeak_server_port),
+			&(pw->thingspeak_logging_freq));
+
+	strncpy(pw->thingspeak_server_name,szhost,31);
+	// todo log this when enabled log levels
+	// TS config now should be in APDWeb...
+}
+
+// TODO: add size control, avoid writing to random places
+void APDWeb::get_thingspeaklog_string(char *szLogBuf) {
+	uint8_t uSens=0;
+	char *pcLog = szLogBuf;
+	char dataString[16]="";                // make a string for assembling the data to log:
+
+	for (int i=0;i<this->psa->iSensorCount;i++) {
+		if (this->psa->pAPDSensors[i]->config.sensor_log && this->psa->pAPDSensors[i]->fvalue != NAN) {          // if sensor to be logged
+			char szFN[16]="";
+			uSens++;
+			sprintf_P(szFN,PSTR("field%d"),uSens);
+			if (pcLog > szLogBuf) {
+				*pcLog='&'; pcLog++;
+			}
+
+			strcpy(pcLog,szFN);
+		  pcLog+=strlen(szFN);
+			*pcLog='='; pcLog++;// *pcLog = '\0';
+			this->psa->pAPDSensors[i]->get_value_str(dataString);
+			strcpy(pcLog,dataString);
+			pcLog+=strlen(dataString);
+			//*pcLog='\n'; pcLog++;
+		}
+	}
+	*pcLog='\n'; pcLog++; *pcLog='\0'; // \n\0
+}
+
+
+boolean APDWeb::setupThingSpeakLogging() {
+	boolean retcode = false;
+	// todo log this
+	szTHINGSPEAK_API_KEY[0] = 0;
+	if (bEthConfigured && APDStorage::ready() && this->tsmetro == NULL) {
+		if (APDStorage::read_file_with_parser("THINGSPK.CFG",&new_thingspeakconf_parser,(void*)this) > 0) {
+			// todo log this w/ server name
+			if (thingspeak_server_ip[0]>0) {                            // if we have a server name
+				loadAPIkey(szTHINGSPEAK_API_KEY,"THINGSPK.KEY");
+				// todo log this with szTHINGSPEAK_API_KEY
+			} else {
+				// todo log this
+			}
+			// todo log this
+			this->tsmetro = new Metro(thingspeak_logging_freq, true);                     // TODO check this
+			retcode = true;
+		} else {
+			// todo log this
+		}
+	} else {
+		// todo log this
+	}
+	return retcode;
+}
+
+
+void APDWeb::log_to_ThingSpeak() {
+	APDDebugLog::log(APDUINO_DEBUG_TSLOGCALLED,NULL);
+	if ( pwwwclient ) {           // TODO check if we're registered
+		if ( !pwwwclient->connected() ) {
+			char feedUrl[64] = "";
+			char www_logdata[256];
+			get_thingspeaklog_string(www_logdata);
+
+			char sztmp[11] = "";
+			APDDebugLog::log(APDUINO_DEBUG_TSLOGGING,ultoa(strlen(www_logdata),sztmp,10));
+			// todo log this when enabled log levels (www_logdata) (thingspeak_server_name) (feedUrl)
+			//if( pwwwclient->connect(thingspeak_server_ip, thingspeak_server_port) ) {
+			if( pwwwclient->connect(thingspeak_server_name, thingspeak_server_port) ) {
+				// send the HTTP PUT request:
+				WCPrintP(pwwwclient,"POST /update HTTP/1.1\n");
+				WCPrintP(pwwwclient,"Host: ");    pwwwclient->println(thingspeak_server_name);
+				WCPrintP(pwwwclient,"X-THINGSPEAKAPIKEY: ");   pwwwclient->println(szTHINGSPEAK_API_KEY);
+				WCPrintP(pwwwclient,"User-Agent: "); pwwwclient->println(USERAGENT);
+				WCPrintP(pwwwclient,"Content-Type: application/x-www-form-urlencoded\n");
+				WCPrintP(pwwwclient,"Content-Length: ");
+
+				// calculate the length of the sensor reading in bytes:
+				// 8 bytes for "sensor1," + number of digits of the data:
+				int thisLength = strlen(www_logdata);
+				pwwwclient->println(thisLength);
+
+				// last pieces of the HTTP PUT request:
+				WCPrintP(pwwwclient,"Connection: close\n");
+				pwwwclient->println();
+
+				// here's the actual content of the PUT request:
+				pwwwclient->println(www_logdata);
+				//APDDebugLog::log(APDUINO_MSG_TSLOGDONE,NULL);		// debug
+			} else {
+				//APDDebugLog::log(APDUINO_ERROR_TSLOGCONNFAIL,NULL);
+				pwwwclient->stop();          // stop client now
+				this->failure();
+			}
+		}
+	}	else {
+		// todo log this when enabled log levels
+	}
+	bWebClient = (pwwwclient!=0) && pwwwclient->connected();
+}
+#endif
+
+#ifdef COSM_ENABLED
 void APDWeb::new_cosmconf_parser(void *pAPDWeb, int iline, char *psz) {
 	APDWeb *pw = (APDWeb*)pAPDWeb;
 	char szhost[32];
@@ -1761,20 +1728,114 @@ void APDWeb::new_cosmconf_parser(void *pAPDWeb, int iline, char *psz) {
 	// Cosm config should be in APDWeb now
 }
 
-void APDWeb::new_thingspeakconf_parser(void *pAPDWeb, int iline, char *psz) {
-	APDWeb *pw = (APDWeb*)pAPDWeb;
-	char szhost[32];
-	// todo log this when enabled log levels
-	//        hostname  |IP4     |Port|feedid
-	sscanf_P( psz, PSTR("%s %2x%2x%2x%2x,%d,%lu,%lu"),
-			szhost,
-			&(pw->thingspeak_server_ip[0]),&(pw->thingspeak_server_ip[1]),&(pw->thingspeak_server_ip[2]),&(pw->thingspeak_server_ip[3]),
-			&(pw->thingspeak_server_port),
-			&(pw->thingspeak_logging_freq));
+boolean APDWeb::setupCosmLogging() {
+	boolean retcode = false;
+	szCOSM_API_KEY[0] = 0;
+	if (bEthConfigured && APDStorage::ready() && this->phmetro == NULL) {
+		if (APDStorage::read_file_with_parser("PACHUBE.CFG",&new_cosmconf_parser,(void*)this) > 0) {
+			// todo log this when enabled log levels
+			if (cosm_server_ip[0]>0) {                            // if we have a server name
+				loadAPIkey(szCOSM_API_KEY,"PACHUBE.KEY");             // TODO -> load api key for ; allow multiple keys for different services
+				Serial.print(szCOSM_API_KEY);
+				delay(20);
 
-	strncpy(pw->thingspeak_server_name,szhost,31);
-	// todo log this when enabled log levels
-	// TS config now should be in APDWeb...
+			} else {
+				// todo log this when enabled log levels
+			}
+			this->phmetro = new Metro(cosm_logging_freq, true);                     // TODO check this
+			APDDebugLog::log(APDUINO_MSG_COSMLOGSTARTED, cosm_server_name); // todo include IP in log -- SerDumpIP(cosm_server_ip);
+			retcode = true;
+
+		} else {
+			// todo log this when enabled log levels
+		}
+
+	} else {
+		// todo log this when enabled log levels
+	}
+	return retcode;
+}
+
+// TODO: add size control, avoid writing to random places
+void APDWeb::get_cosmlog_string(char *szLogBuf) {
+	char *pcLog = szLogBuf;				// write pointer on the buf
+	char dataString[32]="";                // make a string for assembling the data to log:
+
+	for (int i=0;i<this->psa->iSensorCount;i++) {
+		if (this->psa->pAPDSensors[i]->config.sensor_log && this->psa->pAPDSensors[i]->fvalue != NAN ) {          // if sensor to be logged & has a valid value (todo use sensor states)
+			strcpy(pcLog,this->psa->pAPDSensors[i]->config.label);
+			pcLog+=strlen(this->psa->pAPDSensors[i]->config.label);
+			*pcLog=','; pcLog++;// *pcLog = '\0';
+			this->psa->pAPDSensors[i]->get_value_str(dataString);
+			strcpy(pcLog,dataString);
+			pcLog+=strlen(dataString);
+			*pcLog='\n'; pcLog++;
+		}
+	}
+	for (int i=0;i<this->pca->iControlCount;i++) {
+		if (this->pca->pAPDControls[i]->config.control_log) {          // if control to be logged
+			strcpy(pcLog,this->pca->pAPDControls[i]->config.label);
+			pcLog+=strlen(this->pca->pAPDControls[i]->config.label);
+			*pcLog=','; pcLog++;// *pcLog = '\0';
+			this->pca->pAPDControls[i]->get_value_str(dataString);
+			strcpy(pcLog,dataString);
+			pcLog+=strlen(dataString);
+			*pcLog='\n'; pcLog++;
+		}
+	}
+	*pcLog='\n'; pcLog++; *pcLog='\0'; // \n\0
+}
+
+
+
+void APDWeb::log_to_Cosm() {
+	APDDebugLog::log(APDUINO_DEBUG_COSMLOGCALLED,NULL);
+	//APDDebugLog::disable_sync_writes();
+	if ( pwwwclient ) {           // TODO check if we're registered
+		if ( !pwwwclient->connected() ) {
+			char feedUrl[64] = "";
+			char www_logdata[640]="";
+			get_cosmlog_string(www_logdata);
+
+			char sztmp[11] = "";
+			APDDebugLog::log(APDUINO_DEBUG_COSMLOGGING,ultoa(strlen(www_logdata),sztmp,10));		// logdata has \n
+
+			sprintf_P(feedUrl,PSTR("/v2/feeds/%lu.csv"),cosm_feed_id);
+			// todo log this when enabled log levels with (cosm_server_name) (feedUrl)
+			//if( pwwwclient->connect(cosm_server_ip, cosm_server_port) ) {
+			if( pwwwclient->connect(cosm_server_name, cosm_server_port) ) {
+				// send the HTTP PUT request:
+				WCPrintP(pwwwclient,"PUT "); pwwwclient->print(feedUrl); WCPrintP(pwwwclient," HTTP/1.1\n");
+				WCPrintP(pwwwclient,"Host: ");    pwwwclient->println(cosm_server_name);
+				WCPrintP(pwwwclient,"X-ApiKey: ");   pwwwclient->println(szCOSM_API_KEY);
+				WCPrintP(pwwwclient,"User-Agent: "); pwwwclient->println(USERAGENT);
+				WCPrintP(pwwwclient,"Content-Type: text/csv\n");
+				WCPrintP(pwwwclient,"Content-Length: ");
+
+				// calculate the length of the sensor reading in bytes:
+				// 8 bytes for "sensor1," + number of digits of the data:
+				unsigned long thisLength = strlen(www_logdata);
+				pwwwclient->println(thisLength);
+
+				// last pieces of the HTTP PUT request:
+				WCPrintP(pwwwclient,"Connection: close\n\n");
+
+				// here's the actual content of the PUT request:
+				pwwwclient->println(www_logdata);
+
+				APDDebugLog::log(APDUINO_MSG_COSMLOGDONE,NULL);		// debug
+			} else {
+				APDDebugLog::log(APDUINO_ERROR_CLOGCONNFAIL,NULL);
+				pwwwclient->stop();          // stop client now
+				this->failure();
+			}
+		}
+	}	else {
+		APDDebugLog::log(APDUINO_ERROR_CLOGNOWEBCLIENT,NULL);
+		this->failure();
+	}
+	//APDDebugLog::enable_sync_writes();
+	bWebClient = (pwwwclient!=0) && pwwwclient->connected();
 }
 
 
@@ -1803,7 +1864,7 @@ void APDWeb::dumpPachube() {
 	}
 	saveAPIkey(szCOSM_API_KEY,"PACHUBE.KEY");
 }
-
+#endif
 // header - returns HTTP OK status code and sets response content type
 void APDWeb::header(EthernetClient *pClient, int content_type) {
 	WCPrintP(pClient,"HTTP/1.1 200 OK\n"

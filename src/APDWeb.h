@@ -32,8 +32,9 @@
 
 #include <Arduino.h>
 #include <SPI.h>                 // SPI comms
-//#include <Base64.h>						// no need as using pre-encoding by javascript (maybe later, for some other purpose)
+//#include <Base64.h>						 // no need as using pre-encoding by javascript (maybe later, for some other purpose)
 #include <Ethernet.h>            // ethernet shield
+#include <Dns.h>                 // DNS client
 #include <MemoryFree.h>
 #include <Metro.h>
 #include "APDSensorArray.h"
@@ -50,11 +51,9 @@ const char WEBLOG_URI[]="/devices/lastlog";      // see apduino online specs.
 #define MAX_PROVISION_BACKUP_COUNT				5     // the number of backups to keep of any file being provisioned //TODO make MAX_PROVISION_BACKUP_COUNT configurable later on (keep it to a reasonable low number! too many rotates take a long time)
 
 #define APDUINO_SERVER PSTR("apduino.com")
-#define APDUINO_SERVER_IP (byte []){204,12,228,115}
+//#define APDUINO_SERVER_IP (byte []){204,12,228,115}
+#define APDUINO_SERVER_IP (byte []){0,0,0,0}
 #define DEFAULT_ONLINE_LOG_FREQ		60000
-
-#define COSM_SERVER		PSTR("api.cosm.com")
-#define COSM_SERVER_IP (byte []){216,52,233,122}
 
 #define WEBCLIENT_BUSY_TIMEOUT_MS				30000
 #define MAX_WEBCLIENT_BUSY_LOOPS			  10000
@@ -111,8 +110,6 @@ public:
 
   // static configuration parsers (callbacks, sort of)
   static void new_apduinoconf_parser(void *pAPDWeb, int iline, char *psz);
-  static void new_cosmconf_parser(void *pAPDWeb, int iline, char *psz);
-  static void new_thingspeakconf_parser(void *pAPDWeb, int iline, char *psz);
 
   // static www-client response processor
   static void registration_response(APDWeb *pAPDWeb);
@@ -150,27 +147,11 @@ private:
   unsigned int apduino_server_port;    			// standard HTTP port
   unsigned long apduino_logging_freq;				// how often to log (ms)
 
-  byte cosm_server_ip[4];           	 			// api.cosm.com 64.94.18.121
-  char cosm_server_name[32];         				// api.cosm.com
-  unsigned int cosm_server_port;     				// standard HTTP port
-unsigned long cosm_feed_id;         				// feed id
-  unsigned long cosm_logging_freq;    			// logging freq
-
-  byte thingspeak_server_ip[4];            	// api.thingspeak.com  184.106.153.149
-  char thingspeak_server_name[32];         	// api.thingspeak.com
-  unsigned int thingspeak_server_port;     	// standard HTTP port
-  unsigned long thingspeak_logging_freq;   	// logging freq
-
-  // API keys
+  // API key
   char szAPDUINO_API_KEY[65];               // the api key for apduino online
-  char szCOSM_API_KEY[65];               		// the api key for Pachube
-  char szTHINGSPEAK_API_KEY[65];            // the api key for ThingSpeak
 
   // Metros for loggers
   Metro *pmetro;                         // weblog metro
-  Metro *phmetro;                        // pachube logging metro
-  Metro *tsmetro;                        // thingspeak logging metro
-
 
   // private methods
 
@@ -188,28 +169,52 @@ unsigned long cosm_feed_id;         				// feed id
 
   // log string generators
   void get_lastlog_string(char *szLogBuf);
-  void get_cosmlog_string(char *szLogBuf);
-  void get_thingspeaklog_string(char *szLogBuf);
+#ifdef COSM_ENABLED
+  static void new_cosmconf_parser(void *pAPDWeb, int iline, char *psz);
+	#define COSM_SERVER		PSTR("api.cosm.com")
+	#define COSM_SERVER_IP (byte []){216,52,233,122}
+  byte cosm_server_ip[4];           	 			// api.cosm.com 64.94.18.121
+  char cosm_server_name[32];         				// api.cosm.com
+  unsigned int cosm_server_port;     				// standard HTTP port
+  unsigned long cosm_feed_id;         				// feed id
+  unsigned long cosm_logging_freq;    			// logging freq
 
+  char szCOSM_API_KEY[65];               		// the api key for Pachube
+  Metro *phmetro;                        // pachube logging metro
+
+   boolean setupCosmLogging();
+   void get_cosmlog_string(char *szLogBuf);
+   void log_to_Cosm();
+   void dumpPachube();
+#endif
+#ifdef THINGSPEAK_ENABLED
+   static void new_thingspeakconf_parser(void *pAPDWeb, int iline, char *psz);
+   byte thingspeak_server_ip[4];            	// api.thingspeak.com  184.106.153.149
+   char thingspeak_server_name[32];         	// api.thingspeak.com
+   unsigned int thingspeak_server_port;     	// standard HTTP port
+   unsigned long thingspeak_logging_freq;   	// logging freq
+
+  char szTHINGSPEAK_API_KEY[65];            // the api key for ThingSpeak
+  Metro *tsmetro;                        // thingspeak logging metro
+
+  boolean setupThingSpeakLogging();
+  void get_thingspeaklog_string(char *szLogBuf);
+  void log_to_ThingSpeak();
+#endif
   // initialization
   void initBlank();
   boolean start();
   boolean restart();
 
   // configuration
+  int resolveAPDuinoOnlineHostName();
   void log_to_ApduinoOnline();
-  void log_to_Cosm();
-  void log_to_ThingSpeak();
 
   boolean self_register();
   boolean setup_webclient();
 
   boolean setupAPDuinoOnline();
   boolean startWebLogging(unsigned long uWebLoggingFreq);
-  boolean setupCosmLogging();
-  boolean setupThingSpeakLogging();
-
-  void dumpPachube();
 
   boolean loadAPIkey(char *szAPIKey, const char *szAPIFile);
   void saveAPIkey(const char *szAPIKey, const char *szAPIFile);
@@ -225,7 +230,9 @@ unsigned long cosm_feed_id;         				// feed id
   //static void web_header(EthernetClient *pClient);
   void web_startpage(EthernetClient *pClient, char *title,int refresh);
   void web_endpage(EthernetClient *pClient);
+#ifdef DEPRECATED
   static void webstatus_table_item(EthernetClient *pClient, const char *group, const int index, const char *name, const char *value, const char *logged );
+#endif
   void web_status(EthernetClient *pClient);
   void web_maintenance(EthernetClient *pClient);
   static void web_notfound(EthernetClient *pClient);

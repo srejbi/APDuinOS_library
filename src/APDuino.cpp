@@ -182,12 +182,15 @@ boolean APDuino::init_app() {
 //		} else {
 //				SerPrintP("ERR.");
 		}
+#ifdef COSM_ENABLED
 		// todo debug SerPrintP("APD: COSM...\n");
 		if (this->pAPDWeb->setupCosmLogging()){
 		//		SerPrintP("OK.");
 		//} else {
 		//		SerPrintP("ERR.");
 		}
+#endif
+#ifdef THINGSPEAK_ENABLED
 		// todo debug SerPrintP("APD: THINGSPEAK...\n");
 		if (this->pAPDWeb->setupThingSpeakLogging()){
 //				SerPrintP("OK.");
@@ -195,6 +198,7 @@ boolean APDuino::init_app() {
 //				SerPrintP("ERR.");
 		}
 	//}
+#endif
 #ifdef ENABLE_DISPLAY
 		display_callback(".");
 		delay(500);

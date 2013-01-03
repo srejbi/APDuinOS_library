@@ -27,8 +27,9 @@
 #define ATLASSCIENTIFICSENSOR_H_
 
 #include "APDSensor.h"
+#ifdef ATLAS_SOFTSERIAL
 #include <SoftwareSerial.h>
-
+#endif
 // The following define is for APDuino Online compatibility
 // maintain the supported classes in it
 #define ATLASSCIENTIFIC_SENSOR_CLASSES [SENSE_PH,SENSE_DO,SENSE_EC,SENSE_ORP]
@@ -72,7 +73,9 @@ private:
 	void openChannel(short channel);
 	void openChannel();
 	bool selectHWSerial();
+#ifdef ATLAS_SOFTSERIAL
 	bool selectSWSerial();
+#endif
 	float as_sensor_read();
 
     boolean bPrimary;					// is the sensor primary (having a shared object)

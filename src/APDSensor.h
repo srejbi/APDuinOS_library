@@ -34,16 +34,16 @@
 #include "APDDebugLog.h"
 
 // APDuino sensor types
-#define ANALOG_SENSOR  0
-#define DIGITAL_SENSOR 1
-#define DHT_SENSOR     2
-#define ONEWIRE_SENSOR 3
-#define I2C_SENSOR     4
-#define SONAR_SENSOR   5
-#define BMP085_SENSOR   6
-#define VIBRATION_SENSOR 7
-#define ATLASSCIENTIFIC_SENSOR 8
-#define VIRTUAL_SENSOR 128
+#define DIGITAL_SENSOR 1			// [0-1] see http://arduino.cc/en/Reference/DigitalRead
+#define ANALOG_SENSOR  0			// [0-1023] see http://arduino.cc/en/Reference/AnalogRead
+#define DHT_SENSOR     2			// [] - temperature in C and relative humidity in % in ranges as per the DHT-XX datasheet
+#define ONEWIRE_SENSOR 3			// [-40-120] - temperature in C, see DS18B20 datasheet
+#define I2C_SENSOR     4			// not used
+#define SONAR_SENSOR   5			// [0-~2000] - distance in mm
+#define BMP085_SENSOR   6			// [] - temperature, pressure or altitude in ranges according to datasheet
+#define VIBRATION_SENSOR 7			// [0-1023]|[0-1] (depending on if plugged to Analog or Digital pin for input)
+#define ATLASSCIENTIFIC_SENSOR 8			// [X.Y] - sensor dependent pH, EC, DO, ORP measurement
+#define VIRTUAL_SENSOR 128			// not used
 
 
 // define sensor classes

@@ -48,9 +48,12 @@ void APDDebugLog::serialprint(uint16_t code, const char *psz_logstring){
 }
 
 LOGITEM *APDDebugLog::makelog(uint16_t code, const char *psz_logstring){
+	char sztmp[20]="";
 	LOGITEM *newlog = NULL;
 	if (logtoserial) serialprint(code,psz_logstring);
-	if (freeMemory() < (MIN_FREE_RAM + strlen(psz_logstring) + sizeof(LOGITEM))) {
+	int fm = freeMemory();
+	int mfm = (MIN_FREE_RAM + strlen(psz_logstring) + sizeof(LOGITEM));
+	if (fm > mfm) {
 		newlog = (LOGITEM*)malloc(sizeof(LOGITEM));
 		if (newlog) {
 			if (logtoserial) SerPrintP(">");
@@ -70,10 +73,13 @@ LOGITEM *APDDebugLog::makelog(uint16_t code, const char *psz_logstring){
 				serialprint(APDUINO_ERROR_LOGMSGOUTOFMEM,NULL);
 			}
 		} else {
-			serialprint(APDUINO_ERROR_LOGITEMOUTOFMEM,NULL);
+			sprintf_P(sztmp,PSTR("%d < %d"),fm,mfm);
+			Serial.println(sztmp);
+			serialprint(APDUINO_ERROR_LOGITEMOUTOFMEM,sztmp);
 		}
 	} else {
-		serialprint(APDUINO_ERROR_LOGITEMLOWRAMFAIL,NULL);
+		sprintf_P(sztmp,PSTR("%d < %d"),fm,mfm);
+		serialprint(APDUINO_ERROR_LOGITEMLOWRAMFAIL,sztmp);
 	}
 	return newlog;
 }

@@ -27,11 +27,11 @@
 #define APDCONTROL_H_
 
 //APDUINO control types
-#define ANALOG_CONTROL      0
-#define DIGITAL_CONTROL     1
-#define RCSWITCH_CONTROL    2
-#define RCPLUG_CONTROL			3
-#define SOFTWARE_CONTROL    127      // not used
+#define ANALOG_CONTROL      0					// PWM control : [0-255] - Do not get confused with Analog Inputs! It is a digital pin with PWM to be used
+#define DIGITAL_CONTROL     1					// Digital control : [0|1] - Digital control supporting LOW|HIGH values
+#define RCSWITCH_CONTROL    2					// RC-Switch control : [0|1] - use RC-switch from the "remote angle" (addressing is a parameter passed to a command function that defines the value eg. switch_on(=1))
+#define RCPLUG_CONTROL			3					// RC-Switch control : [0|1] - use RC-switch from the "plug angle" (addressing is part of configuration, value is passed to set_value command function or commands with value definitions can also be used)
+#define SOFTWARE_CONTROL    127       // not used
 
 #include <Arduino.h>
 #include <Metro.h>

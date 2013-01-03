@@ -102,6 +102,9 @@
 #define APDUINO_MSG_AOSRRESPPROC		      0x204B  // APDuino Online self-registration response processing
 #define APDUINO_MSG_AOSRRESPJOINTPROV     0x204C  // APDuino Online self-registration %d bytes left to scan for joint configuration provisioning
 
+#define APDUINO_MSG_SERVERIPPROVIDED      0x2051  // APDuino Server IP already present: %s
+
+
 #define APDUINO_MSG_LOADINGSENSORS        0x2350	// Sensor Array loading Sensors from config
 #define APDUINO_MSG_SENSORCOUNT 	        0x2351	// Sensor Array counted %d lines in SENSORS.CFG
 #define APDUINO_MSG_SENSORSLOADING        0x2352	// Loading Sensor Array from config %s
@@ -195,6 +198,11 @@
 #define APDUINO_LOG_NETRESTARTED          0x403F	// Network interface restarted
 #define APDUINO_LOG_NTPSYNCOK							0x4070	// Clock synced to NTP
 
+#define APDUINO_LOG_DNSIP     						0x4030  // Using DNS server @ %s
+#define APDUINO_LOG_AOIPRESOLVED					0x4033  // APDuino Online DNS resolved
+#define APDUINO_LOG_AOIPCONF							0x4035  // APDuino Online: %s @ %s
+
+
 #define APDUINO_LOG_RECONF								0x4ABC  // Performing reconfiguration
 
 #define APDUINO_LOG_ENABLERULEPROC        0x4AA1	// Enabled rule processing
@@ -226,6 +234,8 @@
 #define APDUINO_ERROR_NETALREADYSTARTED   0x500D	// Net already started?
 #define APDUINO_ERROR_NONETFORWWW         0x500E	// No network interface set up for WWW server
 #define APDUINO_ERROR_NETRESTARTFAIL      0x5030  // Failed to restart network interface
+#define APDUINO_ERROR_FAILEDNAMERES       0x5031  // Failed to resolve APDuino Online IP address. DNS Error code: %d
+
 
 #define APDUINO_ERROR_SDFATSTARTERR       0x5080	// Error starting SD FAT
 #define APDUINO_ERROR_FILEOPEN            0x5081	// Error opening file '%s'
@@ -304,7 +314,7 @@
 
 #define APDUINO_ERROR_ATLAS     				  0x5A01	// AtlasSensor: error "%s"
 #define APDUINO_ERROR_ATLAS_DEMUX					0x5A02	// AtlasSensor: DEMUXER config ERROR
-#define APDUINO_ERROR_ATLAS_DATA      		0x5A03	// AtlasSensor: DEMUXER config ERROR
+#define APDUINO_ERROR_ATLAS_DATA      		0x5A03	// AtlasSensor: data read ERROR "%s"
 #define APDUINO_ERROR_ATLAS_HW  				  0x5A04	// AtlasSensor: hardware serial error "%s"
 #define APDUINO_ERROR_ATLAS_SW  				  0x5A05	// AtlasSensor: software serial error "%s"
 

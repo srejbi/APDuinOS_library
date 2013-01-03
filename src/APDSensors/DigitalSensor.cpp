@@ -29,6 +29,7 @@ DigitalSensor::DigitalSensor(SDCONF *sdc)
 {
   this->initSensor(sdc);
   this->sensor = (DIGISENS*)malloc(sizeof(DIGISENS));
+  pinMode(this->config.sensor_pin,INPUT);
   this->_state = STATE_READY;
   this->sensor->value = NAN;
 }
